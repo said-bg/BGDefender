@@ -1,12 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/unbound-method */
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
 
 import { AuthService } from './auth.service';
 import { User, UserRole, UserPlan } from '../entities/user.entity';
@@ -21,12 +15,23 @@ jest.mock('bcrypt');
 
 import * as bcrypt from 'bcrypt';
 
+type MockUserRepository = {
+  findOne: jest.Mock;
+  create: jest.Mock;
+  save: jest.Mock;
+};
+
+type MockJwtService = {
+  sign: jest.Mock;
+};
+
 describe('AuthService', () => {
   let service: AuthService;
-  let userRepository: jest.Mocked<Repository<User>>;
-  let jwtService: jest.Mocked<JwtService>;
+  let userRepository: MockUserRepository;
+  let jwtService: MockJwtService;
 
-  // Mock user réutilisable
+  const mockedBcrypt = jest.mocked(bcrypt);
+
   const mockUser: User = {
     id: 1,
     email: 'test@example.com',
@@ -39,71 +44,63 @@ describe('AuthService', () => {
   };
 
   beforeEach(async () => {
-    // Setup module with mocked dependencies
+    userRepository = {
+      findOne: jest.fn(),
+      create: jest.fn(),
+      save: jest.fn(),
+    };
+
+    jwtService = {
+      sign: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         {
           provide: getRepositoryToken(User),
-          useValue: {
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
-          },
+          useValue: userRepository,
         },
         {
           provide: JwtService,
-          useValue: {
-            sign: jest.fn(),
-          },
+          useValue: jwtService,
         },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    userRepository = module.get<jest.Mocked<Repository<User>>>(
-      getRepositoryToken(User),
-    );
-    jwtService = module.get<jest.Mocked<JwtService>>(JwtService);
 
-    // Mock bcrypt functions
-    (bcrypt.hash as jest.Mock).mockResolvedValue('hashed-password-123');
-    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+    mockedBcrypt.hash.mockResolvedValue('hashed-password-123' as never);
+    mockedBcrypt.compare.mockResolvedValue(true as never);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  // ============================================================
-  // REGISTER TESTS
-  // ============================================================
-
   describe('register', () => {
     it('should create a new user with FREE plan and USER role', async () => {
-      // Arrange
       const registerDto = {
         email: 'newuser@example.com',
         password: 'Password1',
       };
-      userRepository.findOne.mockResolvedValue(null as any);
-      userRepository.create.mockReturnValue({
-        ...mockUser,
-        email: registerDto.email,
-      } as any);
-      userRepository.save.mockResolvedValue({
-        ...mockUser,
-        email: registerDto.email,
-      } as any);
 
-      // Act
+      const createdUser: User = {
+        ...mockUser,
+        email: registerDto.email,
+      };
+
+      userRepository.findOne.mockResolvedValue(null);
+      userRepository.create.mockReturnValue(createdUser);
+      userRepository.save.mockResolvedValue(createdUser);
+
       const result = await service.register(registerDto);
 
-      // Assert
       expect(result.email).toBe(registerDto.email);
       expect(result.role).toBe(UserRole.USER);
       expect(result.plan).toBe(UserPlan.FREE);
       expect(result).not.toHaveProperty('password');
+
       expect(userRepository.findOne).toHaveBeenCalledWith({
         where: { email: registerDto.email },
       });
@@ -111,11 +108,13 @@ describe('AuthService', () => {
     });
 
     it('should throw ConflictException if email already exists', async () => {
-      // Arrange
-      const registerDto = { email: 'test@example.com', password: 'Password1' };
-      userRepository.findOne.mockResolvedValue(mockUser as any);
+      const registerDto = {
+        email: 'test@example.com',
+        password: 'Password1',
+      };
 
-      // Act & Assert
+      userRepository.findOne.mockResolvedValue(mockUser);
+
       await expect(service.register(registerDto)).rejects.toThrow(
         ConflictException,
       );
@@ -123,11 +122,13 @@ describe('AuthService', () => {
     });
 
     it('should throw BadRequestException if password is too short', async () => {
-      // Arrange
-      const registerDto = { email: 'test@example.com', password: 'Pass1' }; // < 8 chars
-      userRepository.findOne.mockResolvedValue(null as any);
+      const registerDto = {
+        email: 'test@example.com',
+        password: 'Pass1',
+      };
 
-      // Act & Assert
+      userRepository.findOne.mockResolvedValue(null);
+
       await expect(service.register(registerDto)).rejects.toThrow(
         BadRequestException,
       );
@@ -135,14 +136,13 @@ describe('AuthService', () => {
     });
 
     it('should throw BadRequestException if password lacks uppercase letter', async () => {
-      // Arrange
       const registerDto = {
         email: 'test@example.com',
         password: 'password123',
-      }; // no uppercase
-      userRepository.findOne.mockResolvedValue(null as any);
+      };
 
-      // Act & Assert
+      userRepository.findOne.mockResolvedValue(null);
+
       await expect(service.register(registerDto)).rejects.toThrow(
         BadRequestException,
       );
@@ -150,14 +150,13 @@ describe('AuthService', () => {
     });
 
     it('should throw BadRequestException if password lacks digit', async () => {
-      // Arrange
       const registerDto = {
         email: 'test@example.com',
         password: 'PasswordOnly',
-      }; // no digit
-      userRepository.findOne.mockResolvedValue(null as any);
+      };
 
-      // Act & Assert
+      userRepository.findOne.mockResolvedValue(null);
+
       await expect(service.register(registerDto)).rejects.toThrow(
         BadRequestException,
       );
@@ -165,29 +164,26 @@ describe('AuthService', () => {
     });
   });
 
-  // ============================================================
-  // LOGIN TESTS
-  // ============================================================
-
   describe('login', () => {
     it('should return accessToken and safe user for valid credentials', async () => {
-      // Arrange
-      const loginDto = { email: 'test@example.com', password: 'Password1' };
+      const loginDto = {
+        email: 'test@example.com',
+        password: 'Password1',
+      };
       const mockToken = 'mock-jwt-token-123';
 
-      userRepository.findOne.mockResolvedValue(mockUser as any);
-      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+      userRepository.findOne.mockResolvedValue(mockUser);
+      mockedBcrypt.compare.mockResolvedValue(true as never);
       jwtService.sign.mockReturnValue(mockToken);
 
-      // Act
       const result = await service.login(loginDto);
 
-      // Assert
       expect(result.accessToken).toBe(mockToken);
       expect(result.user.email).toBe(mockUser.email);
       expect(result.user.role).toBe(UserRole.USER);
       expect(result.user.plan).toBe(UserPlan.FREE);
       expect(result.user).not.toHaveProperty('password');
+
       expect(jwtService.sign).toHaveBeenCalledWith({
         sub: mockUser.id,
         email: mockUser.email,
@@ -197,14 +193,13 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException if email does not exist', async () => {
-      // Arrange
       const loginDto = {
         email: 'nonexistent@example.com',
         password: 'Password1',
       };
-      userRepository.findOne.mockResolvedValue(null as any);
 
-      // Act & Assert
+      userRepository.findOne.mockResolvedValue(null);
+
       await expect(service.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
       );
@@ -212,12 +207,18 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException if user is inactive', async () => {
-      // Arrange
-      const loginDto = { email: 'test@example.com', password: 'Password1' };
-      const inactiveUser = { ...mockUser, isActive: false };
-      userRepository.findOne.mockResolvedValue(inactiveUser as any);
+      const loginDto = {
+        email: 'test@example.com',
+        password: 'Password1',
+      };
 
-      // Act & Assert
+      const inactiveUser: User = {
+        ...mockUser,
+        isActive: false,
+      };
+
+      userRepository.findOne.mockResolvedValue(inactiveUser);
+
       await expect(service.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
       );
@@ -225,15 +226,14 @@ describe('AuthService', () => {
     });
 
     it('should throw UnauthorizedException if password is invalid', async () => {
-      // Arrange
       const loginDto = {
         email: 'test@example.com',
         password: 'WrongPassword1',
       };
-      userRepository.findOne.mockResolvedValue(mockUser as any);
-      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      // Act & Assert
+      userRepository.findOne.mockResolvedValue(mockUser);
+      mockedBcrypt.compare.mockResolvedValue(false as never);
+
       await expect(service.login(loginDto)).rejects.toThrow(
         UnauthorizedException,
       );
@@ -241,25 +241,19 @@ describe('AuthService', () => {
     });
   });
 
-  // ============================================================
-  // VALIDATEUSER TESTS
-  // ============================================================
-
   describe('validateUser', () => {
     it('should return safe user if payload is valid', async () => {
-      // Arrange
       const payload = {
         sub: mockUser.id,
         email: mockUser.email,
         role: UserRole.USER,
         plan: UserPlan.FREE,
       };
-      userRepository.findOne.mockResolvedValue(mockUser as any);
 
-      // Act
+      userRepository.findOne.mockResolvedValue(mockUser);
+
       const result = await service.validateUser(payload);
 
-      // Assert
       expect(result).toEqual({
         id: mockUser.id,
         email: mockUser.email,
@@ -273,53 +267,50 @@ describe('AuthService', () => {
     });
 
     it('should return null if sub is missing', async () => {
-      // Arrange
       const payload = {
         email: 'test@example.com',
         role: UserRole.USER,
         plan: UserPlan.FREE,
-      } as any;
+      } as Parameters<AuthService['validateUser']>[0];
 
-      // Act
       const result = await service.validateUser(payload);
 
-      // Assert
       expect(result).toBeNull();
       expect(userRepository.findOne).not.toHaveBeenCalled();
     });
 
     it('should return null if user does not exist', async () => {
-      // Arrange
       const payload = {
         sub: 999,
         email: 'test@example.com',
         role: UserRole.USER,
         plan: UserPlan.FREE,
       };
-      userRepository.findOne.mockResolvedValue(null as any);
 
-      // Act
+      userRepository.findOne.mockResolvedValue(null);
+
       const result = await service.validateUser(payload);
 
-      // Assert
       expect(result).toBeNull();
     });
 
     it('should return null if user is inactive', async () => {
-      // Arrange
-      const inactiveUser = { ...mockUser, isActive: false };
+      const inactiveUser: User = {
+        ...mockUser,
+        isActive: false,
+      };
+
       const payload = {
         sub: mockUser.id,
         email: mockUser.email,
         role: UserRole.USER,
         plan: UserPlan.FREE,
       };
-      userRepository.findOne.mockResolvedValue(inactiveUser as any);
 
-      // Act
+      userRepository.findOne.mockResolvedValue(inactiveUser);
+
       const result = await service.validateUser(payload);
 
-      // Assert
       expect(result).toBeNull();
     });
   });

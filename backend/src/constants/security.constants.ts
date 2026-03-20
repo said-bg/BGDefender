@@ -7,16 +7,16 @@
 
 export const SECURITY_RULES = {
   // Authentification
-  JWT_EXPIRES_IN: '1d',
+  JWT_EXPIRES_IN: '1d' as const,
   JWT_ALGORITHM: 'HS256' as const,
 
   // Validation des mots de passe
   PASSWORD_MIN_LENGTH: 8,
-  PASSWORD_REGEX: /^(?=.*[A-Z])(?=.*[0-9]).{8,}$/, // Min 1 majuscule, 1 chiffre, 8 chars
+  PASSWORD_REGEX: /^(?=.*[A-Z])(?=.*[0-9]).{8,}$/,
 
   // Hachage des mots de passe
   BCRYPT_ROUNDS: 10,
-};
+} as const;
 
 /**
  * À implémenter dans les phases futures:
