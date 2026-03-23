@@ -24,6 +24,15 @@ export default tseslint.config(
       },
     },
   },
+  // Override pour EmailService - Nodemailer types incompatibilité
+  {
+    files: ['src/email/email.service.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+    },
+  },
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',

@@ -18,6 +18,9 @@ yarn-error.log*
 # OS / Editor files
 .DS_Store
 Thumbs.db
+
+# Documentation (dev notes only, keep README.md tracked)
+docs/
 .vscode/
 .idea/
 

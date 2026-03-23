@@ -158,4 +158,47 @@ export class AuthService {
       );
     }
   }
+
+  /**
+   * Find user by email
+   * Utilisé pour forgot-password
+   * Returns null si user pas trouvé (ne pas leak existence!)
+   */
+  async findByEmail(email: string): Promise<SafeUser | null> {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    return user ? toSafeUser(user) : null;
+  }
+
+  /**
+   * Update user password
+   * Utilisé pour reset-password
+   */
+  async updatePassword(email: string, newPassword: string): Promise<void> {
+    // Validate new password
+    this.validatePassword(newPassword);
+
+    // Find user
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      SECURITY_RULES.BCRYPT_ROUNDS,
+    );
+
+    // Update password
+    await this.userRepository.update(
+      { id: user.id },
+      { password: hashedPassword },
+    );
+  }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
+import { PasswordResetToken } from '../entities/password-reset-token.entity';
 
 @Injectable()
 export class DatabaseConfig implements TypeOrmOptionsFactory {
@@ -17,7 +18,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
       username: this.configService.get('DATABASE_USERNAME') || 'bguser',
       password: this.configService.get('DATABASE_PASSWORD') || 'bg_user_2026',
       database: this.configService.get('DATABASE_NAME') || 'bgdefender',
-      entities: [User], // Registrer les entities explicitement
+      entities: [User, PasswordResetToken], // Registrer les entities explicitement
       synchronize: isDev, // JAMAIS true en production
       logging: isDev,
     };
