@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseConfig } from './config/database.config';
 import { AuthModule } from './auth/auth.module';
+import { AuthorsModule } from './authors/authors.module';
+import { CoursesModule } from './courses/courses.module';
 
 @Module({
   imports: [
@@ -19,6 +21,10 @@ import { AuthModule } from './auth/auth.module';
     }),
     // Auth module: register, login, JWT
     AuthModule,
+    // Authors module: CRUD for authors (reusable across features)
+    AuthorsModule,
+    // Courses module: course management (depends on authors)
+    CoursesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

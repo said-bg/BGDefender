@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { PasswordResetToken } from '../entities/password-reset-token.entity';
+import { Author } from '../entities/author.entity';
 
 @Injectable()
 export class DatabaseConfig implements TypeOrmOptionsFactory {
@@ -14,12 +15,12 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
     return {
       type: 'mysql',
       host: this.configService.get('DATABASE_HOST') || 'localhost',
-      port: this.configService.get('DATABASE_PORT') || 3307,
-      username: this.configService.get('DATABASE_USERNAME') || 'bguser',
-      password: this.configService.get('DATABASE_PASSWORD') || 'bg_user_2026',
-      database: this.configService.get('DATABASE_NAME') || 'bgdefender',
-      entities: [User, PasswordResetToken], // Registrer les entities explicitement
-      synchronize: isDev, // JAMAIS true en production
+      port: this.configService.get('DATABASE_PORT') || 3306,
+      username: this.configService.getOrThrow('DATABASE_USERNAME'), // Obligatoire desde .env
+      password: this.configService.getOrThrow('DATABASE_PASSWORD'), // Obligatoire, jamais en clair
+      database: this.configService.getOrThrow('DATABASE_NAME'), // Obligatoire
+      entities: [User, PasswordResetToken, Author],
+      synchronize: isDev,
       logging: isDev,
     };
   }

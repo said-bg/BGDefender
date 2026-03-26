@@ -30,8 +30,9 @@ export class AuthService {
    * - Password fort (validé par DTO et re-validé ici)
    * - Role: USER, Plan: FREE (hardcodé, client ne peut pas override)
    * - Retourne SafeUser (pas de token à la registration)
+   * - Accepts language param for localized error messages
    */
-  async register(dto: RegisterDto): Promise<SafeUser> {
+  async register(dto: RegisterDto, language: string = 'en'): Promise<SafeUser> {
     const { email, password } = dto;
 
     // Vérifier si email existe déjà
@@ -39,7 +40,11 @@ export class AuthService {
       where: { email },
     });
     if (existingUser) {
-      throw new ConflictException('Email already in use');
+      const errorMessage =
+        language === 'fi'
+          ? 'Sähköpostiosoite on jo käytössä'
+          : 'Email already in use';
+      throw new ConflictException(errorMessage);
     }
 
     // Revalider le password avec SECURITY_RULES (source de vérité)
@@ -72,8 +77,12 @@ export class AuthService {
    * - Vérifie email/password
    * - Accepte seulement utilisateurs actifs
    * - Retourne {accessToken, user: SafeUser}
+   * - Accepts language param for localized error messages
    */
-  async login(dto: LoginDto): Promise<{ accessToken: string; user: SafeUser }> {
+  async login(
+    dto: LoginDto,
+    language: string = 'en',
+  ): Promise<{ accessToken: string; user: SafeUser }> {
     const { email, password } = dto;
 
     // Chercher user par email
@@ -81,18 +90,30 @@ export class AuthService {
       where: { email },
     });
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      const errorMessage =
+        language === 'fi'
+          ? 'Virheellinen sähköpostiosoite tai salasana'
+          : 'Invalid email or password';
+      throw new UnauthorizedException(errorMessage);
     }
 
     // Vérifier que l'utilisateur est actif
     if (!user.isActive) {
-      throw new UnauthorizedException('Account is inactive');
+      const errorMessage =
+        language === 'fi'
+          ? 'Tilisi on poistettu käytöstä'
+          : 'Account is inactive';
+      throw new UnauthorizedException(errorMessage);
     }
 
     // Comparer le password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      const errorMessage =
+        language === 'fi'
+          ? 'Virheellinen sähköpostiosoite tai salasana'
+          : 'Invalid email or password';
+      throw new UnauthorizedException(errorMessage);
     }
 
     // Générer JWT payload avec sub standard
@@ -175,8 +196,13 @@ export class AuthService {
   /**
    * Update user password
    * Utilisé pour reset-password
+   * language param for error message localization (en or fi)
    */
-  async updatePassword(email: string, newPassword: string): Promise<void> {
+  async updatePassword(
+    email: string,
+    newPassword: string,
+    language: string = 'en',
+  ): Promise<void> {
     // Validate new password
     this.validatePassword(newPassword);
 
@@ -187,6 +213,16 @@ export class AuthService {
 
     if (!user) {
       throw new BadRequestException('User not found');
+    }
+
+    // Check if new password is different from current password
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      const errorMessage =
+        language === 'fi'
+          ? 'Uusi salasanasi on oltava erilainen kuin nykyinen salasanasi.'
+          : 'Your new password must be different from your current password.';
+      throw new BadRequestException(errorMessage);
     }
 
     // Hash new password
