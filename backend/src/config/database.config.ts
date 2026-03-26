@@ -4,6 +4,11 @@ import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { PasswordResetToken } from '../entities/password-reset-token.entity';
 import { Author } from '../entities/author.entity';
+import { Course } from '../entities/course.entity';
+import { Chapter } from '../entities/chapter.entity';
+import { SubChapter } from '../entities/sub-chapter.entity';
+import { PedagogicalContent } from '../entities/pedagogical-content.entity';
+import { Progress } from '../entities/progress.entity';
 
 @Injectable()
 export class DatabaseConfig implements TypeOrmOptionsFactory {
@@ -19,7 +24,16 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
       username: this.configService.getOrThrow('DATABASE_USERNAME'), // Obligatoire desde .env
       password: this.configService.getOrThrow('DATABASE_PASSWORD'), // Obligatoire, jamais en clair
       database: this.configService.getOrThrow('DATABASE_NAME'), // Obligatoire
-      entities: [User, PasswordResetToken, Author],
+      entities: [
+        User,
+        PasswordResetToken,
+        Author,
+        Course,
+        Chapter,
+        SubChapter,
+        PedagogicalContent,
+        Progress,
+      ],
       synchronize: isDev,
       logging: isDev,
     };

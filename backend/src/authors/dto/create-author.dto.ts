@@ -7,7 +7,21 @@ export class CreateAuthorDto {
 
   @IsString()
   @IsOptional()
-  biography?: string;
+  @MaxLength(50)
+  roleEn?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  roleFi?: string;
+
+  @IsString()
+  @IsOptional()
+  biographyEn?: string;
+
+  @IsString()
+  @IsOptional()
+  biographyFi?: string;
 
   @IsString()
   @IsOptional()

@@ -18,10 +18,30 @@ export class Author {
   name: string;
 
   @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  roleEn: string | null;
+
+  @Column({
+    type: 'varchar',
+    length: 50,
+    nullable: true,
+  })
+  roleFi: string | null;
+
+  @Column({
     type: 'text',
     nullable: true,
   })
-  biography: string | null;
+  biographyEn: string | null;
+
+  @Column({
+    type: 'text',
+    nullable: true,
+  })
+  biographyFi: string | null;
 
   @Column({
     type: 'varchar',
