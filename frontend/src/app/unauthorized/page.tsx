@@ -28,10 +28,10 @@ export default function UnauthorizedPage() {
         {/* Action Buttons */}
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/dashboard"
+            href="/"
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
           >
-            Go to Dashboard
+            Go to Courses
           </Link>
           
           <Link

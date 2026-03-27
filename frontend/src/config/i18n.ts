@@ -3,6 +3,8 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import enAuth from '../../public/locales/en/auth.json';
 import fiAuth from '../../public/locales/fi/auth.json';
+import enCourses from '../../public/locales/en/courses.json';
+import fiCourses from '../../public/locales/fi/courses.json';
 
 void i18n
   .use(LanguageDetector)
@@ -11,13 +13,15 @@ void i18n
     fallbackLng: 'en',
     defaultNS: 'auth',
     lng: 'en',
-    ns: ['auth'],
+    ns: ['auth', 'courses'],
     resources: {
       en: {
         auth: enAuth,
+        courses: enCourses,
       },
       fi: {
         auth: fiAuth,
+        courses: fiCourses,
       },
     },
     interpolation: {

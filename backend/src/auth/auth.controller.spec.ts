@@ -72,7 +72,7 @@ describe('AuthController', () => {
 
       const result = await controller.register(registerDto);
 
-      expect(mockAuthService.register).toHaveBeenCalledWith(registerDto);
+      expect(mockAuthService.register).toHaveBeenCalledWith(registerDto, 'en');
       expect(result).toEqual(mockSafeUser);
     });
 
@@ -112,7 +112,7 @@ describe('AuthController', () => {
 
       const result = await controller.login(loginDto);
 
-      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto);
+      expect(mockAuthService.login).toHaveBeenCalledWith(loginDto, 'en');
       expect(result.accessToken).toBeDefined();
       expect(result.user).toEqual(mockSafeUser);
     });

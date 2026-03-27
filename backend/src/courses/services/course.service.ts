@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Course } from '../../entities/course.entity';
+import { Course, CourseStatus } from '../../entities/course.entity';
 import { Author } from '../../entities/author.entity';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
@@ -37,25 +37,33 @@ export class CourseService {
     limit: number = 10,
     offset: number = 0,
   ): Promise<[Course[], number]> {
-    return await this.courseRepository.findAndCount({
-      relations: ['authors'],
+    const [courses, count] = await this.courseRepository.findAndCount({
+      where: { status: CourseStatus.PUBLISHED },
+      relations: ['authors', 'chapters', 'chapters.subChapters'],
       take: limit,
       skip: offset,
       order: { createdAt: 'DESC' },
     });
+
+    return [courses.map((course) => this.sortCourseTree(course)), count];
   }
 
   async findById(id: string): Promise<Course> {
     const course = await this.courseRepository.findOne({
       where: { id },
-      relations: ['authors'],
+      relations: [
+        'authors',
+        'chapters',
+        'chapters.subChapters',
+        'chapters.subChapters.pedagogicalContents',
+      ],
     });
 
     if (!course) {
       throw new NotFoundException(`Course with ID ${id} not found`);
     }
 
-    return course;
+    return this.sortCourseTree(course);
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
@@ -84,5 +92,35 @@ export class CourseService {
   async delete(id: string): Promise<void> {
     const course = await this.findById(id);
     await this.courseRepository.remove(course);
+  }
+
+  private sortCourseTree(course: Course): Course {
+    if (!course.chapters?.length) {
+      return course;
+    }
+
+    course.chapters.sort((left, right) => left.orderIndex - right.orderIndex);
+
+    for (const chapter of course.chapters) {
+      if (!chapter.subChapters?.length) {
+        continue;
+      }
+
+      chapter.subChapters.sort(
+        (left, right) => left.orderIndex - right.orderIndex,
+      );
+
+      for (const subChapter of chapter.subChapters) {
+        if (!subChapter.pedagogicalContents?.length) {
+          continue;
+        }
+
+        subChapter.pedagogicalContents.sort(
+          (left, right) => left.orderIndex - right.orderIndex,
+        );
+      }
+    }
+
+    return course;
   }
 }

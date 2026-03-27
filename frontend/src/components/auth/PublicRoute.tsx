@@ -1,7 +1,7 @@
 /**
  * Public Route Component
  * For auth pages (login, register, forgot-password)
- * Redirects authenticated users to dashboard
+ * Redirects authenticated users to the main course catalogue
  * 
  * Usage:
  * <PublicRoute>
@@ -35,9 +35,9 @@ export function PublicRoute({ children, fallback }: PublicRouteProps) {
       return;
     }
 
-    // Initialized and authenticated - redirect to dashboard
+    // Initialized and authenticated - redirect to the main catalogue
     if (isAuthenticated) {
-      router.replace('/dashboard');
+      router.replace('/');
       return;
     }
   }, [isAuthenticated, isInitialized, router]);

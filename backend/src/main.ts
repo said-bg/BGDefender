@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { DataSource } from 'typeorm';
+import { seedCourses } from './database/seeds/courses.seed';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,7 +25,21 @@ async function bootstrap() {
     }),
   );
 
+  // Run seeds
+  const dataSource = app.get(DataSource);
+  console.log('[MAIN] DataSource obtained from DI');
+  console.log('[MAIN] DataSource connected:', dataSource.isInitialized);
+
+  try {
+    console.log('[MAIN] Starting seed execution...');
+    await seedCourses(dataSource);
+    console.log('[MAIN] Seed execution completed successfully');
+  } catch (error) {
+    console.error('[MAIN] Seed execution failed:', error);
+  }
+
   await app.listen(process.env.PORT ?? 3001);
+  console.log(`[MAIN] Server started on port ${process.env.PORT ?? 3001}`);
 }
 bootstrap().catch((err) => {
   console.error('Failed to start application:', err);

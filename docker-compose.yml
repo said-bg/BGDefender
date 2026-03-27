@@ -12,4 +12,8 @@ services:
       MYSQL_PASSWORD: bg_password
     ports:
       - "3306:3306"
-    volumes: []
+    volumes:
+      - bgdefender_mysql_data:/var/lib/mysql
+
+volumes:
+  bgdefender_mysql_data:

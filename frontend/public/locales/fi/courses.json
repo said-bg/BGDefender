@@ -1,0 +1,40 @@
+{
+  "page": {
+    "title": "Tervetuloa BG Defender Akatemiaan",
+    "subtitle": "Opiskele kyberturvallisuutta asiantuntijavetoisella koulutuksella",
+    "free": "Ilmaiset kurssit",
+    "premium": "Premium-kurssit",
+    "chapters": "Luvut",
+    "items": "Sisällöt",
+    "progress": "Edistyminen",
+    "start": "Aloita",
+    "noCoursesAvailable": "Kursseja ei ole saatavilla",
+    "failedToLoadCourses": "Kurssien lataaminen epäonnistui. Yritä myöhemmin uudelleen."
+  },
+  "detail": {
+    "overview": "Yleiskatsaus",
+    "writtenBy": "Kirjoittaneet",
+    "courseDetail": "Kurssin tiedot",
+    "chapterOverview": "Luvun yleiskatsaus",
+    "courseAuthor": "Kurssin kirjoittaja",
+    "freeCourse": "Ilmainen kurssi",
+    "premiumCourse": "Premium-kurssi",
+    "loadingCourse": "Kurssia ladataan...",
+    "courseNotFound": "Kurssia ei löytynyt.",
+    "unableToLoad": "Kurssia ei voitu ladata juuri nyt.",
+    "checkingAccess": "Tarkistetaan käyttöoikeuksia...",
+    "checkingAccessText": "Tarkistamme oikeuksiasi tähän kurssin osaan.",
+    "loginRequiredTitle": "Kirjaudu sisään jatkaaksesi",
+    "loginRequiredDescription": "Kirjaudu sisään avataksesi oppimissisällön ja jatkaaksesi kurssia.",
+    "loginRequiredText": "Voit tarkastella kurssin yleiskatsausta vierailijana, mutta yksityiskohtainen oppimissisältö vaatii kirjautumisen.",
+    "loginRequiredPrompt": "Kirjaudu sisään avataksesi yksityiskohtaisen oppimissisällön.",
+    "loginRequiredPromptInline": "Kirjaudu <loginLink>sisään</loginLink> avataksesi yksityiskohtaisen oppimissisällön.",
+    "loginAction": "Kirjaudu sisään",
+    "premiumRequiredTitle": "Premium-pääsy vaaditaan",
+    "premiumRequiredDescription": "Tämä oppitunti kuuluu premium-sisältöön. Ota yhteyttä tiimiin saadaksesi käyttöoikeuden.",
+    "premiumRequiredText": "Nykyinen käyttöoikeustasosi ei sisällä tätä premium-sisältöä. Ota yhteyttä BG Defender -tiimiin, jos haluat avata sen.",
+    "premiumRequiredPrompt": "Tämä sisältö kuuluu premium-suunnitelmaan. Ota yhteyttä tiimiin saadaksesi käyttöoikeuden.",
+    "previous": "Edellinen",
+    "next": "Seuraava"
+  }
+}

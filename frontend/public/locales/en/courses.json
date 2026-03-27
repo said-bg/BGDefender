@@ -1,0 +1,40 @@
+{
+  "page": {
+    "title": "Welcome to BG Defender Academy",
+    "subtitle": "Master Cybersecurity Through Expert-Led Training",
+    "free": "Free Courses",
+    "premium": "Premium Courses",
+    "chapters": "Chapters",
+    "items": "Items",
+    "progress": "Progress",
+    "start": "Start",
+    "noCoursesAvailable": "No courses available",
+    "failedToLoadCourses": "Failed to load courses. Please try again later."
+  },
+  "detail": {
+    "overview": "Overview",
+    "writtenBy": "Written by",
+    "courseDetail": "Course detail",
+    "chapterOverview": "Chapter overview",
+    "courseAuthor": "Course author",
+    "freeCourse": "Free course",
+    "premiumCourse": "Premium course",
+    "loadingCourse": "Loading course...",
+    "courseNotFound": "Course not found.",
+    "unableToLoad": "Unable to load this course right now.",
+    "checkingAccess": "Checking access...",
+    "checkingAccessText": "We are checking your access permissions for this part of the course.",
+    "loginRequiredTitle": "Please login to continue",
+    "loginRequiredDescription": "Sign in to unlock the learning content and continue this course.",
+    "loginRequiredText": "You can view the course overview as a visitor, but you need to login to open the detailed learning content.",
+    "loginRequiredPrompt": "Please login to open the detailed learning content.",
+    "loginRequiredPromptInline": "Please <loginLink>login</loginLink> to open the detailed learning content.",
+    "loginAction": "Login",
+    "premiumRequiredTitle": "Premium access required",
+    "premiumRequiredDescription": "This lesson belongs to premium content. Please contact the team for access.",
+    "premiumRequiredText": "Your current plan does not include this premium content. Please contact the BG Defender team if you want to unlock it.",
+    "premiumRequiredPrompt": "This content is part of the premium plan. Please contact the team for access.",
+    "previous": "Previous",
+    "next": "Next"
+  }
+}

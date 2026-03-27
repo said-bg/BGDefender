@@ -41,7 +41,7 @@ const errorsReducer = (state: FormErrors, action: ErrorAction): FormErrors => {
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || '/dashboard';
+  const redirectPath = searchParams.get('redirect') || '/';
   const { t, i18n } = useTranslation('auth');
 
   const { login, isLoading, error: authError, setError } = useAuth();
