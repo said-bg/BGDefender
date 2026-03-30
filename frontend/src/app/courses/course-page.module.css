@@ -46,9 +46,16 @@
   color: #fff;
 }
 
+.heroTopRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
 .heroLabel {
   display: inline-flex;
-  margin-bottom: 0.9rem;
   padding: 0.48rem 0.85rem;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 999px;
@@ -57,6 +64,11 @@
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.heroFavoriteButton {
+  background: rgba(255, 255, 255, 0.94);
+  color: #FFA600;
 }
 
 .heroTitle {
@@ -128,6 +140,47 @@
   line-height: 1.65;
 }
 
+.overviewProgress,
+.chapterProgress {
+  width: 100%;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.overviewProgress {
+  margin-top: 1rem;
+  height: 0.42rem;
+}
+
+.chapterProgress {
+  margin-top: 0.85rem;
+  height: 0.28rem;
+}
+
+.overviewProgress::-webkit-progress-bar,
+.chapterProgress::-webkit-progress-bar {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+
+.overviewProgress::-webkit-progress-value {
+  background: linear-gradient(90deg, #FFA600, #ffbf47);
+  border-radius: 999px;
+}
+
+.chapterProgress::-webkit-progress-value {
+  background: linear-gradient(90deg, #FFA600, #ffbf47);
+  border-radius: 999px;
+}
+
+.overviewProgress::-moz-progress-bar,
+.chapterProgress::-moz-progress-bar {
+  background: linear-gradient(90deg, #FFA600, #ffbf47);
+  border-radius: 999px;
+}
+
 .chapterList {
   background: #ffffff;
 }
@@ -160,6 +213,11 @@
 .chapterMeta {
   display: flex;
   gap: 0.95rem;
+}
+
+.chapterCopy {
+  min-width: 0;
+  flex: 1;
 }
 
 .chapterIndex {
@@ -465,6 +523,11 @@
   .hero {
     min-height: 18rem;
     padding: 2.2rem 1rem 2rem;
+  }
+
+  .heroTopRow {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .layout {

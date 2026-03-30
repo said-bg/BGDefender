@@ -5,6 +5,8 @@ import styles from '../course-page.module.css';
 import {
   ActiveLanguage,
   ViewState,
+  getChapterProgressPercentage,
+  getCourseProgressPercentage,
   getChapterParagraphs,
   getLocalizedText,
   getPreviewText,
@@ -34,6 +36,8 @@ export function CourseSidebar({
   onToggleChapter,
   onOpenSubChapter,
 }: CourseSidebarProps) {
+  const courseProgress = getCourseProgressPercentage(course, selectedView);
+
   return (
     <aside className={styles.sidebar}>
       <button
@@ -48,6 +52,12 @@ export function CourseSidebar({
           <p className={styles.overviewText}>
             {getPreviewText(heroSummary, 120)}
           </p>
+          <progress
+            className={styles.overviewProgress}
+            max={100}
+            value={courseProgress}
+            aria-label="Course progress"
+          />
         </div>
       </button>
 
@@ -71,6 +81,11 @@ export function CourseSidebar({
           const isChapterActive =
             selectedView.type !== 'overview' &&
             selectedView.chapterId === chapter.id;
+          const chapterProgress = getChapterProgressPercentage(
+            course,
+            chapter.id,
+            selectedView,
+          );
 
           return (
             <div key={chapter.id} className={styles.chapterGroup}>
@@ -85,9 +100,15 @@ export function CourseSidebar({
                   <span className={styles.chapterIndex}>
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <div>
+                  <div className={styles.chapterCopy}>
                     <div className={styles.chapterTitle}>{chapterTitle}</div>
                     <div className={styles.chapterTeaser}>{chapterPreview}</div>
+                    <progress
+                      className={styles.chapterProgress}
+                      max={100}
+                      value={chapterProgress}
+                      aria-label={`${chapterTitle} progress`}
+                    />
                   </div>
                 </div>
                 <span className={styles.chapterChevron}>

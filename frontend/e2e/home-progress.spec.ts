@@ -77,6 +77,7 @@ test.describe('Home progression - E2E tests', () => {
   }) => {
     await page.addInitScript(([tokenKey]) => {
       window.localStorage.setItem(tokenKey, 'mock-token');
+      window.localStorage.setItem('i18nextLng', 'en');
     }, [TOKEN_KEY]);
 
     await page.route(`${API_BASE}/auth/me`, async (route) => {
@@ -115,6 +116,14 @@ test.describe('Home progression - E2E tests', () => {
             updatedAt: '2026-01-03T00:00:00.000Z',
           },
         ]),
+      });
+    });
+
+    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
       });
     });
 

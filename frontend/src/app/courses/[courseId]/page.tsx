@@ -5,9 +5,10 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import styles from '../course-page.module.css';
+import FavoriteButton from '@/components/FavoriteButton';
 import courseService, { Course } from '@/services/courseService';
 import progressService from '@/services/progressService';
-import { useAuth } from '@/hooks';
+import { useAuth, useFavoriteCourses } from '@/hooks';
 import { UserPlan, UserRole } from '@/types/api';
 import { CourseContent } from '../components/CourseContent';
 import { CourseSidebar } from '../components/CourseSidebar';
@@ -36,6 +37,7 @@ export default function CourseDetailPage() {
   const params = useParams<{ courseId: string }>();
   const { i18n, t } = useTranslation('courses');
   const { user, isAuthenticated, isInitialized } = useAuth();
+  const { isFavorite, isPending, toggleFavorite } = useFavoriteCourses();
 
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
@@ -311,11 +313,25 @@ export default function CourseDetailPage() {
           <div className={styles.heroFallback} />
         )}
         <div className={styles.heroInner}>
-          <span className={styles.heroLabel}>
-            {course.level === 'premium'
-              ? t('detail.premiumCourse')
-              : t('detail.freeCourse')}
-          </span>
+          <div className={styles.heroTopRow}>
+            <span className={styles.heroLabel}>
+              {course.level === 'premium'
+                ? t('detail.premiumCourse')
+                : t('detail.freeCourse')}
+            </span>
+            {isAuthenticated && (
+              <FavoriteButton
+                active={isFavorite(course.id)}
+                pending={isPending(course.id)}
+                onToggle={() => void toggleFavorite(course.id)}
+                addLabel={t('favorites.add')}
+                removeLabel={t('favorites.remove')}
+                visibleLabel={t('favorites.title')}
+                variant="pill"
+                className={styles.heroFavoriteButton}
+              />
+            )}
+          </div>
           <h1 className={styles.heroTitle}>{courseTitle}</h1>
           <p className={styles.heroSummary}>{heroSummary}</p>
         </div>

@@ -163,6 +163,14 @@ async function mockCourseDetail(
     });
   });
 
+  await page.route(`${API_BASE}/favorites/me`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
   await page.route(`${API_BASE}/progress/me/course/${course.id}`, async (route) => {
     const method = route.request().method();
 
@@ -206,6 +214,7 @@ async function mockCourseDetail(
 async function setAuthenticatedUser(page: Page) {
   await page.addInitScript(([tokenKey]) => {
     window.localStorage.setItem(tokenKey, 'mock-token');
+    window.localStorage.setItem('i18nextLng', 'en');
   }, [TOKEN_KEY]);
 }
 

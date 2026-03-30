@@ -68,5 +68,17 @@
     "premiumRequiredPrompt": "This content is part of the premium plan. Please contact the team for access.",
     "previous": "Previous",
     "next": "Next"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "subtitle": "Keep the courses you want to revisit in one simple place.",
+    "summaryAll": "Favorite courses",
+    "loading": "Loading your favorites...",
+    "failedToLoad": "Failed to load your favorites. Please try again later.",
+    "emptyTitle": "No favorites yet",
+    "emptyDescription": "Star a course from the catalog or the course page and it will appear here.",
+    "browseCourses": "Browse courses",
+    "add": "Add to favorites",
+    "remove": "Remove from favorites"
   }
 }

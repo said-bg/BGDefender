@@ -160,7 +160,6 @@ export default function Home() {
       <div className={styles.grid}>
         {courseList.map((course, index) => (
           <div key={course.id} className={styles.card}>
-            {/* Hero/Cover - Image from API */}
             <div
               className={`${styles.cardHero} ${
                 course.level === 'premium' ? styles.heroPremium : styles.heroFree
@@ -181,7 +180,6 @@ export default function Home() {
               )}
             </div>
 
-            {/* Content */}
             <div className={styles.cardBody}>
               <h3 className={styles.cardTitle}>{getTitle(course)}</h3>
               <p className={styles.cardDescription}>{getCardDescription(course)}</p>
@@ -299,6 +297,7 @@ export default function Home() {
                   alt="BG Defender home hero"
                   fill
                   priority
+                  loading="eager"
                   className={styles.heroImage}
                   sizes="(max-width: 960px) 100vw, 48vw"
                 />

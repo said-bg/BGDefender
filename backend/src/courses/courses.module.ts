@@ -5,6 +5,7 @@ import { Chapter } from '../entities/chapter.entity';
 import { SubChapter } from '../entities/sub-chapter.entity';
 import { PedagogicalContent } from '../entities/pedagogical-content.entity';
 import { Progress } from '../entities/progress.entity';
+import { Favorite } from '../entities/favorite.entity';
 import { Author } from '../entities/author.entity';
 import { CourseService } from './services/course.service';
 import { CourseController } from './controllers/course.controller';
@@ -16,6 +17,8 @@ import { PedagogicalContentService } from './services/pedagogical-contents.servi
 import { PedagogicalContentsController } from './controllers/pedagogical-contents.controller';
 import { ProgressService } from './services/progress.service';
 import { ProgressController } from './controllers/progress.controller';
+import { FavoriteService } from './services/favorite.service';
+import { FavoriteController } from './controllers/favorite.controller';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { ProgressController } from './controllers/progress.controller';
       SubChapter,
       PedagogicalContent,
       Progress,
+      Favorite,
       Author,
     ]),
   ],
@@ -34,6 +38,7 @@ import { ProgressController } from './controllers/progress.controller';
     SubChapterService,
     PedagogicalContentService,
     ProgressService,
+    FavoriteService,
   ],
   controllers: [
     CourseController,
@@ -41,6 +46,7 @@ import { ProgressController } from './controllers/progress.controller';
     SubChaptersController,
     PedagogicalContentsController,
     ProgressController,
+    FavoriteController,
   ],
   exports: [
     CourseService,
@@ -48,6 +54,7 @@ import { ProgressController } from './controllers/progress.controller';
     SubChapterService,
     PedagogicalContentService,
     ProgressService,
+    FavoriteService,
   ],
 })
 export class CoursesModule {}

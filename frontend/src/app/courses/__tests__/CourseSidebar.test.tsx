@@ -86,4 +86,33 @@ describe('CourseSidebar', () => {
     fireEvent.click(screen.getByRole('button', { name: /getting started/i }));
     expect(onOpenSubChapter).toHaveBeenCalledWith('chapter-1', 'sub-1');
   });
+
+  // Verifies that the sidebar renders the subtle progress bars for the course and chapter list.
+  it('renders sidebar progress bars', () => {
+    render(
+      <CourseSidebar
+        course={createCourse()}
+        activeLanguage="en"
+        selectedView={{
+          type: 'subchapter',
+          chapterId: 'chapter-1',
+          subChapterId: 'sub-1',
+        }}
+        expandedChapters={new Set(['chapter-1'])}
+        overviewLabel="Overview"
+        heroSummary="Hero summary"
+        onSelectOverview={jest.fn()}
+        onToggleChapter={jest.fn()}
+        onOpenSubChapter={jest.fn()}
+      />,
+    );
+
+    const progressBars = screen.getAllByRole('progressbar');
+    const progressValues = progressBars.map((progressBar) =>
+      progressBar.getAttribute('value'),
+    );
+
+    expect(progressBars).toHaveLength(2);
+    expect(progressValues).toEqual(expect.arrayContaining(['100', '100']));
+  });
 });

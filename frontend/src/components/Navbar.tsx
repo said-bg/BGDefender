@@ -42,9 +42,14 @@ export const Navbar = () => {
               {t('navbar.home')}
             </Link>
             {isAuthenticated && (
-              <Link href="/my-courses" className={styles.navLink}>
-                {t('navbar.myCourses')}
-              </Link>
+              <>
+                <Link href="/my-courses" className={styles.navLink}>
+                  {t('navbar.myCourses')}
+                </Link>
+                <Link href="/favorites" className={styles.navLink}>
+                  {t('navbar.favorites')}
+                </Link>
+              </>
             )}
           </div>
         </div>

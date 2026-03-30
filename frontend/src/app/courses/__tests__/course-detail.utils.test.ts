@@ -1,6 +1,8 @@
 import {
   calculateCompletionPercentage,
   buildNavigationItems,
+  getChapterProgressPercentage,
+  getCourseProgressPercentage,
   getProgressPayloadFromView,
   getAuthorRole,
   getChapterParagraphs,
@@ -174,6 +176,30 @@ describe('course-detail.utils', () => {
         subChapterId: 'sub-1',
       }),
     ).toBe(67);
+  });
+
+  // Verifies the simplified sidebar progress values for the whole course and each chapter.
+  it('builds sidebar progress values from the current position', () => {
+    const course = createCourse();
+
+    expect(getCourseProgressPercentage(course, { type: 'overview' })).toBe(0);
+    expect(
+      getChapterProgressPercentage(course, 'chapter-1', { type: 'overview' }),
+    ).toBe(0);
+    expect(
+      getChapterProgressPercentage(course, 'chapter-1', {
+        type: 'subchapter',
+        chapterId: 'chapter-1',
+        subChapterId: 'sub-1',
+      }),
+    ).toBe(100);
+    expect(
+      getChapterProgressPercentage(course, 'chapter-2', {
+        type: 'subchapter',
+        chapterId: 'chapter-1',
+        subChapterId: 'sub-1',
+      }),
+    ).toBe(0);
   });
 
   // Verifies that stored progress can restore the matching view state on page load.

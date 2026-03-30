@@ -184,6 +184,61 @@ export const calculateCompletionPercentage = (
   );
 };
 
+// Build a simple sidebar progress value from the current course location without
+// introducing extra persistence rules. The current chapter is treated as partially
+// complete, previous chapters as complete, and upcoming chapters as untouched.
+export const getChapterProgressPercentage = (
+  course: Course,
+  chapterId: string,
+  selectedView: ViewState,
+): number => {
+  const chapterIndex = course.chapters.findIndex((chapter) => chapter.id === chapterId);
+  const selectedChapterIndex =
+    selectedView.type === 'overview'
+      ? -1
+      : course.chapters.findIndex((chapter) => chapter.id === selectedView.chapterId);
+
+  if (chapterIndex < 0 || selectedChapterIndex < 0) {
+    return 0;
+  }
+
+  if (chapterIndex < selectedChapterIndex) {
+    return 100;
+  }
+
+  if (chapterIndex > selectedChapterIndex) {
+    return 0;
+  }
+
+  const chapter = course.chapters[chapterIndex];
+  const totalSteps = Math.max(1, 1 + (chapter.subChapters?.length ?? 0));
+
+  if (selectedView.type === 'chapter') {
+    return Math.round((1 / totalSteps) * 100);
+  }
+
+  const subChapterIndex = chapter.subChapters.findIndex(
+    (subChapter) => subChapter.id === selectedView.subChapterId,
+  );
+
+  if (subChapterIndex < 0) {
+    return Math.round((1 / totalSteps) * 100);
+  }
+
+  return Math.min(100, Math.round(((2 + subChapterIndex) / totalSteps) * 100));
+};
+
+export const getCourseProgressPercentage = (
+  course: Course,
+  selectedView: ViewState,
+): number => {
+  if (selectedView.type === 'overview') {
+    return 0;
+  }
+
+  return calculateCompletionPercentage(buildNavigationItems(course), selectedView);
+};
+
 export const getViewStateFromProgress = (
   progress: CourseProgress | null,
 ): ViewState => {
