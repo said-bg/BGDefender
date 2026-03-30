@@ -23,6 +23,8 @@ export const useAuth = () => {
       // Actions
       login: state.login,
       register: state.register,
+      updateProfile: state.updateProfile,
+      changePassword: state.changePassword,
       logout: state.logout,
       fetchCurrentUser: state.fetchCurrentUser,
       setUser: state.setUser,

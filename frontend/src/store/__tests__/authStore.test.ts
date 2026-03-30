@@ -16,6 +16,9 @@ const mockTokenStorage = tokenStorage as jest.Mocked<typeof tokenStorage>;
 const createMockUser = (overrides: Partial<User> = {}): User => ({
   id: 1,
   email: 'test@example.com',
+  firstName: null,
+  lastName: null,
+  occupation: null,
   role: UserRole.USER,
   plan: UserPlan.FREE,
   isActive: true,
@@ -168,6 +171,54 @@ describe('Auth Store (Zustand)', () => {
       expect(state.isAuthenticated).toBe(false);
       expect(state.error).toBeNull();
       expect(mockAuthService.logout).toHaveBeenCalled();
+    });
+  });
+
+  describe('updateProfile', () => {
+    it('should update the current user profile fields', async () => {
+      const updatedUser = createMockUser({
+        firstName: 'Said',
+        lastName: 'Ait',
+        occupation: 'Security Analyst',
+      });
+
+      useAuthStore.setState({
+        user: createMockUser(),
+        token: 'test-token',
+        isAuthenticated: true,
+      });
+
+      mockAuthService.updateProfile.mockResolvedValue(updatedUser);
+
+      await useAuthStore.getState().updateProfile({
+        firstName: 'Said',
+        lastName: 'Ait',
+        occupation: 'Security Analyst',
+      });
+
+      const state = useAuthStore.getState();
+      expect(state.user).toEqual(updatedUser);
+      expect(state.isLoading).toBe(false);
+      expect(state.error).toBeNull();
+    });
+  });
+
+  describe('changePassword', () => {
+    it('should return the success message from the API', async () => {
+      mockAuthService.changePassword.mockResolvedValue({
+        message: 'Password updated successfully',
+      });
+
+      const result = await useAuthStore
+        .getState()
+        .changePassword('Password123', 'NewPassword123');
+
+      expect(result).toBe('Password updated successfully');
+      expect(mockAuthService.changePassword).toHaveBeenCalledWith({
+        currentPassword: 'Password123',
+        newPassword: 'NewPassword123',
+      });
+      expect(useAuthStore.getState().error).toBeNull();
     });
   });
 

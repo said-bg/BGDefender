@@ -10,10 +10,11 @@ void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
+    fallbackLng: 'fi',
     defaultNS: 'auth',
-    lng: 'en',
     ns: ['auth', 'courses'],
+    supportedLngs: ['fi', 'en'],
+    nonExplicitSupportedLngs: true,
     resources: {
       en: {
         auth: enAuth,
@@ -31,7 +32,7 @@ void i18n
       useSuspense: false,
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['localStorage'],
       caches: ['localStorage'],
     },
   });

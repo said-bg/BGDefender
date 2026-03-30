@@ -65,14 +65,15 @@
 }
 
 .filterButton:hover {
-  border-color: #FFA600;
-  color: #FFA600;
+  border-color: #111827;
+  color: #111827;
+  background: #f8fafc;
 }
 
 .filterButtonActive {
-  border-color: #FFA600;
-  background: #fff4d6;
-  color: #8a5b00;
+  border-color: #111827;
+  background: #111827;
+  color: #ffffff;
 }
 
 .stateMessage {

@@ -29,6 +29,8 @@ docs/
 dist/
 build/
 coverage/
+frontend/playwright-report/
+frontend/test-results/
 
 # TypeScript
 *.tsbuildinfo

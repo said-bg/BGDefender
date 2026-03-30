@@ -4,6 +4,7 @@ import {
   getChapterProgressPercentage,
   getCourseProgressPercentage,
   getProgressPayloadFromView,
+  preserveCompletedProgress,
   getAuthorRole,
   getChapterParagraphs,
   getLocalizedText,
@@ -243,6 +244,37 @@ describe('course-detail.utils', () => {
       lastViewedType: 'subchapter',
       lastChapterId: 'chapter-1',
       lastSubChapterId: 'sub-1',
+    });
+  });
+
+  // Verifies that reviewing a finished course never drops its saved completion back below 100%.
+  it('preserves completed progress while still updating the latest viewed location', () => {
+    expect(
+      preserveCompletedProgress(
+        {
+          id: 'progress-1',
+          userId: 1,
+          courseId: 'course-1',
+          completionPercentage: 100,
+          completed: true,
+          completedAt: '2026-01-02T00:00:00.000Z',
+          lastAccessedAt: '2026-01-02T00:00:00.000Z',
+          lastViewedType: 'subchapter',
+          lastChapterId: 'chapter-1',
+          lastSubChapterId: 'sub-1',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-02T00:00:00.000Z',
+        },
+        {
+          completionPercentage: 33,
+          lastViewedType: 'chapter',
+          lastChapterId: 'chapter-1',
+        },
+      ),
+    ).toEqual({
+      completionPercentage: 100,
+      lastViewedType: 'chapter',
+      lastChapterId: 'chapter-1',
     });
   });
 

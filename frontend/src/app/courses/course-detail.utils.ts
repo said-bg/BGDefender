@@ -298,6 +298,30 @@ export const getProgressPayloadFromView = (
   };
 };
 
+// Keep completed courses marked as completed while still letting the UI store the
+// latest chapter/subchapter the learner decided to review afterwards.
+export const preserveCompletedProgress = (
+  existingProgress: CourseProgress | null,
+  payload: {
+    completionPercentage: number;
+    lastViewedType: ProgressViewType;
+    lastChapterId?: string;
+    lastSubChapterId?: string;
+  },
+) => {
+  if (
+    !existingProgress ||
+    (!existingProgress.completed && existingProgress.completionPercentage < 100)
+  ) {
+    return payload;
+  }
+
+  return {
+    ...payload,
+    completionPercentage: 100,
+  };
+};
+
 export const getSelectedContent = (
   course: Course,
   selectedView: ViewState,

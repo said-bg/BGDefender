@@ -55,7 +55,10 @@ export function LoginForm() {
 
   useEffect(() => {
     dispatch({ type: 'CLEAR' });
-  }, [i18n.language]);
+    if (authError) {
+      setError(null);
+    }
+  }, [authError, i18n.language, setError]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -11,6 +11,9 @@ describe('AuthController', () => {
   const mockSafeUser: SafeUser = {
     id: 1,
     email: 'test@example.com',
+    firstName: null,
+    lastName: null,
+    occupation: null,
     role: 'USER',
     plan: 'FREE',
     isActive: true,
@@ -22,6 +25,8 @@ describe('AuthController', () => {
     register: jest.fn(),
     login: jest.fn(),
     validateUser: jest.fn(),
+    updateProfile: jest.fn(),
+    changePassword: jest.fn(),
   };
 
   const mockEmailService = {
@@ -150,6 +155,58 @@ describe('AuthController', () => {
       const result = controller.getCurrentUser(mockSafeUser);
 
       expect(result).not.toHaveProperty('password');
+    });
+  });
+
+  describe('updateCurrentUser', () => {
+    it('should update the authenticated profile', async () => {
+      const updateProfileDto = {
+        firstName: 'Said',
+        lastName: 'Ait',
+        occupation: 'Security Analyst',
+      };
+
+      const updatedUser: SafeUser = {
+        ...mockSafeUser,
+        ...updateProfileDto,
+      };
+
+      mockAuthService.updateProfile.mockResolvedValue(updatedUser);
+
+      const result = await controller.updateCurrentUser(
+        mockSafeUser,
+        updateProfileDto,
+      );
+
+      expect(mockAuthService.updateProfile).toHaveBeenCalledWith(
+        mockSafeUser.id,
+        updateProfileDto,
+      );
+      expect(result).toEqual(updatedUser);
+    });
+  });
+
+  describe('changePassword', () => {
+    it('should delegate password changes to the auth service', async () => {
+      const changePasswordDto = {
+        currentPassword: 'Password1',
+        newPassword: 'NewPassword1',
+      };
+
+      mockAuthService.changePassword.mockResolvedValue(undefined);
+
+      const result = await controller.changePassword(
+        mockSafeUser,
+        changePasswordDto,
+      );
+
+      expect(mockAuthService.changePassword).toHaveBeenCalledWith(
+        mockSafeUser.id,
+        changePasswordDto.currentPassword,
+        changePasswordDto.newPassword,
+        'en',
+      );
+      expect(result).toEqual({ message: 'Password updated successfully' });
     });
   });
 });

@@ -3,6 +3,7 @@ import {
   Post,
   Body,
   Get,
+  Patch,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -13,6 +14,8 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import type { SafeUser } from './types/safe-user.type';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -27,17 +30,11 @@ export class AuthController {
     private readonly passwordTokenService: PasswordTokenService,
   ) {}
 
-  /**
-   * POST /auth/register
-   * Enregistre un nouvel utilisateur
-   * Accepts Accept-Language header for localized error messages
-   */
   @Post('register')
   async register(
     @Body() registerDto: RegisterDto,
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<SafeUser> {
-    // Extract language from Accept-Language header
     let language = 'en';
     if (acceptLanguage) {
       const langCode = acceptLanguage.split('-')[0].toLowerCase();
@@ -48,18 +45,12 @@ export class AuthController {
     return this.authService.register(registerDto, language);
   }
 
-  /**
-   * POST /auth/login
-   * Authentifie l'utilisateur et retourne JWT
-   * Accepts Accept-Language header for localized error messages
-   */
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() loginDto: LoginDto,
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<{ accessToken: string; user: SafeUser }> {
-    // Extract language from Accept-Language header (e.g., "fi-FI,fi;q=0.9" -> "fi")
     let language = 'en';
     if (acceptLanguage) {
       const langCode = acceptLanguage.split('-')[0].toLowerCase();
@@ -70,21 +61,21 @@ export class AuthController {
     return this.authService.login(loginDto, language);
   }
 
-  /**
-   * GET /auth/me
-   * Retourne l'utilisateur courant (authentifié)
-   */
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getCurrentUser(@CurrentUser() user: SafeUser): SafeUser {
     return user;
   }
 
-  /**
-   * POST /auth/forgot-password
-   * Envoie un lien de reset password à l'utilisateur
-   * IMPORTANT: réponse générique toujours (security: don't leak email existence)
-   */
+  @Patch('me')
+  @UseGuards(JwtAuthGuard)
+  async updateCurrentUser(
+    @CurrentUser() user: SafeUser,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ): Promise<SafeUser> {
+    return this.authService.updateProfile(user.id, updateProfileDto);
+  }
+
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   async forgotPassword(
@@ -93,7 +84,6 @@ export class AuthController {
   ): Promise<{ message: string }> {
     const user = await this.authService.findByEmail(forgotPasswordDto.email);
 
-    // Extract language from Accept-Language header (e.g., "fi-FI,fi;q=0.9" -> "fi")
     let language = 'en';
     if (acceptLanguage) {
       const langCode = acceptLanguage.split('-')[0].toLowerCase();
@@ -107,23 +97,22 @@ export class AuthController {
         user.email,
       );
       const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/reset-password?token=${token}&lang=${language}`;
+      const shouldLogResetTokens = process.env.LOG_RESET_TOKENS === 'true';
 
-      // Log token for development testing
-      console.log('\n✅ PASSWORD RESET TOKEN GENERATED:');
-      console.log(`📧 Email: ${user.email}`);
-      console.log(`🔑 Token: ${token}`);
-      console.log(`🔗 Link: ${resetLink}`);
-      console.log(`🌍 Language: ${language}`);
-      console.log('⏱️  Token expires in 1 hour\n');
+      if (shouldLogResetTokens) {
+        console.log('\nPASSWORD RESET TOKEN GENERATED:');
+        console.log(`Email: ${user.email}`);
+        console.log(`Token: ${token}`);
+        console.log(`Link: ${resetLink}`);
+        console.log(`Language: ${language}`);
+        console.log('Token expires in 1 hour\n');
+      }
 
-      // Send email in user's language
       await this.emailService.sendPasswordResetEmail(
         user.email,
         resetLink,
         language,
       );
-    } else {
-      console.log(`⚠️  No user found for email: ${forgotPasswordDto.email}`);
     }
 
     return {
@@ -132,17 +121,12 @@ export class AuthController {
     };
   }
 
-  /**
-   * POST /auth/reset-password
-   * Réinitialise le password avec un token valide
-   */
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<{ message: string }> {
-    // Extract language from Accept-Language header
     let language = 'en';
     if (acceptLanguage) {
       const langCode = acceptLanguage.split('-')[0].toLowerCase();
@@ -151,22 +135,45 @@ export class AuthController {
       }
     }
 
-    // Find the token and get the email
     const { id: tokenId, email } =
       await this.passwordTokenService.findTokenByPlainToken(
         resetPasswordDto.token,
       );
 
-    // Update password
     await this.authService.updatePassword(
       email,
       resetPasswordDto.newPassword,
       language,
     );
 
-    // Mark token as used
     await this.passwordTokenService.markAsUsed(tokenId);
 
     return { message: 'Password has been reset successfully' };
+  }
+
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @CurrentUser() user: SafeUser,
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Headers('accept-language') acceptLanguage?: string,
+  ): Promise<{ message: string }> {
+    let language = 'en';
+    if (acceptLanguage) {
+      const langCode = acceptLanguage.split('-')[0].toLowerCase();
+      if (['fi', 'en'].includes(langCode)) {
+        language = langCode;
+      }
+    }
+
+    await this.authService.changePassword(
+      user.id,
+      changePasswordDto.currentPassword,
+      changePasswordDto.newPassword,
+      language,
+    );
+
+    return { message: 'Password updated successfully' };
   }
 }

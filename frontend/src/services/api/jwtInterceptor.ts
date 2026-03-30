@@ -8,6 +8,7 @@ import { getToken } from '../utils/tokenStorage';
 
 // Dynamic import for client-side only
 let modalStoreInstance: unknown = null;
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Flag to prevent multiple simultaneous 401 handlers
 let isHandling401 = false;
@@ -49,6 +50,11 @@ export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
  */
 export const responseErrorInterceptor = async (error: AxiosError) => {
   const status = error.response?.status;
+  const logDevError = (...args: unknown[]) => {
+    if (isDevelopment) {
+      console.error(...args);
+    }
+  };
 
   switch (status) {
     case 401: {
@@ -71,7 +77,9 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
             const { useAuthStore } = await import('@/store/authStore');
             useAuthStore.getState().logout();
           } catch (e) {
-            console.warn('Could not reset auth store:', e);
+            if (isDevelopment) {
+              console.warn('Could not reset auth store:', e);
+            }
           }
 
           // Initialize modal store and show session expired modal
@@ -117,7 +125,9 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
                 },
               });
             } catch (e) {
-              console.warn('Could not show modal, redirecting directly:', e);
+              if (isDevelopment) {
+                console.warn('Could not show modal, redirecting directly:', e);
+              }
               window.location.href = '/auth/login';
             }
           } else {
@@ -137,26 +147,26 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
 
     case 409:
       // Conflict - Duplicate email or resource already exists
-      console.error('Conflict error:', error.response?.data);
+      logDevError('Conflict error:', error.response?.data);
       break;
 
     case 400:
-      // Bad request - Validation failed
-      console.error('Validation error:', error.response?.data);
+      // Bad request - the UI already surfaces the real validation message.
+      logDevError('Validation error:', error.response?.data);
       break;
 
     case 403:
       // Forbidden - User doesn't have permission
-      console.error('Access forbidden');
+      logDevError('Access forbidden');
       break;
 
     case 500:
       // Server error
-      console.error('Server error:', error.response?.data);
+      logDevError('Server error:', error.response?.data);
       break;
 
     default:
-      console.error('API Error:', error.message);
+      logDevError('API Error:', error.message);
   }
 
   return Promise.reject(error);

@@ -129,11 +129,14 @@ describe('FavoriteService', () => {
 
       const result = await service.addForUserAndCourse(12, 'course-1');
 
-      expect(favoriteRepository.create).toHaveBeenCalledWith({
+      expect(favoriteRepository.create).toHaveBeenCalledTimes(1);
+      const createCall = favoriteRepository.create.mock.calls[0]?.[0];
+      expect(createCall).toMatchObject({
         userId: 12,
         courseId: 'course-1',
-        course: expect.objectContaining({ id: 'course-1' }),
       });
+      expect(createCall?.course).toBeDefined();
+      expect(createCall?.course.id).toBe('course-1');
       expect(result.courseId).toBe('course-1');
     });
 

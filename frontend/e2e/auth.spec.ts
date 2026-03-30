@@ -23,6 +23,12 @@ const TEST_CREDENTIALS = {
 // ============================================================================
 
 test.describe('Authentication - E2E Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('i18nextLng', 'en');
+    });
+  });
+
   /**
    * Test 1: Register a new user successfully
    * 
@@ -180,5 +186,39 @@ test.describe('Authentication - E2E Tests', () => {
     await page.locator('input[name="confirmPassword"]').fill('DifferentPassword@1');
     await page.getByRole('button', { name: /create account/i }).click();
     await expect(page.locator('text=/mismatch|match|confirm/i').first()).toBeVisible();
+  });
+
+  /**
+   * Test 6: Switching language clears the current auth error message
+   *
+   * Verifies:
+   * - A backend login error is shown
+   * - Switching language clears the stale error without typing
+   */
+  test('should clear login error when switching language', async ({ page }) => {
+    await page.route(`${API_BASE}/auth/login`, async (route) => {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          statusCode: 401,
+          message: 'Invalid email or password',
+          error: 'Unauthorized',
+        }),
+      });
+    });
+
+    await page.goto('/auth/login', { waitUntil: 'networkidle' });
+
+    await page.locator('input[name="email"]').fill('wrong@example.com');
+    await page.locator('input[name="password"]').fill('WrongPassword123');
+    await page.getByRole('button', { name: /sign in/i }).click();
+
+    await expect(page.getByText('Invalid email or password')).toBeVisible();
+
+    await page.getByRole('button', { name: 'FI' }).click();
+
+    await expect(page.getByText('Invalid email or password')).toHaveCount(0);
+    await expect(page.getByRole('heading', { name: /tervetuloa takaisin/i })).toBeVisible();
   });
 });

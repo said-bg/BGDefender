@@ -25,8 +25,17 @@ export class User {
   @Column({ unique: true })
   email!: string;
 
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  firstName!: string | null;
+
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  lastName!: string | null;
+
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  occupation!: string | null;
+
   @Column()
-  password!: string; // Toujours hashé
+  password!: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role!: UserRole;

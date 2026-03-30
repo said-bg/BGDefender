@@ -140,4 +140,67 @@ test.describe('Home progression - E2E tests', () => {
     await expect(continueSection.getByText('67%')).toBeVisible();
     await expect(continueSection.getByRole('link', { name: 'Resume' })).toBeVisible();
   });
+
+  // Verifies that completed courses stay in My Courses but do not show up in Continue Learning.
+  test('completed courses are excluded from continue learning on the home page', async ({
+    page,
+  }) => {
+    await page.addInitScript(([tokenKey]) => {
+      window.localStorage.setItem(tokenKey, 'mock-token');
+      window.localStorage.setItem('i18nextLng', 'en');
+    }, [TOKEN_KEY]);
+
+    await page.route(`${API_BASE}/auth/me`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(freeUser),
+      });
+    });
+
+    await page.route(`${API_BASE}/courses*`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(publishedCourses),
+      });
+    });
+
+    await page.route(`${API_BASE}/progress/me`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            id: 'progress-1',
+            userId: freeUser.id,
+            courseId: 'course-free',
+            completionPercentage: 100,
+            completed: true,
+            completedAt: '2026-01-03T00:00:00.000Z',
+            lastAccessedAt: '2026-01-03T00:00:00.000Z',
+            lastViewedType: 'subchapter',
+            lastChapterId: 'chapter-1',
+            lastSubChapterId: 'sub-1',
+            createdAt: '2026-01-02T00:00:00.000Z',
+            updatedAt: '2026-01-03T00:00:00.000Z',
+          },
+        ]),
+      });
+    });
+
+    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    await expect(
+      page.getByRole('heading', { name: 'Continue Learning' }),
+    ).toHaveCount(0);
+  });
 });

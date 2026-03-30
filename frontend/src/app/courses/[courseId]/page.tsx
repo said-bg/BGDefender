@@ -21,6 +21,7 @@ import {
   getProgressPayloadFromView,
   getLocalizedText,
   getOverviewParagraphs,
+  preserveCompletedProgress,
   getSelectedContent,
   getViewStateFromProgress,
 } from '../course-detail.utils';
@@ -40,6 +41,9 @@ export default function CourseDetailPage() {
   const { isFavorite, isPending, toggleFavorite } = useFavoriteCourses();
 
   const [course, setCourse] = useState<Course | null>(null);
+  const [savedProgress, setSavedProgress] = useState<Awaited<
+    ReturnType<typeof progressService.getMyCourseProgress>
+  > | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorKey, setErrorKey] = useState<ErrorKey>(null);
   const [restoringProgress, setRestoringProgress] = useState(false);
@@ -71,6 +75,7 @@ export default function CourseDetailPage() {
         const result = await courseService.getCourseById(courseId);
 
         setCourse(result);
+        setSavedProgress(null);
         setSelectedView({ type: 'overview' });
         setExpandedChapters(new Set());
       } catch (loadError) {
@@ -95,6 +100,7 @@ export default function CourseDetailPage() {
       try {
         setRestoringProgress(true);
         const progress = await progressService.getMyCourseProgress(courseId);
+        setSavedProgress(progress);
 
         if (!isMounted || !progress) {
           return;
@@ -242,10 +248,16 @@ export default function CourseDetailPage() {
       return;
     }
 
-    const payload = getProgressPayloadFromView(navigationItems, selectedView);
+    const payload = preserveCompletedProgress(
+      savedProgress,
+      getProgressPayloadFromView(navigationItems, selectedView),
+    );
 
     void progressService
       .saveMyCourseProgress(courseId, payload)
+      .then((updatedProgress) => {
+        setSavedProgress(updatedProgress);
+      })
       .catch((saveError) => {
         console.error('Failed to save course progress:', saveError);
       });
@@ -257,6 +269,7 @@ export default function CourseDetailPage() {
     isInitialized,
     navigationItems,
     restoringProgress,
+    savedProgress,
     selectedView,
     user,
   ]);

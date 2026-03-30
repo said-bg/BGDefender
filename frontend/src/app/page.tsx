@@ -95,7 +95,10 @@ export default function Home() {
         });
 
         const inProgressCourses = coursesWithStats
-          .filter((course) => course.progressPercentage > 0)
+          .filter(
+            (course) =>
+              course.progressPercentage > 0 && course.progressPercentage < 100,
+          )
           .sort((left, right) => {
             const leftTime = left.lastAccessedAt
               ? new Date(left.lastAccessedAt).getTime()

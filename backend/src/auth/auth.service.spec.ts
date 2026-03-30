@@ -19,6 +19,7 @@ type MockUserRepository = {
   findOne: jest.Mock;
   create: jest.Mock;
   save: jest.Mock;
+  update: jest.Mock;
 };
 
 type MockJwtService = {
@@ -35,6 +36,9 @@ describe('AuthService', () => {
   const mockUser: User = {
     id: 1,
     email: 'test@example.com',
+    firstName: null,
+    lastName: null,
+    occupation: null,
     password: 'hashed-password-123',
     role: UserRole.USER,
     plan: UserPlan.FREE,
@@ -48,6 +52,7 @@ describe('AuthService', () => {
       findOne: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
+      update: jest.fn(),
     };
 
     jwtService = {
@@ -257,6 +262,9 @@ describe('AuthService', () => {
       expect(result).toEqual({
         id: mockUser.id,
         email: mockUser.email,
+        firstName: mockUser.firstName,
+        lastName: mockUser.lastName,
+        occupation: mockUser.occupation,
         role: mockUser.role,
         plan: mockUser.plan,
         isActive: mockUser.isActive,
@@ -312,6 +320,80 @@ describe('AuthService', () => {
       const result = await service.validateUser(payload);
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('updateProfile', () => {
+    it('should update editable profile fields', async () => {
+      const profileDto = {
+        firstName: 'Said',
+        lastName: 'Ait',
+        occupation: 'Security Analyst',
+      };
+
+      const savedUser: User = {
+        ...mockUser,
+        ...profileDto,
+      };
+
+      userRepository.findOne.mockResolvedValue({ ...mockUser });
+      userRepository.save.mockResolvedValue(savedUser);
+
+      const result = await service.updateProfile(mockUser.id, profileDto);
+
+      expect(userRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining(profileDto),
+      );
+      expect(result.firstName).toBe(profileDto.firstName);
+      expect(result.lastName).toBe(profileDto.lastName);
+      expect(result.occupation).toBe(profileDto.occupation);
+    });
+
+    it('should trim empty editable fields back to null', async () => {
+      userRepository.findOne.mockResolvedValue({ ...mockUser });
+      userRepository.save.mockResolvedValue({
+        ...mockUser,
+        firstName: null,
+        lastName: null,
+        occupation: null,
+      });
+
+      const result = await service.updateProfile(mockUser.id, {
+        firstName: ' ',
+        lastName: '',
+        occupation: '  ',
+      });
+
+      expect(result.firstName).toBeNull();
+      expect(result.lastName).toBeNull();
+      expect(result.occupation).toBeNull();
+    });
+  });
+
+  describe('changePassword', () => {
+    it('should validate the current password before updating it', async () => {
+      userRepository.findOne.mockResolvedValue(mockUser);
+      mockedBcrypt.compare
+        .mockResolvedValueOnce(true as never)
+        .mockResolvedValueOnce(false as never);
+
+      await service.changePassword(mockUser.id, 'Password1', 'NewPassword1');
+
+      expect(userRepository.update).toHaveBeenCalledWith(
+        { id: mockUser.id },
+        { password: 'hashed-password-123' },
+      );
+    });
+
+    it('should throw when the current password is invalid', async () => {
+      userRepository.findOne.mockResolvedValue(mockUser);
+      mockedBcrypt.compare.mockResolvedValue(false as never);
+
+      await expect(
+        service.changePassword(mockUser.id, 'WrongPassword1', 'NewPassword1'),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(userRepository.update).not.toHaveBeenCalled();
     });
   });
 });

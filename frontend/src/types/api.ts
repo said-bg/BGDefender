@@ -21,6 +21,9 @@ export enum UserPlan {
 export interface User {
   id: number;
   email: string;
+  firstName: string | null;
+  lastName: string | null;
+  occupation: string | null;
   role: UserRole;
   plan: UserPlan;
   isActive: boolean;
@@ -34,6 +37,12 @@ export interface User {
 export interface RegisterRequest {
   email: string;
   password: string;
+}
+
+export interface UpdateProfileRequest {
+  firstName?: string;
+  lastName?: string;
+  occupation?: string;
 }
 
 export interface LoginRequest {
@@ -50,12 +59,20 @@ export interface ResetPasswordRequest {
   newPassword: string;
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 /**
  * Auth Endpoints Responses
  */
 export interface RegisterResponse {
   id: number;
   email: string;
+  firstName: string | null;
+  lastName: string | null;
+  occupation: string | null;
   role: UserRole;
   plan: UserPlan;
   isActive: boolean;
@@ -76,9 +93,16 @@ export interface ResetPasswordResponse {
   message: string;
 }
 
+export interface ChangePasswordResponse {
+  message: string;
+}
+
 export interface MeResponse {
   id: number;
   email: string;
+  firstName: string | null;
+  lastName: string | null;
+  occupation: string | null;
   role: UserRole;
   plan: UserPlan;
   isActive: boolean;

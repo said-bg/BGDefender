@@ -316,17 +316,14 @@ const courseDefinitions: SeedCourseDefinition[] = [
 ];
 
 export async function seedCourses(dataSource: DataSource): Promise<void> {
+  const verboseLogging = process.env.SEED_VERBOSE_LOGS === 'true';
+
   try {
-    console.log('[SEED] Starting course seed process...');
     const courseRepository = dataSource.getRepository(Course);
     const authorRepository = dataSource.getRepository(Author);
     const chapterRepository = dataSource.getRepository(Chapter);
     const subChapterRepository = dataSource.getRepository(SubChapter);
     const contentRepository = dataSource.getRepository(PedagogicalContent);
-
-    const totalCourses = await courseRepository.count();
-    console.log(`[SEED] Found ${totalCourses} total courses in DB`);
-    console.log('[SEED] Ensuring authors, courses, and hierarchy exist...');
 
     for (const definition of courseDefinitions) {
       let author = await authorRepository.findOne({
@@ -377,9 +374,11 @@ export async function seedCourses(dataSource: DataSource): Promise<void> {
       });
 
       if (existingChapterCount > 0) {
-        console.log(
-          `[SEED] Course "${course.titleEn}" already has ${existingChapterCount} chapters, skipping hierarchy creation`,
-        );
+        if (verboseLogging) {
+          console.log(
+            `[SEED] Course "${course.titleEn}" already has ${existingChapterCount} chapters, skipping hierarchy creation`,
+          );
+        }
         continue;
       }
 
@@ -390,7 +389,9 @@ export async function seedCourses(dataSource: DataSource): Promise<void> {
         definition.learningFocusFi,
       );
 
-      console.log(`[SEED] Creating hierarchy for "${course.titleEn}"`);
+      if (verboseLogging) {
+        console.log(`[SEED] Creating hierarchy for "${course.titleEn}"`);
+      }
 
       for (const [chapterIndex, chapterDefinition] of chapters.entries()) {
         const chapter = await chapterRepository.save(
@@ -445,7 +446,7 @@ export async function seedCourses(dataSource: DataSource): Promise<void> {
     const totalContents = await contentRepository.count();
 
     console.log(
-      `[SEED] Final counts => courses: ${await courseRepository.count()}, chapters: ${totalChapters}, subChapters: ${totalSubChapters}, contents: ${totalContents}`,
+      `[SEED] Course seed complete: ${await courseRepository.count()} courses, ${totalChapters} chapters, ${totalSubChapters} sub-chapters, ${totalContents} contents`,
     );
   } catch (error) {
     console.error('[SEED] FATAL ERROR - Failed to seed courses:', error);

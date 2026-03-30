@@ -1,0 +1,395 @@
+.page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.content {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.75rem 0 3rem;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.heroIdentity {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 4rem;
+  height: 4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fff3cf 0%, #ffe0a3 100%);
+  color: #8a5b00;
+  font-size: 1.25rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.4rem;
+  color: #FFA600;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.05;
+  font-weight: 800;
+}
+
+.subtitle {
+  margin: 0.75rem 0 0;
+  color: #475467;
+  max-width: 640px;
+  line-height: 1.7;
+}
+
+.badges {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.badgePrimary,
+.badgeMuted {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.badgePrimary {
+  background: #fff3cf;
+  color: #8a5b00;
+}
+
+.badgeMuted {
+  background: #f2f4f7;
+  color: #475467;
+}
+
+.premiumTone {
+  background: #fff3cf;
+  color: #8a5b00;
+}
+
+.freeTone {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.userTone {
+  background: #f2f4f7;
+  color: #344054;
+}
+
+.creatorTone {
+  background: #eff8ff;
+  color: #175cd3;
+}
+
+.adminTone {
+  background: #111827;
+  color: #ffffff;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.summaryCard,
+.formCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.summaryCard {
+  padding: 1.4rem;
+  height: fit-content;
+  position: sticky;
+  top: 1.5rem;
+}
+
+.formsColumn {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.formCard {
+  padding: 1.5rem;
+}
+
+.securityCard {
+  border-color: #e5e7eb;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.cardHeader {
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.sectionDescription {
+  margin: 0.5rem 0 0;
+  color: #667085;
+  line-height: 1.7;
+}
+
+.summaryList {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0 0;
+}
+
+.summaryList dt {
+  color: #667085;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.summaryList dd {
+  margin: 0.35rem 0 0;
+  color: #111827;
+  font-size: 0.96rem;
+  font-weight: 500;
+}
+
+.summaryValue {
+  display: inline-block;
+  min-height: 1.5rem;
+  padding: 0;
+  background: transparent !important;
+  border-radius: 0;
+}
+
+.summaryActions {
+  margin-top: 1.25rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid #eef2f6;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.summaryActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 2.6rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid #d0d5dd;
+  border-radius: 0.8rem;
+  background: #ffffff;
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.summaryActionButton:hover {
+  background: #f8fafc;
+  border-color: #111827;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.summaryActionButton:focus-visible {
+  outline: 2px solid #111827;
+  outline-offset: 2px;
+}
+
+.summaryActionButtonActive {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+}
+
+.summaryActionButtonActive:hover,
+.summaryActionButtonActive:focus-visible {
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.securityForm {
+  grid-template-columns: 1fr;
+}
+
+.field,
+.fieldWide {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.field span,
+.fieldWide span {
+  color: #344054;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.field input,
+.fieldWide input {
+  min-height: 2.9rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid #d0d5dd;
+  border-radius: 0.75rem;
+  font: inherit;
+  color: #111827;
+}
+
+.field input:focus,
+.fieldWide input:focus {
+  outline: none;
+  border-color: #FFA600;
+  box-shadow: 0 0 0 4px rgba(255, 166, 0, 0.12);
+}
+
+.passwordRequirements {
+  margin-top: 0.35rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.passwordRequirement {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.requirementDot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.requirementDotValid {
+  background: #12b76a;
+}
+
+.requirementDotInvalid {
+  background: #f04438;
+}
+
+.requirementLabel {
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.requirementLabelValid {
+  color: #027a48;
+}
+
+.requirementLabelInvalid {
+  color: #b42318;
+}
+
+.primaryButton {
+  width: fit-content;
+  min-width: 180px;
+  padding: 0.85rem 1.15rem;
+  border: 0;
+  border-radius: 0.8rem;
+  background: #FFA600;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primaryButton:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.successMessage,
+.errorMessage {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.successMessage {
+  color: #027a48;
+}
+
+.errorMessage {
+  color: #b42318;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    flex-direction: column;
+  }
+
+  .summaryCard {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    width: min(100%, calc(100% - 1rem));
+    padding-top: 2rem;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+}

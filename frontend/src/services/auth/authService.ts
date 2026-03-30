@@ -15,6 +15,9 @@ import {
   ForgotPasswordResponse,
   ResetPasswordRequest,
   ResetPasswordResponse,
+  UpdateProfileRequest,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
   MeResponse,
 } from '@/types/api';
 
@@ -22,6 +25,7 @@ const AUTH_ENDPOINTS = {
   REGISTER: '/auth/register',
   LOGIN: '/auth/login',
   ME: '/auth/me',
+  CHANGE_PASSWORD: '/auth/change-password',
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
 };
@@ -76,6 +80,16 @@ export const getMe = async (): Promise<MeResponse> => {
 };
 
 /**
+ * Update the editable profile fields of the authenticated user.
+ */
+export const updateProfile = async (
+  data: UpdateProfileRequest
+): Promise<MeResponse> => {
+  const response = await apiClient.patch<MeResponse>(AUTH_ENDPOINTS.ME, data);
+  return response.data;
+};
+
+/**
  * Request password reset email
  */
 export const forgotPassword = async (
@@ -112,6 +126,24 @@ export const resetPassword = async (
 };
 
 /**
+ * Change password from the authenticated account page.
+ */
+export const changePassword = async (
+  data: ChangePasswordRequest
+): Promise<ChangePasswordResponse> => {
+  const response = await apiClient.post<ChangePasswordResponse>(
+    AUTH_ENDPOINTS.CHANGE_PASSWORD,
+    data,
+    {
+      headers: {
+        'Accept-Language': i18n.language,
+      },
+    }
+  );
+  return response.data;
+};
+
+/**
  * Logout user
  * Removes token from localStorage
  */
@@ -123,8 +155,10 @@ const authServiceExports = {
   register,
   login,
   getMe,
+  updateProfile,
   forgotPassword,
   resetPassword,
+  changePassword,
   logout,
 };
 

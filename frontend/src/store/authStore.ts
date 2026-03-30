@@ -38,6 +38,10 @@ export interface AuthState {
   // Auth Actions
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
+  updateProfile: (
+    profile: Partial<Pick<User, 'firstName' | 'lastName' | 'occupation'>>
+  ) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<string>;
   logout: () => void;
   fetchCurrentUser: () => Promise<void>;
   initializeAuth: () => Promise<void>;
@@ -127,6 +131,62 @@ export const useAuthStore = create<AuthState>()(
             });
           } catch (err) {
             const errorMessage = getApiErrorMessage(err, 'Registration failed');
+
+            set({
+              error: errorMessage,
+              isLoading: false,
+            });
+
+            throw err;
+          }
+        },
+
+        /**
+         * Update editable profile fields and keep the current user in sync.
+         */
+        updateProfile: async (profile) => {
+          set({ isLoading: true, error: null });
+
+          try {
+            const updatedUser = await authService.updateProfile(profile);
+
+            set({
+              user: updatedUser,
+              isLoading: false,
+              error: null,
+            });
+          } catch (err) {
+            const errorMessage = getApiErrorMessage(err, 'Failed to update profile');
+
+            set({
+              error: errorMessage,
+              isLoading: false,
+            });
+
+            throw err;
+          }
+        },
+
+        /**
+         * Change the authenticated user's password from the account page.
+         */
+        changePassword: async (currentPassword: string, newPassword: string) => {
+          set({ isLoading: true, error: null });
+
+          try {
+            const response = await authService.changePassword({
+              currentPassword,
+              newPassword,
+            });
+
+            set({
+              isLoading: false,
+              error: null,
+            });
+
+            return response.message;
+          } catch (err) {
+            const errorMessage = getApiErrorMessage(err, 'Failed to change password');
 
             set({
               error: errorMessage,

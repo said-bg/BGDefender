@@ -56,6 +56,12 @@ const publishedCourses = {
 };
 
 test.describe('Favorites - E2E tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('i18nextLng', 'en');
+    });
+  });
+
   // Verifies that the authenticated user can open the favorites page and remove a starred course.
   test('authenticated user can review and remove a favorite course', async ({
     page,

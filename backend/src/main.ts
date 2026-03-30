@@ -1,18 +1,40 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
 import { seedCourses } from './database/seeds/courses.seed';
 
+function resolveCorsOrigins(
+  configService: ConfigService,
+  isProduction: boolean,
+): string[] {
+  const configuredOrigins =
+    configService.get<string>('CORS_ORIGIN') ||
+    configService.get<string>('FRONTEND_URL');
+
+  if (configuredOrigins) {
+    return configuredOrigins
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean);
+  }
+
+  return isProduction ? [] : ['http://localhost:3000'];
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const isProduction = configService.get('NODE_ENV') === 'production';
+  const corsOrigins = resolveCorsOrigins(configService, isProduction);
 
   // Set global API prefix
   app.setGlobalPrefix('api');
 
   // CORS configuration
   app.enableCors({
-    origin: 'http://localhost:3000', // Frontend URL
+    origin: corsOrigins.length > 0 ? corsOrigins : false,
     credentials: true,
   });
 
@@ -25,17 +47,19 @@ async function bootstrap() {
     }),
   );
 
-  // Run seeds
-  const dataSource = app.get(DataSource);
-  console.log('[MAIN] DataSource obtained from DI');
-  console.log('[MAIN] DataSource connected:', dataSource.isInitialized);
+  const shouldSeedOnBoot =
+    !isProduction &&
+    configService.get<string>('SEED_ON_BOOT', 'true') === 'true';
 
-  try {
-    console.log('[MAIN] Starting seed execution...');
-    await seedCourses(dataSource);
-    console.log('[MAIN] Seed execution completed successfully');
-  } catch (error) {
-    console.error('[MAIN] Seed execution failed:', error);
+  if (shouldSeedOnBoot) {
+    // Keep the course seed opt-in for development bootstrapping only.
+    const dataSource = app.get(DataSource);
+
+    try {
+      await seedCourses(dataSource);
+    } catch (error) {
+      console.error('[MAIN] Seed execution failed:', error);
+    }
   }
 
   await app.listen(process.env.PORT ?? 3001);

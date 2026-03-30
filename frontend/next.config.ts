@@ -15,11 +15,23 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "bis-dev.com",
       },
       {
-        protocol: "http",
-        hostname: "**",
+        protocol: "https",
+        hostname: "media.licdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "img-c.udemycdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "encrypted-tbn0.gstatic.com",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.educba.com",
       },
     ],
   },

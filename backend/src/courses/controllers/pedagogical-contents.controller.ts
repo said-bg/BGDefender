@@ -79,7 +79,7 @@ export class PedagogicalContentsController {
   }
 
   @Delete(':id')
-  // @UseGuards(JwtAuthGuard) // TODO: Re-add after testing
+  @UseGuards(JwtAuthGuard)
   @HttpCode(204)
   async delete(
     @Param('subChapterId') subChapterId: string,

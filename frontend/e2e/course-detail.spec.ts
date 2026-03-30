@@ -219,6 +219,12 @@ async function setAuthenticatedUser(page: Page) {
 }
 
 test.describe('Course detail - E2E tests', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('i18nextLng', 'en');
+    });
+  });
+
   // Verifies the public flow: overview stays visible, but opening the learning path requires login.
   test('visitor can view the overview but gets a login prompt on locked content', async ({
     page,
@@ -226,7 +232,7 @@ test.describe('Course detail - E2E tests', () => {
     const course = createCourse('free');
     await mockCourseDetail(page, course);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'networkidle' });
+    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: course.titleEn })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Overview' })).toBeVisible();
@@ -252,7 +258,7 @@ test.describe('Course detail - E2E tests', () => {
     await setAuthenticatedUser(page);
     await mockCourseDetail(page, course, freeUser);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'networkidle' });
+    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('main').getByRole('button', { name: 'Next', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Introduction' })).toBeVisible();
@@ -275,7 +281,7 @@ test.describe('Course detail - E2E tests', () => {
     await setAuthenticatedUser(page);
     await mockCourseDetail(page, course, freeUser);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'networkidle' });
+    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('button', { name: /introduction/i }).click();
 
@@ -292,7 +298,7 @@ test.describe('Course detail - E2E tests', () => {
     await setAuthenticatedUser(page);
     await mockCourseDetail(page, course, premiumUser);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'networkidle' });
+    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('main').getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByRole('main').getByRole('button', { name: 'Next', exact: true }).click();
@@ -324,11 +330,95 @@ test.describe('Course detail - E2E tests', () => {
       updatedAt: '2026-01-02T00:00:00.000Z',
     });
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'networkidle' });
+    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();
     await expect(
       page.getByRole('main').getByText('free content paragraph 1.'),
     ).toBeVisible();
+  });
+
+  // Verifies that reopening a completed course never pushes the saved percentage back below 100%.
+  test('completed course keeps a full progress value while being reviewed again', async ({
+    page,
+  }) => {
+    const course = createCourse('free');
+    let lastSavedPayload: Record<string, unknown> | null = null;
+
+    await setAuthenticatedUser(page);
+    await mockCourseDetail(page, course, freeUser, {
+      id: 'progress-complete',
+      userId: freeUser.id,
+      courseId: course.id,
+      completionPercentage: 100,
+      completed: true,
+      completedAt: '2026-01-02T00:00:00.000Z',
+      lastAccessedAt: '2026-01-02T00:00:00.000Z',
+      lastViewedType: 'subchapter',
+      lastChapterId: 'chapter-free-1',
+      lastSubChapterId: 'sub-free-1',
+      createdAt: '2026-01-02T00:00:00.000Z',
+      updatedAt: '2026-01-02T00:00:00.000Z',
+    });
+
+    await page.unroute(`${API_BASE}/progress/me/course/${course.id}`);
+    await page.route(`${API_BASE}/progress/me/course/${course.id}`, async (route) => {
+      const method = route.request().method();
+
+      if (method === 'GET') {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({
+            id: 'progress-complete',
+            userId: freeUser.id,
+            courseId: course.id,
+            completionPercentage: 100,
+            completed: true,
+            completedAt: '2026-01-02T00:00:00.000Z',
+            lastAccessedAt: '2026-01-02T00:00:00.000Z',
+            lastViewedType: 'subchapter',
+            lastChapterId: 'chapter-free-1',
+            lastSubChapterId: 'sub-free-1',
+            createdAt: '2026-01-02T00:00:00.000Z',
+            updatedAt: '2026-01-02T00:00:00.000Z',
+          }),
+        });
+        return;
+      }
+
+      lastSavedPayload = route.request().postDataJSON() as Record<string, unknown>;
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'progress-complete',
+          userId: freeUser.id,
+          courseId: course.id,
+          completed: true,
+          completedAt: '2026-01-02T00:00:00.000Z',
+          lastAccessedAt: '2026-01-03T00:00:00.000Z',
+          createdAt: '2026-01-02T00:00:00.000Z',
+          updatedAt: '2026-01-03T00:00:00.000Z',
+          ...lastSavedPayload,
+        }),
+      });
+    });
+
+    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+
+    await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();
+
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url() === `${API_BASE}/progress/me/course/${course.id}` &&
+          response.request().method() === 'PUT',
+      ),
+      page.getByRole('button', { name: /introduction/i }).click(),
+    ]);
+
+    expect(lastSavedPayload?.completionPercentage).toBe(100);
   });
 });

@@ -31,7 +31,10 @@ export class FavoriteService {
     });
   }
 
-  async addForUserAndCourse(userId: number, courseId: string): Promise<Favorite> {
+  async addForUserAndCourse(
+    userId: number,
+    courseId: string,
+  ): Promise<Favorite> {
     const existingFavorite = await this.findByUserAndCourse(userId, courseId);
 
     if (existingFavorite) {
