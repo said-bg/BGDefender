@@ -1,8 +1,12 @@
 import type { ReactElement, ReactNode } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { CourseContent } from '../CourseContent';
+import { CourseContent } from '../components/CourseContent';
 import type { Course } from '@/services/courseService';
-import type { NavigationItem, SelectedContent, ViewState } from '../course-detail.utils';
+import type {
+  NavigationItem,
+  SelectedContent,
+  ViewState,
+} from '../course-detail.utils';
 
 jest.mock('next/link', () => {
   return function MockLink({

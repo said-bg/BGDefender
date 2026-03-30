@@ -4,6 +4,7 @@
 
 'use client';
 
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { useAuth } from '@/hooks';
@@ -23,12 +24,31 @@ export const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
-        {/* Logo/Home */}
-        <Link href="/" className={styles.logo}>
-          BGDefender
-        </Link>
+        <div className={styles.leftSection}>
+          <Link href="/" className={styles.logo}>
+            <Image
+              src="/assets/images/bgdefender.jpeg"
+              alt="BGDefender"
+              width={36}
+              height={36}
+              className={styles.logoMark}
+              priority
+            />
+            <span className={styles.logoText}>Defender</span>
+          </Link>
 
-        {/* Right section */}
+          <div className={styles.navigationLinks}>
+            <Link href="/" className={styles.navLink}>
+              {t('navbar.home')}
+            </Link>
+            {isAuthenticated && (
+              <Link href="/my-courses" className={styles.navLink}>
+                {t('navbar.myCourses')}
+              </Link>
+            )}
+          </div>
+        </div>
+
         <div className={styles.rightSection}>
           {/* Language switcher */}
           <div className={styles.languageSwitcher}>

@@ -1,23 +1,27 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import styles from '../course-page.module.css';
 import courseService, { Course } from '@/services/courseService';
+import progressService from '@/services/progressService';
 import { useAuth } from '@/hooks';
 import { UserPlan, UserRole } from '@/types/api';
-import { CourseContent } from '../CourseContent';
-import { CourseSidebar } from '../CourseSidebar';
+import { CourseContent } from '../components/CourseContent';
+import { CourseSidebar } from '../components/CourseSidebar';
 import {
   ActiveLanguage,
   NavigationItem,
   SelectedContent,
   ViewState,
   buildNavigationItems,
+  getProgressPayloadFromView,
   getLocalizedText,
   getOverviewParagraphs,
   getSelectedContent,
+  getViewStateFromProgress,
 } from '../course-detail.utils';
 
 type ErrorKey = 'courseNotFound' | 'unableToLoad' | null;
@@ -36,6 +40,7 @@ export default function CourseDetailPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [loading, setLoading] = useState(true);
   const [errorKey, setErrorKey] = useState<ErrorKey>(null);
+  const [restoringProgress, setRestoringProgress] = useState(false);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(
     new Set(),
   );
@@ -77,6 +82,45 @@ export default function CourseDetailPage() {
     void loadCourse();
   }, [courseId]);
 
+  useEffect(() => {
+    if (!courseId || !course || !isInitialized || !isAuthenticated || !user) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const restoreProgress = async () => {
+      try {
+        setRestoringProgress(true);
+        const progress = await progressService.getMyCourseProgress(courseId);
+
+        if (!isMounted || !progress) {
+          return;
+        }
+
+        const restoredView = getViewStateFromProgress(progress);
+
+        if (restoredView.type !== 'overview') {
+          setExpandedChapters(new Set([restoredView.chapterId]));
+        }
+
+        setSelectedView(restoredView);
+      } catch (restoreError) {
+        console.error('Failed to restore course progress:', restoreError);
+      } finally {
+        if (isMounted) {
+          setRestoringProgress(false);
+        }
+      }
+    };
+
+    void restoreProgress();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [courseId, course, isAuthenticated, isInitialized, user]);
+
   const selectedContent = useMemo<SelectedContent | null>(() => {
     if (!course) {
       return null;
@@ -108,6 +152,9 @@ export default function CourseDetailPage() {
 
     return 'granted';
   }, [course?.level, isAuthenticated, isInitialized, selectedView.type, user]);
+
+  const canReadContent =
+    accessState === 'public' || accessState === 'granted';
 
   const navigationItems = useMemo<NavigationItem[]>(() => {
     if (!course) {
@@ -179,6 +226,39 @@ export default function CourseDetailPage() {
     setSelectedView({ type: 'subchapter', chapterId, subChapterId });
   };
 
+  useEffect(() => {
+    if (
+      !courseId ||
+      !course ||
+      !isInitialized ||
+      !isAuthenticated ||
+      !user ||
+      restoringProgress ||
+      !canReadContent ||
+      selectedView.type === 'overview'
+    ) {
+      return;
+    }
+
+    const payload = getProgressPayloadFromView(navigationItems, selectedView);
+
+    void progressService
+      .saveMyCourseProgress(courseId, payload)
+      .catch((saveError) => {
+        console.error('Failed to save course progress:', saveError);
+      });
+  }, [
+    canReadContent,
+    course,
+    courseId,
+    isAuthenticated,
+    isInitialized,
+    navigationItems,
+    restoringProgress,
+    selectedView,
+    user,
+  ]);
+
   if (loading) {
     return (
       <div className={styles.pageShell}>
@@ -214,17 +294,22 @@ export default function CourseDetailPage() {
   );
   const overviewParagraphs = getOverviewParagraphs(activeLanguage, course);
   const heroSummary = overviewParagraphs[0] || selectedContent.description;
-  const canReadContent =
-    accessState === 'public' || accessState === 'granted';
 
   return (
     <div className={styles.pageShell}>
-      <section
-        className={styles.hero}
-        style={{
-          backgroundImage: `url(${course.coverImage || ''})`,
-        }}
-      >
+      <section className={styles.hero}>
+        {course.coverImage ? (
+          <Image
+            src={course.coverImage}
+            alt={courseTitle}
+            fill
+            priority
+            className={styles.heroBackground}
+            sizes="100vw"
+          />
+        ) : (
+          <div className={styles.heroFallback} />
+        )}
         <div className={styles.heroInner}>
           <span className={styles.heroLabel}>
             {course.level === 'premium'

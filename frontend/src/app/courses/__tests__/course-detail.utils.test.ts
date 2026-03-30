@@ -1,11 +1,14 @@
 import {
+  calculateCompletionPercentage,
   buildNavigationItems,
+  getProgressPayloadFromView,
   getAuthorRole,
   getChapterParagraphs,
   getLocalizedText,
   getPreviewText,
   getSelectedContent,
   getSubChapterParagraphs,
+  getViewStateFromProgress,
   splitIntoParagraphs,
 } from '../course-detail.utils';
 import type { Course } from '@/services/courseService';
@@ -150,6 +153,73 @@ describe('course-detail.utils', () => {
     ]);
   });
 
+  // Verifies the percentage calculation used to save a user's progression from the current step.
+  it('calculates completion percentage from the selected view', () => {
+    const course = createCourse();
+    const navigationItems = buildNavigationItems(course);
+
+    expect(
+      calculateCompletionPercentage(navigationItems, { type: 'overview' }),
+    ).toBe(0);
+    expect(
+      calculateCompletionPercentage(navigationItems, {
+        type: 'chapter',
+        chapterId: 'chapter-1',
+      }),
+    ).toBe(33);
+    expect(
+      calculateCompletionPercentage(navigationItems, {
+        type: 'subchapter',
+        chapterId: 'chapter-1',
+        subChapterId: 'sub-1',
+      }),
+    ).toBe(67);
+  });
+
+  // Verifies that stored progress can restore the matching view state on page load.
+  it('restores the selected view from saved progress', () => {
+    expect(
+      getViewStateFromProgress({
+        id: 'progress-1',
+        userId: 1,
+        courseId: 'course-1',
+        completionPercentage: 50,
+        completed: false,
+        completedAt: null,
+        lastAccessedAt: '2026-01-01T00:00:00.000Z',
+        lastViewedType: 'chapter',
+        lastChapterId: 'chapter-1',
+        lastSubChapterId: null,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:00:00.000Z',
+      }),
+    ).toEqual({
+      type: 'chapter',
+      chapterId: 'chapter-1',
+    });
+
+    expect(getViewStateFromProgress(null)).toEqual({ type: 'overview' });
+  });
+
+  // Verifies that the saved payload contains the right completion percentage and navigation identifiers.
+  it('builds a progress payload from the current view', () => {
+    const course = createCourse();
+    const navigationItems = buildNavigationItems(course);
+
+    expect(
+      getProgressPayloadFromView(navigationItems, {
+        type: 'subchapter',
+        chapterId: 'chapter-1',
+        subChapterId: 'sub-1',
+      }),
+    ).toEqual({
+      completionPercentage: 67,
+      lastViewedType: 'subchapter',
+      lastChapterId: 'chapter-1',
+      lastSubChapterId: 'sub-1',
+    });
+  });
+
   // Verifies that the page safely falls back to overview content when the requested chapter is missing.
   it('returns overview content when overview is selected or chapter is missing', () => {
     const course = createCourse();
@@ -159,7 +229,7 @@ describe('course-detail.utils', () => {
     ).toMatchObject({
       kind: 'overview',
       title: 'Overview',
-      description: 'Course detail',
+      description: '',
       paragraphs: ['Overview paragraph 1.', 'Overview paragraph 2.'],
     });
 

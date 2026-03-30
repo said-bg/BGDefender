@@ -5,7 +5,6 @@ import { Chapter } from '../entities/chapter.entity';
 import { SubChapter } from '../entities/sub-chapter.entity';
 import { PedagogicalContent } from '../entities/pedagogical-content.entity';
 import { Progress } from '../entities/progress.entity';
-import { User } from '../entities/user.entity';
 import { Author } from '../entities/author.entity';
 import { CourseService } from './services/course.service';
 import { CourseController } from './controllers/course.controller';
@@ -26,7 +25,6 @@ import { ProgressController } from './controllers/progress.controller';
       SubChapter,
       PedagogicalContent,
       Progress,
-      User,
       Author,
     ]),
   ],

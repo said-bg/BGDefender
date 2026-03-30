@@ -1,4 +1,13 @@
-import { IsBoolean, IsNumber, IsOptional, Max, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
+import { ProgressViewType } from '../../entities/progress.entity';
 
 export class UpdateProgressDto {
   @IsNumber()
@@ -10,4 +19,16 @@ export class UpdateProgressDto {
   @IsBoolean()
   @IsOptional()
   completed?: boolean;
+
+  @IsEnum(ProgressViewType)
+  @IsOptional()
+  lastViewedType?: ProgressViewType;
+
+  @IsUUID()
+  @IsOptional()
+  lastChapterId?: string;
+
+  @IsUUID()
+  @IsOptional()
+  lastSubChapterId?: string;
 }

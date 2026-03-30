@@ -1,7 +1,7 @@
 'use client';
 
 import { Course } from '@/services/courseService';
-import styles from './course-page.module.css';
+import styles from '../course-page.module.css';
 import {
   ActiveLanguage,
   ViewState,
@@ -9,7 +9,7 @@ import {
   getLocalizedText,
   getPreviewText,
   getSubChapterParagraphs,
-} from './course-detail.utils';
+} from '../course-detail.utils';
 
 type CourseSidebarProps = {
   course: Course;

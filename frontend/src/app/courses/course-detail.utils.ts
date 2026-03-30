@@ -5,6 +5,7 @@ import {
   PedagogicalContent,
   SubChapter,
 } from '@/services/courseService';
+import type { CourseProgress, ProgressViewType } from '@/services/progressService';
 
 export type ActiveLanguage = 'en' | 'fi';
 
@@ -24,6 +25,18 @@ export type SelectedContent = {
 export type NavigationItem = {
   key: string;
   view: ViewState;
+};
+
+export const getViewKey = (view: ViewState): string => {
+  if (view.type === 'overview') {
+    return 'overview';
+  }
+
+  if (view.type === 'chapter') {
+    return `chapter:${view.chapterId}`;
+  }
+
+  return `subchapter:${view.subChapterId}`;
 };
 
 export const getPreviewText = (text: string, length = 96) => {
@@ -147,6 +160,89 @@ export const buildNavigationItems = (course: Course): NavigationItem[] => {
   return items;
 };
 
+export const calculateCompletionPercentage = (
+  navigationItems: NavigationItem[],
+  selectedView: ViewState,
+): number => {
+  const detailedSteps = navigationItems.length - 1;
+
+  if (detailedSteps <= 0 || selectedView.type === 'overview') {
+    return 0;
+  }
+
+  const currentIndex = navigationItems.findIndex(
+    (item) => item.key === getViewKey(selectedView),
+  );
+
+  if (currentIndex <= 0) {
+    return 0;
+  }
+
+  return Math.min(
+    100,
+    Math.round((currentIndex / detailedSteps) * 100),
+  );
+};
+
+export const getViewStateFromProgress = (
+  progress: CourseProgress | null,
+): ViewState => {
+  if (!progress?.lastViewedType) {
+    return { type: 'overview' };
+  }
+
+  if (progress.lastViewedType === 'chapter' && progress.lastChapterId) {
+    return {
+      type: 'chapter',
+      chapterId: progress.lastChapterId,
+    };
+  }
+
+  if (
+    progress.lastViewedType === 'subchapter' &&
+    progress.lastChapterId &&
+    progress.lastSubChapterId
+  ) {
+    return {
+      type: 'subchapter',
+      chapterId: progress.lastChapterId,
+      subChapterId: progress.lastSubChapterId,
+    };
+  }
+
+  return { type: 'overview' };
+};
+
+export const getProgressPayloadFromView = (
+  navigationItems: NavigationItem[],
+  selectedView: ViewState,
+): {
+  completionPercentage: number;
+  lastViewedType: ProgressViewType;
+  lastChapterId?: string;
+  lastSubChapterId?: string;
+} => {
+  const completionPercentage = calculateCompletionPercentage(
+    navigationItems,
+    selectedView,
+  );
+
+  if (selectedView.type === 'chapter') {
+    return {
+      completionPercentage,
+      lastViewedType: 'chapter',
+      lastChapterId: selectedView.chapterId,
+    };
+  }
+
+  return {
+    completionPercentage,
+    lastViewedType: 'subchapter',
+    lastChapterId: selectedView.chapterId,
+    lastSubChapterId: selectedView.subChapterId,
+  };
+};
+
 export const getSelectedContent = (
   course: Course,
   selectedView: ViewState,
@@ -159,7 +255,7 @@ export const getSelectedContent = (
     return {
       kind: 'overview',
       title: t('detail.overview'),
-      description: t('detail.courseDetail'),
+      description: '',
       paragraphs: overviewParagraphs,
     };
   }
@@ -172,7 +268,7 @@ export const getSelectedContent = (
     return {
       kind: 'overview',
       title: t('detail.overview'),
-      description: t('detail.courseDetail'),
+      description: '',
       paragraphs: overviewParagraphs,
     };
   }

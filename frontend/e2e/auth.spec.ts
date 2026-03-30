@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+const API_BASE = 'http://localhost:3001/api';
+
 // ============================================================================
 // Utilities
 // ============================================================================
@@ -35,6 +37,16 @@ test.describe('Authentication - E2E Tests', () => {
     const email = uniqueEmail();
     const password = TEST_CREDENTIALS.password;
 
+    await page.route(`${API_BASE}/auth/register`, async (route) => {
+      await route.fulfill({
+        status: 201,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          message: 'Registration successful',
+        }),
+      });
+    });
+
     await page.goto('/auth/register', { waitUntil: 'networkidle' });
     await expect(page.locator('h1')).toContainText(/create account/i);
 
@@ -53,12 +65,15 @@ test.describe('Authentication - E2E Tests', () => {
    * Test 2: Redirect unauthenticated user to login
    * 
    * Verifies:
-   * - Without auth token, accessing /dashboard redirects to /auth/login
+   * - Without auth token, accessing /my-courses redirects to /auth/login
    * - Maintains redirect parameter if present
    */
   test('should redirect unauthenticated user to login when accessing protected route', async ({ page }) => {
-    // Try to access protected dashboard without auth
-    await page.goto('/dashboard', { waitUntil: 'networkidle' });
+    // Try to access the protected courses page without auth.
+    await page.goto('/my-courses', { waitUntil: 'domcontentloaded' });
+
+    // ProtectedRoute redirects on the client once auth finishes initializing.
+    await page.waitForURL(/\/auth\/login\?redirect=/, { timeout: 10000 });
 
     // Should be redirected to login
     expect(page.url()).toContain('/auth/login');

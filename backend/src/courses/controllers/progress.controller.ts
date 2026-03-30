@@ -6,60 +6,52 @@ import {
   HttpCode,
   Param,
   ParseUUIDPipe,
-  Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
 import { ProgressService } from '../services/progress.service';
-import { CreateProgressDto } from '../dto/create-progress.dto';
 import { UpdateProgressDto } from '../dto/update-progress.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import type { SafeUser } from '../../auth/types/safe-user.type';
 
 @Controller('progress')
+@UseGuards(JwtAuthGuard)
 export class ProgressController {
   constructor(private readonly progressService: ProgressService) {}
 
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  async create(@Body() createProgressDto: CreateProgressDto) {
-    return await this.progressService.create(createProgressDto);
+  @Get('me')
+  async findMyProgress(@CurrentUser() user: SafeUser) {
+    return this.progressService.findAllForUser(user.id);
   }
 
-  @Get('user/:userId/course/:courseId')
-  async findByUserAndCourse(
-    @Param('userId', new ParseUUIDPipe()) userId: string,
+  @Get('me/course/:courseId')
+  async findMyCourseProgress(
+    @CurrentUser() user: SafeUser,
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
   ) {
-    const progress = await this.progressService.findByUserAndCourse(
-      userId,
-      courseId,
-    );
-
-    if (!progress) {
-      return null;
-    }
-
-    return progress;
+    return this.progressService.findByUserAndCourse(user.id, courseId);
   }
 
-  @Get(':id')
-  async findById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.progressService.findById(id);
-  }
-
-  @Put(':id')
-  @UseGuards(JwtAuthGuard)
-  async update(
-    @Param('id', new ParseUUIDPipe()) id: string,
+  @Put('me/course/:courseId')
+  async upsertMyCourseProgress(
+    @CurrentUser() user: SafeUser,
+    @Param('courseId', new ParseUUIDPipe()) courseId: string,
     @Body() updateProgressDto: UpdateProgressDto,
   ) {
-    return await this.progressService.update(id, updateProgressDto);
+    return this.progressService.upsertForUserAndCourse(
+      user.id,
+      courseId,
+      updateProgressDto,
+    );
   }
 
-  @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @Delete('me/course/:courseId')
   @HttpCode(204)
-  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    await this.progressService.delete(id);
+  async deleteMyCourseProgress(
+    @CurrentUser() user: SafeUser,
+    @Param('courseId', new ParseUUIDPipe()) courseId: string,
+  ) {
+    await this.progressService.deleteByUserAndCourse(user.id, courseId);
   }
 }

@@ -2,6 +2,7 @@ import { expect, Page, test } from '@playwright/test';
 
 const API_BASE = 'http://localhost:3001/api';
 const TOKEN_KEY = 'bg_defender_token';
+const LOCAL_COVER_IMAGE = '/assets/images/home-bg.png';
 
 type MockUser = {
   id: number;
@@ -86,7 +87,7 @@ const createCourse = (level: 'free' | 'premium'): MockCourse => ({
   level,
   status: 'published',
   estimatedDuration: 120,
-  coverImage: '/cover.jpg',
+  coverImage: LOCAL_COVER_IMAGE,
   authors: [
     {
       id: 'author-1',
@@ -131,7 +132,12 @@ const createCourse = (level: 'free' | 'premium'): MockCourse => ({
   updatedAt: '2026-01-01T00:00:00.000Z',
 });
 
-async function mockCourseDetail(page: Page, course: MockCourse, user?: MockUser) {
+async function mockCourseDetail(
+  page: Page,
+  course: MockCourse,
+  user?: MockUser,
+  storedProgress: Record<string, unknown> | null = null,
+) {
   await page.route(`${API_BASE}/courses/${course.id}`, async (route) => {
     await route.fulfill({
       status: 200,
@@ -155,6 +161,45 @@ async function mockCourseDetail(page: Page, course: MockCourse, user?: MockUser)
       contentType: 'application/json',
       body: JSON.stringify(user),
     });
+  });
+
+  await page.route(`${API_BASE}/progress/me/course/${course.id}`, async (route) => {
+    const method = route.request().method();
+
+    if (method === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(storedProgress),
+      });
+      return;
+    }
+
+    if (method === 'PUT') {
+      const requestBody = route.request().postDataJSON();
+
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          id: 'progress-1',
+          userId: user?.id ?? 0,
+          courseId: course.id,
+          completed: requestBody.completionPercentage === 100,
+          completedAt:
+            requestBody.completionPercentage === 100
+              ? '2026-01-02T00:00:00.000Z'
+              : null,
+          lastAccessedAt: '2026-01-02T00:00:00.000Z',
+          createdAt: '2026-01-02T00:00:00.000Z',
+          updatedAt: '2026-01-02T00:00:00.000Z',
+          ...requestBody,
+        }),
+      });
+      return;
+    }
+
+    await route.fallback();
   });
 }
 
@@ -246,6 +291,35 @@ test.describe('Course detail - E2E tests', () => {
     await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();
     await expect(
       page.getByRole('main').getByText('premium content paragraph 1.'),
+    ).toBeVisible();
+  });
+
+  // Verifies that a saved progress row restores the course directly on the last viewed lesson.
+  test('authenticated user resumes the course from saved progress', async ({
+    page,
+  }) => {
+    const course = createCourse('free');
+    await setAuthenticatedUser(page);
+    await mockCourseDetail(page, course, freeUser, {
+      id: 'progress-restore',
+      userId: freeUser.id,
+      courseId: course.id,
+      completionPercentage: 67,
+      completed: false,
+      completedAt: null,
+      lastAccessedAt: '2026-01-02T00:00:00.000Z',
+      lastViewedType: 'subchapter',
+      lastChapterId: 'chapter-free-1',
+      lastSubChapterId: 'sub-free-1',
+      createdAt: '2026-01-02T00:00:00.000Z',
+      updatedAt: '2026-01-02T00:00:00.000Z',
+    });
+
+    await page.goto(`/courses/${course.id}`, { waitUntil: 'networkidle' });
+
+    await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();
+    await expect(
+      page.getByRole('main').getByText('free content paragraph 1.'),
     ).toBeVisible();
   });
 });

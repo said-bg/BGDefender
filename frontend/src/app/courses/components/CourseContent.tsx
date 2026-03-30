@@ -1,16 +1,17 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { Trans, useTranslation } from 'react-i18next';
 import { Course } from '@/services/courseService';
-import styles from './course-page.module.css';
+import styles from '../course-page.module.css';
 import {
   ActiveLanguage,
   NavigationItem,
   SelectedContent,
   ViewState,
   getAuthorRole,
-} from './course-detail.utils';
+} from '../course-detail.utils';
 
 type AccessState =
   | 'public'
@@ -59,15 +60,18 @@ export function CourseContent({
         </div>
       </div>
 
-      <p className={styles.contentDescription}>
-        {canReadContent
-          ? selectedContent.description
-          : accessState === 'checking'
-            ? t('detail.checkingAccess')
-            : accessState === 'login_required'
-              ? t('detail.loginRequiredDescription')
-              : t('detail.premiumRequiredDescription')}
-      </p>
+      {(selectedContent.description ||
+        (!canReadContent && accessState !== 'granted')) && (
+        <p className={styles.contentDescription}>
+          {canReadContent
+            ? selectedContent.description
+            : accessState === 'checking'
+              ? t('detail.checkingAccess')
+              : accessState === 'login_required'
+                ? t('detail.loginRequiredDescription')
+                : t('detail.premiumRequiredDescription')}
+        </p>
+      )}
 
       {selectedContent.kind === 'overview' && (
         <section className={styles.authorsSection}>
@@ -76,10 +80,12 @@ export function CourseContent({
             {course.authors.map((author) => (
               <article key={author.id} className={styles.authorCard}>
                 {author.photo ? (
-                  <img
+                  <Image
                     src={author.photo}
                     alt={author.name}
                     className={styles.authorAvatarImage}
+                    width={50}
+                    height={50}
                   />
                 ) : (
                   <div className={styles.authorAvatar}>

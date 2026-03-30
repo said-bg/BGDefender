@@ -10,14 +10,20 @@ import {
 import { User } from './user.entity';
 import { Course } from './course.entity';
 
+export enum ProgressViewType {
+  OVERVIEW = 'overview',
+  CHAPTER = 'chapter',
+  SUBCHAPTER = 'subchapter',
+}
+
 @Entity('progress')
 @Index(['userId', 'courseId'], { unique: true })
 export class Progress {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('uuid')
-  userId: string;
+  @Column('int')
+  userId: number;
 
   @Column('uuid')
   courseId: string;
@@ -33,6 +39,20 @@ export class Progress {
 
   @Column('timestamp', { default: () => 'CURRENT_TIMESTAMP' })
   lastAccessedAt: Date;
+
+  // Keep the last visible step so the user can resume the course later.
+  @Column({
+    type: 'enum',
+    enum: ProgressViewType,
+    nullable: true,
+  })
+  lastViewedType: ProgressViewType | null;
+
+  @Column('uuid', { nullable: true })
+  lastChapterId: string | null;
+
+  @Column('uuid', { nullable: true })
+  lastSubChapterId: string | null;
 
   @ManyToOne(() => User, {})
   user: User;

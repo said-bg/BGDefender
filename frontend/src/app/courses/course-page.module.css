@@ -1,4 +1,4 @@
-.pageShell {
+﻿.pageShell {
   min-height: 100vh;
   background: #ffffff;
   color: #111827;
@@ -7,11 +7,26 @@
 .hero {
   position: relative;
   min-height: 21rem;
-  background-size: cover;
-  background-position: center;
   display: flex;
   align-items: flex-end;
   padding: 3rem 1.5rem 2.5rem;
+  overflow: hidden;
+}
+
+.heroBackground,
+.heroFallback {
+  position: absolute;
+  inset: 0;
+}
+
+.heroBackground {
+  object-fit: cover;
+}
+
+.heroFallback {
+  background:
+    linear-gradient(135deg, rgba(255, 166, 0, 0.22), rgba(17, 24, 39, 0.74)),
+    linear-gradient(180deg, #1f2937 0%, #111827 100%);
 }
 
 .hero::after {
@@ -20,7 +35,7 @@
   inset: 0;
   background:
     linear-gradient(90deg, rgba(17, 24, 39, 0.56), rgba(17, 24, 39, 0.22)),
-    linear-gradient(180deg, rgba(255, 107, 53, 0.08), rgba(255, 107, 53, 0.02));
+    linear-gradient(180deg, rgba(255, 166, 0, 0.08), rgba(255, 166, 0, 0.02));
 }
 
 .heroInner {
@@ -97,7 +112,7 @@
 .overviewCardActive {
   background:
     linear-gradient(180deg, rgba(31, 41, 55, 0.98), rgba(17, 24, 39, 0.98)),
-    linear-gradient(90deg, rgba(255, 107, 53, 0.12), transparent);
+    linear-gradient(90deg, rgba(255, 166, 0, 0.12), transparent);
 }
 
 .overviewTitle {
@@ -139,7 +154,7 @@
 }
 
 .chapterButtonActive {
-  background: linear-gradient(90deg, rgba(255, 107, 53, 0.08), rgba(255, 107, 53, 0.015));
+  background: linear-gradient(90deg, rgba(255, 166, 0, 0.08), rgba(255, 166, 0, 0.015));
 }
 
 .chapterMeta {
@@ -153,8 +168,8 @@
   border-radius: 999px;
   display: grid;
   place-items: center;
-  background: #fff1ea;
-  color: #ff6b35;
+  background: #fff6d9;
+  color: #FFA600;
   font-size: 0.86rem;
   font-weight: 800;
 }
@@ -197,11 +212,11 @@
 }
 
 .subChapterButton:hover {
-  border-left-color: #ff6b35;
+  border-left-color: #FFA600;
 }
 
 .subChapterButtonActive {
-  border-left-color: #ff6b35;
+  border-left-color: #FFA600;
 }
 
 .subChapterInner {
@@ -241,7 +256,7 @@
 
 .contentEyebrow {
   margin: 0 0 0.55rem;
-  color: #ff6b35;
+  color: #FFA600;
   font-size: 0.82rem;
   letter-spacing: 0.14em;
   font-weight: 800;
@@ -302,7 +317,7 @@
 .authorAvatar {
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #ff6b35, #ff9d5c);
+  background: linear-gradient(135deg, #FFA600, #ffbf47);
   color: #fff;
   font-weight: 800;
   font-size: 1.1rem;
@@ -341,9 +356,9 @@
   display: grid;
   gap: 0.85rem;
   padding: 1.15rem 1.35rem;
-  border: 1px solid #fed7c3;
+  border: 1px solid #ffe0a3;
   border-radius: 1.1rem;
-  background: linear-gradient(180deg, #fffaf7 0%, #fff4ee 100%);
+  background: linear-gradient(180deg, #fffbf0 0%, #fff7e0 100%);
   font-family: inherit;
 }
 
@@ -364,7 +379,7 @@
 }
 
 .lockedInlineLink {
-  color: #ff6b35;
+  color: #FFA600;
   text-decoration: none;
   font-weight: 700;
   transition:
@@ -373,7 +388,7 @@
 }
 
 .lockedInlineLink:hover {
-  color: #eb5d2a;
+  color: #EB9B00;
   text-decoration: underline;
 }
 
@@ -408,8 +423,8 @@
 }
 
 .navigationButton:hover:not(:disabled) {
-  border-color: #ff6b35;
-  color: #ff6b35;
+  border-color: #FFA600;
+  color: #FFA600;
   transform: translateY(-1px);
 }
 
@@ -419,14 +434,14 @@
 }
 
 .navigationButtonPrimary {
-  border-color: #ff6b35;
-  background: #ff6b35;
+  border-color: #FFA600;
+  background: #FFA600;
   color: #ffffff;
 }
 
 .navigationButtonPrimary:hover:not(:disabled) {
-  background: #eb5d2a;
-  border-color: #eb5d2a;
+  background: #EB9B00;
+  border-color: #EB9B00;
   color: #ffffff;
 }
 
@@ -477,3 +492,4 @@
     width: 100%;
   }
 }
+

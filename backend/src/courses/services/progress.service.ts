@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Progress } from '../../entities/progress.entity';
-import { User } from '../../entities/user.entity';
+import { Progress, ProgressViewType } from '../../entities/progress.entity';
 import { Course } from '../../entities/course.entity';
-import { CreateProgressDto } from '../dto/create-progress.dto';
+import { Chapter } from '../../entities/chapter.entity';
+import { SubChapter } from '../../entities/sub-chapter.entity';
 import { UpdateProgressDto } from '../dto/update-progress.dto';
 
 @Injectable()
@@ -12,78 +16,146 @@ export class ProgressService {
   constructor(
     @InjectRepository(Progress)
     private readonly progressRepository: Repository<Progress>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
+    @InjectRepository(Chapter)
+    private readonly chapterRepository: Repository<Chapter>,
+    @InjectRepository(SubChapter)
+    private readonly subChapterRepository: Repository<SubChapter>,
   ) {}
 
-  async create(createProgressDto: CreateProgressDto): Promise<Progress> {
-    const user = await this.userRepository.findOne({
-      where: { email: createProgressDto.userId },
+  async findAllForUser(userId: number): Promise<Progress[]> {
+    return this.progressRepository.find({
+      where: { userId },
+      relations: ['course'],
+      order: { lastAccessedAt: 'DESC' },
     });
-
-    if (!user) {
-      throw new NotFoundException(
-        `User with ID ${createProgressDto.userId} not found`,
-      );
-    }
-
-    const course = await this.courseRepository.findOne({
-      where: { id: createProgressDto.courseId },
-    });
-
-    if (!course) {
-      throw new NotFoundException(
-        `Course with ID ${createProgressDto.courseId} not found`,
-      );
-    }
-
-    const progress = this.progressRepository.create(createProgressDto);
-    return await this.progressRepository.save(progress);
   }
 
   async findByUserAndCourse(
-    userId: string,
+    userId: number,
     courseId: string,
   ): Promise<Progress | null> {
-    return await this.progressRepository.findOne({
+    return this.progressRepository.findOne({
       where: { userId, courseId },
     });
   }
 
-  async findById(id: string): Promise<Progress> {
-    const progress = await this.progressRepository.findOne({
-      where: { id },
-    });
-
-    if (!progress) {
-      throw new NotFoundException(`Progress with ID ${id} not found`);
-    }
-
-    return progress;
-  }
-
-  async update(
-    id: string,
+  async upsertForUserAndCourse(
+    userId: number,
+    courseId: string,
     updateProgressDto: UpdateProgressDto,
   ): Promise<Progress> {
-    const progress = await this.findById(id);
+    await this.ensureValidTarget(courseId, updateProgressDto);
+
+    const existingProgress = await this.findByUserAndCourse(userId, courseId);
+    const progress =
+      existingProgress ??
+      this.progressRepository.create({
+        userId,
+        courseId,
+        completionPercentage: 0,
+        completed: false,
+        completedAt: null,
+        lastViewedType: null,
+        lastChapterId: null,
+        lastSubChapterId: null,
+      });
 
     Object.assign(progress, updateProgressDto);
+    this.normalizeProgressState(progress);
 
-    if (progress.completionPercentage === 100 && !progress.completed) {
+    // The percentage is the source of truth for completion state.
+    if (progress.completionPercentage === 100) {
       progress.completed = true;
-      progress.completedAt = new Date();
+      progress.completedAt ??= new Date();
+    } else {
+      progress.completed = false;
+      progress.completedAt = null;
     }
 
     progress.lastAccessedAt = new Date();
 
-    return await this.progressRepository.save(progress);
+    return this.progressRepository.save(progress);
   }
 
-  async delete(id: string): Promise<void> {
-    const progress = await this.findById(id);
+  async deleteByUserAndCourse(userId: number, courseId: string): Promise<void> {
+    const progress = await this.findByUserAndCourse(userId, courseId);
+
+    if (!progress) {
+      return;
+    }
+
     await this.progressRepository.remove(progress);
+  }
+
+  private async ensureValidTarget(
+    courseId: string,
+    updateProgressDto: UpdateProgressDto,
+  ): Promise<void> {
+    const course = await this.courseRepository.findOne({
+      where: { id: courseId },
+    });
+
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${courseId} not found`);
+    }
+
+    const { lastViewedType, lastChapterId, lastSubChapterId } =
+      updateProgressDto;
+
+    if (lastViewedType === ProgressViewType.CHAPTER && !lastChapterId) {
+      throw new BadRequestException(
+        'lastChapterId is required when lastViewedType is chapter',
+      );
+    }
+
+    if (lastViewedType === ProgressViewType.SUBCHAPTER) {
+      if (!lastChapterId || !lastSubChapterId) {
+        throw new BadRequestException(
+          'lastChapterId and lastSubChapterId are required when lastViewedType is subchapter',
+        );
+      }
+    }
+
+    if (!lastChapterId) {
+      return;
+    }
+
+    const chapter = await this.chapterRepository.findOne({
+      where: { id: lastChapterId, courseId },
+    });
+
+    if (!chapter) {
+      throw new NotFoundException(
+        `Chapter with ID ${lastChapterId} not found for course ${courseId}`,
+      );
+    }
+
+    if (!lastSubChapterId) {
+      return;
+    }
+
+    const subChapter = await this.subChapterRepository.findOne({
+      where: { id: lastSubChapterId, chapterId: lastChapterId },
+    });
+
+    if (!subChapter) {
+      throw new NotFoundException(
+        `Subchapter with ID ${lastSubChapterId} not found for chapter ${lastChapterId}`,
+      );
+    }
+  }
+
+  private normalizeProgressState(progress: Progress): void {
+    if (progress.lastViewedType === ProgressViewType.OVERVIEW) {
+      progress.lastChapterId = null;
+      progress.lastSubChapterId = null;
+      return;
+    }
+
+    if (progress.lastViewedType === ProgressViewType.CHAPTER) {
+      progress.lastSubChapterId = null;
+    }
   }
 }

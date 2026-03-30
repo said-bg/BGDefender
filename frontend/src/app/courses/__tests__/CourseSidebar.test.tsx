@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { CourseSidebar } from '../CourseSidebar';
+import { CourseSidebar } from '../components/CourseSidebar';
 import type { Course } from '@/services/courseService';
 
 const createCourse = (): Course => ({
