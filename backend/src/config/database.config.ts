@@ -10,6 +10,7 @@ import { SubChapter } from '../entities/sub-chapter.entity';
 import { PedagogicalContent } from '../entities/pedagogical-content.entity';
 import { Progress } from '../entities/progress.entity';
 import { Favorite } from '../entities/favorite.entity';
+import { Resource } from '../entities/resource.entity';
 
 @Injectable()
 export class DatabaseConfig implements TypeOrmOptionsFactory {
@@ -37,6 +38,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         PedagogicalContent,
         Progress,
         Favorite,
+        Resource,
       ],
       synchronize: isDev,
       logging: enableDatabaseLogging,

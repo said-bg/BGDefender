@@ -61,6 +61,7 @@ export const Navbar = () => {
                   logout: t('logout'),
                   premiumBadge: t('badges.premium'),
                   profile: t('profile'),
+                  resources: t('resources', { defaultValue: 'Resources' }),
                   userBadge: t('badges.user'),
                 }}
               />

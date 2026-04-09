@@ -13,6 +13,7 @@ interface NavbarAccountMenuLabels {
   logout: string;
   premiumBadge: string;
   profile: string;
+  resources: string;
   userBadge: string;
 }
 
@@ -117,6 +118,11 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
             {user.role === UserRole.ADMIN ? (
               <Link href="/admin" className={styles.dropdownLink} onClick={closeMenu}>
                 {labels.admin}
+              </Link>
+            ) : null}
+            {user.role !== UserRole.ADMIN ? (
+              <Link href="/resources" className={styles.dropdownLink} onClick={closeMenu}>
+                {labels.resources}
               </Link>
             ) : null}
             <Link href="/account" className={styles.dropdownLink} onClick={closeMenu}>

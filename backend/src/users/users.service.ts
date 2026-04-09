@@ -19,17 +19,27 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async listUsers(query: ListUsersDto): Promise<{ data: SafeUser[]; count: number }> {
+  async listUsers(
+    query: ListUsersDto,
+  ): Promise<{ data: SafeUser[]; count: number }> {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     if (query.search) {
       const normalizedSearch = `%${query.search.toLowerCase()}%`;
       queryBuilder.andWhere(
         new Brackets((qb) => {
-          qb.where('LOWER(user.email) LIKE :search', { search: normalizedSearch })
-            .orWhere('LOWER(user.firstName) LIKE :search', { search: normalizedSearch })
-            .orWhere('LOWER(user.lastName) LIKE :search', { search: normalizedSearch })
-            .orWhere('LOWER(user.occupation) LIKE :search', { search: normalizedSearch });
+          qb.where('LOWER(user.email) LIKE :search', {
+            search: normalizedSearch,
+          })
+            .orWhere('LOWER(user.firstName) LIKE :search', {
+              search: normalizedSearch,
+            })
+            .orWhere('LOWER(user.lastName) LIKE :search', {
+              search: normalizedSearch,
+            })
+            .orWhere('LOWER(user.occupation) LIKE :search', {
+              search: normalizedSearch,
+            });
         }),
       );
     }

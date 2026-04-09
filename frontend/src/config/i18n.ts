@@ -6,6 +6,7 @@ import enAdmin from '../../public/locales/en/admin.json';
 import enAuth from '../../public/locales/en/auth.json';
 import enCommon from '../../public/locales/en/common.json';
 import enNavbar from '../../public/locales/en/navbar.json';
+import enResources from '../../public/locales/en/resources.json';
 import enUnauthorized from '../../public/locales/en/unauthorized.json';
 import fiAccount from '../../public/locales/fi/account.json';
 import fiAdmin from '../../public/locales/fi/admin.json';
@@ -14,6 +15,7 @@ import fiCommon from '../../public/locales/fi/common.json';
 import enCourses from '../../public/locales/en/courses.json';
 import fiCourses from '../../public/locales/fi/courses.json';
 import fiNavbar from '../../public/locales/fi/navbar.json';
+import fiResources from '../../public/locales/fi/resources.json';
 import fiUnauthorized from '../../public/locales/fi/unauthorized.json';
 
 void i18n
@@ -22,7 +24,7 @@ void i18n
   .init({
     fallbackLng: 'fi',
     defaultNS: 'auth',
-    ns: ['auth', 'courses', 'admin', 'navbar', 'account', 'common', 'unauthorized'],
+    ns: ['auth', 'courses', 'admin', 'navbar', 'account', 'common', 'unauthorized', 'resources'],
     supportedLngs: ['fi', 'en'],
     nonExplicitSupportedLngs: true,
     resources: {
@@ -36,6 +38,7 @@ void i18n
         common: enCommon,
         courses: enCourses,
         navbar: enNavbar,
+        resources: enResources,
         unauthorized: enUnauthorized,
       },
       fi: {
@@ -48,6 +51,7 @@ void i18n
         common: fiCommon,
         courses: fiCourses,
         navbar: fiNavbar,
+        resources: fiResources,
         unauthorized: fiUnauthorized,
       },
     },

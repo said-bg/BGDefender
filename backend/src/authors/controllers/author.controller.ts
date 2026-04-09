@@ -28,15 +28,32 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
 import { resolveLanguage } from '../../config/request-language';
 
-const authorPhotoUploadDirectory = join(process.cwd(), 'uploads', 'author-photos');
+const authorPhotoUploadDirectory = join(
+  process.cwd(),
+  'uploads',
+  'author-photos',
+);
 
 interface UploadedAuthorPhotoFile {
   path: string;
   filename: string;
+  originalname?: string;
 }
 
+type MulterUploadedFile = {
+  mimetype: string;
+  originalname: string;
+};
+type UploadRequest = Pick<Request, 'headers'>;
+type FilenameCallback = (error: Error | null, filename: string) => void;
+type DestinationCallback = (error: Error | null, destination: string) => void;
+type FilterCallback = (error: Error | null, acceptFile: boolean) => void;
+
 const sanitizeFilename = (name: string) =>
-  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 
 @Controller('authors')
 export class AuthorController {
@@ -46,21 +63,38 @@ export class AuthorController {
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
+      // Multer's diskStorage callback types do not flow cleanly through Nest's interceptor config.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       storage: diskStorage({
-        destination: (_request, _file, callback) => {
+        destination: (
+          _request: UploadRequest,
+          _file: MulterUploadedFile,
+          callback: DestinationCallback,
+        ) => {
           mkdirSync(authorPhotoUploadDirectory, { recursive: true });
           callback(null, authorPhotoUploadDirectory);
         },
-        filename: (_request, file, callback) => {
+        filename: (
+          _request: UploadRequest,
+          file: MulterUploadedFile,
+          callback: FilenameCallback,
+        ) => {
           const extension = extname(file.originalname || '').toLowerCase();
           const baseName = sanitizeFilename(
             file.originalname.replace(/\.[^/.]+$/, '') || 'author-photo',
           );
           const timestamp = Date.now();
-          callback(null, `${baseName || 'author-photo'}-${timestamp}${extension}`);
+          callback(
+            null,
+            `${baseName || 'author-photo'}-${timestamp}${extension}`,
+          );
         },
       }),
-      fileFilter: (_request, file, callback) => {
+      fileFilter: (
+        _request: UploadRequest,
+        file: MulterUploadedFile,
+        callback: FilterCallback,
+      ) => {
         const language = resolveLanguage(
           typeof _request.headers['accept-language'] === 'string'
             ? _request.headers['accept-language']
@@ -87,7 +121,7 @@ export class AuthorController {
       },
     }),
   )
-  async uploadAuthorPhoto(
+  uploadAuthorPhoto(
     @UploadedFile() file: UploadedAuthorPhotoFile | undefined,
     @Req() request: Request,
   ) {

@@ -121,6 +121,65 @@ export interface UpdateAdminUserRequest {
   isActive?: boolean;
 }
 
+export enum ResourceType {
+  FILE = 'FILE',
+  LINK = 'LINK',
+}
+
+export enum ResourceSource {
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+}
+
+export interface Resource {
+  id: string;
+  title: string;
+  description: string | null;
+  type: ResourceType;
+  fileUrl: string | null;
+  filename: string | null;
+  mimeType: string | null;
+  linkUrl: string | null;
+  source: ResourceSource;
+  assignedUserId: number;
+  assignedUser: Pick<User, 'id' | 'email' | 'firstName' | 'lastName'>;
+  createdByUserId: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminResourcesResponse {
+  data: Resource[];
+  count: number;
+}
+
+export interface UploadResourceResponse {
+  url: string;
+  filename: string;
+  mimeType: string;
+}
+
+export interface CreateAdminResourceRequest {
+  title: string;
+  description?: string | null;
+  type: ResourceType;
+  fileUrl?: string;
+  filename?: string;
+  mimeType?: string;
+  linkUrl?: string;
+  assignedUserId: number;
+}
+
+export interface CreateMyResourceRequest {
+  title: string;
+  description?: string | null;
+  type: ResourceType;
+  fileUrl?: string;
+  filename?: string;
+  mimeType?: string;
+  linkUrl?: string;
+}
+
 /**
  * Error Response (from backend)
  */

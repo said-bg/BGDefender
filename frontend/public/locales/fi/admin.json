@@ -1,7 +1,7 @@
 {
   "eyebrow": "Ylläpitopaneeli",
   "title": "Hallintapaneeli",
-  "subtitle": "Pidä BG Defender -kurssiluettelo järjestyksessä ja siirry seuraavaan ylläpitotoimintoon, {{name}}.",
+  "subtitle": "Pidä BG Defender -kurssiluettelo järjestyksessä ja siirry seuraavaan ylläpitotoimintoon.",
   "backToOverview": "Takaisin hallintapaneeliin",
   "manageCourses": "Avaa kurssikirjasto",
   "manageAuthors": "Hallitse tekijöitä",

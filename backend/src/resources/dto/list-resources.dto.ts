@@ -1,25 +1,31 @@
 import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
-import { UserPlan, UserRole } from '../../entities/user.entity';
+import { ResourceSource, ResourceType } from '../../entities/resource.entity';
 
 const trimString = ({ value }: { value: unknown }): unknown =>
   typeof value === 'string' ? value.trim() : value;
 
 const toNumber = ({ value }: { value: unknown }): number => Number(value);
 
-export class ListUsersDto {
+export class ListResourcesDto {
   @IsOptional()
   @Transform(trimString)
   @IsString()
   search?: string;
 
   @IsOptional()
-  @IsEnum(UserPlan)
-  plan?: UserPlan;
+  @Transform(toNumber)
+  @IsInt()
+  @Min(1)
+  assignedUserId?: number;
 
   @IsOptional()
-  @IsEnum(UserRole)
-  role?: UserRole;
+  @IsEnum(ResourceType)
+  type?: ResourceType;
+
+  @IsOptional()
+  @IsEnum(ResourceSource)
+  source?: ResourceSource;
 
   @IsOptional()
   @Transform(toNumber)

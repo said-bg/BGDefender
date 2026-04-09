@@ -76,7 +76,9 @@ describe('UsersService', () => {
 
   it('updates plan and role for another user', async () => {
     userRepository.findOne.mockResolvedValue({ ...mockUser });
-    userRepository.save.mockImplementation(async (user: User) => user);
+    userRepository.save.mockImplementation((user: User) =>
+      Promise.resolve(user),
+    );
 
     const result = await service.updateAdminUser(
       mockUser.id,

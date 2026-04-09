@@ -28,21 +28,45 @@ import { mkdirSync } from 'fs';
 import type { Request } from 'express';
 import { resolveLanguage } from '../../config/request-language';
 
-const courseCoverUploadDirectory = join(process.cwd(), 'uploads', 'course-covers');
-const courseContentMediaUploadDirectory = join(process.cwd(), 'uploads', 'course-content-media');
+const courseCoverUploadDirectory = join(
+  process.cwd(),
+  'uploads',
+  'course-covers',
+);
+const courseContentMediaUploadDirectory = join(
+  process.cwd(),
+  'uploads',
+  'course-content-media',
+);
 
 interface UploadedCoverFile {
   path: string;
   filename: string;
+  mimetype?: string;
+  originalname?: string;
 }
 
 interface UploadedMediaFile {
   path: string;
   filename: string;
+  mimetype?: string;
+  originalname?: string;
 }
 
+type MulterUploadedFile = {
+  mimetype: string;
+  originalname: string;
+};
+type UploadRequest = Pick<Request, 'headers'>;
+type FilenameCallback = (error: Error | null, filename: string) => void;
+type DestinationCallback = (error: Error | null, destination: string) => void;
+type FilterCallback = (error: Error | null, acceptFile: boolean) => void;
+
 const sanitizeFilename = (name: string) =>
-  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 
 @Controller('courses')
 export class CourseController {
@@ -52,21 +76,38 @@ export class CourseController {
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
+      // Multer's diskStorage callback types do not flow cleanly through Nest's interceptor config.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       storage: diskStorage({
-        destination: (_request, _file, callback) => {
+        destination: (
+          _request: UploadRequest,
+          _file: MulterUploadedFile,
+          callback: DestinationCallback,
+        ) => {
           mkdirSync(courseCoverUploadDirectory, { recursive: true });
           callback(null, courseCoverUploadDirectory);
         },
-        filename: (_request, file, callback) => {
+        filename: (
+          _request: UploadRequest,
+          file: MulterUploadedFile,
+          callback: FilenameCallback,
+        ) => {
           const extension = extname(file.originalname || '').toLowerCase();
           const baseName = sanitizeFilename(
             file.originalname.replace(/\.[^/.]+$/, '') || 'course-cover',
           );
           const timestamp = Date.now();
-          callback(null, `${baseName || 'course-cover'}-${timestamp}${extension}`);
+          callback(
+            null,
+            `${baseName || 'course-cover'}-${timestamp}${extension}`,
+          );
         },
       }),
-      fileFilter: (_request, file, callback) => {
+      fileFilter: (
+        _request: UploadRequest,
+        file: MulterUploadedFile,
+        callback: FilterCallback,
+      ) => {
         const language = resolveLanguage(
           typeof _request.headers['accept-language'] === 'string'
             ? _request.headers['accept-language']
@@ -93,7 +134,7 @@ export class CourseController {
       },
     }),
   )
-  async uploadCourseCover(
+  uploadCourseCover(
     @UploadedFile() file: UploadedCoverFile | undefined,
     @Req() request: Request,
   ) {
@@ -135,21 +176,38 @@ export class CourseController {
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
+      // Multer's diskStorage callback types do not flow cleanly through Nest's interceptor config.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       storage: diskStorage({
-        destination: (_request, _file, callback) => {
+        destination: (
+          _request: UploadRequest,
+          _file: MulterUploadedFile,
+          callback: DestinationCallback,
+        ) => {
           mkdirSync(courseContentMediaUploadDirectory, { recursive: true });
           callback(null, courseContentMediaUploadDirectory);
         },
-        filename: (_request, file, callback) => {
+        filename: (
+          _request: UploadRequest,
+          file: MulterUploadedFile,
+          callback: FilenameCallback,
+        ) => {
           const extension = extname(file.originalname || '').toLowerCase();
           const baseName = sanitizeFilename(
             file.originalname.replace(/\.[^/.]+$/, '') || 'course-media',
           );
           const timestamp = Date.now();
-          callback(null, `${baseName || 'course-media'}-${timestamp}${extension}`);
+          callback(
+            null,
+            `${baseName || 'course-media'}-${timestamp}${extension}`,
+          );
         },
       }),
-      fileFilter: (_request, file, callback) => {
+      fileFilter: (
+        _request: UploadRequest,
+        file: MulterUploadedFile,
+        callback: FilterCallback,
+      ) => {
         const language = resolveLanguage(
           typeof _request.headers['accept-language'] === 'string'
             ? _request.headers['accept-language']
@@ -179,7 +237,7 @@ export class CourseController {
       },
     }),
   )
-  async uploadCourseContentMedia(
+  uploadCourseContentMedia(
     @UploadedFile() file: UploadedMediaFile | undefined,
     @Req() request: Request,
   ) {
@@ -191,7 +249,9 @@ export class CourseController {
 
     if (!file) {
       throw new BadRequestException(
-        language === 'fi' ? 'Mediatiedosto vaaditaan' : 'A media file is required',
+        language === 'fi'
+          ? 'Mediatiedosto vaaditaan'
+          : 'A media file is required',
       );
     }
 
