@@ -17,6 +17,8 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
     const isDev = this.configService.get('NODE_ENV') !== 'production';
+    const enableDatabaseLogging =
+      this.configService.get('DATABASE_LOGGING') === 'true';
 
     return {
       type: 'mysql',
@@ -37,7 +39,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         Favorite,
       ],
       synchronize: isDev,
-      logging: isDev,
+      logging: enableDatabaseLogging,
     };
   }
 }

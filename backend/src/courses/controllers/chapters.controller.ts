@@ -15,13 +15,14 @@ import { ChapterService } from '../services/chapters.service';
 import { CreateChapterDto } from '../dto/create-chapter.dto';
 import { UpdateChapterDto } from '../dto/update-chapter.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
 
 @Controller('courses/:courseId/chapters')
 export class ChaptersController {
   constructor(private readonly chapterService: ChapterService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async create(
     @Param('courseId') courseId: string,
     @Body() createChapterDto: CreateChapterDto,
@@ -54,7 +55,7 @@ export class ChaptersController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async update(
     @Param('courseId') courseId: string,
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -65,7 +66,7 @@ export class ChaptersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @HttpCode(204)
   async delete(
     @Param('courseId') courseId: string,

@@ -1,0 +1,64 @@
+.page {
+  width: min(1360px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: 34px 0 64px;
+}
+
+.hero {
+  margin-bottom: 1rem;
+}
+
+.heroCopy {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.backLink {
+  color: #526581;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: #d98200;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #ffa600;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(1.9rem, 3vw, 2.4rem);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.subtitle {
+  max-width: 760px;
+  margin: 0;
+  color: #526581;
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .page {
+    width: calc(100% - 2rem);
+    padding-top: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    width: calc(100% - 1rem);
+  }
+}

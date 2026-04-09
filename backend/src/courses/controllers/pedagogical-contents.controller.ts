@@ -15,6 +15,7 @@ import { PedagogicalContentService } from '../services/pedagogical-contents.serv
 import { CreatePedagogicalContentDto } from '../dto/create-pedagogical-content.dto';
 import { UpdatePedagogicalContentDto } from '../dto/update-pedagogical-content.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
 
 @Controller(
   'courses/:courseId/chapters/:chapterId/sub-chapters/:subChapterId/pedagogical-contents',
@@ -25,7 +26,7 @@ export class PedagogicalContentsController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async create(
     @Param('subChapterId') subChapterId: string,
     @Body() createPedagogicalContentDto: CreatePedagogicalContentDto,
@@ -65,7 +66,7 @@ export class PedagogicalContentsController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async update(
     @Param('subChapterId') subChapterId: string,
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -79,7 +80,7 @@ export class PedagogicalContentsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @HttpCode(204)
   async delete(
     @Param('subChapterId') subChapterId: string,

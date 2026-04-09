@@ -1,27 +1,132 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
   Put,
   Query,
+  Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { mkdirSync } from 'fs';
+import { extname, join } from 'path';
+import type { Request } from 'express';
 import { AuthorService } from '../services/author.service';
 import { CreateAuthorDto } from '../dto/create-author.dto';
 import { UpdateAuthorDto } from '../dto/update-author.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
+import { resolveLanguage } from '../../config/request-language';
+
+const authorPhotoUploadDirectory = join(process.cwd(), 'uploads', 'author-photos');
+
+interface UploadedAuthorPhotoFile {
+  path: string;
+  filename: string;
+}
+
+const sanitizeFilename = (name: string) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 @Controller('authors')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
+  @Post('admin/upload-photo')
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (_request, _file, callback) => {
+          mkdirSync(authorPhotoUploadDirectory, { recursive: true });
+          callback(null, authorPhotoUploadDirectory);
+        },
+        filename: (_request, file, callback) => {
+          const extension = extname(file.originalname || '').toLowerCase();
+          const baseName = sanitizeFilename(
+            file.originalname.replace(/\.[^/.]+$/, '') || 'author-photo',
+          );
+          const timestamp = Date.now();
+          callback(null, `${baseName || 'author-photo'}-${timestamp}${extension}`);
+        },
+      }),
+      fileFilter: (_request, file, callback) => {
+        const language = resolveLanguage(
+          typeof _request.headers['accept-language'] === 'string'
+            ? _request.headers['accept-language']
+            : undefined,
+        );
+        const isImage = /^image\/(jpeg|jpg|png|webp|gif)$/i.test(file.mimetype);
+
+        if (!isImage) {
+          callback(
+            new BadRequestException(
+              language === 'fi'
+                ? 'Vain JPG-, PNG-, WEBP- tai GIF-tiedostot ovat sallittuja'
+                : 'Only JPG, PNG, WEBP, or GIF files are allowed',
+            ),
+            false,
+          );
+          return;
+        }
+
+        callback(null, true);
+      },
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  async uploadAuthorPhoto(
+    @UploadedFile() file: UploadedAuthorPhotoFile | undefined,
+    @Req() request: Request,
+  ) {
+    const language = resolveLanguage(
+      typeof request.headers['accept-language'] === 'string'
+        ? request.headers['accept-language']
+        : undefined,
+    );
+
+    if (!file) {
+      throw new BadRequestException(
+        language === 'fi'
+          ? 'Tekijan kuvatiedosto vaaditaan'
+          : 'An author photo file is required',
+      );
+    }
+
+    const protocol = request.protocol;
+    const host = request.get('host');
+    const normalizedPath = file.path.split('\\').join('/');
+    const publicPath = normalizedPath.split('/uploads/')[1];
+
+    if (!host || !publicPath) {
+      throw new BadRequestException(
+        language === 'fi'
+          ? 'Ladattua tiedostoa ei voitu muuntaa URL-osoitteeksi'
+          : 'Failed to resolve uploaded file URL',
+      );
+    }
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      url: `${protocol}://${host}/uploads/${publicPath}`,
+      filename: file.filename,
+    };
+  }
+
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async create(@Body() createAuthorDto: CreateAuthorDto) {
     return await this.authorService.create(createAuthorDto);
   }
@@ -46,7 +151,7 @@ export class AuthorController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAuthorDto: UpdateAuthorDto,
@@ -55,7 +160,7 @@ export class AuthorController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @HttpCode(204)
   async delete(@Param('id', new ParseUUIDPipe()) id: string) {
     await this.authorService.delete(id);

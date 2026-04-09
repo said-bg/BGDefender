@@ -1,0 +1,24 @@
+{
+  "home": "Etusivu",
+  "admin": "Hallintapaneeli",
+  "login": "Kirjaudu sisään",
+  "register": "Rekisteröidy",
+  "myCourses": "Kurssit",
+  "logout": "Kirjaudu ulos",
+  "favorites": "Suosikit",
+  "profile": "Profiili",
+  "language": {
+    "switcherLabel": "Kielen valitsin",
+    "triggerEnglish": "Valitse kieli: englanti",
+    "triggerFinnish": "Valitse kieli: suomi",
+    "english": "English",
+    "finnish": "Suomi"
+  },
+  "badges": {
+    "free": "Ilmainen",
+    "premium": "Premium",
+    "creator": "Luoja",
+    "admin": "Ylläpitäjä",
+    "user": "Käyttäjä"
+  }
+}

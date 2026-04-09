@@ -35,11 +35,21 @@ const initializeModalStore = async () => {
  */
 export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
   const token = getToken();
+  let language = 'en';
+
+  if (typeof window !== 'undefined') {
+    const savedLanguage = localStorage.getItem('i18nextLng');
+    if (savedLanguage === 'fi' || savedLanguage === 'en') {
+      language = savedLanguage;
+    }
+  }
 
   if (token) {
     // Add token to Authorization header
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  config.headers['Accept-Language'] = language;
 
   return config;
 };
@@ -146,13 +156,11 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
     }
 
     case 409:
-      // Conflict - Duplicate email or resource already exists
-      logDevError('Conflict error:', error.response?.data);
+      // Expected form-level conflict, such as duplicate email. The UI shows it.
       break;
 
     case 400:
-      // Bad request - the UI already surfaces the real validation message.
-      logDevError('Validation error:', error.response?.data);
+      // Expected validation error, such as invalid current password. The UI shows it.
       break;
 
     case 403:

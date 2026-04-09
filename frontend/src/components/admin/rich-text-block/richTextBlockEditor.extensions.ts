@@ -1,0 +1,110 @@
+import { Document } from '@tiptap/extension-document';
+import { HardBreak } from '@tiptap/extension-hard-break';
+import { ListItem } from '@tiptap/extension-list';
+import { Paragraph } from '@tiptap/extension-paragraph';
+import { Text } from '@tiptap/extension-text';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Dropcursor, Gapcursor, Placeholder, TrailingNode } from '@tiptap/extensions';
+import { Bold } from 'reactjs-tiptap-editor/bold';
+import { Blockquote } from 'reactjs-tiptap-editor/blockquote';
+import { BulletList } from 'reactjs-tiptap-editor/bulletlist';
+import { FontFamily } from 'reactjs-tiptap-editor/fontfamily';
+import { FontSize } from 'reactjs-tiptap-editor/fontsize';
+import { Heading } from 'reactjs-tiptap-editor/heading';
+import { History } from 'reactjs-tiptap-editor/history';
+import { HorizontalRule } from 'reactjs-tiptap-editor/horizontalrule';
+import { Image } from 'reactjs-tiptap-editor/image';
+import { Italic } from 'reactjs-tiptap-editor/italic';
+import { Link } from 'reactjs-tiptap-editor/link';
+import { OrderedList } from 'reactjs-tiptap-editor/orderedlist';
+import { Strike } from 'reactjs-tiptap-editor/strike';
+import { TaskList } from 'reactjs-tiptap-editor/tasklist';
+import { TextAlign } from 'reactjs-tiptap-editor/textalign';
+import { TextUnderline } from 'reactjs-tiptap-editor/textunderline';
+import { Video } from 'reactjs-tiptap-editor/video';
+
+type BuildRichTextExtensionsParams = {
+  placeholder: string;
+  uploadMedia: (file: File) => Promise<string>;
+};
+
+export const BLOCK_OPTIONS = [
+  { label: 'Block', value: 'paragraph' },
+  { label: 'Heading 1', value: '1' },
+  { label: 'Heading 2', value: '2' },
+  { label: 'Heading 3', value: '3' },
+];
+
+export const FONT_FAMILY_OPTIONS = [
+  { label: 'Font', value: 'Default' },
+  { label: 'Georgia', value: 'Georgia, serif' },
+  { label: 'Arial', value: 'Arial, sans-serif' },
+  { label: 'Courier', value: '"Courier New", monospace' },
+];
+
+export const FONT_SIZE_OPTIONS = [
+  { label: 'Size', value: 'Default' },
+  { label: '14', value: '14px' },
+  { label: '16', value: '16px' },
+  { label: '18', value: '18px' },
+  { label: '20', value: '20px' },
+  { label: '24', value: '24px' },
+];
+
+export function buildRichTextBlockExtensions({
+  placeholder,
+  uploadMedia,
+}: BuildRichTextExtensionsParams) {
+  return [
+    Document,
+    Text,
+    Dropcursor.configure({
+      color: '#111827',
+      width: 2,
+    }),
+    Gapcursor,
+    HardBreak,
+    Paragraph,
+    TrailingNode,
+    ListItem,
+    TextStyle,
+    FontFamily.configure({
+      fontFamilyList: FONT_FAMILY_OPTIONS.map(({ label, value }) => ({
+        name: label,
+        value,
+      })),
+    }),
+    FontSize.configure({
+      fontSizes: FONT_SIZE_OPTIONS.map(({ value }) => value).filter((value) => value !== 'Default'),
+    }),
+    Placeholder.configure({
+      placeholder,
+    }),
+    History,
+    Heading,
+    Bold,
+    TextUnderline,
+    Italic,
+    Strike,
+    BulletList,
+    OrderedList,
+    TaskList,
+    Blockquote,
+    TextAlign,
+    Link,
+    Image.configure({
+      upload: uploadMedia,
+      resourceImage: 'both',
+      multiple: false,
+      enableAlt: true,
+      defaultInline: false,
+    }),
+    Video.configure({
+      upload: uploadMedia,
+      resourceVideo: 'both',
+      videoProviders: ['.'],
+      width: '100%',
+    }),
+    HorizontalRule,
+  ];
+}

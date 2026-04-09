@@ -1,0 +1,58 @@
+.authorsSection {
+  margin: 0 0 2.4rem;
+  padding: 1.4rem 0 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.sectionTitle {
+  margin: 0 0 1rem;
+  color: #111827;
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.authorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.authorCard {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #eceff4;
+}
+
+.authorAvatar,
+.authorAvatarImage {
+  width: 3.1rem;
+  height: 3.1rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.authorAvatar {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #ffa600, #ffbf47);
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.authorAvatarImage {
+  object-fit: cover;
+}
+
+.authorName {
+  color: #111827;
+  font-weight: 700;
+}
+
+.authorRole {
+  margin-top: 0.18rem;
+  color: #6b7280;
+  font-size: 0.94rem;
+}

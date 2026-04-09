@@ -1,6 +1,14 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
 
+jest.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: Record<string, unknown>) => {
+    const React = jest.requireActual('react') as typeof import('react');
+    return React.createElement('img', props);
+  },
+}));
+
 // Mock next/router
 jest.mock('next/router', () => ({
   useRouter() {

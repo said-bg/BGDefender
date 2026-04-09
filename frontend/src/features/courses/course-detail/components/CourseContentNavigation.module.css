@@ -1,0 +1,62 @@
+.navigationFooter {
+  display: flex;
+  justify-content: space-between;
+  max-width: 860px;
+  gap: 0.9rem;
+  margin-top: 2.2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.navigationButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 132px;
+  padding: 0.9rem 1.2rem;
+  border: 1px solid #d0d5dd;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111827;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.navigationButton:hover:not(:disabled) {
+  border-color: #ffa600;
+  color: #ffa600;
+  transform: translateY(-1px);
+}
+
+.navigationButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.navigationButtonPrimary {
+  border-color: #ffa600;
+  background: #ffa600;
+  color: #ffffff;
+}
+
+.navigationButtonPrimary:hover:not(:disabled) {
+  border-color: #eb9b00;
+  background: #eb9b00;
+  color: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .navigationFooter {
+    flex-direction: column-reverse;
+  }
+
+  .navigationButton {
+    width: 100%;
+  }
+}

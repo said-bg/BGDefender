@@ -1,0 +1,35 @@
+.navigationLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.35rem;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.12rem;
+  padding: 0.28rem 0.58rem;
+  border-radius: 0.72rem;
+  color: #44516a;
+  text-decoration: none;
+  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
+  font-size: 0.89rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.2;
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.navLink:hover {
+  color: #ffa600;
+  background: #fff8eb;
+}
+
+@media (max-width: 640px) {
+  .navigationLinks {
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+}

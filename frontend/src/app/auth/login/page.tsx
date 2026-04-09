@@ -1,15 +1,7 @@
-/**
- * Login Page
- */
-
 import { Suspense } from 'react';
 import { PublicRoute, AuthPageLoader } from '@/components/auth';
-import { LoginForm } from './LoginForm';
+import LoginForm from '@/features/auth/login/LoginForm';
 
-/**
- * Login page with PublicRoute wrapper
- * Only accessible to unauthenticated users
- */
 export default function LoginPage() {
   return (
     <PublicRoute>

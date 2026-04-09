@@ -1,0 +1,110 @@
+.modeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem;
+  border: 1px solid #dbe4f0;
+  border-radius: 0.82rem;
+  background: #ffffff;
+  width: fit-content;
+}
+
+.modeButton {
+  min-height: 2rem;
+  padding: 0.28rem 0.72rem;
+  border: none;
+  border-radius: 0.64rem;
+  background: transparent;
+  color: #526581;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modeButtonActive {
+  background: #fff4db;
+  color: #cc7a00;
+}
+
+.modeButton:hover {
+  background: #fff8eb;
+  color: #d98200;
+}
+
+.modeButtonActive:hover {
+  background: #fff4db;
+  color: #cc7a00;
+}
+
+.uploadBox {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.uploadLabel {
+  display: grid;
+  gap: 0.35rem;
+  padding: 16px;
+  border: 1px dashed #d0d5dd;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.uploadLabel:hover {
+  border-color: #ffa600;
+  background: #fffdfa;
+}
+
+.uploadLabelText {
+  color: #111827;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.uploadHelper {
+  color: #64748b;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.photoPreview {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid #e6ebf2;
+  border-radius: 0.9rem;
+  background: #ffffff;
+}
+
+.photoPreviewImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 0.82rem;
+  object-fit: cover;
+  border: 1px solid #dbe4f0;
+  background: #ffffff;
+}
+
+.photoPreviewCopy {
+  display: grid;
+  gap: 4px;
+}
+
+.photoPreviewTitle {
+  color: #111827;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.photoPreviewText {
+  color: #64748b;
+  font-size: 0.84rem;
+  line-height: 1.45;
+}

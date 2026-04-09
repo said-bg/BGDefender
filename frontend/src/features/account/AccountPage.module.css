@@ -1,0 +1,152 @@
+.page {
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+.content {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2.4rem 0 3rem;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.95rem;
+  margin-bottom: 1.35rem;
+}
+
+.heroIdentity {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 3.7rem;
+  height: 3.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #ffa600;
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(255, 166, 0, 0.16);
+  font-size: 1.14rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: #ffa600;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.title {
+  margin: 0;
+  color: #111827;
+  font-size: clamp(1.56rem, 2.25vw, 2.12rem);
+  line-height: 1.04;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+}
+
+.subtitle {
+  max-width: 620px;
+  margin: 0.48rem 0 0;
+  color: #526072;
+  font-size: 0.89rem;
+  line-height: 1.52;
+}
+
+.badges {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding-top: 0.25rem;
+}
+
+.badgePrimary,
+.badgeMuted {
+  min-height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.22rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.badgePrimary {
+  background: #fff4db;
+  color: #cc7a00;
+}
+
+.badgeMuted {
+  background: #f2f4f7;
+  color: #475467;
+}
+
+.premiumTone {
+  background: #fff3cf;
+  color: #8a5b00;
+}
+
+.freeTone {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.userTone {
+  background: #f2f4f7;
+  color: #344054;
+}
+
+.creatorTone {
+  background: #eff8ff;
+  color: #175cd3;
+}
+
+.adminTone {
+  background: #111827;
+  color: #ffffff;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 1.2rem;
+}
+
+.formsColumn {
+  display: grid;
+  gap: 1.2rem;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    flex-direction: column;
+  }
+
+  .badges {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    width: min(100%, calc(100% - 1rem));
+    padding-top: 2rem;
+  }
+}

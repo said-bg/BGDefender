@@ -1,0 +1,188 @@
+.editorShell {
+  display: grid;
+  gap: 10px;
+}
+
+.editorSurface {
+  min-height: 680px;
+  padding: 20px 22px;
+  border: 2px solid #94a3b8;
+  border-radius: 22px;
+  background: #fbfdff;
+  box-shadow:
+    inset 0 0 0 1px rgba(203, 213, 225, 0.75),
+    0 4px 12px rgba(15, 23, 42, 0.03);
+}
+
+.editorSurface :global(.ProseMirror) {
+  min-height: 620px;
+  outline: none;
+  color: #111827;
+  line-height: 1.8;
+  font-size: 1.04rem;
+}
+
+.editorSurface :global(.ProseMirror p.is-editor-empty:first-child::before) {
+  color: #7b8797;
+}
+
+.editorSurface :global(.ProseMirror h1),
+.editorSurface :global(.ProseMirror h2),
+.editorSurface :global(.ProseMirror h3) {
+  color: #111827;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.editorSurface :global(.ProseMirror h1) {
+  font-size: 2rem;
+}
+
+.editorSurface :global(.ProseMirror h2) {
+  font-size: 1.55rem;
+}
+
+.editorSurface :global(.ProseMirror h3) {
+  font-size: 1.25rem;
+}
+
+.editorSurface :global(.ProseMirror img),
+.editorSurface :global(.ProseMirror video) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 18px;
+}
+
+.editorSurface :global(.image-view),
+.editorSurface :global(.video-view) {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 1rem 0;
+  line-height: 0;
+}
+
+.editorSurface :global(.image-view__body),
+.editorSurface :global(.video-view__body) {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+}
+
+.editorSurface :global(.image-view__body__image),
+.editorSurface :global(.video-view video) {
+  margin: 0;
+}
+
+.editorSurface :global(div[data-video]) {
+  margin: 1rem 0;
+}
+
+.editorSurface :global(div[data-video] > div) {
+  width: 100%;
+}
+
+.editorSurface :global(div[data-video] iframe) {
+  display: block;
+  width: 100%;
+  border-radius: 18px;
+}
+
+.editorSurface :global(.ProseMirror-selectednode),
+.editorSurface :global(.image-view__body--focused),
+.editorSurface :global(.video-view__body--focused) {
+  outline: 2px solid #ffa600;
+  outline-offset: 4px;
+  border-radius: 18px;
+}
+
+.editorSurface :global(.image-resizer) {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.editorSurface :global(.video-resizer) {
+  display: none;
+}
+
+.editorSurface :global(.image-resizer__handler) {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  background: #ffa600;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.24);
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.editorSurface :global(.image-resizer__handler--tl) {
+  top: -9px;
+  left: -9px;
+  cursor: nwse-resize;
+}
+
+.editorSurface :global(.image-resizer__handler--tr) {
+  top: -9px;
+  right: -9px;
+  cursor: nesw-resize;
+}
+
+.editorSurface :global(.image-resizer__handler--bl) {
+  bottom: -9px;
+  left: -9px;
+  cursor: nesw-resize;
+}
+
+.editorSurface :global(.image-resizer__handler--br) {
+  right: -9px;
+  bottom: -9px;
+  cursor: nwse-resize;
+}
+
+.editorSurface :global(.ProseMirror ul),
+.editorSurface :global(.ProseMirror ol) {
+  padding-left: 1.4rem;
+}
+
+.editorSurface :global(.ProseMirror blockquote) {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid #ffa600;
+  color: #475467;
+}
+
+.editorSurface :global(.ProseMirror pre) {
+  overflow-x: auto;
+  border-radius: 16px;
+  background: #111827;
+  padding: 16px;
+}
+
+.editorSurface :global(.ProseMirror table) {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.editorSurface :global(.ProseMirror th),
+.editorSurface :global(.ProseMirror td) {
+  border: 1px solid #dbe4f0;
+  padding: 10px 12px;
+}
+
+.loading {
+  min-height: 680px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed #cbd5e1;
+  border-radius: 22px;
+  background: #f8fafc;
+  color: #526581;
+  font-weight: 700;
+}

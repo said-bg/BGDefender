@@ -1,0 +1,24 @@
+{
+    "home":  "Home",
+    "admin":  "Dashboard",
+    "login":  "Login",
+    "register":  "Register",
+    "myCourses":  "Courses",
+    "logout":  "Logout",
+    "favorites":  "Favorites",
+    "profile":  "Profile",
+    "language":  {
+                     "switcherLabel":  "Language switcher",
+                     "triggerEnglish":  "Select language: English",
+                     "triggerFinnish":  "Select language: Finnish",
+                     "english":  "English",
+                     "finnish":  "Suomi"
+                 },
+    "badges":  {
+                   "free":  "Free",
+                   "premium":  "Premium",
+                   "creator":  "Creator",
+                   "admin":  "Admin",
+                   "user":  "User"
+               }
+}

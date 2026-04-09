@@ -1,0 +1,125 @@
+.richTextContent {
+  max-width: 860px;
+  color: #344054;
+  font-size: 1.08rem;
+  line-height: 1.95;
+}
+
+.richTextContent > :first-child {
+  margin-top: 0;
+}
+
+.richTextContent > :last-child {
+  margin-bottom: 0;
+}
+
+.richTextContent p,
+.richTextContent ul,
+.richTextContent ol,
+.richTextContent blockquote,
+.richTextContent pre,
+.richTextContent table {
+  margin: 0 0 1rem;
+}
+
+.richTextContent h1,
+.richTextContent h2,
+.richTextContent h3 {
+  margin: 1.4rem 0 0.9rem;
+  color: #111827;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.richTextContent h1 {
+  font-size: 2rem;
+}
+
+.richTextContent h2 {
+  font-size: 1.55rem;
+}
+
+.richTextContent h3 {
+  font-size: 1.25rem;
+}
+
+.richTextContent img,
+.richTextContent video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.2rem auto;
+  border-radius: 18px;
+}
+
+.richTextContent ul,
+.richTextContent ol {
+  padding-left: 1.4rem;
+}
+
+.richTextContent li + li {
+  margin-top: 0.35rem;
+}
+
+.richTextContent blockquote {
+  padding-left: 1rem;
+  border-left: 3px solid #ffa600;
+  color: #475467;
+}
+
+.richTextContent a {
+  color: #0f4c81;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.richTextContent a:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+.richTextContent code {
+  padding: 0.12rem 0.38rem;
+  border-radius: 8px;
+  background: #eef2f7;
+  color: #7c2d12;
+  font-size: 0.95em;
+}
+
+.richTextContent pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 16px;
+  background: #111827;
+  color: #f8fafc;
+}
+
+.richTextContent pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.richTextContent hr {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.4rem 0;
+}
+
+.richTextContent table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.richTextContent th,
+.richTextContent td {
+  border: 1px solid #dbe4f0;
+  padding: 0.7rem 0.8rem;
+  text-align: left;
+}
+
+.richTextContent th {
+  color: #111827;
+  background: #f8fafc;
+  font-weight: 800;
+}

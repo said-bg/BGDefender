@@ -1,0 +1,73 @@
+.coverFallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 32%),
+    radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.12), transparent 34%),
+    linear-gradient(135deg, #ffb21f 0%, #ffa600 52%, #eb8f00 100%);
+}
+
+.coverFallbackCard {
+  border-radius: inherit;
+}
+
+.coverFallbackHero {
+  border-radius: 0;
+  background: #ffa600;
+}
+
+.coverGlow {
+  position: absolute;
+  inset: auto auto 10% -8%;
+  width: 36%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  filter: blur(24px);
+}
+
+.coverPlate {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.55rem;
+  width: min(70%, 22rem);
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 1.1rem;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 16px 34px rgba(126, 73, 0, 0.14);
+  text-align: center;
+}
+
+.coverEyebrow {
+  color: #9a5e00;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.coverTitle {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #111827;
+  font-size: clamp(0.95rem, 1.45vw, 1.45rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.coverFallbackHero .coverPlate {
+  width: min(68%, 34rem);
+  padding: 1.8rem 2rem;
+}
+
+.coverFallbackHero .coverTitle {
+  font-size: clamp(1.4rem, 3vw, 3rem);
+}

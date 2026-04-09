@@ -15,13 +15,14 @@ import { SubChapterService } from '../services/sub-chapters.service';
 import { CreateSubChapterDto } from '../dto/create-sub-chapter.dto';
 import { UpdateSubChapterDto } from '../dto/update-sub-chapter.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
 
 @Controller('courses/:courseId/chapters/:chapterId/sub-chapters')
 export class SubChaptersController {
   constructor(private readonly subChapterService: SubChapterService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async create(
     @Param('chapterId') chapterId: string,
     @Body() createSubChapterDto: CreateSubChapterDto,
@@ -55,7 +56,7 @@ export class SubChaptersController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async update(
     @Param('chapterId') chapterId: string,
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -66,7 +67,7 @@ export class SubChaptersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @HttpCode(204)
   async delete(
     @Param('chapterId') chapterId: string,

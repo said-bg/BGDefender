@@ -40,9 +40,9 @@ export interface RegisterRequest {
 }
 
 export interface UpdateProfileRequest {
-  firstName?: string;
-  lastName?: string;
-  occupation?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+  occupation?: string | null;
 }
 
 export interface LoginRequest {
@@ -108,6 +108,17 @@ export interface MeResponse {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface AdminUsersResponse {
+  data: User[];
+  count: number;
+}
+
+export interface UpdateAdminUserRequest {
+  plan?: UserPlan;
+  role?: UserRole;
+  isActive?: boolean;
 }
 
 /**

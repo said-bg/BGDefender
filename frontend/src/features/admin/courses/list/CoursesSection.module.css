@@ -1,0 +1,80 @@
+.section {
+  padding: 22px 24px;
+  border: 1px solid #e6ebf2;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  margin: 0 0 4px;
+  color: #111827;
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.sectionDescription {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.courseList {
+  display: grid;
+  gap: 12px;
+}
+
+.emptyState {
+  padding: 28px 22px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 18px;
+  background: #f8fafc;
+  display: grid;
+  gap: 8px;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.emptyDescription,
+.successMessage,
+.statusMessage,
+.errorMessage {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.emptyDescription,
+.statusMessage {
+  color: #526581;
+}
+
+.successMessage {
+  color: #15803d;
+  font-weight: 600;
+}
+
+.errorMessage {
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+@media (max-width: 980px) {
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

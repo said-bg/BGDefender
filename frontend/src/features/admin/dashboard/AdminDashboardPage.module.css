@@ -1,0 +1,49 @@
+.page {
+  width: min(1360px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: 34px 0 64px;
+}
+
+.section {
+  padding: 24px;
+  border: 1px solid #e6ebf2;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+}
+
+.statusMessage,
+.errorMessage {
+  margin: 0;
+  color: #526581;
+  font-size: 1rem;
+}
+
+.errorMessage {
+  color: #b91c1c;
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 0.95rem;
+  align-items: start;
+}
+
+.primaryColumn,
+.secondaryColumn {
+  display: grid;
+  gap: 0.95rem;
+  align-content: start;
+}
+
+@media (max-width: 960px) {
+  .page {
+    width: calc(100% - 2rem);
+    padding-top: 26px;
+  }
+
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+}

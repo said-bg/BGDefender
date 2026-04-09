@@ -1,18 +1,13 @@
-/**
- * Forgot Password Page
- */
+import { Suspense } from 'react';
+import { PublicRoute, AuthPageLoader } from '@/components/auth';
+import ForgotPasswordForm from '@/features/auth/forgot-password/ForgotPasswordForm';
 
-import { PublicRoute } from '@/components/auth';
-import { ForgotPasswordForm } from './ForgotPasswordForm';
-
-/**
- * Forgot Password page with PublicRoute wrapper
- * Only accessible to unauthenticated users
- */
 export default function ForgotPasswordPage() {
   return (
     <PublicRoute>
-      <ForgotPasswordForm />
+      <Suspense fallback={<AuthPageLoader />}>
+        <ForgotPasswordForm />
+      </Suspense>
     </PublicRoute>
   );
 }

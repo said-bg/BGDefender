@@ -6,6 +6,13 @@ import { Author } from '../../entities/author.entity';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 
+export interface AdminCourseSummary {
+  totalCourses: number;
+  publishedCourses: number;
+  draftCourses: number;
+  archivedCourses: number;
+}
+
 @Injectable()
 export class CourseService {
   constructor(
@@ -46,6 +53,43 @@ export class CourseService {
     });
 
     return [courses.map((course) => this.sortCourseTree(course)), count];
+  }
+
+  async findAllForAdmin(
+    limit: number = 20,
+    offset: number = 0,
+  ): Promise<[Course[], number]> {
+    const [courses, count] = await this.courseRepository.findAndCount({
+      relations: ['authors', 'chapters', 'chapters.subChapters'],
+      take: limit,
+      skip: offset,
+      order: { updatedAt: 'DESC' },
+    });
+
+    return [courses.map((course) => this.sortCourseTree(course)), count];
+  }
+
+  async getAdminSummary(): Promise<AdminCourseSummary> {
+    const [totalCourses, publishedCourses, draftCourses, archivedCourses] =
+      await Promise.all([
+        this.courseRepository.count(),
+        this.courseRepository.count({
+          where: { status: CourseStatus.PUBLISHED },
+        }),
+        this.courseRepository.count({
+          where: { status: CourseStatus.DRAFT },
+        }),
+        this.courseRepository.count({
+          where: { status: CourseStatus.ARCHIVED },
+        }),
+      ]);
+
+    return {
+      totalCourses,
+      publishedCourses,
+      draftCourses,
+      archivedCourses,
+    };
   }
 
   async findById(id: string): Promise<Course> {

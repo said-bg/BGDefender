@@ -1,0 +1,148 @@
+.section {
+  padding: 22px 24px;
+  border: 1px solid #e6ebf2;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  margin: 0 0 4px;
+  color: #111827;
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.sectionDescription {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.textLink {
+  color: #ffa600;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.textLink:hover {
+  color: #ffa600;
+}
+
+.courseList {
+  display: grid;
+  gap: 10px;
+}
+
+.courseRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 15px;
+  border: 1px solid #e8edf4;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.courseMain {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.courseTitle {
+  margin: 0 0 4px;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.courseMeta,
+.courseMetaGroup {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.courseMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.levelBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.6rem;
+  padding: 0 0.58rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.levelFree {
+  background: #ecfdf3;
+  color: #027a48;
+}
+
+.levelPremium {
+  background: #fef3c7;
+  color: #b54708;
+}
+
+.courseMetaGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+.courseMetaGroup strong {
+  color: #0f172a;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.8rem;
+  padding: 0 0.64rem;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #526581;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.emptyText {
+  margin: 0;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .sectionHeader,
+  .courseRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .courseMetaGroup {
+    justify-content: flex-start;
+  }
+}

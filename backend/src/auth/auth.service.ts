@@ -82,7 +82,9 @@ export class AuthService {
 
     if (!user.isActive) {
       const errorMessage =
-        language === 'fi' ? 'Account is inactive' : 'Account is inactive';
+        language === 'fi'
+          ? 'Tili on poistettu kaytosta'
+          : 'Account is inactive';
       throw new UnauthorizedException(errorMessage);
     }
 

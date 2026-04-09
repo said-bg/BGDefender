@@ -1,0 +1,59 @@
+.contentSidebar {
+  position: sticky;
+  top: 24px;
+  display: grid;
+  gap: 0.9rem;
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.contentSidebarGroups,
+.contentSidebarGroup,
+.subChapterNav {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.contentSidebarGroup {
+  padding: 14px 16px;
+  border: 1px solid #e6ebf2;
+  border-radius: 0.95rem;
+  background: #ffffff;
+}
+
+.chapterLibraryHeader {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.chapterSectionTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.chapterOrderLabel {
+  margin: 0 0 0.2rem;
+  color: #64748b;
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.chapterTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 0.96rem;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .contentSidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}

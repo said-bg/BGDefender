@@ -45,6 +45,9 @@
   },
   "detail": {
     "overview": "Overview",
+    "hideOutline": "Hide course outline",
+    "showOutline": "Show course outline",
+    "courseProgress": "Course progress",
     "writtenBy": "Written by",
     "courseDetail": "Course detail",
     "chapterOverview": "Chapter overview",

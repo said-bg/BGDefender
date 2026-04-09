@@ -1,0 +1,201 @@
+.sidebar {
+  position: sticky;
+  top: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.4rem;
+  background: #ffffff;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.overviewCard {
+  width: 100%;
+  display: block;
+  padding: 1.4rem;
+  border: 0;
+  border-bottom: 1px solid #eceff4;
+  background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+  color: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.overviewCardActive {
+  background:
+    linear-gradient(180deg, rgba(31, 41, 55, 0.98), rgba(17, 24, 39, 0.98)),
+    linear-gradient(90deg, rgba(255, 166, 0, 0.12), transparent);
+}
+
+.overviewTitle {
+  margin-bottom: 0.45rem;
+  font-size: 1.55rem;
+  font-weight: 800;
+}
+
+.overviewText {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.97rem;
+  line-height: 1.65;
+}
+
+.overviewProgress,
+.chapterProgress {
+  width: 100%;
+  appearance: none;
+  border: 0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.overviewProgress {
+  margin-top: 1rem;
+  height: 0.42rem;
+}
+
+.chapterProgress {
+  margin-top: 0.85rem;
+  height: 0.28rem;
+}
+
+.overviewProgress::-webkit-progress-bar,
+.chapterProgress::-webkit-progress-bar {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+}
+
+.overviewProgress::-webkit-progress-value,
+.chapterProgress::-webkit-progress-value,
+.overviewProgress::-moz-progress-bar,
+.chapterProgress::-moz-progress-bar {
+  background: linear-gradient(90deg, #ffa600, #ffbf47);
+  border-radius: 999px;
+}
+
+.chapterList {
+  background: #ffffff;
+}
+
+.chapterGroup + .chapterGroup {
+  border-top: 1px solid #eceff4;
+}
+
+.chapterButton {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.35rem 1.3rem;
+  border: 0;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.chapterButton:hover {
+  background: #fafafa;
+}
+
+.chapterButtonActive {
+  background: linear-gradient(90deg, rgba(255, 166, 0, 0.08), rgba(255, 166, 0, 0.015));
+}
+
+.chapterMeta {
+  display: flex;
+  gap: 0.95rem;
+}
+
+.chapterCopy {
+  min-width: 0;
+  flex: 1;
+}
+
+.chapterIndex {
+  min-width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #fff6d9;
+  color: #ffa600;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.chapterTitle {
+  color: #111827;
+  font-size: 1.18rem;
+  font-weight: 800;
+}
+
+.chapterTeaser {
+  margin-top: 0.35rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.chapterChevron {
+  color: #6b7280;
+  font-size: 1.35rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.subChapterList {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0 1.1rem 1.15rem 4.45rem;
+  background: #ffffff;
+}
+
+.subChapterButton {
+  padding: 0.15rem 0 0.15rem 1rem;
+  border: 0;
+  border-left: 2px solid #d7dde8;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.subChapterButton:hover,
+.subChapterButtonActive {
+  border-left-color: #ffa600;
+}
+
+.subChapterInner {
+  display: block;
+}
+
+.subChapterButton strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.subChapterButton small {
+  display: block;
+  color: #6b7280;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 980px) {
+  .sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .chapterButton {
+    padding: 1.1rem 1rem;
+  }
+
+  .subChapterList {
+    padding: 0 1rem 1rem;
+  }
+}

@@ -21,6 +21,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { EmailService } from '../email/email.service';
 import { PasswordTokenService } from './services/password-token.service';
+import { resolveLanguage } from '../config/request-language';
 
 @Controller('auth')
 export class AuthController {
@@ -35,13 +36,7 @@ export class AuthController {
     @Body() registerDto: RegisterDto,
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<SafeUser> {
-    let language = 'en';
-    if (acceptLanguage) {
-      const langCode = acceptLanguage.split('-')[0].toLowerCase();
-      if (['fi', 'en'].includes(langCode)) {
-        language = langCode;
-      }
-    }
+    const language = resolveLanguage(acceptLanguage);
     return this.authService.register(registerDto, language);
   }
 
@@ -51,13 +46,7 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<{ accessToken: string; user: SafeUser }> {
-    let language = 'en';
-    if (acceptLanguage) {
-      const langCode = acceptLanguage.split('-')[0].toLowerCase();
-      if (['fi', 'en'].includes(langCode)) {
-        language = langCode;
-      }
-    }
+    const language = resolveLanguage(acceptLanguage);
     return this.authService.login(loginDto, language);
   }
 
@@ -83,14 +72,7 @@ export class AuthController {
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<{ message: string }> {
     const user = await this.authService.findByEmail(forgotPasswordDto.email);
-
-    let language = 'en';
-    if (acceptLanguage) {
-      const langCode = acceptLanguage.split('-')[0].toLowerCase();
-      if (['fi', 'en'].includes(langCode)) {
-        language = langCode;
-      }
-    }
+    const language = resolveLanguage(acceptLanguage);
 
     if (user) {
       const token = await this.passwordTokenService.createResetToken(
@@ -117,7 +99,9 @@ export class AuthController {
 
     return {
       message:
-        'If an account exists with this email, a reset link has been sent',
+        language === 'fi'
+          ? 'Jos tilisi loytyy talla sahkopostiosoitteella, palautuslinkki on lahetetty.'
+          : 'If an account exists with this email, a reset link has been sent',
     };
   }
 
@@ -127,13 +111,7 @@ export class AuthController {
     @Body() resetPasswordDto: ResetPasswordDto,
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<{ message: string }> {
-    let language = 'en';
-    if (acceptLanguage) {
-      const langCode = acceptLanguage.split('-')[0].toLowerCase();
-      if (['fi', 'en'].includes(langCode)) {
-        language = langCode;
-      }
-    }
+    const language = resolveLanguage(acceptLanguage);
 
     const { id: tokenId, email } =
       await this.passwordTokenService.findTokenByPlainToken(
@@ -148,7 +126,12 @@ export class AuthController {
 
     await this.passwordTokenService.markAsUsed(tokenId);
 
-    return { message: 'Password has been reset successfully' };
+    return {
+      message:
+        language === 'fi'
+          ? 'Salasana on nollattu onnistuneesti.'
+          : 'Password has been reset successfully',
+    };
   }
 
   @Post('change-password')
@@ -159,13 +142,7 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Headers('accept-language') acceptLanguage?: string,
   ): Promise<{ message: string }> {
-    let language = 'en';
-    if (acceptLanguage) {
-      const langCode = acceptLanguage.split('-')[0].toLowerCase();
-      if (['fi', 'en'].includes(langCode)) {
-        language = langCode;
-      }
-    }
+    const language = resolveLanguage(acceptLanguage);
 
     await this.authService.changePassword(
       user.id,
@@ -174,6 +151,11 @@ export class AuthController {
       language,
     );
 
-    return { message: 'Password updated successfully' };
+    return {
+      message:
+        language === 'fi'
+          ? 'Salasana paivitettiin onnistuneesti.'
+          : 'Password updated successfully',
+    };
   }
 }

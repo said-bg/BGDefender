@@ -1,15 +1,7 @@
-/**
- * Register Page
- */
-
 import { Suspense } from 'react';
 import { PublicRoute, AuthPageLoader } from '@/components/auth';
-import { RegisterForm } from './RegisterForm';
+import RegisterForm from '@/features/auth/register/RegisterForm';
 
-/**
- * Register page with PublicRoute wrapper
- * Only accessible to unauthenticated users
- */
 export default function RegisterPage() {
   return (
     <PublicRoute>

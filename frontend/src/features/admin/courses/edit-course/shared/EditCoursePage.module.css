@@ -1,0 +1,149 @@
+.helperText,
+.helperMessage {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.successMessage,
+.errorMessage {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-weight: 600;
+}
+
+.successMessage {
+  color: #15803d;
+}
+
+.errorMessage {
+  color: #b91c1c;
+}
+
+.actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  margin-top: 0.1rem;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.26rem;
+  padding: 0.4rem 0.82rem;
+  border-radius: 0.72rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.primaryAction {
+  border: 1px solid #ffa600;
+  background: #ffa600;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.primaryAction:hover {
+  background: #f29d00;
+  border-color: #f29d00;
+}
+
+.primaryAction:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.secondaryAction {
+  border: 1px solid #ffa600;
+  background: #ffffff;
+  color: #ffa600;
+}
+
+.secondaryAction:hover {
+  border-color: #ffa600;
+  background: #fff8eb;
+  color: #d98200;
+}
+
+.inlineAction,
+.inlineDanger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.34rem 0.72rem;
+  border-radius: 0.68rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inlineAction {
+  border: 1px solid #ffa600;
+  background: #ffffff;
+  color: #ffa600;
+}
+
+.inlineAction:hover {
+  border-color: #ffa600;
+  background: #fff8eb;
+  color: #d98200;
+}
+
+.inlineDanger {
+  border: 1px solid #fecaca;
+  background: #fff5f5;
+  color: #b91c1c;
+}
+
+.inlineDanger:hover {
+  border-color: #fca5a5;
+}
+
+.inlineAction:disabled,
+.inlineDanger:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.emptyState {
+  padding: 18px;
+  border: 1px dashed #d0d5dd;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.emptyDescription {
+  margin: 0;
+  color: #526581;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .primaryAction,
+  .secondaryAction {
+    width: 100%;
+  }
+}

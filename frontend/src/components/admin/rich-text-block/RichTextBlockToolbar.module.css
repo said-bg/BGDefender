@@ -1,0 +1,57 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #d7dfeb;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.toolbarGroup {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-right: 10px;
+  border-right: 1px solid #e2e8f0;
+}
+
+.toolbarGroup:last-child {
+  padding-right: 0;
+  border-right: none;
+}
+
+.toolbarButton,
+.toolbarSelect {
+  min-height: 34px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #111827;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.toolbarButton {
+  cursor: pointer;
+  min-width: 34px;
+}
+
+.toolbarButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.toolbarButton:hover,
+.toolbarSelect:hover {
+  background: #f5f7fb;
+}
+
+.toolbarSelect {
+  min-width: 104px;
+  appearance: none;
+  cursor: pointer;
+}

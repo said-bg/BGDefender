@@ -19,6 +19,7 @@ import { ProgressService } from './services/progress.service';
 import { ProgressController } from './controllers/progress.controller';
 import { FavoriteService } from './services/favorite.service';
 import { FavoriteController } from './controllers/favorite.controller';
+import { AdminRoleGuard } from '../auth/guards/admin-role.guard';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { FavoriteController } from './controllers/favorite.controller';
     PedagogicalContentService,
     ProgressService,
     FavoriteService,
+    AdminRoleGuard,
   ],
   controllers: [
     CourseController,
