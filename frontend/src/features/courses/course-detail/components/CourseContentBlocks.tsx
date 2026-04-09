@@ -18,6 +18,9 @@ const looksLikeRichHtml = (value: string) =>
     value,
   );
 
+const normalizeComparableText = (value: string) =>
+  value.trim().replace(/\s+/g, ' ').toLowerCase();
+
 export default function CourseContentBlocks({
   activeLanguage,
   selectedContent,
@@ -42,6 +45,10 @@ export default function CourseContentBlocks({
           contentBlock.titleEn,
           contentBlock.titleFi,
         );
+        const shouldRenderTitle =
+          localizedTitle.trim().length > 0 &&
+          normalizeComparableText(localizedTitle) !==
+            normalizeComparableText(selectedContent.title);
         const localizedContent = getLocalizedText(
           activeLanguage,
           contentBlock.contentEn,
@@ -53,9 +60,11 @@ export default function CourseContentBlocks({
 
         return (
           <section key={contentBlock.id} className={styles.contentBlock}>
-            <div className={styles.contentBlockHeader}>
-              <h3 className={styles.contentBlockTitle}>{localizedTitle}</h3>
-            </div>
+            {shouldRenderTitle ? (
+              <div className={styles.contentBlockHeader}>
+                <h3 className={styles.contentBlockTitle}>{localizedTitle}</h3>
+              </div>
+            ) : null}
 
             {contentBlock.type === 'image' && contentBlock.url ? (
               <div className={styles.contentImageWrap}>

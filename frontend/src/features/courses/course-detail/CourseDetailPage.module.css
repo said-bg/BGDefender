@@ -138,6 +138,10 @@
   width: min(860px, calc(100% - 2rem));
 }
 
+.sidebarSlot {
+  position: relative;
+}
+
 .contentSlot {
   min-width: 0;
 }
@@ -174,6 +178,13 @@
   background: #fff8eb;
   color: #d98200;
   box-shadow: 0 10px 22px rgba(255, 166, 0, 0.12);
+}
+
+.sidebarToggleInline {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 3;
 }
 
 .sidebarToggleIcon {
@@ -221,6 +232,11 @@
 
   .readerToolbar {
     padding-top: 1rem;
+  }
+
+  .sidebarToggleInline {
+    top: 0.85rem;
+    right: 0.85rem;
   }
 }
 

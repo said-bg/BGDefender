@@ -55,7 +55,11 @@ export const insertImageFromUrlCommand = (editor: Editor) => {
     return;
   }
 
-  editor.chain().focus().setImageInline({ src: nextUrl.trim(), width: 960 }).run();
+  editor
+    .chain()
+    .focus()
+    .setImage({ src: nextUrl.trim(), width: 960, align: 'left' })
+    .run();
 };
 
 export const insertVideoFromUrlCommand = (editor: Editor) => {
@@ -91,7 +95,11 @@ export const insertUploadedMediaCommand = (
   fileName: string,
 ) => {
   if (kind === 'image') {
-    editor.chain().focus().setImageInline({ src: uploadedUrl, width: 960 }).run();
+    editor
+      .chain()
+      .focus()
+      .setImage({ src: uploadedUrl, width: 960, align: 'left' })
+      .run();
     return;
   }
 

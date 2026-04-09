@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Course } from '@/services/courseService';
 import styles from './CourseContent.module.css';
@@ -10,6 +11,8 @@ import {
   ViewState,
 } from '../courseDetail.utils';
 import CourseAuthorsSection from './CourseAuthorsSection';
+import CourseFinalTest from './CourseFinalTest';
+import ChapterTrainingQuiz from './ChapterTrainingQuiz';
 import CourseContentBlocks from './CourseContentBlocks';
 import CourseContentNavigation from './CourseContentNavigation';
 import CourseLockedPanel from './CourseLockedPanel';
@@ -20,8 +23,11 @@ type CourseContentProps = {
   accessState: AccessState;
   activeLanguage: ActiveLanguage;
   canReadContent: boolean;
+  canAccessAssessments: boolean;
+  courseId: string;
   course: Course;
   courseAuthorFallback: string;
+  headerAction?: ReactNode;
   isFocusMode?: boolean;
   nextItem: NavigationItem | null;
   onNavigateToView: (view: ViewState) => void;
@@ -30,12 +36,15 @@ type CourseContentProps = {
 };
 
 export function CourseContent({
+  courseId,
   course,
   activeLanguage,
   selectedContent,
   accessState,
   canReadContent,
+  canAccessAssessments,
   courseAuthorFallback,
+  headerAction,
   isFocusMode = false,
   previousItem,
   nextItem,
@@ -46,18 +55,24 @@ export function CourseContent({
     accessState === 'checking'
       ? t('detail.checkingAccess')
       : accessState === 'login_required'
-        ? t('detail.loginRequiredDescription')
-        : t('detail.premiumRequiredDescription');
+      ? t('detail.loginRequiredDescription')
+      : t('detail.premiumRequiredDescription');
+  const publishedFinalTest = course.finalTests?.find((finalTest) => finalTest.isPublished) ?? null;
 
   return (
     <main className={`${styles.contentPanel} ${isFocusMode ? styles.contentPanelFocus : ''}`}>
       <div className={styles.contentHeader}>
+        {headerAction ? <div className={styles.contentHeaderAction}>{headerAction}</div> : null}
         <div>
           <p className={styles.contentEyebrow}>
             {selectedContent.kind === 'overview'
               ? t('detail.courseDetail')
               : selectedContent.kind === 'chapter'
                 ? t('detail.chapterOverview')
+                : selectedContent.kind === 'quiz'
+                  ? t('detail.trainingQuiz', { defaultValue: 'Training quiz' })
+                  : selectedContent.kind === 'final-test'
+                    ? t('detail.finalTestEyebrow', { defaultValue: 'Final assessment' })
                 : selectedContent.parentTitle}
           </p>
           <h2 className={styles.contentTitle}>{selectedContent.title}</h2>
@@ -81,7 +96,22 @@ export function CourseContent({
 
       {canReadContent ? (
         <div className={styles.contentBody}>
-          <CourseContentBlocks activeLanguage={activeLanguage} selectedContent={selectedContent} />
+          {selectedContent.kind === 'quiz' && selectedContent.chapterId ? (
+            <ChapterTrainingQuiz
+              activeLanguage={activeLanguage}
+              chapterId={selectedContent.chapterId}
+              courseId={courseId}
+              passingScore={selectedContent.passingScore ?? 70}
+            />
+          ) : selectedContent.kind === 'final-test' ? (
+            <CourseFinalTest
+              activeLanguage={activeLanguage}
+              courseId={courseId}
+              enabled={canAccessAssessments && Boolean(publishedFinalTest)}
+            />
+          ) : (
+            <CourseContentBlocks activeLanguage={activeLanguage} selectedContent={selectedContent} />
+          )}
         </div>
       ) : (
         <CourseLockedPanel accessState={accessState} t={t} />

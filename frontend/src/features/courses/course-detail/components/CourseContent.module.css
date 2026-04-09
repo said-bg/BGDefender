@@ -12,11 +12,20 @@
 }
 
 .contentHeader {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.contentHeaderAction {
+  position: absolute;
+  top: 0.2rem;
+  left: -3.4rem;
+  display: inline-flex;
+  flex-shrink: 0;
 }
 
 .contentEyebrow {
@@ -56,6 +65,15 @@
 }
 
 @media (max-width: 720px) {
+  .contentHeaderAction {
+    position: static;
+  }
+
+  .contentHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .contentTitle {
     font-size: 2.3rem;
   }

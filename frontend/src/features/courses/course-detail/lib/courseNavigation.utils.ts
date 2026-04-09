@@ -7,8 +7,16 @@ export const getViewKey = (view: ViewState): string => {
     return 'overview';
   }
 
+  if (view.type === 'final-test') {
+    return 'final-test';
+  }
+
   if (view.type === 'chapter') {
     return `chapter:${view.chapterId}`;
+  }
+
+  if (view.type === 'quiz') {
+    return `quiz:${view.chapterId}`;
   }
 
   return `subchapter:${view.subChapterId}`;
@@ -35,6 +43,16 @@ export const buildNavigationItems = (course: Course): NavigationItem[] => {
         },
       });
     }
+
+    if (chapter.trainingQuiz?.isPublished) {
+      items.push({
+        key: `quiz:${chapter.id}`,
+        view: {
+          type: 'quiz',
+          chapterId: chapter.id,
+        },
+      });
+    }
   }
 
   return items;
@@ -45,6 +63,10 @@ export const calculateCompletionPercentage = (
   selectedView: ViewState,
 ): number => {
   const detailedSteps = navigationItems.length - 1;
+
+  if (selectedView.type === 'final-test') {
+    return 100;
+  }
 
   if (detailedSteps <= 0 || selectedView.type === 'overview') {
     return 0;
@@ -66,6 +88,10 @@ export const getChapterProgressPercentage = (
   chapterId: string,
   selectedView: ViewState,
 ): number => {
+  if (selectedView.type === 'final-test') {
+    return 100;
+  }
+
   const chapterIndex = course.chapters.findIndex((chapter) => chapter.id === chapterId);
   const selectedChapterIndex =
     selectedView.type === 'overview'
@@ -85,9 +111,16 @@ export const getChapterProgressPercentage = (
   }
 
   const chapter = course.chapters[chapterIndex];
-  const totalSteps = Math.max(1, 1 + (chapter.subChapters?.length ?? 0));
+  const totalSteps = Math.max(
+    1,
+    1 + (chapter.subChapters?.length ?? 0) + (chapter.trainingQuiz?.isPublished ? 1 : 0),
+  );
 
   if (selectedView.type !== 'subchapter') {
+    if (selectedView.type === 'quiz') {
+      return 100;
+    }
+
     return Math.round((1 / totalSteps) * 100);
   }
 
@@ -157,7 +190,22 @@ export const getProgressPayloadFromView = (
     return { completionPercentage, lastViewedType: 'overview' };
   }
 
+  if (selectedView.type === 'final-test') {
+    return {
+      completionPercentage: 100,
+      lastViewedType: 'overview',
+    };
+  }
+
   if (selectedView.type === 'chapter') {
+    return {
+      completionPercentage,
+      lastViewedType: 'chapter',
+      lastChapterId: selectedView.chapterId,
+    };
+  }
+
+  if (selectedView.type === 'quiz') {
     return {
       completionPercentage,
       lastViewedType: 'chapter',

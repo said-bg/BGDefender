@@ -1,4 +1,5 @@
 .richTextContent {
+  display: flow-root;
   max-width: 860px;
   color: #344054;
   font-size: 1.08rem;
@@ -45,10 +46,81 @@
 
 .richTextContent img,
 .richTextContent video {
-  display: block;
+  display: block !important;
   max-width: 100%;
   height: auto;
-  margin: 1.2rem auto;
+  margin: 1.2rem 0;
+  border-radius: 18px;
+  clear: both;
+  float: none !important;
+}
+
+.richTextContent :global(.image) {
+  margin: 1rem 0;
+  clear: both;
+}
+
+.richTextContent :global(.image img) {
+  display: inline-block !important;
+  margin: 0 !important;
+  max-width: 100%;
+  height: auto;
+  border-radius: 18px;
+  clear: none;
+}
+
+.richTextContent :global(.image-view),
+.richTextContent :global(.video-view) {
+  position: relative;
+  display: flex !important;
+  width: 100% !important;
+  max-width: 100%;
+  margin: 1rem 0;
+  line-height: 0;
+  clear: both;
+  float: none !important;
+}
+
+.richTextContent :global(.image-view__body),
+.richTextContent :global(.video-view__body) {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  line-height: 0;
+}
+
+.richTextContent :global(.image-view__body__image),
+.richTextContent :global(.video-view video) {
+  margin: 0;
+}
+
+.richTextContent p:has(img),
+.richTextContent p:has(video),
+.richTextContent p:has(:global(.image-view)),
+.richTextContent p:has(:global(.video-view)) {
+  display: flow-root;
+}
+
+.richTextContent p > img,
+.richTextContent p > video,
+.richTextContent p > :global(.image-view),
+.richTextContent p > :global(.video-view) {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.richTextContent :global(div[data-video]) {
+  margin: 1rem 0;
+  clear: both;
+}
+
+.richTextContent :global(div[data-video] > div) {
+  width: 100%;
+}
+
+.richTextContent :global(div[data-video] iframe) {
+  display: block;
+  width: 100%;
   border-radius: 18px;
 }
 

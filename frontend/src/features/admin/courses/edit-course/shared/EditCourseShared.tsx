@@ -10,7 +10,12 @@ import formStyles from './EditCourseForm.module.css';
 import sharedStyles from './EditCoursePage.module.css';
 import shellStyles from './EditCourseShell.module.css';
 
-export type EditCourseSection = 'details' | 'structure' | 'content';
+export type EditCourseSection =
+  | 'details'
+  | 'structure'
+  | 'content'
+  | 'quiz'
+  | 'final-test';
 
 export const getEditCourseHref = (
   courseId: string,
@@ -22,6 +27,14 @@ export const getEditCourseHref = (
 
   if (section === 'content') {
     return `/admin/courses/${courseId}/edit/content`;
+  }
+
+  if (section === 'quiz') {
+    return `/admin/courses/${courseId}/edit/quiz`;
+  }
+
+  if (section === 'final-test') {
+    return `/admin/courses/${courseId}/edit/final-test`;
   }
 
   return `/admin/courses/${courseId}/edit`;
@@ -77,6 +90,14 @@ export function EditCourseShell({
     {
       key: 'content',
       label: t('edit.tabs.content', { defaultValue: 'Content' }),
+    },
+    {
+      key: 'quiz',
+      label: t('edit.tabs.quiz', { defaultValue: 'Training quiz' }),
+    },
+    {
+      key: 'final-test',
+      label: t('edit.tabs.finalTest', { defaultValue: 'Final test' }),
     },
   ];
 

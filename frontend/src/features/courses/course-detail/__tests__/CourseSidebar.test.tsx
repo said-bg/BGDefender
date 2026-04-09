@@ -15,6 +15,17 @@ const createCourse = (): Course => ({
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   authors: [],
+  finalTests: [
+    {
+      id: 'final-test-1',
+      titleEn: 'Course final test',
+      titleFi: 'Course final test',
+      descriptionEn: 'Final assessment',
+      descriptionFi: 'Final assessment',
+      passingScore: 70,
+      isPublished: true,
+    },
+  ],
   chapters: [
     {
       id: 'chapter-1',
@@ -23,6 +34,15 @@ const createCourse = (): Course => ({
       descriptionEn: 'Intro description',
       descriptionFi: 'Johdannon kuvaus',
       orderIndex: 1,
+      trainingQuiz: {
+        id: 'quiz-1',
+        titleEn: 'Intro quiz',
+        titleFi: 'Intro quiz',
+        descriptionEn: 'Quiz description',
+        descriptionFi: 'Quiz description',
+        passingScore: 70,
+        isPublished: true,
+      },
       subChapters: [
         {
           id: 'sub-1',
@@ -51,7 +71,13 @@ describe('CourseSidebar', () => {
         expandedChapters={new Set()}
         overviewLabel="Overview"
         heroSummary="Hero summary"
+        quizLabel="Training quiz"
+        quizDescription="Score-based practice"
+        finalTestLabel="Final test"
+        finalTestDescription="Course-wide assessment"
         onSelectOverview={onSelectOverview}
+        onOpenFinalTest={jest.fn()}
+        onOpenQuiz={jest.fn()}
         onToggleChapter={jest.fn()}
         onOpenSubChapter={jest.fn()}
       />,
@@ -65,6 +91,8 @@ describe('CourseSidebar', () => {
   it('opens chapter and subchapter actions with the right identifiers', () => {
     const onToggleChapter = jest.fn();
     const onOpenSubChapter = jest.fn();
+    const onOpenQuiz = jest.fn();
+    const onOpenFinalTest = jest.fn();
 
     render(
       <CourseSidebar
@@ -74,7 +102,13 @@ describe('CourseSidebar', () => {
         expandedChapters={new Set(['chapter-1'])}
         overviewLabel="Overview"
         heroSummary="Hero summary"
+        quizLabel="Training quiz"
+        quizDescription="Score-based practice"
+        finalTestLabel="Final test"
+        finalTestDescription="Course-wide assessment"
         onSelectOverview={jest.fn()}
+        onOpenFinalTest={onOpenFinalTest}
+        onOpenQuiz={onOpenQuiz}
         onToggleChapter={onToggleChapter}
         onOpenSubChapter={onOpenSubChapter}
       />,
@@ -85,6 +119,12 @@ describe('CourseSidebar', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /getting started/i }));
     expect(onOpenSubChapter).toHaveBeenCalledWith('chapter-1', 'sub-1');
+
+    fireEvent.click(screen.getByRole('button', { name: /training quiz/i }));
+    expect(onOpenQuiz).toHaveBeenCalledWith('chapter-1');
+
+    fireEvent.click(screen.getByRole('button', { name: /final test/i }));
+    expect(onOpenFinalTest).toHaveBeenCalledTimes(1);
   });
 
   // Verifies that the sidebar renders the subtle progress bars for the course and chapter list.
@@ -101,7 +141,13 @@ describe('CourseSidebar', () => {
         expandedChapters={new Set(['chapter-1'])}
         overviewLabel="Overview"
         heroSummary="Hero summary"
+        quizLabel="Training quiz"
+        quizDescription="Score-based practice"
+        finalTestLabel="Final test"
+        finalTestDescription="Course-wide assessment"
         onSelectOverview={jest.fn()}
+        onOpenFinalTest={jest.fn()}
+        onOpenQuiz={jest.fn()}
         onToggleChapter={jest.fn()}
         onOpenSubChapter={jest.fn()}
       />,
@@ -113,6 +159,6 @@ describe('CourseSidebar', () => {
     );
 
     expect(progressBars).toHaveLength(2);
-    expect(progressValues).toEqual(expect.arrayContaining(['100', '100']));
+    expect(progressValues).toEqual(expect.arrayContaining(['67', '67']));
   });
 });

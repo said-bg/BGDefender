@@ -1,6 +1,8 @@
 import { apiClient } from '../api';
 import type {
   AdminCourseSummary,
+  AdminChapterQuiz,
+  AdminCourseFinalTest,
   Chapter,
   Course,
   CoursesResponse,
@@ -8,8 +10,16 @@ import type {
   CreateCourseRequest,
   CreatePedagogicalContentRequest,
   CreateSubChapterRequest,
+  LearnerCourseFinalTest,
+  LearnerChapterQuiz,
   PedagogicalContent,
+  SubmitCourseFinalTestAttemptRequest,
+  SubmitCourseFinalTestAttemptResponse,
+  SubmitChapterQuizAttemptRequest,
+  SubmitChapterQuizAttemptResponse,
   SubChapter,
+  UpsertChapterQuizRequest,
+  UpsertCourseFinalTestRequest,
   UpdateChapterRequest,
   UpdateCourseRequest,
   UpdatePedagogicalContentRequest,
@@ -178,6 +188,79 @@ export const courseService = {
     await apiClient.delete(
       `/courses/${courseId}/chapters/${chapterId}/sub-chapters/${subChapterId}/pedagogical-contents/${contentId}`,
     );
+  },
+
+  async getChapterQuiz(
+    courseId: string,
+    chapterId: string,
+  ): Promise<AdminChapterQuiz | LearnerChapterQuiz | null> {
+    const response = await apiClient.get<AdminChapterQuiz | LearnerChapterQuiz | null>(
+      `/courses/${courseId}/chapters/${chapterId}/quiz`,
+    );
+    return response.data;
+  },
+
+  async upsertChapterQuiz(
+    courseId: string,
+    chapterId: string,
+    payload: UpsertChapterQuizRequest,
+  ): Promise<AdminChapterQuiz> {
+    const response = await apiClient.put<AdminChapterQuiz>(
+      `/courses/${courseId}/chapters/${chapterId}/quiz`,
+      payload,
+    );
+    return response.data;
+  },
+
+  async deleteChapterQuiz(courseId: string, chapterId: string): Promise<void> {
+    await apiClient.delete(`/courses/${courseId}/chapters/${chapterId}/quiz`);
+  },
+
+  async submitChapterQuizAttempt(
+    courseId: string,
+    chapterId: string,
+    payload: SubmitChapterQuizAttemptRequest,
+  ): Promise<SubmitChapterQuizAttemptResponse> {
+    const response = await apiClient.post<SubmitChapterQuizAttemptResponse>(
+      `/courses/${courseId}/chapters/${chapterId}/quiz/attempts`,
+      payload,
+    );
+    return response.data;
+  },
+
+  async getCourseFinalTest(
+    courseId: string,
+  ): Promise<AdminCourseFinalTest | LearnerCourseFinalTest | null> {
+    const response = await apiClient.get<
+      AdminCourseFinalTest | LearnerCourseFinalTest | null
+    >(`/courses/${courseId}/final-test`);
+    return response.data;
+  },
+
+  async upsertCourseFinalTest(
+    courseId: string,
+    payload: UpsertCourseFinalTestRequest,
+  ): Promise<AdminCourseFinalTest> {
+    const response = await apiClient.put<AdminCourseFinalTest>(
+      `/courses/${courseId}/final-test`,
+      payload,
+    );
+    return response.data;
+  },
+
+  async deleteCourseFinalTest(courseId: string): Promise<void> {
+    await apiClient.delete(`/courses/${courseId}/final-test`);
+  },
+
+  async submitCourseFinalTestAttempt(
+    courseId: string,
+    payload: SubmitCourseFinalTestAttemptRequest,
+  ): Promise<SubmitCourseFinalTestAttemptResponse> {
+    const response = await apiClient.post<SubmitCourseFinalTestAttemptResponse>(
+      `/courses/${courseId}/final-test/attempts`,
+      payload,
+    );
+    return response.data;
   },
 
   async uploadCourseCover(file: File): Promise<UploadCourseCoverResponse> {

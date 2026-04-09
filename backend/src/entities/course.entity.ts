@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Author } from './author.entity';
 import { Chapter } from './chapter.entity';
+import { Quiz } from './quiz.entity';
 
 export enum CourseLevel {
   FREE = 'free',
@@ -85,6 +86,9 @@ export class Course {
 
   @OneToMany(() => Chapter, (chapter) => chapter.course)
   chapters: Chapter[];
+
+  @OneToMany(() => Quiz, (quiz) => quiz.course)
+  finalTests: Quiz[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -36,6 +36,17 @@ const createCourse = (): Course => ({
       roleFi: 'Tietoturva-asiantuntija',
     },
   ],
+  finalTests: [
+    {
+      id: 'final-test-1',
+      titleEn: 'Course final test',
+      titleFi: 'Course final test',
+      descriptionEn: 'Final assessment description',
+      descriptionFi: 'Final assessment description',
+      passingScore: 70,
+      isPublished: true,
+    },
+  ],
   chapters: [
     {
       id: 'chapter-1',
@@ -44,6 +55,15 @@ const createCourse = (): Course => ({
       descriptionEn: '',
       descriptionFi: '',
       orderIndex: 1,
+      trainingQuiz: {
+        id: 'quiz-1',
+        titleEn: 'Intro quiz',
+        titleFi: 'Intro quiz',
+        descriptionEn: 'Quiz description',
+        descriptionFi: 'Quiz description',
+        passingScore: 70,
+        isPublished: true,
+      },
       subChapters: [
         {
           id: 'sub-1',
@@ -74,6 +94,7 @@ const createCourse = (): Course => ({
       descriptionEn: 'Chapter description',
       descriptionFi: 'Luvun kuvaus',
       orderIndex: 2,
+      trainingQuiz: null,
       subChapters: [],
     },
   ],
@@ -150,6 +171,13 @@ describe('course-detail.utils', () => {
         },
       },
       {
+        key: 'quiz:chapter-1',
+        view: {
+          type: 'quiz',
+          chapterId: 'chapter-1',
+        },
+      },
+      {
         key: 'chapter:chapter-2',
         view: { type: 'chapter', chapterId: 'chapter-2' },
       },
@@ -169,14 +197,20 @@ describe('course-detail.utils', () => {
         type: 'chapter',
         chapterId: 'chapter-1',
       }),
-    ).toBe(33);
+    ).toBe(25);
     expect(
       calculateCompletionPercentage(navigationItems, {
         type: 'subchapter',
         chapterId: 'chapter-1',
         subChapterId: 'sub-1',
       }),
-    ).toBe(67);
+    ).toBe(50);
+    expect(
+      calculateCompletionPercentage(navigationItems, {
+        type: 'quiz',
+        chapterId: 'chapter-1',
+      }),
+    ).toBe(75);
   });
 
   // Verifies the simplified sidebar progress values for the whole course and each chapter.
@@ -192,6 +226,12 @@ describe('course-detail.utils', () => {
         type: 'subchapter',
         chapterId: 'chapter-1',
         subChapterId: 'sub-1',
+      }),
+    ).toBe(67);
+    expect(
+      getChapterProgressPercentage(course, 'chapter-1', {
+        type: 'quiz',
+        chapterId: 'chapter-1',
       }),
     ).toBe(100);
     expect(
@@ -235,12 +275,23 @@ describe('course-detail.utils', () => {
 
     expect(
       getProgressPayloadFromView(navigationItems, {
+        type: 'quiz',
+        chapterId: 'chapter-1',
+      }),
+    ).toEqual({
+      completionPercentage: 75,
+      lastViewedType: 'chapter',
+      lastChapterId: 'chapter-1',
+    });
+
+    expect(
+      getProgressPayloadFromView(navigationItems, {
         type: 'subchapter',
         chapterId: 'chapter-1',
         subChapterId: 'sub-1',
       }),
     ).toEqual({
-      completionPercentage: 67,
+      completionPercentage: 50,
       lastViewedType: 'subchapter',
       lastChapterId: 'chapter-1',
       lastSubChapterId: 'sub-1',
@@ -321,6 +372,33 @@ describe('course-detail.utils', () => {
       description: 'Varakuvaus',
       paragraphs: ['Kappale 1.', 'Kappale 2.'],
       parentTitle: 'Johdanto',
+    });
+  });
+
+  it('returns quiz content when the published chapter training quiz is selected', () => {
+    const course = createCourse();
+
+    expect(
+      getSelectedContent(course, { type: 'quiz', chapterId: 'chapter-1' }, 'en', t),
+    ).toMatchObject({
+      kind: 'quiz',
+      title: 'Intro quiz',
+      description: 'Quiz description',
+      parentTitle: 'Intro',
+      chapterId: 'chapter-1',
+      passingScore: 70,
+    });
+  });
+
+  it('returns final test content when the published course final test is selected', () => {
+    const course = createCourse();
+
+    expect(
+      getSelectedContent(course, { type: 'final-test' }, 'en', t),
+    ).toMatchObject({
+      kind: 'final-test',
+      title: 'Course final test',
+      description: 'Final assessment description',
     });
   });
 

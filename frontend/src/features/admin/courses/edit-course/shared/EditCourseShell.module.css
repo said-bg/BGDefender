@@ -1,11 +1,11 @@
 .page {
-  width: min(1240px, calc(100% - 3rem));
+  width: min(1360px, calc(100% - 3rem));
   margin: 0 auto;
   padding: 34px 0 64px;
 }
 
 .pageWide {
-  width: min(1560px, calc(100% - 2rem));
+  width: min(1360px, calc(100% - 3rem));
 }
 
 .hero {

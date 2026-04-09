@@ -46,53 +46,79 @@ export default function CourseDetailPage() {
         premiumCourseLabel={detail.t('detail.premiumCourse')}
       />
 
-      <div
-        className={`${styles.readerToolbar} ${!isSidebarVisible ? styles.readerToolbarFocus : ''}`}
-      >
-        <button
-          type="button"
-          className={styles.sidebarToggle}
-          aria-expanded={isSidebarVisible ? 'true' : 'false'}
-          aria-controls="course-outline-panel"
-          aria-label={
-            isSidebarVisible ? detail.t('detail.hideOutline') : detail.t('detail.showOutline')
-          }
-          title={isSidebarVisible ? detail.t('detail.hideOutline') : detail.t('detail.showOutline')}
-          onClick={() => setIsSidebarVisible((previous) => !previous)}
-        >
-          <span className={styles.sidebarToggleIcon} aria-hidden="true">
-            {isSidebarVisible ? '-' : '+'}
-          </span>
-          <span className={styles.visuallyHidden}>
-            {isSidebarVisible ? detail.t('detail.hideOutline') : detail.t('detail.showOutline')}
-          </span>
-        </button>
-      </div>
-
       <div className={`${styles.layout} ${!isSidebarVisible ? styles.layoutFocus : ''}`}>
-        <CourseSidebar
-          id="course-outline-panel"
-          hidden={!isSidebarVisible}
-          course={detail.course}
-          activeLanguage={detail.activeLanguage}
-          selectedView={detail.selectedView}
-          expandedChapters={detail.expandedChapters}
-          courseProgressLabel={detail.t('detail.courseProgress')}
-          overviewLabel={detail.t('detail.overview')}
-          heroSummary={detail.heroSummary}
-          onSelectOverview={() => detail.navigateToView({ type: 'overview' })}
-          onToggleChapter={detail.toggleChapter}
-          onOpenSubChapter={detail.openSubChapter}
-        />
+        {isSidebarVisible ? (
+          <div className={styles.sidebarSlot}>
+            <button
+              type="button"
+              className={`${styles.sidebarToggle} ${styles.sidebarToggleInline}`}
+              aria-expanded="true"
+              aria-controls="course-outline-panel"
+              aria-label={detail.t('detail.hideOutline')}
+              title={detail.t('detail.hideOutline')}
+              onClick={() => setIsSidebarVisible(false)}
+            >
+              <span className={styles.sidebarToggleIcon} aria-hidden="true">
+                -
+              </span>
+              <span className={styles.visuallyHidden}>{detail.t('detail.hideOutline')}</span>
+            </button>
+
+            <CourseSidebar
+              id="course-outline-panel"
+              hidden={false}
+              course={detail.course}
+              activeLanguage={detail.activeLanguage}
+              selectedView={detail.selectedView}
+              expandedChapters={detail.expandedChapters}
+              courseProgressLabel={detail.t('detail.courseProgress')}
+              overviewLabel={detail.t('detail.overview')}
+              heroSummary={detail.heroSummary}
+              quizLabel={detail.t('detail.trainingQuiz', { defaultValue: 'Training quiz' })}
+              quizDescription={detail.t('detail.trainingQuizSidebar', {
+                defaultValue: 'Score-based practice for this chapter',
+              })}
+              finalTestLabel={detail.t('detail.finalTest', { defaultValue: 'Final test' })}
+              finalTestDescription={detail.t('detail.finalTestSidebar', {
+                defaultValue: 'Course-wide assessment unlocked after all chapters',
+              })}
+              onSelectOverview={() => detail.navigateToView({ type: 'overview' })}
+              onOpenFinalTest={detail.openFinalTest}
+              onToggleChapter={detail.toggleChapter}
+              onOpenQuiz={detail.openQuiz}
+              onOpenSubChapter={detail.openSubChapter}
+            />
+          </div>
+        ) : null}
 
         <div className={`${styles.contentSlot} ${!isSidebarVisible ? styles.contentSlotFocus : ''}`}>
           <CourseContent
+            courseId={detail.course.id}
             course={detail.course}
             activeLanguage={detail.activeLanguage}
             selectedContent={detail.selectedContent}
             accessState={detail.accessState}
+            canAccessAssessments={detail.canAccessAssessments}
             canReadContent={detail.canReadContent}
             courseAuthorFallback={detail.courseAuthorFallback}
+            headerAction={
+              !isSidebarVisible ? (
+                <button
+                  type="button"
+                  className={styles.sidebarToggle}
+                  aria-expanded="false"
+                  aria-controls="course-outline-panel"
+                  aria-label={detail.t('detail.showOutline')}
+                  title={detail.t('detail.showOutline')}
+                  onClick={() => setIsSidebarVisible(true)}
+                >
+                  <span className={styles.sidebarToggleIcon} aria-hidden="true">
+                    +
+                  </span>
+                  <span className={styles.visuallyHidden}>{detail.t('detail.showOutline')}</span>
+                </button>
+              ) : null
+            }
             isFocusMode={!isSidebarVisible}
             previousItem={detail.previousItem}
             nextItem={detail.nextItem}

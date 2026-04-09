@@ -23,7 +23,13 @@ type CourseSidebarProps = {
   courseProgressLabel: string;
   overviewLabel: string;
   heroSummary: string;
+  quizLabel: string;
+  quizDescription: string;
+  finalTestLabel: string;
+  finalTestDescription: string;
   onSelectOverview: () => void;
+  onOpenFinalTest: () => void;
+  onOpenQuiz: (chapterId: string) => void;
   onToggleChapter: (chapterId: string) => void;
   onOpenSubChapter: (chapterId: string, subChapterId: string) => void;
 };
@@ -38,7 +44,13 @@ export function CourseSidebar({
   courseProgressLabel,
   overviewLabel,
   heroSummary,
+  quizLabel,
+  quizDescription,
+  finalTestLabel,
+  finalTestDescription,
   onSelectOverview,
+  onOpenFinalTest,
+  onOpenQuiz,
   onToggleChapter,
   onOpenSubChapter,
 }: CourseSidebarProps) {
@@ -173,11 +185,45 @@ export function CourseSidebar({
                       </button>
                     );
                   })}
+
+                  {chapter.trainingQuiz?.isPublished ? (
+                    <button
+                      type="button"
+                      className={`${styles.quizButton} ${
+                        selectedView.type === 'quiz' && selectedView.chapterId === chapter.id
+                          ? styles.quizButtonActive
+                          : ''
+                      }`}
+                      onClick={() => onOpenQuiz(chapter.id)}
+                    >
+                      <span className={styles.subChapterInner}>
+                        <strong>{quizLabel}</strong>
+                        <small>{quizDescription}</small>
+                      </span>
+                    </button>
+                  ) : null}
                 </div>
               )}
             </div>
           );
         })}
+
+        {course.finalTests?.some((finalTest) => finalTest.isPublished) ? (
+          <div className={styles.finalTestSection}>
+            <button
+              type="button"
+              className={`${styles.finalTestButton} ${
+                selectedView.type === 'final-test' ? styles.finalTestButtonActive : ''
+              }`}
+              onClick={onOpenFinalTest}
+            >
+              <span className={styles.subChapterInner}>
+                <strong>{finalTestLabel}</strong>
+                <small>{finalTestDescription}</small>
+              </span>
+            </button>
+          </div>
+        ) : null}
       </div>
     </aside>
   );

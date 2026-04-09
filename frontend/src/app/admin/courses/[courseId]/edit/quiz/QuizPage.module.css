@@ -1,0 +1,191 @@
+.quizWorkspaceLayout {
+  display: grid;
+  grid-template-columns: minmax(290px, 340px) minmax(0, 1fr);
+  gap: 0.95rem;
+  align-items: start;
+}
+
+.quizSidebar,
+.quizEditorColumn,
+.chapterPickerList,
+.quizEditorCard,
+.questionList {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.quizSidebarHeader,
+.questionCard,
+.questionGrid,
+.fieldGroup,
+.fieldGroupCompact {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.quizSidebar,
+.quizEditorCard {
+  padding: 16px;
+  border: 1px solid #e6ebf2;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+}
+
+.chapterPickerCard {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e6ebf2;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.chapterPickerCard:hover {
+  border-color: #ffa600;
+  background: #fffdfa;
+}
+
+.chapterPickerCardActive {
+  border-color: #ffa600;
+  background: #fff8eb;
+  box-shadow: 0 10px 20px rgba(255, 166, 0, 0.08);
+}
+
+.chapterPickerCardBody {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.quizChapterMeta,
+.quizStatsRow,
+.quizSettingsRow,
+.optionsHeader,
+.questionCardHeader,
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quizStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.85rem;
+  padding: 0.18rem 0.68rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.quizStatusBadgePublished {
+  background: #e8fff3;
+  color: #047857;
+}
+
+.quizStatusBadgeDraft {
+  background: #fff6d9;
+  color: #b45309;
+}
+
+.quizStatusBadgeEmpty {
+  background: #f3f4f6;
+  color: #526581;
+}
+
+.quizCountLabel {
+  color: #64748b;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.questionCard {
+  padding: 14px;
+  border: 1px solid #e6ebf2;
+  border-radius: 0.9rem;
+  background: #ffffff;
+}
+
+.quizHeaderGrid,
+.questionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.fieldLabel {
+  color: #111827;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  min-height: 2.45rem;
+  padding: 0.58rem 0.8rem;
+  border: 1px solid #cfd7e6;
+  border-radius: 0.8rem;
+  background: #ffffff;
+  color: #111827;
+  font: inherit;
+}
+
+.textarea {
+  min-height: 6.6rem;
+  resize: vertical;
+}
+
+.checkboxRow,
+.correctToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: #334155;
+  font-size: 0.84rem;
+}
+
+.questionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.15rem;
+}
+
+.optionsList {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.optionRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.quizEditorColumn {
+  gap: 0.9rem;
+}
+
+.questionList {
+  gap: 0.8rem;
+}
+
+@media (max-width: 980px) {
+  .quizWorkspaceLayout,
+  .quizHeaderGrid,
+  .questionGrid,
+  .optionRow {
+    grid-template-columns: 1fr;
+  }
+}

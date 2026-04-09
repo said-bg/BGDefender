@@ -29,6 +29,25 @@ export const getSelectedContent = (
     return getOverviewSelection(course, language, t);
   }
 
+  if (selectedView.type === 'final-test') {
+    const finalTest = course.finalTests?.find((item) => item.isPublished);
+
+    if (!finalTest) {
+      return getOverviewSelection(course, language, t);
+    }
+
+    return {
+      kind: 'final-test',
+      title: getLocalizedText(language, finalTest.titleEn, finalTest.titleFi),
+      description: getLocalizedText(
+        language,
+        finalTest.descriptionEn,
+        finalTest.descriptionFi,
+      ),
+      paragraphs: [],
+    };
+  }
+
   const chapter = course.chapters.find(
     (item) => item.id === selectedView.chapterId,
   );
@@ -51,6 +70,28 @@ export const getSelectedContent = (
 
   if (selectedView.type === 'chapter') {
     return chapterSelection;
+  }
+
+  if (selectedView.type === 'quiz') {
+    const trainingQuiz = chapter.trainingQuiz;
+
+    if (!trainingQuiz?.isPublished) {
+      return chapterSelection;
+    }
+
+    return {
+      kind: 'quiz',
+      title: getLocalizedText(language, trainingQuiz.titleEn, trainingQuiz.titleFi),
+      description: getLocalizedText(
+        language,
+        trainingQuiz.descriptionEn,
+        trainingQuiz.descriptionFi,
+      ),
+      paragraphs: [],
+      parentTitle: getLocalizedText(language, chapter.titleEn, chapter.titleFi),
+      chapterId: chapter.id,
+      passingScore: trainingQuiz.passingScore,
+    };
   }
 
   const subChapter = chapter.subChapters?.find(

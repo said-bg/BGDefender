@@ -101,7 +101,8 @@ export default function useCourseProgressSync({
       !user ||
       restoringProgress ||
       !canReadContent ||
-      selectedView.type === 'overview'
+      selectedView.type === 'overview' ||
+      selectedView.type === 'final-test'
     ) {
       return;
     }

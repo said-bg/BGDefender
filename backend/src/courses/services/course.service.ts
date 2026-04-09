@@ -46,7 +46,13 @@ export class CourseService {
   ): Promise<[Course[], number]> {
     const [courses, count] = await this.courseRepository.findAndCount({
       where: { status: CourseStatus.PUBLISHED },
-      relations: ['authors', 'chapters', 'chapters.subChapters'],
+      relations: [
+        'authors',
+        'finalTests',
+        'chapters',
+        'chapters.trainingQuiz',
+        'chapters.subChapters',
+      ],
       take: limit,
       skip: offset,
       order: { createdAt: 'DESC' },
@@ -60,7 +66,13 @@ export class CourseService {
     offset: number = 0,
   ): Promise<[Course[], number]> {
     const [courses, count] = await this.courseRepository.findAndCount({
-      relations: ['authors', 'chapters', 'chapters.subChapters'],
+      relations: [
+        'authors',
+        'finalTests',
+        'chapters',
+        'chapters.trainingQuiz',
+        'chapters.subChapters',
+      ],
       take: limit,
       skip: offset,
       order: { updatedAt: 'DESC' },
@@ -97,7 +109,9 @@ export class CourseService {
       where: { id },
       relations: [
         'authors',
+        'finalTests',
         'chapters',
+        'chapters.trainingQuiz',
         'chapters.subChapters',
         'chapters.subChapters.pedagogicalContents',
       ],

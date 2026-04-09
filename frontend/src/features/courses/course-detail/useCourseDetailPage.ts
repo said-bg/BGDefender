@@ -100,6 +100,21 @@ export function useCourseDetailPage() {
   }, [course?.level, isAuthenticated, isInitialized, selectedView.type, user]);
 
   const canReadContent = accessState === 'public' || accessState === 'granted';
+  const canAccessAssessments = useMemo(() => {
+    if (!isInitialized || !isAuthenticated || !user) {
+      return false;
+    }
+
+    if (
+      course?.level === 'premium' &&
+      user.plan !== UserPlan.PREMIUM &&
+      user.role !== UserRole.ADMIN
+    ) {
+      return false;
+    }
+
+    return true;
+  }, [course?.level, isAuthenticated, isInitialized, user]);
 
   const navigationItems = useMemo<NavigationItem[]>(() => {
     if (!course) {
@@ -112,18 +127,24 @@ export function useCourseDetailPage() {
   const currentViewKey =
     selectedView.type === 'overview'
       ? 'overview'
+      : selectedView.type === 'final-test'
+        ? 'final-test'
       : selectedView.type === 'chapter'
         ? `chapter:${selectedView.chapterId}`
         : `subchapter:${selectedView.subChapterId}`;
-  const currentNavigationIndex = navigationItems.findIndex(
-    (item) => item.key === currentViewKey,
-  );
+  const currentNavigationIndex = navigationItems.findIndex((item) => item.key === currentViewKey);
   const previousItem =
-    currentNavigationIndex > 0 ? navigationItems[currentNavigationIndex - 1] : null;
+    selectedView.type === 'final-test'
+      ? navigationItems[navigationItems.length - 1] ?? null
+      : currentNavigationIndex > 0
+        ? navigationItems[currentNavigationIndex - 1]
+        : null;
   const nextItem =
-    currentNavigationIndex >= 0 && currentNavigationIndex < navigationItems.length - 1
-      ? navigationItems[currentNavigationIndex + 1]
-      : null;
+    selectedView.type === 'final-test'
+      ? null
+      : currentNavigationIndex >= 0 && currentNavigationIndex < navigationItems.length - 1
+        ? navigationItems[currentNavigationIndex + 1]
+        : null;
 
   const navigateToView = (view: ViewState) => {
     if (view.type === 'overview') {
@@ -156,6 +177,15 @@ export function useCourseDetailPage() {
     setSelectedView({ type: 'subchapter', chapterId, subChapterId });
   };
 
+  const openQuiz = (chapterId: string) => {
+    setExpandedChapters((previous) => new Set(previous).add(chapterId));
+    setSelectedView({ type: 'quiz', chapterId });
+  };
+
+  const openFinalTest = () => {
+    setSelectedView({ type: 'final-test' });
+  };
+
   useCourseProgressSync({
     canReadContent,
     course,
@@ -182,6 +212,7 @@ export function useCourseDetailPage() {
   return {
     accessState,
     activeLanguage,
+    canAccessAssessments,
     canReadContent,
     course,
     courseAuthorFallback,
@@ -195,6 +226,8 @@ export function useCourseDetailPage() {
     isPending,
     loading,
     nextItem,
+    openFinalTest,
+    openQuiz,
     openSubChapter,
     previousItem,
     selectedContent,

@@ -9,6 +9,7 @@ import { AuthorsModule } from './authors/authors.module';
 import { CoursesModule } from './courses/courses.module';
 import { ResourcesModule } from './resources/resources.module';
 import { UsersModule } from './users/users.module';
+import { QuizzesModule } from './quizzes/quizzes.module';
 
 @Module({
   imports: [
@@ -31,6 +32,8 @@ import { UsersModule } from './users/users.module';
     ResourcesModule,
     // Users module: admin user management
     UsersModule,
+    // Quizzes module: chapter training quizzes and learner attempts
+    QuizzesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

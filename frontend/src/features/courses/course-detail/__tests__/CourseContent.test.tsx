@@ -32,6 +32,7 @@ jest.mock('react-i18next', () => ({
       ({
         'detail.courseDetail': 'Course detail',
         'detail.chapterOverview': 'Chapter overview',
+        'detail.trainingQuiz': 'Training quiz',
         'detail.writtenBy': 'Written by',
         'detail.checkingAccess': 'Checking access',
         'detail.loginRequiredDescription':
@@ -85,6 +86,7 @@ const createCourse = (): Course => ({
       name: 'NoRole',
     },
   ],
+  finalTests: [],
   chapters: [],
 });
 
@@ -114,7 +116,9 @@ describe('CourseContent', () => {
         activeLanguage="en"
         selectedContent={overviewContent}
         accessState="public"
+        canAccessAssessments={false}
         canReadContent
+        courseId="course-1"
         courseAuthorFallback="Course author"
         previousItem={null}
         nextItem={nextItem}
@@ -143,7 +147,9 @@ describe('CourseContent', () => {
           paragraphs: ['Secret paragraph'],
         }}
         accessState="login_required"
+        canAccessAssessments={false}
         canReadContent={false}
+        courseId="course-1"
         courseAuthorFallback="Course author"
         previousItem={previousItem}
         nextItem={nextItem}
@@ -173,7 +179,9 @@ describe('CourseContent', () => {
           paragraphs: ['Secret paragraph'],
         }}
         accessState="premium_required"
+        canAccessAssessments={false}
         canReadContent={false}
+        courseId="course-1"
         courseAuthorFallback="Course author"
         previousItem={previousItem}
         nextItem={nextItem}
@@ -198,7 +206,9 @@ describe('CourseContent', () => {
         activeLanguage="en"
         selectedContent={overviewContent}
         accessState="public"
+        canAccessAssessments={false}
         canReadContent
+        courseId="course-1"
         courseAuthorFallback="Course author"
         previousItem={previousItem}
         nextItem={nextItem}
@@ -221,7 +231,9 @@ describe('CourseContent', () => {
         activeLanguage="en"
         selectedContent={overviewContent}
         accessState="public"
+        canAccessAssessments={false}
         canReadContent
+        courseId="course-1"
         courseAuthorFallback="Course author"
         previousItem={null}
         nextItem={null}
