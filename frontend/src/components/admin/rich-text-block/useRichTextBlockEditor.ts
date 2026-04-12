@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useEditor } from '@tiptap/react';
-import courseService from '@/services/courseService';
+import courseService from '@/services/course';
 import {
   applyFontFamilyCommand,
   applyFontSizeCommand,
@@ -162,5 +162,6 @@ export default function useRichTextBlockEditor({
     applyMediaAlign,
   };
 }
+
 
 

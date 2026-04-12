@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import authorService from '@/services/authorService';
-import courseService, { Author, CreateCourseRequest } from '@/services/courseService';
+import authorService from '@/services/authors';
+import courseService, { Author, CreateCourseRequest } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { CreateCourseFormState, ImageMode, initialCreateCourseFormState } from './types';
 
@@ -180,3 +180,4 @@ export default function useCreateCourse() {
     toggleAuthor,
   };
 }
+

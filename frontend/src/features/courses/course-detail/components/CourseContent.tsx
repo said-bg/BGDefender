@@ -2,7 +2,7 @@
 
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Course } from '@/services/courseService';
+import { Course } from '@/services/course';
 import styles from './CourseContent.module.css';
 import {
   ActiveLanguage,
@@ -128,3 +128,4 @@ export function CourseContent({
 }
 
 export default CourseContent;
+

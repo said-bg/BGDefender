@@ -3,7 +3,7 @@ import type { TranslationFn } from '@/types/i18n';
 import CoverImageField from '../fields/CoverImageField';
 import formStyles from '../../shared/EditCourseForm.module.css';
 import sharedStyles from '../../shared/EditCoursePage.module.css';
-import { CoverImageMode, EditCourseFormState } from '../types';
+import { CoverImageMode, EditCourseFormState } from '../lib/details.types';
 
 type CourseSettingsFieldsProps = {
   coverUploadError: string | null;

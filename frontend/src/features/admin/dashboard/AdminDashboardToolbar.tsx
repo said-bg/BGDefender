@@ -21,6 +21,9 @@ export default function AdminDashboardToolbar({ t }: AdminDashboardToolbarProps)
       <Link href="/admin/resources" className={styles.secondaryAction}>
         {t('manageResources', { defaultValue: 'Manage resources' })}
       </Link>
+      <Link href="/admin/collections" className={styles.secondaryAction}>
+        {t('manageCollections', { defaultValue: 'Manage collections' })}
+      </Link>
     </section>
   );
 }

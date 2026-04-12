@@ -1,5 +1,5 @@
-import type { Course } from '@/services/courseService';
-import type { CourseProgress, ProgressViewType } from '@/services/progressService';
+import type { Course } from '@/services/course';
+import type { CourseProgress, ProgressViewType } from '@/services/progress';
 import type { NavigationItem, ViewState } from '../courseDetail.types';
 
 export const getViewKey = (view: ViewState): string => {
@@ -239,3 +239,4 @@ export const preserveCompletedProgress = (
 
   return { ...payload, completionPercentage: 100 };
 };
+

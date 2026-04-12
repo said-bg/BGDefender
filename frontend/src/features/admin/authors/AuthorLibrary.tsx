@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { Author } from '@/services/courseService';
+import { Author } from '@/services/course';
 import {
   getAuthorInitials,
   getLocalizedAuthorBio,
@@ -125,3 +125,4 @@ export default function AuthorLibrary({
     </section>
   );
 }
+

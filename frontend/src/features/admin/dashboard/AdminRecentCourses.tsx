@@ -1,4 +1,4 @@
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 import { formatCourseLevel, formatCourseStatus, getCourseTitle } from './adminDashboard.utils';
 import styles from './AdminRecentCourses.module.css';
 import type { AdminDashboardT } from './adminDashboard.types';
@@ -59,3 +59,4 @@ export default function AdminRecentCourses({ courses, language, t }: AdminRecent
     </section>
   );
 }
+

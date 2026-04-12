@@ -1,8 +1,20 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import type { ReactNode } from 'react';
 import CourseFinalTest from '../components/CourseFinalTest';
-import courseService from '@/services/courseService';
+import courseService from '@/services/course';
 
-jest.mock('@/services/courseService', () => ({
+jest.mock('next/link', () => ({
+  __esModule: true,
+  default: ({
+    children,
+    href,
+  }: {
+    children: ReactNode;
+    href: string;
+  }) => <a href={href}>{children}</a>,
+}));
+
+jest.mock('@/services/course', () => ({
   __esModule: true,
   default: {
     getCourseFinalTest: jest.fn(),
@@ -41,6 +53,7 @@ describe('CourseFinalTest', () => {
       questions: [],
       latestAttempt: null,
       bestAttempt: null,
+      certificate: null,
     });
 
     render(
@@ -59,44 +72,103 @@ describe('CourseFinalTest', () => {
   });
 
   it('starts and submits the final test once unlocked', async () => {
-    mockedCourseService.getCourseFinalTest.mockResolvedValue({
-      id: 'final-test-1',
-      courseId: 'course-1',
-      titleEn: 'Course final test',
-      titleFi: 'Course final test',
-      descriptionEn: 'Final test description',
-      descriptionFi: 'Final test description',
-      passingScore: 70,
-      isPublished: true,
-      isUnlocked: true,
-      questions: [
-        {
-          id: 'question-1',
-          promptEn: 'Final question 1',
-          promptFi: 'Final question 1',
-          explanationEn: 'Because option A is correct',
-          explanationFi: 'Because option A is correct',
-          type: 'single_choice',
-          orderIndex: 1,
-          options: [
-            {
-              id: 'option-a',
-              labelEn: 'Option A',
-              labelFi: 'Option A',
-              orderIndex: 1,
-            },
-            {
-              id: 'option-b',
-              labelEn: 'Option B',
-              labelFi: 'Option B',
-              orderIndex: 2,
-            },
-          ],
+    mockedCourseService.getCourseFinalTest
+      .mockResolvedValueOnce({
+        id: 'final-test-1',
+        courseId: 'course-1',
+        titleEn: 'Course final test',
+        titleFi: 'Course final test',
+        descriptionEn: 'Final test description',
+        descriptionFi: 'Final test description',
+        passingScore: 70,
+        isPublished: true,
+        isUnlocked: true,
+        questions: [
+          {
+            id: 'question-1',
+            promptEn: 'Final question 1',
+            promptFi: 'Final question 1',
+            explanationEn: 'Because option A is correct',
+            explanationFi: 'Because option A is correct',
+            type: 'single_choice',
+            orderIndex: 1,
+            options: [
+              {
+                id: 'option-a',
+                labelEn: 'Option A',
+                labelFi: 'Option A',
+                orderIndex: 1,
+              },
+              {
+                id: 'option-b',
+                labelEn: 'Option B',
+                labelFi: 'Option B',
+                orderIndex: 2,
+              },
+            ],
+          },
+        ],
+        latestAttempt: null,
+        bestAttempt: null,
+        certificate: null,
+      })
+      .mockResolvedValueOnce({
+        id: 'final-test-1',
+        courseId: 'course-1',
+        titleEn: 'Course final test',
+        titleFi: 'Course final test',
+        descriptionEn: 'Final test description',
+        descriptionFi: 'Final test description',
+        passingScore: 70,
+        isPublished: true,
+        isUnlocked: true,
+        questions: [
+          {
+            id: 'question-1',
+            promptEn: 'Final question 1',
+            promptFi: 'Final question 1',
+            explanationEn: 'Because option A is correct',
+            explanationFi: 'Because option A is correct',
+            type: 'single_choice',
+            orderIndex: 1,
+            options: [
+              {
+                id: 'option-a',
+                labelEn: 'Option A',
+                labelFi: 'Option A',
+                orderIndex: 1,
+              },
+              {
+                id: 'option-b',
+                labelEn: 'Option B',
+                labelFi: 'Option B',
+                orderIndex: 2,
+              },
+            ],
+          },
+        ],
+        latestAttempt: {
+          id: 'attempt-1',
+          totalQuestions: 1,
+          correctAnswers: 1,
+          score: 100,
+          passed: true,
+          submittedAt: '2026-04-09T10:00:00.000Z',
         },
-      ],
-      latestAttempt: null,
-      bestAttempt: null,
-    });
+        bestAttempt: {
+          id: 'attempt-1',
+          totalQuestions: 1,
+          correctAnswers: 1,
+          score: 100,
+          passed: true,
+          submittedAt: '2026-04-09T10:00:00.000Z',
+        },
+        certificate: {
+          id: 'certificate-1',
+          status: 'issued',
+          issuedAt: '2026-04-09T10:00:00.000Z',
+        },
+      });
 
     mockedCourseService.submitCourseFinalTestAttempt.mockResolvedValue({
       attempt: {
@@ -163,5 +235,59 @@ describe('CourseFinalTest', () => {
     expect(
       screen.getByText('Excellent work. You passed the course final test.'),
     ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'View certificates' })).toBeInTheDocument();
+  });
+
+  it('shows a profile completion prompt when the certificate is pending', async () => {
+    mockedCourseService.getCourseFinalTest.mockResolvedValue({
+      id: 'final-test-1',
+      courseId: 'course-1',
+      titleEn: 'Course final test',
+      titleFi: 'Course final test',
+      descriptionEn: 'Final test description',
+      descriptionFi: 'Final test description',
+      passingScore: 70,
+      isPublished: true,
+      isUnlocked: true,
+      questions: [],
+      latestAttempt: {
+        id: 'attempt-2',
+        totalQuestions: 1,
+        correctAnswers: 1,
+        score: 100,
+        passed: true,
+        submittedAt: '2026-04-09T11:00:00.000Z',
+      },
+      bestAttempt: {
+        id: 'attempt-2',
+        totalQuestions: 1,
+        correctAnswers: 1,
+        score: 100,
+        passed: true,
+        submittedAt: '2026-04-09T11:00:00.000Z',
+      },
+      certificate: {
+        id: 'certificate-2',
+        status: 'pending_profile',
+        issuedAt: null,
+      },
+    });
+
+    render(
+      <CourseFinalTest
+        activeLanguage="en"
+        courseId="course-1"
+        enabled
+      />,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Certificate waiting for profile completion'),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByRole('link', { name: 'Complete profile' })).toBeInTheDocument();
   });
 });
+

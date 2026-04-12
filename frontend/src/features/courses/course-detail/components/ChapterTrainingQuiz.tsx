@@ -6,7 +6,7 @@ import courseService, {
   LearnerChapterQuiz,
   QuizAttemptSummary,
   QuizQuestion,
-} from '@/services/courseService';
+} from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import type { ActiveLanguage } from '../courseDetail.utils';
 import styles from './ChapterTrainingQuiz.module.css';
@@ -259,3 +259,4 @@ export default function ChapterTrainingQuiz({
     </section>
   );
 }
+

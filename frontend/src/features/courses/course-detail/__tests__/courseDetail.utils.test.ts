@@ -14,7 +14,7 @@ import {
   getViewStateFromProgress,
   splitIntoParagraphs,
 } from '../courseDetail.utils';
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 
 const createCourse = (): Course => ({
   id: 'course-1',
@@ -413,3 +413,4 @@ describe('course-detail.utils', () => {
     ).toBe('Course author');
   });
 });
+

@@ -15,6 +15,7 @@ import { User } from '../entities/user.entity';
 import { CreateAdminResourceDto } from './dto/create-admin-resource.dto';
 import { CreateMyResourceDto } from './dto/create-my-resource.dto';
 import { ListResourcesDto } from './dto/list-resources.dto';
+import { NotificationsService } from '../notifications/notifications.service';
 
 type ResourceView = {
   id: string;
@@ -45,6 +46,7 @@ export class ResourcesService {
     private readonly resourceRepository: Repository<Resource>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async listAdminResources(
@@ -130,6 +132,12 @@ export class ResourcesService {
     });
 
     const saved = await this.resourceRepository.save(resource);
+    await this.notificationsService.notifyResourceShared(
+      dto.assignedUserId,
+      saved.id,
+      saved.title,
+    );
+
     return this.toResourceView({
       ...saved,
       assignedUser,
@@ -151,6 +159,7 @@ export class ResourcesService {
     }
 
     await this.resourceRepository.remove(resource);
+    await this.notificationsService.deleteResourceNotifications(resource.id);
   }
 
   async listMyResources(userId: number): Promise<ResourceView[]> {

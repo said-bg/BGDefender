@@ -1,4 +1,4 @@
-import { AdminCourseSummary, Course } from '@/services/courseService';
+import { AdminCourseSummary, Course } from '@/services/course';
 import type { TranslationFn } from '@/types/i18n';
 
 export type LocalizedAdminCourse = Course & {
@@ -88,3 +88,4 @@ export const formatAdminUpdatedAt = (updatedAt: string, language: string) =>
     month: 'short',
     year: 'numeric',
   });
+

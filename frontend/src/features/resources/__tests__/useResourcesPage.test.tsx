@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import useResourcesPage from '../useResourcesPage';
+import useResourcesPage from '../hooks/useResourcesPage';
 import { ResourceSource, ResourceType, type Resource } from '@/types/api';
 
 const translate = (key: string, options?: { defaultValue?: string; name?: string }) => {

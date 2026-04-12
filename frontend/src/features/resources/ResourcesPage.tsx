@@ -2,7 +2,7 @@
 
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { ResourceSource, ResourceType } from '@/types/api';
-import useResourcesPage from './useResourcesPage';
+import useResourcesPage from './hooks/useResourcesPage';
 import styles from './ResourcesPage.module.css';
 
 function ResourcesPageContent() {

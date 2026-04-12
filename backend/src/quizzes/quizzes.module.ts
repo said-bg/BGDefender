@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminRoleGuard } from '../auth/guards/admin-role.guard';
+import { CertificatesModule } from '../certificates/certificates.module';
 import { Chapter } from '../entities/chapter.entity';
 import { Course } from '../entities/course.entity';
 import { Progress } from '../entities/progress.entity';
@@ -15,6 +16,7 @@ import { QuizzesService } from './quizzes.service';
 
 @Module({
   imports: [
+    CertificatesModule,
     TypeOrmModule.forFeature([
       Chapter,
       Course,

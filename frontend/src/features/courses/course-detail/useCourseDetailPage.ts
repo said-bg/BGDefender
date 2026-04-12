@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import courseService, { Course } from '@/services/courseService';
+import courseService, { Course } from '@/services/course';
 import { useAuth, useFavoriteCourses } from '@/hooks';
 import { UserPlan, UserRole } from '@/types/api';
 import {
@@ -238,3 +238,4 @@ export function useCourseDetailPage() {
     navigateToView,
   };
 }
+

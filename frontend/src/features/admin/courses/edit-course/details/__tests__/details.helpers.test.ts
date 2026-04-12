@@ -1,11 +1,11 @@
-import type { Course } from '@/services/courseService';
-import type { EditCourseFormState } from '../types';
+import type { Course } from '@/services/course';
+import type { EditCourseFormState } from '../lib/details.types';
 import {
   buildUpdateCoursePayload,
   getLocalizedCourseTitle,
   mapCourseToForm,
   validateCourseDetailsForm,
-} from '../details.helpers';
+} from '../lib/details.helpers';
 
 const t = (key: string, options?: Record<string, unknown>) =>
   String(options?.defaultValue ?? key);
@@ -118,3 +118,4 @@ describe('details.helpers', () => {
     });
   });
 });
+

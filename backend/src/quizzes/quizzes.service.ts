@@ -17,6 +17,7 @@ import { QuizOption } from '../entities/quiz-option.entity';
 import { QuizQuestion } from '../entities/quiz-question.entity';
 import { QuizScope } from '../entities/quiz-scope.enum';
 import { UserRole } from '../entities/user.entity';
+import { CertificatesService } from '../certificates/certificates.service';
 import { SubmitChapterQuizAttemptDto } from './dto/submit-chapter-quiz-attempt.dto';
 import { UpsertChapterQuizDto } from './dto/upsert-chapter-quiz.dto';
 import { evaluateQuizAttempt, validateQuizPayload } from './quizzes.utils';
@@ -113,6 +114,11 @@ type LearnerFinalTestView = {
   passingScore: number;
   isPublished: boolean;
   isUnlocked: boolean;
+  certificate: {
+    id: string;
+    status: 'pending_profile' | 'issued';
+    issuedAt: Date | null;
+  } | null;
   questions: LearnerQuizView['questions'];
   latestAttempt: QuizAttemptView | null;
   bestAttempt: QuizAttemptView | null;
@@ -143,6 +149,7 @@ export class QuizzesService {
     private readonly quizAttemptRepository: Repository<QuizAttempt>,
     @InjectRepository(QuizAttemptAnswer)
     private readonly quizAttemptAnswerRepository: Repository<QuizAttemptAnswer>,
+    private readonly certificatesService: CertificatesService,
   ) {}
 
   async getChapterQuiz(
@@ -443,6 +450,11 @@ export class QuizzesService {
       throw new BadRequestException('Final test attempt persistence failed');
     }
 
+    await this.certificatesService.syncCourseCertificate(
+      currentUser.id,
+      courseId,
+    );
+
     return {
       attempt: this.toAttemptView(attempt),
       latestAttempt: this.toAttemptView(latestAttempt),
@@ -690,6 +702,17 @@ export class QuizzesService {
       }, null) ?? null;
 
     const orderedQuiz = this.sortQuizTree(quiz);
+    const passedAttemptExists = attempts.some((attempt) => attempt.passed);
+
+    if (passedAttemptExists) {
+      await this.certificatesService.syncCourseCertificate(userId, courseId);
+    }
+
+    const certificate =
+      await this.certificatesService.getCourseCertificateStatus(
+        userId,
+        courseId,
+      );
 
     return {
       id: orderedQuiz.id,
@@ -703,6 +726,7 @@ export class QuizzesService {
       isUnlocked: Boolean(
         progress?.completed || (progress?.completionPercentage ?? 0) >= 100,
       ),
+      certificate,
       questions: orderedQuiz.questions.map((question) => ({
         id: question.id,
         promptEn: question.promptEn,

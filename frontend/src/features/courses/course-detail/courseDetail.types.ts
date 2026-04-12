@@ -1,4 +1,4 @@
-import type { PedagogicalContent } from '@/services/courseService';
+import type { PedagogicalContent } from '@/services/course';
 
 export type ActiveLanguage = 'en' | 'fi';
 
@@ -33,3 +33,4 @@ export type CourseAccessState =
   | 'login_required'
   | 'premium_required'
   | 'granted';
+

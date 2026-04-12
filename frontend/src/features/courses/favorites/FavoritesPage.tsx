@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import styles from './FavoritesPage.module.css';
 import { ProtectedRoute } from '@/components/auth';
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 import CourseProgressCard from '@/features/courses/components/CourseProgressCard';
 import useFavoritesPage from './useFavoritesPage';
 
@@ -82,3 +82,4 @@ export default function FavoritesPage() {
     </ProtectedRoute>
   );
 }
+

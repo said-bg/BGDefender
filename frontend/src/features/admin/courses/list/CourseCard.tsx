@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Course } from '@/services/courseService';
+import { Course } from '@/services/course';
 import { LocalizedAdminCourse } from './courseAdmin.utils';
 import styles from './CourseCard.module.css';
 
@@ -144,3 +144,4 @@ export default function CourseCard({
     </article>
   );
 }
+

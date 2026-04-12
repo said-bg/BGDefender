@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { CourseContent } from '../components/CourseContent';
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 import type {
   NavigationItem,
   SelectedContent,
@@ -162,7 +162,7 @@ describe('CourseContent', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /login/i })).toHaveAttribute(
       'href',
-      '/auth/login',
+      '/login',
     );
   });
 
@@ -245,3 +245,4 @@ describe('CourseContent', () => {
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
   });
 });
+

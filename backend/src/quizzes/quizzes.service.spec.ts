@@ -11,6 +11,7 @@ import { QuizOption } from '../entities/quiz-option.entity';
 import { QuizQuestion } from '../entities/quiz-question.entity';
 import { QuizQuestionType } from '../entities/quiz-question-type.enum';
 import { QuizScope } from '../entities/quiz-scope.enum';
+import { CertificatesService } from '../certificates/certificates.service';
 import { QuizzesService } from './quizzes.service';
 
 type FindOneFn<T extends object> = (options?: unknown) => Promise<T | null>;
@@ -177,6 +178,10 @@ describe('QuizzesService', () => {
   let optionRepository: MockRepository<QuizOption>;
   let attemptRepository: MockRepository<QuizAttempt>;
   let attemptAnswerRepository: MockRepository<QuizAttemptAnswer>;
+  let certificatesService: {
+    syncCourseCertificate: jest.Mock;
+    getCourseCertificateStatus: jest.Mock;
+  };
 
   beforeEach(async () => {
     chapterRepository = createMockRepository<Chapter>();
@@ -187,6 +192,10 @@ describe('QuizzesService', () => {
     optionRepository = createMockRepository<QuizOption>();
     attemptRepository = createMockRepository<QuizAttempt>();
     attemptAnswerRepository = createMockRepository<QuizAttemptAnswer>();
+    certificatesService = {
+      syncCourseCertificate: jest.fn(),
+      getCourseCertificateStatus: jest.fn(),
+    };
 
     const repositoryMap = new Map<unknown, unknown>([
       [Quiz, quizRepository],
@@ -237,6 +246,10 @@ describe('QuizzesService', () => {
         {
           provide: getRepositoryToken(QuizAttemptAnswer),
           useValue: attemptAnswerRepository,
+        },
+        {
+          provide: CertificatesService,
+          useValue: certificatesService,
         },
       ],
     }).compile();

@@ -8,6 +8,7 @@ import {
 } from '../entities/resource.entity';
 import { User, UserPlan, UserRole } from '../entities/user.entity';
 import { ResourcesService } from './resources.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('ResourcesService', () => {
   let service: ResourcesService;
@@ -23,6 +24,11 @@ describe('ResourcesService', () => {
 
   const userRepository = {
     findOne: jest.fn(),
+  };
+
+  const notificationsService = {
+    notifyResourceShared: jest.fn(),
+    deleteResourceNotifications: jest.fn(),
   };
 
   const mockUser: User = {
@@ -52,6 +58,10 @@ describe('ResourcesService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: userRepository,
+        },
+        {
+          provide: NotificationsService,
+          useValue: notificationsService,
         },
       ],
     }).compile();
@@ -154,6 +164,22 @@ describe('ResourcesService', () => {
     await expect(service.deleteMyResource('resource-1', 7)).rejects.toThrow(
       BadRequestException,
     );
+  });
+
+  it('should delete resource-shared notifications when an admin resource is removed', async () => {
+    resourceRepository.findOne.mockResolvedValue({
+      id: 'resource-1',
+      source: ResourceSource.ADMIN,
+      createdByUserId: 1,
+      assignedUserId: 7,
+    });
+
+    await service.deleteAdminResource('resource-1');
+
+    expect(resourceRepository.remove).toHaveBeenCalled();
+    expect(
+      notificationsService.deleteResourceNotifications,
+    ).toHaveBeenCalledWith('resource-1');
   });
 
   it('should throw when assigned user does not exist', async () => {

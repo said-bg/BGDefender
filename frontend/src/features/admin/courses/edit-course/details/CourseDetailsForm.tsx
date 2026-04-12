@@ -5,8 +5,8 @@ import CourseSettingsFields from './components/CourseSettingsFields';
 import CourseTitleFields from './components/CourseTitleFields';
 import AuthorsField from './fields/AuthorsField';
 import formStyles from '../shared/EditCourseForm.module.css';
-import { CoverImageMode, EditCourseFormState } from './types';
-import { Author } from '@/services/courseService';
+import { CoverImageMode, EditCourseFormState } from './lib/details.types';
+import { Author } from '@/services/course';
 
 type CourseDetailsFormProps = {
   authors: Author[];
@@ -100,6 +100,7 @@ export default function CourseDetailsForm({
     </section>
   );
 }
+
 
 
 

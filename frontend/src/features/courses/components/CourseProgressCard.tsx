@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import CourseCover from '@/components/course-cover/CourseCover';
-import type { CourseWithProgress } from '../courseProgress.utils';
+import type { CourseWithProgress } from '../lib/courseProgress.utils';
 import styles from './CourseProgressCard.module.css';
 
 type BadgeVariant = 'active' | 'completed' | 'free' | 'premium';

@@ -9,6 +9,7 @@ import {
   CourseStatus,
 } from '../../entities/course.entity';
 import { Author } from '../../entities/author.entity';
+import { NotificationsService } from '../../notifications/notifications.service';
 
 type MockCourseRepository = Pick<
   Repository<Course>,
@@ -113,6 +114,9 @@ describe('CourseService', () => {
   let service: CourseService;
   let courseRepository: MockCourseRepository;
   let authorRepository: MockAuthorRepository;
+  const notificationsService = {
+    notifyCoursePublished: jest.fn(),
+  };
 
   beforeEach(async () => {
     courseRepository = {
@@ -137,6 +141,10 @@ describe('CourseService', () => {
         {
           provide: getRepositoryToken(Author),
           useValue: authorRepository,
+        },
+        {
+          provide: NotificationsService,
+          useValue: notificationsService,
         },
       ],
     }).compile();
@@ -165,7 +173,13 @@ describe('CourseService', () => {
       ).toEqual(['sub-1', 'sub-2']);
       expect(courseRepository.findAndCount).toHaveBeenCalledWith({
         where: { status: CourseStatus.PUBLISHED },
-        relations: ['authors', 'chapters', 'chapters.subChapters'],
+        relations: [
+          'authors',
+          'finalTests',
+          'chapters',
+          'chapters.trainingQuiz',
+          'chapters.subChapters',
+        ],
         take: 20,
         skip: 0,
         order: { createdAt: 'DESC' },

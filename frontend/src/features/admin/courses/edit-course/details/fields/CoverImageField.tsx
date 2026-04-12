@@ -2,7 +2,7 @@ import { ChangeEvent } from 'react';
 import detailStyles from '../DetailsPage.module.css';
 import formStyles from '../../shared/EditCourseForm.module.css';
 import sharedStyles from '../../shared/EditCoursePage.module.css';
-import { CoverImageMode } from '../types';
+import { CoverImageMode } from '../lib/details.types';
 
 type CoverImageFieldProps = {
   coverImage: string;

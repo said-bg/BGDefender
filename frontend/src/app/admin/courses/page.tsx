@@ -1,1 +1,1 @@
-export { default } from './AdminCoursesPage';
+export { default } from '@/features/admin/courses/list/AdminCoursesPage';

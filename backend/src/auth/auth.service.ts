@@ -17,6 +17,7 @@ import { JwtPayload } from './types/jwt-payload.interface';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { CertificatesService } from '../certificates/certificates.service';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly certificatesService: CertificatesService,
   ) {}
 
   async register(dto: RegisterDto, language: string = 'en'): Promise<SafeUser> {
@@ -202,6 +204,9 @@ export class AuthService {
     user.occupation = dto.occupation?.trim() || null;
 
     const updatedUser = await this.userRepository.save(user);
+    await this.certificatesService.syncPendingCertificatesForUser(
+      updatedUser.id,
+    );
     return toSafeUser(updatedUser);
   }
 

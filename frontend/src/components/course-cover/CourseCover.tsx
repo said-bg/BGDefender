@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
 import styles from './CourseCover.module.css';
 
 type CourseCoverProps = {
@@ -13,9 +14,9 @@ type CourseCoverProps = {
   variant?: 'card' | 'hero';
 };
 
-function getDisplayTitle(title: string) {
+function getDisplayTitle(title: string, fallback: string) {
   const normalizedTitle = title.trim();
-  return normalizedTitle || 'Untitled course';
+  return normalizedTitle || fallback;
 }
 
 export default function CourseCover({
@@ -27,7 +28,11 @@ export default function CourseCover({
   fallbackClassName,
   variant = 'card',
 }: CourseCoverProps) {
-  const displayTitle = getDisplayTitle(title);
+  const { t } = useTranslation('courses');
+  const displayTitle = getDisplayTitle(
+    title,
+    t('courseCover.untitled', { defaultValue: 'Untitled course' }),
+  );
 
   if (src) {
     return (
@@ -54,7 +59,9 @@ export default function CourseCover({
         <>
           <div className={styles.coverGlow} />
           <div className={styles.coverPlate}>
-            <span className={styles.coverEyebrow}>BG Defender Academy</span>
+            <span className={styles.coverEyebrow}>
+              {t('courseCover.brand', { defaultValue: 'BG Defender Academy' })}
+            </span>
             <strong className={styles.coverTitle}>{displayTitle}</strong>
           </div>
         </>

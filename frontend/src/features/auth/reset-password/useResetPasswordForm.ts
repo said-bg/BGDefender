@@ -62,8 +62,8 @@ export function useResetPasswordForm() {
         message: t('alerts.invalidResetLinkMessage'),
         confirmLabel: t('alerts.requestNewResetLink'),
         cancelLabel: t('alerts.cancel'),
-        onConfirm: () => router.push('/auth/forgot-password'),
-        onCancel: () => router.push('/auth/login'),
+        onConfirm: () => router.push('/forgot-password'),
+        onCancel: () => router.push('/login'),
       });
     }
   }, [token, t, showModal, router]);
@@ -130,7 +130,7 @@ export function useResetPasswordForm() {
 
       setTimeout(() => {
         closeModal(modalId);
-        router.push('/auth/login');
+        router.push('/login');
       }, 1000);
     } catch (error) {
       const errorMessage = handleAuthError(error, 'resetPassword.failed', t);
@@ -142,7 +142,7 @@ export function useResetPasswordForm() {
           title: t('alerts.invalidResetLink'),
           message: t('alerts.invalidResetLinkMessage'),
           confirmLabel: t('alerts.requestNewResetLink'),
-          onConfirm: () => router.replace('/auth/forgot-password'),
+          onConfirm: () => router.replace('/forgot-password'),
         });
       } else if (isSamePasswordError(errorMessage)) {
         setFormError('');

@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react';
-import type { ProfileFormState } from '../account.types';
+import type { ProfileFormState } from '../lib/account.types';
 import styles from './AccountForms.module.css';
 
 type ProfileFormProps = {

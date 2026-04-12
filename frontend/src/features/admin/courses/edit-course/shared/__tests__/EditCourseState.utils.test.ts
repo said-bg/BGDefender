@@ -3,7 +3,7 @@ import type {
   Course,
   PedagogicalContent,
   SubChapter,
-} from '@/services/courseService';
+} from '@/services/course';
 import {
   removePedagogicalContent,
   sortByOrderIndex,
@@ -153,3 +153,4 @@ describe('EditCourseState.utils', () => {
     ).toEqual([]);
   });
 });
+

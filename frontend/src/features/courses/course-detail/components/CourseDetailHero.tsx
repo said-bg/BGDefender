@@ -1,6 +1,6 @@
 import FavoriteButton from '@/components/favorite-button/FavoriteButton';
 import CourseCover from '@/components/course-cover/CourseCover';
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 import styles from '../CourseDetailPage.module.css';
 
 type CourseDetailHeroProps = {

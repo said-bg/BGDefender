@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import courseService, { AdminCourseSummary, Course } from '@/services/courseService';
+import courseService, { AdminCourseSummary, Course } from '@/services/course';
 
 type AdminDashboardState = {
   summary: AdminCourseSummary | null;
@@ -52,3 +52,4 @@ export default function useAdminDashboard() {
     ...state,
   };
 }
+

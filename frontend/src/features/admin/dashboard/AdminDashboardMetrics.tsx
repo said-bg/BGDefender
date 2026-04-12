@@ -1,4 +1,4 @@
-import type { AdminCourseSummary } from '@/services/courseService';
+import type { AdminCourseSummary } from '@/services/course';
 import styles from './AdminDashboardMetrics.module.css';
 import type { AdminDashboardT } from './adminDashboard.types';
 
@@ -38,3 +38,4 @@ export default function AdminDashboardMetrics({ summary, t }: AdminDashboardMetr
     </section>
   );
 }
+

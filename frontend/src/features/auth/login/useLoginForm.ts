@@ -3,6 +3,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks';
+import { UserRole } from '@/types/api';
 import { handleAuthError } from '@/utils/apiError';
 import { validateEmail } from '@/utils/validation';
 import type { LoginErrorAction, LoginFormErrors, LoginFormState } from './login.types';
@@ -33,6 +34,22 @@ export function useLoginForm() {
   const { login, isLoading, error: authError, setError } = useAuth();
   const [form, setForm] = useState<LoginFormState>(initialForm);
   const [errors, dispatch] = useReducer(errorsReducer, {});
+
+  const getSafeRedirectPath = (requestedPath: string, role: UserRole) => {
+    if (!requestedPath.startsWith('/')) {
+      return '/';
+    }
+
+    if (requestedPath === '/unauthorized') {
+      return '/';
+    }
+
+    if (requestedPath.startsWith('/admin') && role !== UserRole.ADMIN) {
+      return '/';
+    }
+
+    return requestedPath;
+  };
 
   useEffect(() => {
     dispatch({ type: 'CLEAR' });
@@ -88,8 +105,8 @@ export function useLoginForm() {
     }
 
     try {
-      await login(form.email, form.password);
-      router.replace(redirectPath);
+      const authenticatedUser = await login(form.email, form.password);
+      router.replace(getSafeRedirectPath(redirectPath, authenticatedUser.role));
     } catch (error) {
       const errorMessage = handleAuthError(error, 'login.failed', t);
       dispatch({ type: 'SET', payload: { form: errorMessage } });

@@ -1,5 +1,5 @@
 import { ResourceSource, ResourceType, type Resource } from '@/types/api';
-import { getResourcesSummary } from '@/features/resources/resources.utils';
+import { getResourcesSummary } from '@/features/resources/lib/resources.utils';
 
 const buildResource = (
   id: string,

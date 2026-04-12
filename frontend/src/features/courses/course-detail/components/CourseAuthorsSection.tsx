@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Course } from '@/services/courseService';
+import { Course } from '@/services/course';
 import { ActiveLanguage, getAuthorRole } from '../courseDetail.utils';
 import styles from './CourseAuthorsSection.module.css';
 
@@ -45,3 +45,4 @@ export default function CourseAuthorsSection({
     </section>
   );
 }
+

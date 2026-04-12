@@ -8,6 +8,7 @@ import styles from './NavbarAccountMenu.module.css';
 interface NavbarAccountMenuLabels {
   admin: string;
   adminBadge: string;
+  certificates: string;
   creatorBadge: string;
   freeBadge: string;
   logout: string;
@@ -125,6 +126,11 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
                 {labels.resources}
               </Link>
             ) : null}
+            {user.role !== UserRole.ADMIN ? (
+              <Link href="/certificates" className={styles.dropdownLink} onClick={closeMenu}>
+                {labels.certificates}
+              </Link>
+            ) : null}
             <Link href="/account" className={styles.dropdownLink} onClick={closeMenu}>
               {labels.profile}
             </Link>
@@ -135,7 +141,8 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
             className={styles.dropdownLogout}
             onClick={() => {
               closeMenu();
-              void logout();
+              logout();
+              window.location.replace('/');
             }}
           >
             {labels.logout}

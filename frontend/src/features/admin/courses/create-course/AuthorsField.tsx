@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Author } from '@/services/courseService';
+import { Author } from '@/services/course';
 import detailStyles from './CreateCourseDetails.module.css';
 import pageStyles from './CreateCoursePage.module.css';
 
@@ -85,3 +85,4 @@ export default function AuthorsField({
     </div>
   );
 }
+

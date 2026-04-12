@@ -5,6 +5,7 @@ import { Course, CourseStatus } from '../../entities/course.entity';
 import { Author } from '../../entities/author.entity';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
+import { NotificationsService } from '../../notifications/notifications.service';
 
 export interface AdminCourseSummary {
   totalCourses: number;
@@ -20,6 +21,7 @@ export class CourseService {
     private readonly courseRepository: Repository<Course>,
     @InjectRepository(Author)
     private readonly authorRepository: Repository<Author>,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
@@ -37,7 +39,13 @@ export class CourseService {
       course.authors = authors;
     }
 
-    return await this.courseRepository.save(course);
+    const savedCourse = await this.courseRepository.save(course);
+
+    if (savedCourse.status === CourseStatus.PUBLISHED) {
+      await this.notificationsService.notifyCoursePublished(savedCourse);
+    }
+
+    return savedCourse;
   }
 
   async findAll(
@@ -126,6 +134,7 @@ export class CourseService {
 
   async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
     const course = await this.findById(id);
+    const previousStatus = course.status;
     const { authorIds, ...courseData } = updateCourseDto;
 
     Object.assign(course, courseData);
@@ -144,7 +153,16 @@ export class CourseService {
       }
     }
 
-    return await this.courseRepository.save(course);
+    const savedCourse = await this.courseRepository.save(course);
+
+    if (
+      previousStatus !== CourseStatus.PUBLISHED &&
+      savedCourse.status === CourseStatus.PUBLISHED
+    ) {
+      await this.notificationsService.notifyCoursePublished(savedCourse);
+    }
+
+    return savedCourse;
   }
 
   async delete(id: string): Promise<void> {

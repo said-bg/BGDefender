@@ -16,7 +16,7 @@ interface UseIsAuthenticatedOptions {
 export const useIsAuthenticated = (
   options: UseIsAuthenticatedOptions = {}
 ) => {
-  const { redirectTo = '/auth/login' } = options;
+  const { redirectTo = '/login' } = options;
   const router = useRouter();
   const { isAuthenticated, isLoading, user } = useAuth();
 

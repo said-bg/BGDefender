@@ -131,18 +131,18 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
                 message: t.message,
                 confirmLabel: t.button,
                 onConfirm: () => {
-                  window.location.href = '/auth/login';
+                  window.location.href = '/login';
                 },
               });
             } catch (e) {
               if (isDevelopment) {
                 console.warn('Could not show modal, redirecting directly:', e);
               }
-              window.location.href = '/auth/login';
+              window.location.href = '/login';
             }
           } else {
             // Fallback: redirect immediately
-            window.location.href = '/auth/login';
+            window.location.href = '/login';
           }
 
           // Reset flag after 3 seconds (in case redirect fails or takes time)

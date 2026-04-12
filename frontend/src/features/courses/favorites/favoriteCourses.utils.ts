@@ -1,11 +1,11 @@
-import type { Course } from '@/services/courseService';
-import type { FavoriteSummary } from '@/services/favoriteService';
-import type { CourseProgressSummary } from '@/services/progressService';
+import type { Course } from '@/services/course';
+import type { FavoriteSummary } from '@/services/favorites';
+import type { CourseProgressSummary } from '@/services/progress';
 import {
   CourseWithProgress,
   getChapterAndItemCounts,
   sortByLastAccessed,
-} from '@/features/courses/courseProgress.utils';
+} from '@/features/courses/lib/courseProgress.utils';
 
 // Combine favorites, public course data, and progress rows into one stable list
 // so the page can render accurate badges, counts, and resume state.
@@ -45,3 +45,4 @@ export const buildFavoriteCourses = (
     mergedCourses.filter((course): course is CourseWithProgress => course !== null),
   );
 };
+

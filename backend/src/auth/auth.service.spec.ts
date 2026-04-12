@@ -9,6 +9,7 @@ import {
   ConflictException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { CertificatesService } from '../certificates/certificates.service';
 
 // Mock bcrypt at module level
 jest.mock('bcrypt');
@@ -26,10 +27,15 @@ type MockJwtService = {
   sign: jest.Mock;
 };
 
+type MockCertificatesService = {
+  syncPendingCertificatesForUser: jest.Mock;
+};
+
 describe('AuthService', () => {
   let service: AuthService;
   let userRepository: MockUserRepository;
   let jwtService: MockJwtService;
+  let certificatesService: MockCertificatesService;
 
   const mockedBcrypt = jest.mocked(bcrypt);
 
@@ -59,6 +65,10 @@ describe('AuthService', () => {
       sign: jest.fn(),
     };
 
+    certificatesService = {
+      syncPendingCertificatesForUser: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
@@ -69,6 +79,10 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: jwtService,
+        },
+        {
+          provide: CertificatesService,
+          useValue: certificatesService,
         },
       ],
     }).compile();
@@ -341,6 +355,9 @@ describe('AuthService', () => {
 
       const result = await service.updateProfile(mockUser.id, profileDto);
 
+      expect(
+        certificatesService.syncPendingCertificatesForUser,
+      ).toHaveBeenCalledWith(mockUser.id);
       expect(userRepository.save).toHaveBeenCalledWith(
         expect.objectContaining(profileDto),
       );

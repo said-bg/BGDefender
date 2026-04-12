@@ -60,7 +60,7 @@ export function ForgotPasswordForm() {
         ) : null}
 
         <div className={styles.footer}>
-          <Link href="/auth/login" className={styles.footerLink}>
+          <Link href="/login" className={styles.footerLink}>
             {t('forgotPassword.backToLogin')}
           </Link>
         </div>

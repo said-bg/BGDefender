@@ -4,9 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks';
+import { UserRole } from '@/types/api';
 import NavbarAccountMenu from './NavbarAccountMenu';
 import NavbarLanguageSwitcher from './NavbarLanguageSwitcher';
 import NavbarLinks from './NavbarLinks';
+import NavbarNotifications from './NavbarNotifications';
 import styles from './Navbar.module.css';
 
 export const Navbar = () => {
@@ -34,7 +36,9 @@ export const Navbar = () => {
               className={styles.logoMark}
               priority
             />
-            <span className={styles.logoText}>Defender</span>
+            <span className={styles.logoText}>
+              {t('brandShort', { defaultValue: 'Defender' })}
+            </span>
           </Link>
 
           <NavbarLinks
@@ -46,6 +50,7 @@ export const Navbar = () => {
         </div>
 
         <div className={styles.rightSection}>
+          <NavbarNotifications visible={isAuthenticated && user?.role !== UserRole.ADMIN} />
           <NavbarLanguageSwitcher activeLanguage={i18n.language} onChangeLanguage={changeLanguage} />
 
           <div className={styles.authSection}>
@@ -57,6 +62,7 @@ export const Navbar = () => {
                   admin: t('admin'),
                   adminBadge: t('badges.admin'),
                   creatorBadge: t('badges.creator'),
+                  certificates: t('certificates', { defaultValue: 'Certificates' }),
                   freeBadge: t('badges.free'),
                   logout: t('logout'),
                   premiumBadge: t('badges.premium'),
@@ -67,10 +73,10 @@ export const Navbar = () => {
               />
             ) : (
               <>
-                <Link href="/auth/login" className={styles.loginBtn}>
+                <Link href="/login" className={styles.loginBtn}>
                   {t('login')}
                 </Link>
-                <Link href="/auth/register" className={styles.registerBtn}>
+                <Link href="/register" className={styles.registerBtn}>
                   {t('register')}
                 </Link>
               </>

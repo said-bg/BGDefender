@@ -48,7 +48,7 @@ export function ProtectedRoute({
 
     // Initialized but not authenticated - redirect to login
     if (!isAuthenticated) {
-      router.replace(`/auth/login?redirect=${encodeURIComponent(pathname)}`);
+      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
 

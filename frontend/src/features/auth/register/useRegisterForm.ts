@@ -118,7 +118,7 @@ export function useRegisterForm() {
 
       setTimeout(() => {
         closeModal(modalId);
-        router.replace('/auth/login');
+        router.replace('/login');
       }, 1000);
 
       setForm(initialForm);

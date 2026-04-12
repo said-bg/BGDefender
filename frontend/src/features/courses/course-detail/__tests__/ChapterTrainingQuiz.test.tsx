@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ChapterTrainingQuiz from '../components/ChapterTrainingQuiz';
-import courseService from '@/services/courseService';
+import courseService from '@/services/course';
 
-jest.mock('@/services/courseService', () => ({
+jest.mock('@/services/course', () => ({
   __esModule: true,
   default: {
     getChapterQuiz: jest.fn(),
@@ -46,6 +46,7 @@ describe('ChapterTrainingQuiz', () => {
     });
   });
 
+  
   it('submits the learner answers and shows the success state', async () => {
     mockedCourseService.getChapterQuiz.mockResolvedValue({
       id: 'quiz-1',
@@ -148,3 +149,4 @@ describe('ChapterTrainingQuiz', () => {
     ).toBeInTheDocument();
   });
 });
+

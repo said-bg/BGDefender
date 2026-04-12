@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import enAccount from '../../public/locales/en/account.json';
 import enAdmin from '../../public/locales/en/admin.json';
 import enAuth from '../../public/locales/en/auth.json';
+import enCertificates from '../../public/locales/en/certificates.json';
 import enCommon from '../../public/locales/en/common.json';
 import enNavbar from '../../public/locales/en/navbar.json';
 import enResources from '../../public/locales/en/resources.json';
@@ -11,6 +12,7 @@ import enUnauthorized from '../../public/locales/en/unauthorized.json';
 import fiAccount from '../../public/locales/fi/account.json';
 import fiAdmin from '../../public/locales/fi/admin.json';
 import fiAuth from '../../public/locales/fi/auth.json';
+import fiCertificates from '../../public/locales/fi/certificates.json';
 import fiCommon from '../../public/locales/fi/common.json';
 import enCourses from '../../public/locales/en/courses.json';
 import fiCourses from '../../public/locales/fi/courses.json';
@@ -24,7 +26,7 @@ void i18n
   .init({
     fallbackLng: 'fi',
     defaultNS: 'auth',
-    ns: ['auth', 'courses', 'admin', 'navbar', 'account', 'common', 'unauthorized', 'resources'],
+    ns: ['auth', 'courses', 'admin', 'navbar', 'account', 'common', 'unauthorized', 'resources', 'certificates'],
     supportedLngs: ['fi', 'en'],
     nonExplicitSupportedLngs: true,
     resources: {
@@ -35,6 +37,7 @@ void i18n
           ...enAdmin,
           common: enCommon,
         },
+        certificates: enCertificates,
         common: enCommon,
         courses: enCourses,
         navbar: enNavbar,
@@ -48,6 +51,7 @@ void i18n
           ...fiAdmin,
           common: fiCommon,
         },
+        certificates: fiCertificates,
         common: fiCommon,
         courses: fiCourses,
         navbar: fiNavbar,

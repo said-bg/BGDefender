@@ -1,4 +1,4 @@
-import type { Author } from '@/services/courseService';
+import type { Author } from '@/services/course';
 import { buildAuthorPayload } from '../authorAdmin.mutations';
 import {
   getAuthorInitials,
@@ -78,3 +78,4 @@ describe('authorAdmin.utils', () => {
     });
   });
 });
+

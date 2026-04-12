@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 import { formatCourseStatus, formatUpdatedAt, getCourseTitle } from './adminDashboard.utils';
 import styles from './AdminDashboardActivity.module.css';
 import type { AdminDashboardT } from './adminDashboard.types';
@@ -85,3 +85,4 @@ export default function AdminDashboardActivity({
     </section>
   );
 }
+

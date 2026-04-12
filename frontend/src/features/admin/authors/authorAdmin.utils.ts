@@ -1,4 +1,4 @@
-import { Author } from '@/services/courseService';
+import { Author } from '@/services/course';
 
 export const getAuthorInitials = (name: string) =>
   name
@@ -20,3 +20,4 @@ export const getLocalizedAuthorBio = (author: Author, language: string) =>
   language === 'fi'
     ? author.biographyFi || author.biographyEn
     : author.biographyEn || author.biographyFi;
+

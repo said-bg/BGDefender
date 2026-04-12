@@ -1,5 +1,5 @@
 import type { FormEvent } from 'react';
-import type { PasswordCheck } from '../account.types';
+import type { PasswordCheck } from '../lib/account.types';
 import styles from './AccountForms.module.css';
 
 type SecurityFormProps = {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import favoriteService, { FavoriteSummary } from '@/services/favoriteService';
+import favoriteService, { FavoriteSummary } from '@/services/favorites';
 import { useAuth } from './useAuth';
 
 export const useFavoriteCourses = () => {

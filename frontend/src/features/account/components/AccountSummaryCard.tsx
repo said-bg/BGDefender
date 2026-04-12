@@ -1,4 +1,4 @@
-import type { AccountSection } from '../account.types';
+import type { AccountSection } from '../lib/account.types';
 import styles from './AccountSummary.module.css';
 
 type AccountSummaryCardProps = {

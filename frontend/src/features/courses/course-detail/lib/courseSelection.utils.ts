@@ -1,4 +1,4 @@
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 import type { ActiveLanguage, SelectedContent, ViewState } from '../courseDetail.types';
 import {
   getChapterParagraphs,
@@ -117,3 +117,4 @@ export const getSelectedContent = (
     ),
   };
 };
+

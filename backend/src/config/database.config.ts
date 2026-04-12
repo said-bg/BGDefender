@@ -11,11 +11,15 @@ import { PedagogicalContent } from '../entities/pedagogical-content.entity';
 import { Progress } from '../entities/progress.entity';
 import { Favorite } from '../entities/favorite.entity';
 import { Resource } from '../entities/resource.entity';
+import { Certificate } from '../entities/certificate.entity';
 import { Quiz } from '../entities/quiz.entity';
 import { QuizQuestion } from '../entities/quiz-question.entity';
 import { QuizOption } from '../entities/quiz-option.entity';
 import { QuizAttempt } from '../entities/quiz-attempt.entity';
 import { QuizAttemptAnswer } from '../entities/quiz-attempt-answer.entity';
+import { Notification } from '../entities/notification.entity';
+import { CourseCollection } from '../entities/course-collection.entity';
+import { CourseCollectionItem } from '../entities/course-collection-item.entity';
 
 @Injectable()
 export class DatabaseConfig implements TypeOrmOptionsFactory {
@@ -44,11 +48,15 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         Progress,
         Favorite,
         Resource,
+        Certificate,
         Quiz,
         QuizQuestion,
         QuizOption,
         QuizAttempt,
         QuizAttemptAnswer,
+        Notification,
+        CourseCollection,
+        CourseCollectionItem,
       ],
       synchronize: isDev,
       logging: enableDatabaseLogging,

@@ -11,7 +11,7 @@ export interface AuthState {
   changePassword: (currentPassword: string, newPassword: string) => Promise<string>;
   fetchCurrentUser: () => Promise<void>;
   initializeAuth: () => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
   register: (email: string, password: string) => Promise<void>;
   setError: (error: string | null) => void;

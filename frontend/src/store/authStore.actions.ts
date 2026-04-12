@@ -44,6 +44,7 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
         isLoading: false,
         error: null,
       });
+      return response.user;
     } catch (err) {
       set({
         error: getApiErrorMessage(err, 'Login failed'),

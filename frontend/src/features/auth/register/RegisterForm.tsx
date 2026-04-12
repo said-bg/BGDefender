@@ -101,7 +101,7 @@ export function RegisterForm() {
 
         <div className={styles.footer}>
           {t('register.footer')}{' '}
-          <Link href="/auth/login" className={styles.footerLink}>
+          <Link href="/login" className={styles.footerLink}>
             {t('register.footerLink')}
           </Link>
         </div>

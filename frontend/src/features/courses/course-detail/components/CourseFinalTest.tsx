@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import courseService, {
   LearnerCourseFinalTest,
   QuizAttemptSummary,
   QuizQuestion,
-} from '@/services/courseService';
+} from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import type { ActiveLanguage } from '../courseDetail.utils';
 import styles from './ChapterTrainingQuiz.module.css';
@@ -40,40 +41,42 @@ export default function CourseFinalTest({
   const [bestAttempt, setBestAttempt] = useState<QuizAttemptSummary | null>(null);
   const [isStarted, setIsStarted] = useState(false);
 
-  useEffect(() => {
+  const loadFinalTest = useCallback(async () => {
     if (!enabled) {
       setLoading(false);
       setFinalTest(null);
       return;
     }
 
-    const loadFinalTest = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await courseService.getCourseFinalTest(courseId);
-        const learnerFinalTest = response && !('stats' in response) ? response : null;
-        setFinalTest(learnerFinalTest);
-        setLatestAttempt(learnerFinalTest?.latestAttempt ?? null);
-        setBestAttempt(learnerFinalTest?.bestAttempt ?? null);
-        setSelectedAnswers({});
-        setIsStarted(Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt));
-      } catch (loadError) {
-        setError(
-          getApiErrorMessage(
-            loadError,
-            t('detail.finalTestLoadFailed', {
-              defaultValue: 'Failed to load the final test.',
-            }),
-          ),
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void loadFinalTest();
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await courseService.getCourseFinalTest(courseId);
+      const learnerFinalTest = response && !('stats' in response) ? response : null;
+      setFinalTest(learnerFinalTest);
+      setLatestAttempt(learnerFinalTest?.latestAttempt ?? null);
+      setBestAttempt(learnerFinalTest?.bestAttempt ?? null);
+      setSelectedAnswers({});
+      setIsStarted(Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt));
+    } catch (loadError) {
+      setError(
+        getApiErrorMessage(
+          loadError,
+          t('detail.finalTestLoadFailed', {
+            defaultValue: 'Failed to load the final test.',
+          }),
+        ),
+      );
+    } finally {
+      setLoading(false);
+    }
   }, [courseId, enabled, t]);
+
+  useEffect(() => {
+    void loadFinalTest();
+  }, [loadFinalTest]);
+
+  const certificateStatus = finalTest?.certificate?.status ?? null;
 
   const answeredCount = useMemo(
     () =>
@@ -132,6 +135,7 @@ export default function CourseFinalTest({
                 'You can review the course and retry the final test whenever you are ready.',
             }),
       );
+      await loadFinalTest();
     } catch (submissionError) {
       setSubmitError(
         getApiErrorMessage(
@@ -287,6 +291,46 @@ export default function CourseFinalTest({
 
           {submitMessage ? <p className={styles.successText}>{submitMessage}</p> : null}
           {submitError ? <p className={styles.errorText}>{submitError}</p> : null}
+          {certificateStatus === 'pending_profile' ? (
+            <div className={styles.questionCard}>
+              <p className={styles.questionPrompt}>
+                {t('detail.certificatePendingTitle', {
+                  defaultValue: 'Certificate waiting for profile completion',
+                })}
+              </p>
+              <p className={styles.helperText}>
+                {t('detail.certificatePendingDescription', {
+                  defaultValue:
+                    'You passed the final test. Complete your profile with your first and last name to generate the certificate automatically.',
+                })}
+              </p>
+              <div className={styles.quizActions}>
+                <Link href="/account" className={styles.secondaryAction}>
+                  {t('detail.completeProfile', { defaultValue: 'Complete profile' })}
+                </Link>
+              </div>
+            </div>
+          ) : null}
+          {certificateStatus === 'issued' ? (
+            <div className={styles.questionCard}>
+              <p className={styles.questionPrompt}>
+                {t('detail.certificateIssuedTitle', {
+                  defaultValue: 'Certificate earned',
+                })}
+              </p>
+              <p className={styles.helperText}>
+                {t('detail.certificateIssuedDescription', {
+                  defaultValue:
+                    'Your certificate is now ready in your certificates space.',
+                })}
+              </p>
+              <div className={styles.quizActions}>
+                <Link href="/certificates" className={styles.secondaryAction}>
+                  {t('detail.viewCertificate', { defaultValue: 'View certificates' })}
+                </Link>
+              </div>
+            </div>
+          ) : null}
 
           <div className={styles.quizActions}>
             <button
@@ -314,3 +358,4 @@ export default function CourseFinalTest({
     </section>
   );
 }
+

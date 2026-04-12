@@ -1,0 +1,198 @@
+import { render, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import HomePage from '../HomePage';
+
+const mockUseHomeCourses = jest.fn();
+
+jest.mock('../hooks/useHomeCourses', () => ({
+  __esModule: true,
+  default: () => mockUseHomeCourses(),
+}));
+
+jest.mock('../components/HomeHero', () => ({
+  __esModule: true,
+  default: ({
+    actions,
+    description,
+    heroTitle,
+    highlights,
+  }: {
+    actions?: { href: string; label: string; secondary?: boolean }[];
+    description?: string;
+    heroTitle: string;
+    highlights?: string[];
+  }) => (
+    <section data-testid="home-hero">
+      <h1>{heroTitle}</h1>
+      {description ? <p>{description}</p> : null}
+      {actions?.map((action) => (
+        <a key={action.href} href={action.href}>
+          {action.label}
+        </a>
+      ))}
+      {highlights?.map((highlight) => (
+        <span key={highlight}>{highlight}</span>
+      ))}
+    </section>
+  ),
+}));
+
+jest.mock('../components/HomeCourseRail', () => ({
+  __esModule: true,
+  default: ({
+    description,
+    title,
+    children,
+  }: {
+    description?: string;
+    title: string;
+    children?: ReactNode;
+  }) => (
+    <section data-testid={`rail-${title}`}>
+      <h2>{title}</h2>
+      {description ? <p>{description}</p> : null}
+      {children}
+    </section>
+  ),
+}));
+
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: { defaultValue?: string; name?: string }) => {
+      if (options?.defaultValue) {
+        return options.defaultValue.replace('{{name}}', options.name ?? '');
+      }
+
+      const values: Record<string, string> = {
+        'page.heroTitle': 'Master Cybersecurity Skills for the Real World',
+        'page.heroDescription':
+          'Learn incident response, cloud security, pentesting, and digital forensics.',
+        'page.exploreCourses': 'Explore Courses',
+        'page.viewPremium': 'View Premium Plans',
+        'page.continueLearning': 'Continue Learning',
+        'page.continueLearningDescription': 'Pick up where you left off.',
+        'page.noCoursesAvailable': 'No courses available',
+        'page.viewAllMyCourses': 'View all my courses',
+        'page.free': 'Free courses',
+        'page.freeDescription': 'Start with free tracks.',
+        'page.premium': 'Premium courses',
+        'page.premiumDescription': 'Unlock premium tracks.',
+        'page.loadingCourses': 'Loading...',
+      };
+
+      return values[key] ?? key;
+    },
+  }),
+}));
+
+const createHomeState = (overrides?: Record<string, unknown>) => ({
+  courses: {
+    inProgress: [],
+    free: [],
+    premium: [],
+    collections: [],
+    issuedCertificates: 0,
+    pendingCertificates: 0,
+    loading: false,
+    error: null,
+  },
+  getCollectionDescription: jest.fn(),
+  getCollectionTitle: jest.fn(),
+  getCardDescription: jest.fn(),
+  getTitle: jest.fn(),
+  hasAnyLearnerActivity: false,
+  hasIncompleteProfile: false,
+  isAuthenticated: true,
+  isLearnerHome: true,
+  user: {
+    id: 42,
+  },
+  visibleInProgressCourses: [],
+  welcomeName: 'Ait',
+  ...overrides,
+});
+
+describe('HomePage', () => {
+  beforeEach(() => {
+    mockUseHomeCourses.mockReset();
+    window.localStorage.clear();
+  });
+
+  it('shows Welcome on the first learner visit and stores the visit flag', () => {
+    mockUseHomeCourses.mockReturnValue(createHomeState());
+
+    render(<HomePage />);
+
+    expect(
+      screen.getByRole('heading', { name: 'Welcome, Ait' }),
+    ).toBeInTheDocument();
+    expect(window.localStorage.getItem('bgd:learner-home-seen:42')).toBe('1');
+  });
+
+  it('shows Welcome back after the learner home has already been seen', () => {
+    window.localStorage.setItem('bgd:learner-home-seen:42', '1');
+    mockUseHomeCourses.mockReturnValue(createHomeState());
+
+    render(<HomePage />);
+
+    expect(
+      screen.getByRole('heading', { name: 'Welcome back, Ait' }),
+    ).toBeInTheDocument();
+  });
+
+  it('keeps the learner intro clean without the removed status cards', () => {
+    mockUseHomeCourses.mockReturnValue(createHomeState());
+
+    render(<HomePage />);
+
+    expect(screen.queryByText('Courses in progress')).not.toBeInTheDocument();
+    expect(screen.queryByText('Certificates earned')).not.toBeInTheDocument();
+    expect(screen.queryByText('Profile status')).not.toBeInTheDocument();
+  });
+
+  it('renders published admin collections on the learner home', () => {
+    const getCollectionTitle = jest.fn(() => 'Incident Response Track');
+    const getCollectionDescription = jest.fn(
+      () => 'Hand-picked courses from your admin team.',
+    );
+
+    mockUseHomeCourses.mockReturnValue(
+      createHomeState({
+        courses: {
+          inProgress: [],
+          free: [],
+          premium: [],
+          collections: [
+            {
+              id: 'collection-1',
+              titleEn: 'Incident Response Track',
+              titleFi: 'Incident Response Track',
+              descriptionEn: 'Hand-picked courses from your admin team.',
+              descriptionFi: 'Hand-picked courses from your admin team.',
+              orderIndex: 1,
+              isPublished: true,
+              courses: [],
+              createdAt: '2026-04-10T00:00:00.000Z',
+              updatedAt: '2026-04-10T00:00:00.000Z',
+            },
+          ],
+          issuedCertificates: 0,
+          pendingCertificates: 0,
+          loading: false,
+          error: null,
+        },
+        getCollectionTitle,
+        getCollectionDescription,
+      }),
+    );
+
+    render(<HomePage />);
+
+    expect(
+      screen.getByRole('heading', { name: 'Incident Response Track' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Hand-picked courses from your admin team.'),
+    ).toBeInTheDocument();
+  });
+});

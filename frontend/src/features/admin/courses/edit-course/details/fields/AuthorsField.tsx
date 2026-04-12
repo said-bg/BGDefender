@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Author } from '@/services/courseService';
+import { Author } from '@/services/course';
 import detailStyles from '../DetailsPage.module.css';
 import formStyles from '../../shared/EditCourseForm.module.css';
 import sharedStyles from '../../shared/EditCoursePage.module.css';
@@ -80,5 +80,6 @@ export default function AuthorsField({
     </div>
   );
 }
+
 
 

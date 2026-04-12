@@ -1,5 +1,8 @@
-import { Author } from '@/services/courseService';
-import authorService, { CreateAuthorRequest, UpdateAuthorRequest } from '@/services/authorService';
+import { Author } from '@/services/course';
+import authorService, {
+  CreateAuthorRequest,
+  UpdateAuthorRequest,
+} from '@/services/authors';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { AuthorFormState } from './types';
 
@@ -112,3 +115,4 @@ export async function deleteAuthor(
     );
   }
 }
+

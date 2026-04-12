@@ -131,6 +131,18 @@ export enum ResourceSource {
   USER = 'USER',
 }
 
+export enum CertificateStatus {
+  PENDING_PROFILE = 'pending_profile',
+  ISSUED = 'issued',
+}
+
+export enum NotificationType {
+  COURSE_PUBLISHED = 'course_published',
+  RESOURCE_SHARED = 'resource_shared',
+  CERTIFICATE_AVAILABLE = 'certificate_available',
+  COMPLETE_PROFILE_FOR_CERTIFICATE = 'complete_profile_for_certificate',
+}
+
 export interface Resource {
   id: string;
   title: string;
@@ -178,6 +190,39 @@ export interface CreateMyResourceRequest {
   filename?: string;
   mimeType?: string;
   linkUrl?: string;
+}
+
+export interface CertificateRecord {
+  id: string;
+  courseId: string;
+  certificateCode: string;
+  status: CertificateStatus;
+  firstName: string | null;
+  lastName: string | null;
+  courseTitleEn: string;
+  courseTitleFi: string;
+  issuedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NotificationRecord {
+  id: string;
+  type: NotificationType;
+  courseId: string | null;
+  courseTitleEn: string | null;
+  courseTitleFi: string | null;
+  resourceId: string | null;
+  resourceTitle: string | null;
+  link: string | null;
+  isRead: boolean;
+  readAt: string | null;
+  createdAt: string;
+}
+
+export interface NotificationFeedResponse {
+  data: NotificationRecord[];
+  unreadCount: number;
 }
 
 /**

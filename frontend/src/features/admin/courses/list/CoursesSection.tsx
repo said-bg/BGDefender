@@ -1,6 +1,6 @@
 'use client';
 
-import { Course } from '@/services/courseService';
+import { Course } from '@/services/course';
 import CourseCard from './CourseCard';
 import { LocalizedAdminCourse } from './courseAdmin.utils';
 import styles from './CoursesSection.module.css';
@@ -100,3 +100,4 @@ export default function CoursesSection({
     </section>
   );
 }
+

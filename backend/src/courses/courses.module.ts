@@ -20,9 +20,11 @@ import { ProgressController } from './controllers/progress.controller';
 import { FavoriteService } from './services/favorite.service';
 import { FavoriteController } from './controllers/favorite.controller';
 import { AdminRoleGuard } from '../auth/guards/admin-role.guard';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
+    NotificationsModule,
     TypeOrmModule.forFeature([
       Course,
       Chapter,

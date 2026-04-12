@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import progressService from '@/services/progressService';
+import progressService from '@/services/progress';
 import { User } from '@/types/api';
 import {
   NavigationItem,
@@ -8,7 +8,7 @@ import {
   getViewStateFromProgress,
   preserveCompletedProgress,
 } from './courseDetail.utils';
-import { Course } from '@/services/courseService';
+import { Course } from '@/services/course';
 
 interface UseCourseProgressSyncOptions {
   canReadContent: boolean;
@@ -135,3 +135,4 @@ export default function useCourseProgressSync({
 
   return { restoringProgress };
 }
+

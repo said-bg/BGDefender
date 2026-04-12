@@ -19,7 +19,7 @@ export default function UnauthorizedPage() {
             {t('goToCourses')}
           </Link>
 
-          <Link href="/auth/login" className={styles.secondaryAction}>
+          <Link href="/login" className={styles.secondaryAction}>
             {t('backToLogin')}
           </Link>
         </div>

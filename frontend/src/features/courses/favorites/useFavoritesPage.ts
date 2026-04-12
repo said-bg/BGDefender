@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFavoriteCourses } from '@/hooks';
-import courseService, { Course } from '@/services/courseService';
-import type { FavoriteSummary } from '@/services/favoriteService';
-import progressService from '@/services/progressService';
+import courseService, { Course } from '@/services/course';
+import type { FavoriteSummary } from '@/services/favorites';
+import progressService from '@/services/progress';
 import { buildFavoriteCourses } from './favoriteCourses.utils';
 
 type FavoriteCoursesState = {
@@ -63,3 +63,4 @@ export default function useFavoritesPage(errorMessage: string) {
     toggleFavorite,
   };
 }
+

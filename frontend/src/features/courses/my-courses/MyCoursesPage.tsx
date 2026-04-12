@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './MyCoursesPage.module.css';
 import { ProtectedRoute } from '@/components/auth';
 import { useAuth } from '@/hooks';
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 import CourseProgressCard from '@/features/courses/components/CourseProgressCard';
 import useMyCoursesPage from './useMyCoursesPage';
 
@@ -113,3 +113,4 @@ export default function MyCoursesPage() {
     </ProtectedRoute>
   );
 }
+

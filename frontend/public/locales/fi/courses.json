@@ -69,6 +69,12 @@
     "premiumRequiredDescription": "Tämä oppitunti kuuluu premium-sisältöön. Ota yhteyttä tiimiin saadaksesi käyttöoikeuden.",
     "premiumRequiredText": "Nykyinen tilauksesi ei sisällä tätä premium-sisältöä. Ota yhteyttä BG Defender -tiimiin, jos haluat avata sen käyttöösi.",
     "premiumRequiredPrompt": "Tämä sisältö kuuluu premium-pakettiin. Ota yhteyttä tiimiin saadaksesi käyttöoikeuden.",
+    "certificatePendingTitle": "Certificate waiting for profile completion",
+    "certificatePendingDescription": "You passed the final test. Complete your profile with your first and last name to generate the certificate automatically.",
+    "completeProfile": "Complete profile",
+    "certificateIssuedTitle": "Certificate earned",
+    "certificateIssuedDescription": "Your certificate is now ready in your certificates space.",
+    "viewCertificate": "View certificates",
     "previous": "Edellinen",
     "next": "Seuraava"
   },

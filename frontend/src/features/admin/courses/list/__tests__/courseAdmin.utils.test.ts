@@ -1,4 +1,4 @@
-import type { AdminCourseSummary, Course } from '@/services/courseService';
+import type { AdminCourseSummary, Course } from '@/services/course';
 import {
   toLocalizedCourse,
   updateSummaryForDelete,
@@ -121,3 +121,4 @@ describe('courseAdmin.utils', () => {
     });
   });
 });
+

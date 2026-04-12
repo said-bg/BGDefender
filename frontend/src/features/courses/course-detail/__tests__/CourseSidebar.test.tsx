@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { CourseSidebar } from '../components/CourseSidebar';
-import type { Course } from '@/services/courseService';
+import type { Course } from '@/services/course';
 
 const createCourse = (): Course => ({
   id: 'course-1',
@@ -162,3 +162,4 @@ describe('CourseSidebar', () => {
     expect(progressValues).toEqual(expect.arrayContaining(['67', '67']));
   });
 });
+

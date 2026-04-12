@@ -1,13 +1,13 @@
-import type { Course } from '@/services/courseService';
-import type { CourseProgressSummary } from '@/services/progressService';
+import type { Course } from '@/services/course';
+import type { CourseProgressSummary } from '@/services/progress';
 import {
   CourseWithProgress,
   getChapterAndItemCounts,
   sortByLastAccessed,
-} from '@/features/courses/courseProgress.utils';
+} from '@/features/courses/lib/courseProgress.utils';
 
 export { getChapterAndItemCounts };
-export type { CourseWithProgress } from '@/features/courses/courseProgress.utils';
+export type { CourseWithProgress } from '@/features/courses/lib/courseProgress.utils';
 
 export type CourseFilter = 'all' | 'in_progress' | 'completed';
 
@@ -70,3 +70,4 @@ export const getMyCoursesSummary = (courses: CourseWithProgress[]) => {
     completed,
   };
 };
+

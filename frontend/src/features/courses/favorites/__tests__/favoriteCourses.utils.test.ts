@@ -1,6 +1,6 @@
-import type { Course } from '@/services/courseService';
-import type { FavoriteSummary } from '@/services/favoriteService';
-import type { CourseProgressSummary } from '@/services/progressService';
+import type { Course } from '@/services/course';
+import type { FavoriteSummary } from '@/services/favorites';
+import type { CourseProgressSummary } from '@/services/progress';
 import { buildFavoriteCourses } from '../favoriteCourses.utils';
 
 const createCourse = (id: string, level: 'free' | 'premium' = 'free'): Course =>
@@ -115,3 +115,4 @@ describe('buildFavoriteCourses', () => {
     expect(result[1].completed).toBe(true);
   });
 });
+

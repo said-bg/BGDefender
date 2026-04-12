@@ -1,1 +1,1 @@
-export { default } from './AdminUsersPage';
+export { default } from '@/features/admin/users/AdminUsersPage';

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import styles from './RichTextBlockMediaControls.module.css';
 
 type RichTextBlockMediaControlsProps = {
@@ -17,19 +18,26 @@ export default function RichTextBlockMediaControls({
   onWidthChange,
   onAlignChange,
 }: RichTextBlockMediaControlsProps) {
+  const { t } = useTranslation('admin');
   const widthInputId = `${type}-width-input`;
   const widthSliderId = `${type}-width-slider`;
 
   return (
     <div className={styles.mediaControls}>
       <div className={styles.mediaControlsHeader}>
-        <strong>{type === 'image' ? 'Image' : 'Video'}</strong>
+        <strong>
+          {type === 'image'
+            ? t('richText.mediaTypeImage', { defaultValue: 'Image' })
+            : t('richText.mediaTypeVideo', { defaultValue: 'Video' })}
+        </strong>
         <span>{width}px</span>
       </div>
 
       <div className={styles.mediaControlsRow}>
         <label className={styles.mediaField} htmlFor={widthInputId}>
-          <span>Width (px)</span>
+          <span>
+            {t('richText.mediaWidthLabel', { defaultValue: 'Width (px)' })}
+          </span>
           <input
             id={widthInputId}
             className={styles.mediaNumberInput}
@@ -37,8 +45,12 @@ export default function RichTextBlockMediaControls({
             min="160"
             max="1400"
             step="20"
-            title="Media width in pixels"
-            aria-label="Media width in pixels"
+            title={t('richText.mediaWidthTitle', {
+              defaultValue: 'Media width in pixels',
+            })}
+            aria-label={t('richText.mediaWidthTitle', {
+              defaultValue: 'Media width in pixels',
+            })}
             value={width}
             onChange={(event) => onWidthChange(Number(event.target.value))}
           />
@@ -51,8 +63,12 @@ export default function RichTextBlockMediaControls({
           min="160"
           max="1400"
           step="20"
-          title="Adjust media width"
-          aria-label="Adjust media width"
+          title={t('richText.mediaWidthAdjust', {
+            defaultValue: 'Adjust media width',
+          })}
+          aria-label={t('richText.mediaWidthAdjust', {
+            defaultValue: 'Adjust media width',
+          })}
           value={width}
           onChange={(event) => onWidthChange(Number(event.target.value))}
         />
@@ -66,7 +82,7 @@ export default function RichTextBlockMediaControls({
             data-active={align === 'left'}
             onClick={() => onAlignChange('left')}
           >
-            Left
+            {t('richText.mediaAlignLeft', { defaultValue: 'Left' })}
           </button>
           <button
             type="button"
@@ -74,7 +90,7 @@ export default function RichTextBlockMediaControls({
             data-active={align === 'center'}
             onClick={() => onAlignChange('center')}
           >
-            Center
+            {t('richText.mediaAlignCenter', { defaultValue: 'Center' })}
           </button>
           <button
             type="button"
@@ -82,7 +98,7 @@ export default function RichTextBlockMediaControls({
             data-active={align === 'right'}
             onClick={() => onAlignChange('right')}
           >
-            Right
+            {t('richText.mediaAlignRight', { defaultValue: 'Right' })}
           </button>
         </div>
       </div>

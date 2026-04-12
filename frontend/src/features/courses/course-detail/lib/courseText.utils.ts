@@ -1,4 +1,4 @@
-import type { Author, Chapter, PedagogicalContent, Course, SubChapter } from '@/services/courseService';
+import type { Author, Chapter, PedagogicalContent, Course, SubChapter } from '@/services/course';
 import type { ActiveLanguage } from '../courseDetail.types';
 
 export const getPreviewText = (text: string, length = 96) => {

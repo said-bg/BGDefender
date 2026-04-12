@@ -1,5 +1,5 @@
-import type { Course } from '@/services/courseService';
-import type { CourseProgressSummary } from '@/services/progressService';
+import type { Course } from '@/services/course';
+import type { CourseProgressSummary } from '@/services/progress';
 import {
   buildStartedCourses,
   filterMyCourses,
@@ -195,3 +195,4 @@ describe('my-courses.utils', () => {
     });
   });
 });
+

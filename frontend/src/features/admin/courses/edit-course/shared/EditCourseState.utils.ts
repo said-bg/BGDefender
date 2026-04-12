@@ -1,4 +1,4 @@
-import { Chapter, Course, PedagogicalContent, SubChapter } from '@/services/courseService';
+import { Chapter, Course, PedagogicalContent, SubChapter } from '@/services/course';
 
 export const sortByOrderIndex = <T extends { orderIndex: number }>(items: T[]) =>
   [...items].sort((left, right) => left.orderIndex - right.orderIndex);
@@ -123,3 +123,4 @@ export const removePedagogicalContent = (
       : chapter,
   ),
 });
+

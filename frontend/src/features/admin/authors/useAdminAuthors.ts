@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Author } from '@/services/courseService';
+import { Author } from '@/services/course';
 import { sortAuthorsByUpdatedAt } from './authorAdmin.utils';
 import { deleteAuthor, loadAuthors, saveAuthor, uploadAuthorPhoto } from './authorAdmin.mutations';
 import { AuthorFormState, initialAuthorFormState, PhotoMode } from './types';
@@ -171,3 +171,4 @@ export default function useAdminAuthors() {
     uploadedPhotoFilename,
   };
 }
+

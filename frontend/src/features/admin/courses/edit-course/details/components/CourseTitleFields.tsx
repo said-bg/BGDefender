@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import type { TranslationFn } from '@/types/i18n';
 import formStyles from '../../shared/EditCourseForm.module.css';
-import { EditCourseFormState } from '../types';
+import { EditCourseFormState } from '../lib/details.types';
 
 type CourseTitleFieldsProps = {
   form: EditCourseFormState;

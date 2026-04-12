@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import courseService from '@/services/courseService';
-import progressService from '@/services/progressService';
+import courseService from '@/services/course';
+import progressService from '@/services/progress';
 import {
   CourseFilter,
   CourseWithProgress,
@@ -73,3 +73,4 @@ export default function useMyCoursesPage(
     summary,
   };
 }
+

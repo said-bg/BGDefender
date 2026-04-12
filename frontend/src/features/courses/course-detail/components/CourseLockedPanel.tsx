@@ -19,7 +19,7 @@ export default function CourseLockedPanel({ accessState, t }: CourseLockedPanelP
             t={t}
             i18nKey="detail.loginRequiredPromptInline"
             components={{
-              loginLink: <Link href="/auth/login" className={styles.lockedInlineLink} />,
+              loginLink: <Link href="/login" className={styles.lockedInlineLink} />,
             }}
           />
         </p>

@@ -6,8 +6,8 @@ import AccountHero from './components/AccountHero';
 import AccountSummaryCard from './components/AccountSummaryCard';
 import ProfileForm from './components/ProfileForm';
 import SecurityForm from './components/SecurityForm';
+import { useAccountSettings } from './hooks/useAccountSettings';
 import styles from './AccountPage.module.css';
-import { useAccountSettings } from './useAccountSettings';
 
 function AccountPageContent() {
   const { t } = useTranslation('account');

@@ -10,6 +10,9 @@ import { CoursesModule } from './courses/courses.module';
 import { ResourcesModule } from './resources/resources.module';
 import { UsersModule } from './users/users.module';
 import { QuizzesModule } from './quizzes/quizzes.module';
+import { CertificatesModule } from './certificates/certificates.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { CollectionsModule } from './collections/collections.module';
 
 @Module({
   imports: [
@@ -34,6 +37,12 @@ import { QuizzesModule } from './quizzes/quizzes.module';
     UsersModule,
     // Quizzes module: chapter training quizzes and learner attempts
     QuizzesModule,
+    // Certificates module: learner certificates after successful final tests
+    CertificatesModule,
+    // Notifications module: in-app learner notifications in the navbar dropdown
+    NotificationsModule,
+    // Collections module: admin-curated learner sections on the home page
+    CollectionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

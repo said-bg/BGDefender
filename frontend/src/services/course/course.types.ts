@@ -175,6 +175,11 @@ export interface LearnerCourseFinalTest {
   passingScore: number;
   isPublished: boolean;
   isUnlocked: boolean;
+  certificate: {
+    id: string;
+    status: 'pending_profile' | 'issued';
+    issuedAt: string | null;
+  } | null;
   questions: QuizQuestion[];
   latestAttempt: QuizAttemptSummary | null;
   bestAttempt: QuizAttemptSummary | null;
@@ -234,6 +239,31 @@ export interface CoursesResponse {
   data: Course[];
   count: number;
 }
+
+export interface CourseCollection {
+  id: string;
+  titleEn: string;
+  titleFi: string;
+  descriptionEn: string | null;
+  descriptionFi: string | null;
+  orderIndex: number;
+  isPublished: boolean;
+  courses: Course[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateCourseCollectionRequest {
+  titleEn: string;
+  titleFi: string;
+  descriptionEn?: string | null;
+  descriptionFi?: string | null;
+  orderIndex?: number;
+  isPublished?: boolean;
+  courseIds?: string[];
+}
+
+export type UpdateCourseCollectionRequest = CreateCourseCollectionRequest;
 
 export interface AdminCourseSummary {
   totalCourses: number;

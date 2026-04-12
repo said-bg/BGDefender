@@ -1,6 +1,6 @@
 'use client';
 
-import { Course } from '@/services/courseService';
+import { Course } from '@/services/course';
 import styles from './CourseSidebar.module.css';
 import {
   ActiveLanguage,
@@ -12,6 +12,7 @@ import {
   getPreviewText,
   getSubChapterParagraphs,
 } from '../courseDetail.utils';
+
 
 type CourseSidebarProps = {
   id?: string;
@@ -230,3 +231,4 @@ export function CourseSidebar({
 }
 
 export default CourseSidebar;
+

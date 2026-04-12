@@ -1,6 +1,6 @@
 'use client';
 
-import { AdminCourseSummary } from '@/services/courseService';
+import { AdminCourseSummary } from '@/services/course';
 import styles from './CourseMetrics.module.css';
 
 type CourseMetricsProps = {
@@ -27,3 +27,4 @@ export default function CourseMetrics({ summary, t }: CourseMetricsProps) {
     </section>
   );
 }
+

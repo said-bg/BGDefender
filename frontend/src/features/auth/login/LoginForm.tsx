@@ -71,13 +71,13 @@ export function LoginForm() {
 
         <div className={styles.footer}>
           <div className={styles.footerLinks}>
-            <Link href="/auth/forgot-password" className={styles.footerLink}>
+            <Link href="/forgot-password" className={styles.footerLink}>
               {t('login.forgotPassword')}
             </Link>
 
             <div className={styles.footerLinksRow}>
               <span>{t('login.noAccount')}</span>
-              <Link href="/auth/register" className={styles.footerLink}>
+              <Link href="/register" className={styles.footerLink}>
                 {t('login.signup')}
               </Link>
             </div>

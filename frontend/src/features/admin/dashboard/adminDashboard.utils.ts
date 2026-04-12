@@ -1,4 +1,4 @@
-import { Course } from '@/services/courseService';
+import { Course } from '@/services/course';
 import type { AdminDashboardT } from './adminDashboard.types';
 
 export function getCourseTitle(course: Course, language: string) {
@@ -37,3 +37,4 @@ export function formatUpdatedAt(value: string) {
     day: 'numeric',
   }).format(date);
 }
+
