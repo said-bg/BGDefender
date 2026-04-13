@@ -6,11 +6,11 @@
 
 .heroShell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 25.5rem;
-  gap: 0;
+  grid-template-columns: minmax(0, 1fr) 24rem;
+  gap: 0.9rem;
   align-items: center;
   min-height: 360px;
-  padding: 1.7rem 1.65rem 1.7rem;
+  padding: 1.55rem 1.45rem 1.55rem;
   border: 1px solid rgba(255, 166, 0, 0.2);
   border-radius: 28px;
   background: #ffffff;
@@ -134,9 +134,9 @@
 
 @media (min-width: 1600px) {
   .heroShell {
-    grid-template-columns: minmax(0, 1fr) 31rem;
-    gap: 1.4rem;
-    padding-inline: 2rem;
+    grid-template-columns: minmax(0, 1fr) 26.5rem;
+    gap: 1.1rem;
+    padding-inline: 1.7rem;
   }
 }
 
