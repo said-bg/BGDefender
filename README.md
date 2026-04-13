@@ -86,45 +86,49 @@ cd backend
 copy .env.example .env
 ```
 
-Your `backend/.env` for local should be:
+Edit `backend/.env` (for local dev, use these values):
 
 ```env
 NODE_ENV=development
 PORT=3001
 
-# Database connection (Docker will create this)
 DATABASE_HOST=db
 DATABASE_PORT=3306
 DATABASE_USERNAME=bg_user
 DATABASE_PASSWORD=bg_password
 DATABASE_NAME=bg_defender
 
-# Security
-JWT_SECRET=dev-key
+JWT_SECRET=replace_with_a_long_random_secret
 JWT_EXPIRES_IN=1d
-
-# Allow frontend to connect
 FRONTEND_URL=http://localhost:3000
-CORS_ORIGIN=http://localhost:3000
+CORS_ORIGIN=http://localhost:3000,http://127.0.0.1:3000
 
-# Pre-load demo data (users + courses)
+# SEED_ON_BOOT=true: Loads test data on startup (development)
+# SEED_ON_BOOT=false: Keeps existing data (production)
 SEED_ON_BOOT=true
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+SMTP_FROM=your_email@gmail.com
+SMTP_SECURE=false
 ```
 
-### Step 2b: Setup Frontend Environment (Local Dev Only)
+### Step 2b: Setup Frontend Environment
 
 ```bash
 cd frontend
 copy .env.example .env.local
 ```
 
-Your `frontend/.env.local` for local dev:
+Edit `frontend/.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
-**Note:** In production, this is not needed. Frontend will connect to backend using the same domain.
+(Only needed for local dev - not in production)
 
 ### Step 3: Start Everything with Docker
 
@@ -133,12 +137,12 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 docker compose down -v
 ```
 
-**Then start:**
+**Start Docker containers (database + backend API):**
 ```bash
 docker compose up -d
 ```
 
-Logs will show:
+Wait for logs to show:
 ```
 [SEED] Created user "admin@bgdefender.com"
 [SEED] Users seeding completed successfully
@@ -146,13 +150,21 @@ Logs will show:
 [MAIN] Server started on port 3001
 ```
 
-### Step 4: Access Application
+### Step 4: Start Frontend Dev Server
+
+```bash
+npm run start
+```
+
+This starts the frontend on `http://localhost:3000` and automatically connects to the backend running in Docker.
+
+### Step 5: Access Application
 
 - **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:3001/api
 - **Admin Panel:** http://localhost:3000/admin
 
-**Login credentials (auto-created by seeds):**
+**Login:**
 - Email: `admin@bgdefender.com`
 - Password: `Admin123!`
 
@@ -180,54 +192,59 @@ Logs will show:
 
 ## 🚀 Production Deployment
 
-### Step 1: Prepare Backend for Production
+### Step 1: Update Backend Environment
 
-Create `backend/.env` for production (copy from `.env.example` and change values):
+Copy `.env.example` to `.env` and update with production values:
+
+```bash
+cd backend
+copy .env.example .env
+```
+
+Edit `backend/.env` (replace XXX_CHANGE_ME values):
 
 ```env
 NODE_ENV=production
 PORT=3001
 
-# Your production database details
-DATABASE_HOST=your-mysql-server.com
+DATABASE_HOST=XXX_CHANGE_ME_your_mysql_server_XXX
 DATABASE_PORT=3306
-DATABASE_USERNAME=secure_user
-DATABASE_PASSWORD=SECURE_PASSWORD_HERE
-DATABASE_NAME=bg_defender_prod
+DATABASE_USERNAME=XXX_CHANGE_ME_secure_user_XXX
+DATABASE_PASSWORD=XXX_CHANGE_ME_strong_password_XXX
+DATABASE_NAME=XXX_CHANGE_ME_database_name_XXX
 
-# Security (change this!)
-JWT_SECRET=create-a-long-random-string-at-least-32-characters
+JWT_SECRET=replace_with_a_long_random_secret_at_least_32_chars
 JWT_EXPIRES_IN=7d
-
-# Production URLs
 FRONTEND_URL=https://academy.bg.fi
 CORS_ORIGIN=https://academy.bg.fi
 
-# First deploy: load demo data
-# After: change to false
+# First deploy ONLY - load demo data
+# Change to false after verification
 SEED_ON_BOOT=true
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=your_email@gmail.com
+SMTP_PASS=your_app_password
+SMTP_FROM=your_email@gmail.com
+SMTP_SECURE=false
 ```
 
-**Note:** Frontend doesn't need `.env.prod` - same config works everywhere. Frontend reads URLs from backend.
-
-### Step 2: Build Productions Apps
+### Step 2: Build Both Apps
 
 ```bash
-# Frontend build
+# Frontend
 cd frontend
 npm run build
-# Creates: .next/ directory (ready for production)
 
-# Backend build
+# Backend
 cd backend
 npm run build
-# Creates: dist/ directory (ready for production)
 ```
 
-### Step 3: First Production Deploy
+### Step 3: Deploy with Docker
 
 ```bash
-# With SEED_ON_BOOT=true in backend/.env
 docker compose up -d
 
 # Check logs
@@ -236,17 +253,17 @@ docker logs bgdefender-backend
 
 Wait for: `[SEED] ... completed successfully`
 
-### Step 4: Verify It Works
+### Step 4: Verify
 
-Visit: https://academy.bg.fi
+Visit: `https://academy.bg.fi`
 Login: `admin@bgdefender.com` / `Admin123!`
 
-Verify:
-- ✅ Can see demo courses
-- ✅ Admin panel accessible
-- ✅ Can browse collection
+Check:
+- ✅ Demo courses visible
+- ✅ Admin panel works
+- ✅ Can browse collections
 
-### Step 5: Disable Seeds & Secure
+### Step 5: Disable Seeds
 
 Edit `backend/.env`:
 ```env
@@ -258,59 +275,74 @@ Restart:
 docker compose up -d
 ```
 
-Now:
-- ✅ App is live with demo data
-- ✅ Seeds won't run again
-- ✅ Your data is permanent
-- ✅ Admin can add more courses
+Done! Seeds won't run again and data is permanent.
 
 ---
 
 ## 📋 Important Notes
 
-### `docker-compose.yml` File
-**DO NOT CHANGE** unless you know what you're doing. It defines:
+### Security: `.env` vs `.env.example`
+
+**`.env.example`** = Safe to share (template with placeholders)
+- Send this to client via email/GitHub
+- Contains: `XXX_CHANGE_ME_*`, `your_email@gmail.com`, `replace_with_*`
+- No actual secrets
+
+**`.env`** = NEVER share (your actual secrets)
+- Stay in `.gitignore` (not on GitHub)
+- Contains: real passwords, real database credentials, real API keys
+- Keep private, only share if client really needs it (secure channel)
+
+When client deploys:
+1. Client gets `.env.example` from GitHub
+2. Client copies to `.env`
+3. Client fills in their own values (XXX_CHANGE_ME_* → actual data)
+4. Client NEVER commits `.env` to version control
+
+### `docker-compose.yml`
+Don't touch this unless you know what you're doing. It defines:
 - Frontend container
 - Backend container  
 - MySQL container
-- How they talk to each other
+- How they connect
 
-### Environment Files (`.env`)
+### Environment Files
 
-**Backend (.env):**
-- **`backend/.env.example`** = Template (read-only, don't edit)
-- **`backend/.env`** = Your actual config (created by you, git-ignored)
-- Copy `.env.example` → `.env` and change values
-- **REQUIRED for both local & production**
+**Backend:**
+- `.env.example` = template (safe to share)
+- `.env` = your config (NEVER share, .gitignored)
+- Copy `.env.example` → `.env` and fill with your values
 
-**Frontend (.env.local):**
-- **`frontend/.env.example`** = Template (read-only, don't edit)
-- **`frontend/.env.local`** = Only for **local dev** (points to localhost:3001)
-- **NOT NEEDED in production** (frontend connects to same domain)
-- Copy `.env.example` → `.env.local` for local dev only
+**Frontend:**
+- `.env.example` = template (safe to share)
+- `.env.local` = local dev only (not needed in production, .gitignored)
+- Copy `.env.example` → `.env.local` for local dev
 
-### npm install vs Docker
-**Order matters:**
-1. `npm install` FIRST (installs Node packages locally)
-2. `docker compose up` SECOND (runs containers with those packages)
+### Order Matters
+1. `npm install` first
+2. `docker compose up -d` second
+3. `npm run start` third
 
-### Commands Reference
+### Quick Commands
 
 ```bash
-# Start everything
+# Start Docker (database + backend)
 docker compose up -d
+
+# Start frontend dev server
+npm run start
 
 # Stop everything
 docker compose down
 
-# View logs
-docker compose logs -f
-
-# Stop & delete database (fresh start)
+# Fresh start (delete database)
 docker compose down -v
 
-# Backend logs only
+# See backend logs
 docker logs bgdefender-backend -f
+
+# See all logs
+docker compose logs -f
 ```
 
 ---
