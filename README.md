@@ -143,14 +143,6 @@ docker compose down -v
 docker compose up -d
 ```
 
-Wait for logs to show:
-```
-[SEED] Created user "admin@bgdefender.com"
-[SEED] Users seeding completed successfully
-[SEED] Creating hierarchy for "FEZ"...
-[MAIN] Server started on port 3001
-```
-
 ### Step 4: Start Frontend Dev Server
 
 ```bash
@@ -158,16 +150,6 @@ npm run start
 ```
 
 This starts the frontend on `http://localhost:3000` and automatically connects to the backend running in Docker.
-
-### Step 5: Access Application
-
-- **Frontend:** http://localhost:3000
-- **Backend API:** http://localhost:3001/api
-- **Admin Panel:** http://localhost:3000/admin
-
-**Login:**
-- Email: `admin@bgdefender.com`
-- Password: `Admin123!`
 
 ---
 
@@ -195,11 +177,11 @@ This starts the frontend on `http://localhost:3000` and automatically connects t
 
 ### Step 1: Update Backend Environment
 
-Copy `.env.example` to `.env` and update with production values:
+Copy `.env.production` to `.env` and update with production values:
 
 ```bash
 cd backend
-copy .env.example .env
+copy .env.production .env
 ```
 
 Edit `backend/.env` (replace XXX_CHANGE_ME values):
@@ -208,27 +190,38 @@ Edit `backend/.env` (replace XXX_CHANGE_ME values):
 NODE_ENV=production
 PORT=3001
 
-DATABASE_HOST=XXX_CHANGE_ME_your_mysql_server_XXX
+DATABASE_HOST=XXX_CHANGE_ME_server_host_XXX
 DATABASE_PORT=3306
-DATABASE_USERNAME=XXX_CHANGE_ME_secure_user_XXX
+DATABASE_USERNAME=XXX_CHANGE_ME_username_XXX
 DATABASE_PASSWORD=XXX_CHANGE_ME_strong_password_XXX
 DATABASE_NAME=XXX_CHANGE_ME_database_name_XXX
 
-JWT_SECRET=replace_with_a_long_random_secret_at_least_32_chars
-JWT_EXPIRES_IN=7d
+JWT_SECRET=XXX_CHANGE_ME_64_RANDOM_CHARACTERS_XXX
 FRONTEND_URL=https://academy.bg.fi
 CORS_ORIGIN=https://academy.bg.fi
 
-# First deploy ONLY - load demo data
-# Change to false after verification
-SEED_ON_BOOT=true
-
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_app_password
-SMTP_FROM=your_email@gmail.com
+SMTP_USER=XXX_CHANGE_ME_email@gmail.com_XXX
+SMTP_PASS=XXX_CHANGE_ME_app_password_XXX
+SMTP_FROM=XXX_CHANGE_ME_email@gmail.com_XXX
 SMTP_SECURE=false
+
+# ============================================================
+# SEED_ON_BOOT Configuration
+# ============================================================
+# SEED_ON_BOOT=true (First deployment ONLY)
+#   → On first startup in production: seeds execute
+#   → Example data loads (courses, chapters, quizzes, etc)
+#   → Users see example courses
+#
+# AFTER first startup, CHANGE TO:
+#   SEED_ON_BOOT=false
+#   → Seeds NEVER execute again
+#   → Real user data stays safe
+#   → Prevents accidental data reset
+# ============================================================
+SEED_ON_BOOT=true
 ```
 
 ### Step 2: Build Both Apps
@@ -251,8 +244,6 @@ docker compose up -d
 # Check logs
 docker logs bgdefender-backend
 ```
-
-Wait for: `[SEED] ... completed successfully`
 
 ### Step 4: Verify
 
@@ -280,50 +271,6 @@ Done! Seeds won't run again and data is permanent.
 
 ---
 
-## 📋 Important Notes
-
-### Security: `.env` vs `.env.example`
-
-**`.env.example`** = Safe to share (template with placeholders)
-- Send this to client via email/GitHub
-- Contains: `XXX_CHANGE_ME_*`, `your_email@gmail.com`, `replace_with_*`
-- No actual secrets
-
-**`.env`** = NEVER share (your actual secrets)
-- Stay in `.gitignore` (not on GitHub)
-- Contains: real passwords, real database credentials, real API keys
-- Keep private, only share if client really needs it (secure channel)
-
-When client deploys:
-1. Client gets `.env.example` from GitHub
-2. Client copies to `.env`
-3. Client fills in their own values (XXX_CHANGE_ME_* → actual data)
-4. Client NEVER commits `.env` to version control
-
-### `docker-compose.yml`
-Don't touch this unless you know what you're doing. It defines:
-- Frontend container
-- Backend container  
-- MySQL container
-- How they connect
-
-### Environment Files
-
-**Backend:**
-- `.env.example` = template (safe to share)
-- `.env` = your config (NEVER share, .gitignored)
-- Copy `.env.example` → `.env` and fill with your values
-
-**Frontend:**
-- `.env.example` = template (safe to share)
-- `.env.local` = local dev only (not needed in production, .gitignored)
-- Copy `.env.example` → `.env.local` for local dev
-
-### Order Matters
-1. `npm install` first
-2. `docker compose up -d` second
-3. `npm run start` third
-
 ### Quick Commands
 
 ```bash
@@ -345,19 +292,6 @@ docker logs bgdefender-backend -f
 # See all logs
 docker compose logs -f
 ```
-
----
-
-## ✅ Deployment Checklist
-
-- [ ] `npm install` completed
-- [ ] `backend/.env` created with production values
-- [ ] `npm run build` succeeded (both frontend + backend)
-- [ ] `docker compose up -d` started successfully
-- [ ] Logs show `[SEED] ... completed successfully`
-- [ ] Can login at https://academy.bg.fi
-- [ ] Changed `SEED_ON_BOOT=false` after first verification
-- [ ] Restarted: `docker compose up -d`
 
 ---
 
