@@ -1,3 +1,21 @@
+.searchInput {
+  width: 100%;
+  min-height: 2.5rem;
+  margin-bottom: 0.9rem;
+  border: 1px solid #dbe4f0;
+  border-radius: 0.8rem;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  padding: 0.55rem 0.82rem;
+}
+
+.searchInput:focus {
+  outline: 2px solid rgba(255, 166, 0, 0.18);
+  outline-offset: 1px;
+  border-color: #ffa600;
+}
+
 .authorList {
   display: grid;
   gap: 12px;

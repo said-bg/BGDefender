@@ -1,6 +1,7 @@
 import type { Author } from '@/services/course';
 import { buildAuthorPayload } from '../authorAdmin.mutations';
 import {
+  filterAuthors,
   getAuthorInitials,
   getLocalizedAuthorBio,
   getLocalizedAuthorRole,
@@ -76,6 +77,27 @@ describe('authorAdmin.utils', () => {
       biographyFi: undefined,
       photo: '/authors/dana.jpg',
     });
+  });
+
+  it('filters authors by full text across name, role, and biography', () => {
+    const authors = [
+      createAuthor({
+        id: '1',
+        name: 'Hugues P',
+        roleEn: 'Incident Responder',
+        biographyEn: 'Handles incident response and malware triage.',
+      }),
+      createAuthor({
+        id: '2',
+        name: 'Dana Scully',
+        roleEn: 'Forensics Specialist',
+      }),
+    ];
+
+    expect(filterAuthors(authors, 'Hugues P', 'en')).toHaveLength(1);
+    expect(filterAuthors(authors, 'incident responder', 'en')).toHaveLength(1);
+    expect(filterAuthors(authors, 'malware triage', 'en')).toHaveLength(1);
+    expect(filterAuthors(authors, 'unknown author', 'en')).toHaveLength(0);
   });
 });
 

@@ -1,8 +1,9 @@
 'use client';
 
-import Image from 'next/image';
+import { useMemo, useState } from 'react';
 import { Author } from '@/services/course';
 import {
+  filterAuthors,
   getAuthorInitials,
   getLocalizedAuthorBio,
   getLocalizedAuthorRole,
@@ -31,6 +32,12 @@ export default function AuthorLibrary({
   onEdit,
   t,
 }: AuthorLibraryProps) {
+  const [search, setSearch] = useState('');
+  const filteredAuthors = useMemo(
+    () => filterAuthors(authors, search, language),
+    [authors, language, search],
+  );
+
   return (
     <section className={pageStyles.listCard}>
       <div className={pageStyles.cardHeader}>
@@ -44,6 +51,16 @@ export default function AuthorLibrary({
           })}
         </p>
       </div>
+
+      <input
+        type="search"
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        className={libraryStyles.searchInput}
+        placeholder={t('authors.searchPlaceholder', {
+          defaultValue: 'Search authors by name, role, or biography',
+        })}
+      />
 
       {loading ? (
         <p className={pageStyles.helperMessage}>
@@ -63,9 +80,20 @@ export default function AuthorLibrary({
             })}
           </p>
         </div>
+      ) : filteredAuthors.length === 0 ? (
+        <div className={pageStyles.emptyState}>
+          <h3 className={pageStyles.emptyTitle}>
+            {t('authors.searchEmptyTitle', { defaultValue: 'No matching authors' })}
+          </h3>
+          <p className={pageStyles.emptyDescription}>
+            {t('authors.searchEmptyDescription', {
+              defaultValue: 'Try another name, role, or biography keyword.',
+            })}
+          </p>
+        </div>
       ) : (
         <div className={libraryStyles.authorList}>
-          {authors.map((author) => {
+          {filteredAuthors.map((author) => {
             const localizedRole = getLocalizedAuthorRole(author, language);
             const localizedBio = getLocalizedAuthorBio(author, language);
 
@@ -74,12 +102,13 @@ export default function AuthorLibrary({
                 <div className={libraryStyles.authorHeader}>
                   <div className={libraryStyles.authorIdentity}>
                     {author.photo ? (
-                      <Image
+                      <img
                         src={author.photo}
                         alt={author.name}
                         className={libraryStyles.authorAvatar}
                         width={56}
                         height={56}
+                        loading="lazy"
                       />
                     ) : (
                       <div className={libraryStyles.authorAvatarFallback}>

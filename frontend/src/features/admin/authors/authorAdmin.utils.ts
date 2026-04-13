@@ -21,3 +21,23 @@ export const getLocalizedAuthorBio = (author: Author, language: string) =>
     ? author.biographyFi || author.biographyEn
     : author.biographyEn || author.biographyFi;
 
+export const filterAuthors = (authors: Author[], search: string, language: string) => {
+  const normalizedSearch = search.toLowerCase().replace(/\s+/g, ' ').trim();
+
+  if (!normalizedSearch) {
+    return authors;
+  }
+
+  return authors.filter((author) => {
+    const role = getLocalizedAuthorRole(author, language) || '';
+    const bio = getLocalizedAuthorBio(author, language) || '';
+    const haystack = [author.name, role, bio]
+      .join(' ')
+      .toLowerCase()
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    return haystack.includes(normalizedSearch);
+  });
+};
+
