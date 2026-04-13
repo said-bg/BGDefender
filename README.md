@@ -92,11 +92,11 @@ Edit `backend/.env` (for local dev, use these values):
 NODE_ENV=development
 PORT=3001
 
-DATABASE_HOST=db
+DATABASE_HOST=XXX_CHANGE_ME_server_host_XXX
 DATABASE_PORT=3306
-DATABASE_USERNAME=bg_user
-DATABASE_PASSWORD=bg_password
-DATABASE_NAME=bg_defender
+DATABASE_USERNAME=XXX_CHANGE_ME_username_XXX
+DATABASE_PASSWORD=XXX_CHANGE_ME_strong_password_XXX
+DATABASE_NAME=XXX_CHANGE_ME_database_name_XXX
 
 JWT_SECRET=replace_with_a_long_random_secret
 JWT_EXPIRES_IN=1d
@@ -113,6 +113,7 @@ SMTP_USER=your_email@gmail.com
 SMTP_PASS=your_app_password
 SMTP_FROM=your_email@gmail.com
 SMTP_SECURE=false
+
 ```
 
 ### Step 2b: Setup Frontend Environment
