@@ -68,9 +68,8 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 314px));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.15rem;
-  justify-content: start;
 }
 
 .emptyState {
