@@ -28,6 +28,11 @@ export class UpdateCourseCollectionDto {
   @IsOptional()
   descriptionFi?: string | null;
 
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  coverImage?: string | null;
+
   @IsNumber()
   @IsPositive()
   @IsOptional()

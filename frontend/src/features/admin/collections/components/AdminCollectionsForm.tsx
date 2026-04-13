@@ -13,22 +13,31 @@ type CollectionFormState = {
   titleFi: string;
   descriptionEn: string;
   descriptionFi: string;
+  coverImage: string;
   orderIndex: string;
   isPublished: boolean;
   courseIds: string[];
 };
 
+type CollectionImageMode = 'url' | 'upload';
+
 type AdminCollectionsFormProps = {
   availableCourses: Course[];
+  coverUploadError: string | null;
   editingCollectionId: string | null;
   form: CollectionFormState;
+  handleCoverUpload: (file: File) => void;
+  handleImageModeChange: (mode: CollectionImageMode) => void;
   handleMoveCourse: (courseId: string, direction: 'up' | 'down') => void;
   handleSubmit: () => Promise<void>;
   handleToggleCourse: (courseId: string) => void;
+  imageMode: CollectionImageMode;
+  isUploadingCover: boolean;
   resetForm: () => void;
   selectedCourses: Course[];
   submitting: boolean;
   t: CollectionsTranslate;
+  uploadedFilename: string | null;
   updateForm: <K extends keyof CollectionFormState>(
     key: K,
     value: CollectionFormState[K],
@@ -37,15 +46,21 @@ type AdminCollectionsFormProps = {
 
 export default function AdminCollectionsForm({
   availableCourses,
+  coverUploadError,
   editingCollectionId,
   form,
+  handleCoverUpload,
+  handleImageModeChange,
   handleMoveCourse,
   handleSubmit,
   handleToggleCourse,
+  imageMode,
+  isUploadingCover,
   resetForm,
   selectedCourses,
   submitting,
   t,
+  uploadedFilename,
   updateForm,
 }: AdminCollectionsFormProps) {
   return (
@@ -87,6 +102,82 @@ export default function AdminCollectionsForm({
             value={form.titleFi}
             onChange={(event) => updateForm('titleFi', event.target.value)}
           />
+        </div>
+
+        <div className={`${styles.fieldGroup} ${styles.fieldGroupFull}`}>
+          <label className={styles.fieldLabel}>
+            {t('collections.coverImage', { defaultValue: 'Collection image (optional)' })}
+          </label>
+          <div className={styles.modeSwitch}>
+            <button
+              type="button"
+              className={`${styles.modeButton} ${imageMode === 'url' ? styles.modeButtonActive : ''}`}
+              onClick={() => handleImageModeChange('url')}
+            >
+              {t('collections.imageModeUrl', { defaultValue: 'Use URL' })}
+            </button>
+            <button
+              type="button"
+              className={`${styles.modeButton} ${imageMode === 'upload' ? styles.modeButtonActive : ''}`}
+              onClick={() => handleImageModeChange('upload')}
+            >
+              {t('collections.imageModeUpload', { defaultValue: 'Upload image' })}
+            </button>
+          </div>
+
+          {imageMode === 'url' ? (
+            <input
+              className={styles.input}
+              value={form.coverImage}
+              onChange={(event) => updateForm('coverImage', event.target.value)}
+              placeholder={t('collections.coverImagePlaceholder', {
+                defaultValue: 'https://example.com/collection-cover.jpg',
+              })}
+            />
+          ) : (
+            <div className={styles.uploadBox}>
+              <label className={styles.uploadLabel}>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className={styles.hiddenFileInput}
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) {
+                      handleCoverUpload(file);
+                    }
+                  }}
+                />
+                <span className={styles.uploadLabelText}>
+                  {isUploadingCover
+                    ? t('collections.coverUploading', {
+                        defaultValue: 'Uploading image...',
+                      })
+                    : t('collections.coverUploadCta', {
+                        defaultValue: 'Choose a collection image to upload',
+                      })}
+                </span>
+                <span className={styles.uploadHelper}>
+                  {t('collections.coverUploadHint', {
+                    defaultValue: 'JPG, PNG, or WEBP up to 5 MB.',
+                  })}
+                </span>
+              </label>
+
+              {uploadedFilename ? (
+                <p className={styles.statusMessage}>
+                  {t('collections.coverUploadSuccess', {
+                    defaultValue: 'Uploaded file:',
+                  })}{' '}
+                  {uploadedFilename}
+                </p>
+              ) : null}
+
+              {form.coverImage ? <p className={styles.statusMessage}>{form.coverImage}</p> : null}
+            </div>
+          )}
+
+          {coverUploadError ? <p className={styles.errorMessage}>{coverUploadError}</p> : null}
         </div>
 
         <div className={`${styles.fieldGroup} ${styles.fieldGroupFull}`}>

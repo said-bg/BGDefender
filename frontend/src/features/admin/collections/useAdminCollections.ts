@@ -18,6 +18,7 @@ type CollectionFormState = {
   titleFi: string;
   descriptionEn: string;
   descriptionFi: string;
+  coverImage: string;
   orderIndex: string;
   isPublished: boolean;
   courseIds: string[];
@@ -28,10 +29,13 @@ const createInitialFormState = (): CollectionFormState => ({
   titleFi: '',
   descriptionEn: '',
   descriptionFi: '',
+  coverImage: '',
   orderIndex: '1',
   isPublished: true,
   courseIds: [],
 });
+
+type CollectionImageMode = 'url' | 'upload';
 
 export default function useAdminCollections() {
   const { t, i18n } = useTranslation('admin');
@@ -42,6 +46,10 @@ export default function useAdminCollections() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [imageMode, setImageMode] = useState<CollectionImageMode>('url');
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [coverUploadError, setCoverUploadError] = useState<string | null>(null);
+  const [uploadedFilename, setUploadedFilename] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +128,9 @@ export default function useAdminCollections() {
   const resetForm = () => {
     setEditingCollectionId(null);
     setForm(createInitialFormState());
+    setImageMode('url');
+    setCoverUploadError(null);
+    setUploadedFilename(null);
   };
 
   const updateForm = <K extends keyof CollectionFormState>(
@@ -147,11 +158,15 @@ export default function useAdminCollections() {
     setEditingCollectionId(collection.id);
     setError(null);
     setMessage(null);
+    setCoverUploadError(null);
+    setUploadedFilename(null);
+    setImageMode(collection.coverImage ? 'upload' : 'url');
     setForm({
       titleEn: collection.titleEn,
       titleFi: collection.titleFi,
       descriptionEn: collection.descriptionEn ?? '',
       descriptionFi: collection.descriptionFi ?? '',
+      coverImage: collection.coverImage ?? '',
       orderIndex: String(collection.orderIndex),
       isPublished: collection.isPublished,
       courseIds: collection.courses.map((course) => course.id),
@@ -163,10 +178,40 @@ export default function useAdminCollections() {
     titleFi: form.titleFi.trim(),
     descriptionEn: form.descriptionEn.trim() || null,
     descriptionFi: form.descriptionFi.trim() || null,
+    coverImage: form.coverImage.trim() || null,
     orderIndex: Number.parseInt(form.orderIndex, 10) || 1,
     isPublished: form.isPublished,
     courseIds: form.courseIds,
   });
+
+  const handleImageModeChange = (mode: CollectionImageMode) => {
+    setImageMode(mode);
+    setCoverUploadError(null);
+  };
+
+  const handleCoverUpload = async (file: File) => {
+    setIsUploadingCover(true);
+    setCoverUploadError(null);
+
+    try {
+      const response = await collectionService.uploadCollectionCover(file);
+      setForm((current) => ({
+        ...current,
+        coverImage: response.url,
+      }));
+      setUploadedFilename(response.filename);
+      setImageMode('upload');
+    } catch (uploadError) {
+      console.error('Failed to upload collection cover:', uploadError);
+      setCoverUploadError(
+        t('collections.coverUploadFailed', {
+          defaultValue: 'Failed to upload collection cover image.',
+        }),
+      );
+    } finally {
+      setIsUploadingCover(false);
+    }
+  };
 
   const handleSubmit = async () => {
     if (!form.titleEn.trim() || !form.titleFi.trim()) {
@@ -244,10 +289,15 @@ export default function useAdminCollections() {
     editingCollectionId,
     error,
     form,
+    coverUploadError,
     handleDelete,
+    handleCoverUpload,
+    handleImageModeChange,
     handleMoveCourse,
     handleSubmit,
     handleToggleCourse,
+    imageMode,
+    isUploadingCover,
     loading,
     message,
     preparedCollections,
@@ -259,6 +309,7 @@ export default function useAdminCollections() {
     submitting,
     summary,
     t,
+    uploadedFilename,
     updateForm,
   };
 }

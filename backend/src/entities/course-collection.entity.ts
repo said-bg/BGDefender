@@ -25,6 +25,9 @@ export class CourseCollection {
   @Column({ type: 'text', nullable: true })
   descriptionFi!: string | null;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  coverImage!: string | null;
+
   @Column({ type: 'int', default: 1 })
   orderIndex!: number;
 

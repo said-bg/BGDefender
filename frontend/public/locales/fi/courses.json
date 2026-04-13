@@ -28,6 +28,12 @@
     "premium": "Premium-kurssit",
     "continueLearning": "Jatka oppimista",
     "continueLearningDescription": "Jatka siitä, mihin jäit, ja säilytä nykyinen oppimismomenttisi.",
+    "collections": "Kokoelmat",
+    "collectionsDescription": "Avaa teemoittain ryhmitellyt kurssikokonaisuudet ja löydä itsellesi sopiva oppimispolku.",
+    "collectionLabel": "Kokoelma",
+    "collectionCourseCount": "{{count}} kurssia mukana",
+    "collectionCardFallbackDescription": "{{count}} kurssia yhdelle ohjatulle oppimispolulle ryhmiteltynä.",
+    "openCollection": "Avaa kokoelma",
     "freeDescription": "Aloita aloittelijaystävällisillä oppitunneilla ja rakenna vahva perusta kyberturvallisuudessa.",
     "premiumDescription": "Avaa syvällisempää sisältöä edistyneeseen harjoitteluun, premium-aiheisiin ja ammatilliseen kehittymiseen.",
     "chapters": "Luvut",
@@ -57,6 +63,14 @@
     "focusEyebrow": "Seuraava paras askel",
     "focusTitle": "Täydennä profiilisi avataksesi sertifikaatit sujuvasti",
     "focusDescription": "Heti kun läpäiset sertifioivan lopputestin, voimme myöntää sertifikaatin automaattisesti, jos etu- ja sukunimesi on jo täytetty."
+  },
+  "collectionDetail": {
+    "back": "Takaisin etusivulle",
+    "loading": "Ladataan kokoelmaa...",
+    "notFoundTitle": "Kokoelmaa ei löytynyt",
+    "notFoundDescription": "Tämä kokoelma ei ole juuri nyt saatavilla.",
+    "emptyTitle": "Tässä kokoelmassa ei ole vielä kursseja",
+    "emptyDescription": "Lisää julkaistuja kursseja tähän kokoelmaan admin-paneelista."
   },
   "myCourses": {
     "title": "Kurssini",

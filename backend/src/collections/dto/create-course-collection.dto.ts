@@ -26,6 +26,11 @@ export class CreateCourseCollectionDto {
   @IsOptional()
   descriptionFi?: string | null;
 
+  @IsString()
+  @IsOptional()
+  @MaxLength(500)
+  coverImage?: string | null;
+
   @IsNumber()
   @IsPositive()
   @IsOptional()

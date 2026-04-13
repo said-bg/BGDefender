@@ -28,6 +28,12 @@
     "premium": "Premium Courses",
     "continueLearning": "Continue Learning",
     "continueLearningDescription": "Pick up where you left off and keep your current momentum.",
+    "collections": "Collections",
+    "collectionsDescription": "Open themed collections that group related courses into clear learning paths.",
+    "collectionLabel": "Collection",
+    "collectionCourseCount": "{{count}} courses included",
+    "collectionCardFallbackDescription": "{{count}} courses grouped into one guided learning path.",
+    "openCollection": "Open collection",
     "freeDescription": "Start with beginner-friendly lessons and build a strong cybersecurity foundation.",
     "premiumDescription": "Unlock deeper content for advanced practice, premium topics, and professional growth.",
     "chapters": "Chapters",
@@ -57,6 +63,14 @@
     "focusEyebrow": "Next best step",
     "focusTitle": "Complete your profile to unlock certificates smoothly",
     "focusDescription": "As soon as you pass a certifying final test, we can issue the certificate automatically if your first and last name are already filled in."
+  },
+  "collectionDetail": {
+    "back": "Back to home",
+    "loading": "Loading collection...",
+    "notFoundTitle": "Collection not found",
+    "notFoundDescription": "This collection is not available right now.",
+    "emptyTitle": "No courses in this collection yet",
+    "emptyDescription": "Add published courses to this collection from the admin panel."
   },
   "myCourses": {
     "title": "My Courses",

@@ -57,6 +57,29 @@ jest.mock('../components/HomeCourseRail', () => ({
   ),
 }));
 
+jest.mock('../components/HomeCollectionsSection', () => ({
+  __esModule: true,
+  default: ({
+    collections,
+    description,
+    getCollectionTitle,
+    title,
+  }: {
+    collections: { id: string }[];
+    description?: string;
+    getCollectionTitle: (collection: { id: string }) => string;
+    title: string;
+  }) => (
+    <section data-testid="collections-section">
+      <h2>{title}</h2>
+      {description ? <p>{description}</p> : null}
+      {collections.map((collection) => (
+        <span key={collection.id}>{getCollectionTitle(collection)}</span>
+      ))}
+    </section>
+  ),
+}));
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options?: { defaultValue?: string; name?: string }) => {
@@ -74,6 +97,8 @@ jest.mock('react-i18next', () => ({
         'page.continueLearningDescription': 'Pick up where you left off.',
         'page.noCoursesAvailable': 'No courses available',
         'page.viewAllMyCourses': 'View all my courses',
+        'page.collections': 'Collections',
+        'page.collectionsDescription': 'Browse grouped learning paths.',
         'page.free': 'Free courses',
         'page.freeDescription': 'Start with free tracks.',
         'page.premium': 'Premium courses',
@@ -177,7 +202,7 @@ describe('HomePage', () => {
     expect(screen.queryByText('Profile status')).not.toBeInTheDocument();
   });
 
-  it('renders published admin collections on the learner home', () => {
+  it('renders a single collections section on the learner home', () => {
     const getCollectionTitle = jest.fn(() => 'Incident Response Track');
     const getCollectionDescription = jest.fn(
       () => 'Hand-picked courses from your admin team.',
@@ -215,11 +240,12 @@ describe('HomePage', () => {
 
     render(<HomePage />);
 
+    expect(screen.getByRole('heading', { name: 'Collections' })).toBeInTheDocument();
+    expect(screen.getByText('Incident Response Track')).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Incident Response Track' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Hand-picked courses from your admin team.'),
+      screen.getByText(
+        'Open themed collections that group related courses into clear learning paths.',
+      ),
     ).toBeInTheDocument();
   });
 

@@ -246,6 +246,7 @@ export interface CourseCollection {
   titleFi: string;
   descriptionEn: string | null;
   descriptionFi: string | null;
+  coverImage: string | null;
   orderIndex: number;
   isPublished: boolean;
   courses: Course[];
@@ -258,12 +259,19 @@ export interface CreateCourseCollectionRequest {
   titleFi: string;
   descriptionEn?: string | null;
   descriptionFi?: string | null;
+  coverImage?: string | null;
   orderIndex?: number;
   isPublished?: boolean;
   courseIds?: string[];
 }
 
 export type UpdateCourseCollectionRequest = CreateCourseCollectionRequest;
+
+export interface UploadCollectionCoverResponse {
+  statusCode: number;
+  url: string;
+  filename: string;
+}
 
 export interface AdminCourseSummary {
   totalCourses: number;

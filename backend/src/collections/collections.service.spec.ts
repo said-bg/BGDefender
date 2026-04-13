@@ -81,6 +81,7 @@ describe('CollectionsService', () => {
       titleFi: 'Cyber basics',
       descriptionEn: null,
       descriptionFi: null,
+      coverImage: null,
       orderIndex: 1,
       isPublished: true,
       items: [
@@ -111,6 +112,7 @@ describe('CollectionsService', () => {
         titleFi: 'Featured',
         descriptionEn: null,
         descriptionFi: null,
+        coverImage: 'https://example.com/collection-cover.jpg',
         orderIndex: 1,
         isPublished: true,
         items: [
@@ -137,6 +139,7 @@ describe('CollectionsService', () => {
     expect(result).toHaveLength(1);
     expect(result[0].courses).toHaveLength(1);
     expect(result[0].courses[0].id).toBe('course-1');
+    expect(result[0].coverImage).toBe('https://example.com/collection-cover.jpg');
   });
 
   it('throws when updating a missing collection', async () => {

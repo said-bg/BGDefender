@@ -185,6 +185,63 @@
   font-weight: 600;
 }
 
+.modeSwitch {
+  display: inline-flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.modeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.62rem 0.9rem;
+  border: 1px solid #d0d9e5;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #44516a;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modeButtonActive {
+  border-color: #ffa600;
+  background: #fff8eb;
+  color: #cc6b10;
+}
+
+.uploadBox {
+  border: 1px dashed #d0d9e5;
+  border-radius: 1rem;
+  padding: 0.85rem;
+  background: #fcfdff;
+}
+
+.uploadLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  cursor: pointer;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.uploadLabelText {
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.uploadHelper {
+  color: #667085;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
 .pickerLayout {
   display: grid;
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);

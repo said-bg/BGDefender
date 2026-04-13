@@ -20,14 +20,19 @@ export default function AdminCollectionsPage() {
 function AdminCollectionsPageContent() {
   const {
     availableCourses,
+    coverUploadError,
     deletingId,
     editingCollectionId,
     error,
     form,
+    handleCoverUpload,
     handleDelete,
+    handleImageModeChange,
     handleMoveCourse,
     handleSubmit,
     handleToggleCourse,
+    imageMode,
+    isUploadingCover,
     loading,
     message,
     preparedCollections,
@@ -39,6 +44,7 @@ function AdminCollectionsPageContent() {
     submitting,
     summary,
     t,
+    uploadedFilename,
     updateForm,
   } = useAdminCollections();
 
@@ -54,15 +60,21 @@ function AdminCollectionsPageContent() {
       <section className={styles.layout}>
         <AdminCollectionsForm
           availableCourses={availableCourses}
+          coverUploadError={coverUploadError}
           editingCollectionId={editingCollectionId}
           form={form}
+          handleCoverUpload={handleCoverUpload}
+          handleImageModeChange={handleImageModeChange}
           handleMoveCourse={handleMoveCourse}
           handleSubmit={handleSubmit}
           handleToggleCourse={handleToggleCourse}
+          imageMode={imageMode}
+          isUploadingCover={isUploadingCover}
           resetForm={resetForm}
           selectedCourses={selectedCourses}
           submitting={submitting}
           t={t}
+          uploadedFilename={uploadedFilename}
           updateForm={updateForm}
         />
         <AdminCollectionsList

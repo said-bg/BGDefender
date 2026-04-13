@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import HomeCollectionsSection from './components/HomeCollectionsSection';
 import HomeCourseRail from './components/HomeCourseRail';
 import HomeHero from './components/HomeHero';
 import useHomeCourses from './hooks/useHomeCourses';
@@ -139,23 +140,21 @@ export default function HomePage() {
         />
       )}
 
-      {courses.collections.map((collection) => (
-        <HomeCourseRail
-          key={collection.id}
-          courses={collection.courses}
-          title={getCollectionTitle(collection)}
-          description={
-            getCollectionDescription(collection) ||
-            t('page.customCollectionDescription', {
-              defaultValue: 'A curated collection assembled by your admin team.',
-            })
-          }
+      {courses.collections.length > 0 && (
+        <HomeCollectionsSection
+          collections={courses.collections}
+          title={t('page.collections', { defaultValue: 'Collections' })}
+          description={t('page.collectionsDescription', {
+            defaultValue:
+              'Open themed collections that group related courses into clear learning paths.',
+          })}
           emptyLabel={t('page.noCoursesAvailable')}
-          getCourseDescription={getCardDescription}
+          getCollectionDescription={getCollectionDescription}
+          getCollectionTitle={getCollectionTitle}
           getCourseTitle={getTitle}
           t={t}
         />
-      ))}
+      )}
 
       {courses.free.length > 0 && (
         <HomeCourseRail

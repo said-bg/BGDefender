@@ -13,6 +13,7 @@ type CollectionView = {
   titleFi: string;
   descriptionEn: string | null;
   descriptionFi: string | null;
+  coverImage: string | null;
   orderIndex: number;
   isPublished: boolean;
   courses: Course[];
@@ -82,6 +83,7 @@ export class CollectionsService {
       titleFi: dto.titleFi.trim(),
       descriptionEn: dto.descriptionEn?.trim() || null,
       descriptionFi: dto.descriptionFi?.trim() || null,
+      coverImage: dto.coverImage?.trim() || null,
       orderIndex: dto.orderIndex ?? 1,
       isPublished: dto.isPublished ?? true,
       items: (dto.courseIds ?? []).map((courseId, index) =>
@@ -121,6 +123,10 @@ export class CollectionsService {
 
     if (dto.descriptionFi !== undefined) {
       collection.descriptionFi = dto.descriptionFi?.trim() || null;
+    }
+
+    if (dto.coverImage !== undefined) {
+      collection.coverImage = dto.coverImage?.trim() || null;
     }
 
     if (dto.orderIndex !== undefined) {
@@ -210,6 +216,7 @@ export class CollectionsService {
       titleFi: collection.titleFi,
       descriptionEn: collection.descriptionEn,
       descriptionFi: collection.descriptionFi,
+      coverImage: collection.coverImage,
       orderIndex: collection.orderIndex,
       isPublished: collection.isPublished,
       courses,
