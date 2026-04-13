@@ -2,5 +2,16 @@
   "error": "Error",
   "success": "Success",
   "loading": "Loading...",
-  "close": "Close"
+  "close": "Close",
+  "footer": {
+    "eyebrow": "BG Defender",
+    "title": "Cybersecurity learning and admin workspace",
+    "description": "Train learners, manage courses, and keep the platform clean for both admins and users.",
+    "navigation": "Navigation",
+    "rights": "BG Defender. All rights reserved.",
+    "links": {
+      "manageCourses": "Manage courses",
+      "manageUsers": "Manage users"
+    }
+  }
 }

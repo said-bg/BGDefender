@@ -6,6 +6,8 @@
   --font-inter: Inter, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-source-sans: "Source Sans 3", "Source Sans Pro", "Segoe UI", Arial, sans-serif;
   --font-geist-mono: "Geist Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --page-shell-width: min(1800px, calc(100% - 3rem));
+  --page-shell-width-mobile: calc(100% - 2rem);
 }
 
 @theme inline {

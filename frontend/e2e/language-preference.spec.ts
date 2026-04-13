@@ -26,24 +26,34 @@ test.describe('Language preference - E2E tests', () => {
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByRole('link', { name: 'Etusivu' })).toBeVisible();
+    await expect(
+      page.getByRole('navigation').getByRole('link', { name: 'Etusivu' }),
+    ).toBeVisible();
 
     const languageSwitcher = page
-      .locator('[aria-label="Language switcher"], [aria-label="Kielen valitsin"]')
-      .getByRole('button');
+      .getByRole('button', { name: /select language|valitse kieli/i })
+      .first();
 
     await languageSwitcher.click();
     await page.getByRole('button', { name: 'English' }).click();
-    await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
+    await expect(
+      page.getByRole('navigation').getByRole('link', { name: 'Home' }),
+    ).toBeVisible();
 
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
+    await expect(
+      page.getByRole('navigation').getByRole('link', { name: 'Home' }),
+    ).toBeVisible();
 
     await languageSwitcher.click();
     await page.getByRole('button', { name: 'Suomi' }).click();
-    await expect(page.getByRole('link', { name: 'Etusivu' })).toBeVisible();
+    await expect(
+      page.getByRole('navigation').getByRole('link', { name: 'Etusivu' }),
+    ).toBeVisible();
 
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await expect(page.getByRole('link', { name: 'Etusivu' })).toBeVisible();
+    await expect(
+      page.getByRole('navigation').getByRole('link', { name: 'Etusivu' }),
+    ).toBeVisible();
   });
 });

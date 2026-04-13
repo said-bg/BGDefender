@@ -9,7 +9,7 @@ import courseService, { Course } from '@/services/course';
 import progressService from '@/services/progress';
 import { CertificateStatus, UserPlan, UserRole } from '@/types/api';
 import { HomeCourse, HomeCourseCollection } from '../lib/home.types';
-import { getHomeWelcomeName, isProfileComplete } from '../lib/home.utils';
+import { getHomeWelcomeName, getLearnerHomeStorageKey, isProfileComplete } from '../lib/home.utils';
 
 interface CoursesState {
   inProgress: HomeCourse[];
@@ -183,6 +183,7 @@ export default function useHomeCourses() {
     isLearnerHome:
       isAuthenticated && isInitialized && user?.role !== UserRole.ADMIN,
     hasIncompleteProfile: Boolean(user) && !isProfileComplete(user),
+    learnerHomeStorageKey: getLearnerHomeStorageKey(user),
     welcomeName: getHomeWelcomeName(user),
     user,
     visibleInProgressCourses: courses.inProgress.filter(canAccessCourse),

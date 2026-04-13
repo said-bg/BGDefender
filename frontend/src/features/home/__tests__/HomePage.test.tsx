@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import HomePage from '../HomePage';
+import { getLearnerHomeStorageKey } from '../lib/home.utils';
 
 const mockUseHomeCourses = jest.fn();
 
@@ -104,8 +105,10 @@ const createHomeState = (overrides?: Record<string, unknown>) => ({
   hasIncompleteProfile: false,
   isAuthenticated: true,
   isLearnerHome: true,
+  learnerHomeStorageKey: 'bgd:learner-home-seen:42:2026-04-13T08:00:00.000Z',
   user: {
     id: 42,
+    createdAt: '2026-04-13T08:00:00.000Z',
   },
   visibleInProgressCourses: [],
   welcomeName: 'Ait',
@@ -119,25 +122,36 @@ describe('HomePage', () => {
   });
 
   it('shows Welcome on the first learner visit and stores the visit flag', () => {
-    mockUseHomeCourses.mockReturnValue(createHomeState());
+    const state = createHomeState();
+    mockUseHomeCourses.mockReturnValue(state);
 
     render(<HomePage />);
 
     expect(
       screen.getByRole('heading', { name: 'Welcome, Ait' }),
     ).toBeInTheDocument();
-    expect(window.localStorage.getItem('bgd:learner-home-seen:42')).toBe('1');
+    expect(window.localStorage.getItem(state.learnerHomeStorageKey)).toBe('1');
   });
 
   it('shows Welcome back after the learner home has already been seen', () => {
-    window.localStorage.setItem('bgd:learner-home-seen:42', '1');
-    mockUseHomeCourses.mockReturnValue(createHomeState());
+    const state = createHomeState();
+    window.localStorage.setItem(state.learnerHomeStorageKey, '1');
+    mockUseHomeCourses.mockReturnValue(state);
 
     render(<HomePage />);
 
     expect(
       screen.getByRole('heading', { name: 'Welcome back, Ait' }),
     ).toBeInTheDocument();
+  });
+
+  it('uses a created-at aware visit key so recreated accounts do not look like returning users', () => {
+    expect(
+      getLearnerHomeStorageKey({
+        id: 42,
+        createdAt: '2026-04-13T08:00:00.000Z',
+      }),
+    ).toBe('bgd:learner-home-seen:42:2026-04-13T08:00:00.000Z');
   });
 
   it('keeps the learner intro clean without the removed status cards', () => {

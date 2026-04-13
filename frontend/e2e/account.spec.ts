@@ -66,7 +66,7 @@ test.describe('Account page - E2E tests', () => {
     const profileButton = page.getByRole('button', { name: 'Profile' });
     await expect(profileButton).toBeVisible();
     await profileButton.click();
-    await page.getByRole('link', { name: 'Profile' }).click();
+    await page.getByRole('menu').getByRole('link', { name: 'Profile' }).click();
 
     await expect(page).toHaveURL(/\/account$/);
     await expect(page.getByRole('heading', { name: 'Said Ait' })).toBeVisible();

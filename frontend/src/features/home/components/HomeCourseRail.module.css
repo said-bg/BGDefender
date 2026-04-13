@@ -1,5 +1,5 @@
 .section {
-  width: min(1360px, calc(100% - 3rem));
+  width: var(--page-shell-width);
   margin: 0 auto;
   padding: 0.5rem 0 1rem;
 }
@@ -69,7 +69,7 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 0.9rem;
+  gap: 1rem;
 }
 
 .emptyState {
@@ -94,7 +94,7 @@
 
 .railViewport {
   display: grid;
-  grid-auto-columns: 314px;
+  grid-auto-columns: clamp(296px, 19vw, 340px);
   grid-auto-flow: column;
   gap: 1.1rem;
   overflow-x: auto;
@@ -171,18 +171,6 @@
   right: 0.1rem;
 }
 
-@media (min-width: 1280px) {
-  .grid {
-    grid-template-columns: repeat(4, 314px);
-  }
-}
-
-@media (max-width: 1120px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(290px, 314px));
-  }
-}
-
 @media (max-width: 960px) {
   .railShell {
     padding: 0;
@@ -201,7 +189,7 @@
 
 @media (max-width: 720px) {
   .section {
-    width: calc(100% - 2rem);
+    width: var(--page-shell-width-mobile);
     padding-bottom: 2.1rem;
   }
 

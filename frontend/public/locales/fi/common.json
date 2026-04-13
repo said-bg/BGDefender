@@ -2,5 +2,16 @@
   "error": "Virhe",
   "success": "Onnistui",
   "loading": "Ladataan...",
-  "close": "Sulje"
+  "close": "Sulje",
+  "footer": {
+    "eyebrow": "BG Defender",
+    "title": "Kyberturvallisuuden oppimis- ja hallintatyötila",
+    "description": "Kouluta oppijoita, hallitse kursseja ja pidä alusta selkeänä sekä ylläpitäjille että käyttäjille.",
+    "navigation": "Navigointi",
+    "rights": "BG Defender. Kaikki oikeudet pidätetään.",
+    "links": {
+      "manageCourses": "Hallitse kursseja",
+      "manageUsers": "Hallitse käyttäjiä"
+    }
+  }
 }

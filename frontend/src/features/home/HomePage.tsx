@@ -17,11 +17,10 @@ export default function HomePage() {
     hasIncompleteProfile,
     isAuthenticated,
     isLearnerHome,
-    user,
+    learnerHomeStorageKey,
     visibleInProgressCourses,
     welcomeName,
   } = useHomeCourses();
-  const learnerHomeStorageKey = user ? `bgd:learner-home-seen:${user.id}` : null;
   const isFirstLearnerVisit =
     isLearnerHome &&
     Boolean(learnerHomeStorageKey) &&

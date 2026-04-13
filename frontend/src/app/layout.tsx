@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
+import AppFooter from "@/components/footer/AppFooter";
 import { AuthProvider, I18nProvider } from "@/components/providers";
 import { Navbar } from "@/components/navbar/Navbar";
 import { ModalContainer } from "@/components/modal-container/ModalContainer";
@@ -28,6 +29,7 @@ export default function RootLayout({
           <AuthProvider>
             <Navbar />
             {children}
+            <AppFooter />
             <ModalContainer />
           </AuthProvider>
         </I18nProvider>
