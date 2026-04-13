@@ -2,15 +2,14 @@ import { expect, test } from '@playwright/test';
 import {
   adminUser,
   createCourse,
-  mockAuthMe,
-  setAuthenticatedUser,
+  mockAuthenticatedSession,
   type MockCourse,
 } from './support/courseFixtures';
 
 const COURSE_ID = 'course-content';
-const COURSE_ROUTE = new RegExp(`http://localhost:3001/api/courses/${COURSE_ID}$`);
+const COURSE_ROUTE = new RegExp(`/api/courses/${COURSE_ID}$`);
 const CONTENT_ROUTE = new RegExp(
-  `http://localhost:3001/api/courses/${COURSE_ID}/chapters/chapter-1/sub-chapters/sub-1/pedagogical-contents$`,
+  `/api/courses/${COURSE_ID}/chapters/chapter-1/sub-chapters/sub-1/pedagogical-contents$`,
 );
 
 const courseWithSubchapter: MockCourse = {
@@ -43,8 +42,7 @@ const courseWithSubchapter: MockCourse = {
 
 test.describe('Admin course content', () => {
   test.beforeEach(async ({ page }) => {
-    await setAuthenticatedUser(page);
-    await mockAuthMe(page, adminUser);
+    await mockAuthenticatedSession(page, adminUser);
 
     await page.route(COURSE_ROUTE, async (route) => {
       await route.fulfill({

@@ -1,7 +1,7 @@
 'use client';
 
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { ResourceSource, ResourceType } from '@/types/api';
+import { ResourceSource, ResourceType, UserRole } from '@/types/api';
 import useResourcesPage from './hooks/useResourcesPage';
 import styles from './ResourcesPage.module.css';
 
@@ -369,7 +369,10 @@ function ResourcesPageContent() {
 
 export default function ResourcesPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute
+      requiredRole={[UserRole.USER, UserRole.CREATOR]}
+      unauthorizedRedirect="/admin"
+    >
       <ResourcesPageContent />
     </ProtectedRoute>
   );

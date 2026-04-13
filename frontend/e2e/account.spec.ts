@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { buildApiPattern, mockCertificates, mockNotifications } from './support/courseFixtures';
 
-const API_BASE = 'http://localhost:3001/api';
 const TOKEN_KEY = 'bg_defender_token';
 
 const accountUser = {
@@ -26,7 +26,10 @@ test.describe('Account page - E2E tests', () => {
       window.localStorage.setItem('i18nextLng', 'en');
     }, [TOKEN_KEY]);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await mockNotifications(page);
+    await mockCertificates(page);
+
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -34,7 +37,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -42,7 +45,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/progress/me`, async (route) => {
+    await page.route(buildApiPattern('/progress/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -50,7 +53,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/courses*`, async (route) => {
+    await page.route(buildApiPattern('/courses'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -58,9 +61,11 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/', { waitUntil: 'networkidle' });
 
-    await page.locator('nav').getByRole('button', { name: 'Profile' }).click();
+    const profileButton = page.getByRole('button', { name: 'Profile' });
+    await expect(profileButton).toBeVisible();
+    await profileButton.click();
     await page.getByRole('link', { name: 'Profile' }).click();
 
     await expect(page).toHaveURL(/\/account$/);
@@ -80,7 +85,10 @@ test.describe('Account page - E2E tests', () => {
       window.localStorage.setItem('i18nextLng', 'en');
     }, [TOKEN_KEY]);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await mockNotifications(page);
+    await mockCertificates(page);
+
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -88,7 +96,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       if (route.request().method() !== 'PATCH') {
         await route.fallback();
         return;
@@ -113,7 +121,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/auth/change-password`, async (route) => {
+    await page.route(buildApiPattern('/auth/change-password'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -123,7 +131,8 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/account', { waitUntil: 'domcontentloaded' });
+    await page.goto('/account', { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Said Ait' })).toBeVisible();
 
     await page.getByLabel('First name').fill('Said');
     await page.getByLabel('Last name').fill('Aitba');
@@ -132,7 +141,7 @@ test.describe('Account page - E2E tests', () => {
     await Promise.all([
       page.waitForResponse(
         (response) =>
-          response.url() === `${API_BASE}/auth/me` &&
+          response.url().includes('/auth/me') &&
           response.request().method() === 'PATCH',
       ),
       page.getByRole('button', { name: 'Save profile' }).click(),
@@ -150,7 +159,7 @@ test.describe('Account page - E2E tests', () => {
     await Promise.all([
       page.waitForResponse(
         (response) =>
-          response.url() === `${API_BASE}/auth/change-password` &&
+          response.url().includes('/auth/change-password') &&
           response.request().method() === 'POST',
       ),
       page.getByRole('button', { name: 'Update password' }).click(),
@@ -170,7 +179,10 @@ test.describe('Account page - E2E tests', () => {
       window.localStorage.setItem('i18nextLng', 'en');
     }, [TOKEN_KEY]);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await mockNotifications(page);
+    await mockCertificates(page);
+
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -178,7 +190,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/auth/change-password`, async (route) => {
+    await page.route(buildApiPattern('/auth/change-password'), async (route) => {
       changePasswordRequests += 1;
       await route.fulfill({
         status: 200,
@@ -189,7 +201,8 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/account', { waitUntil: 'domcontentloaded' });
+    await page.goto('/account', { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Said Ait' })).toBeVisible();
     await page.getByRole('button', { name: 'Security' }).click();
 
     await page.getByRole('button', { name: 'Update password' }).click();
@@ -222,7 +235,10 @@ test.describe('Account page - E2E tests', () => {
       window.localStorage.setItem('i18nextLng', 'en');
     }, [TOKEN_KEY]);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await mockNotifications(page);
+    await mockCertificates(page);
+
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -230,7 +246,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/auth/change-password`, async (route) => {
+    await page.route(buildApiPattern('/auth/change-password'), async (route) => {
       await route.fulfill({
         status: 400,
         contentType: 'application/json',
@@ -242,7 +258,8 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/account', { waitUntil: 'domcontentloaded' });
+    await page.goto('/account', { waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { name: 'Said Ait' })).toBeVisible();
     await page.getByRole('button', { name: 'Security' }).click();
 
     await page.getByPlaceholder('Enter your current password').fill('WrongPassword123');

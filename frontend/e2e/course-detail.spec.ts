@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
 import {
-  API_BASE,
+  buildApiPattern,
   createCourse,
   freeUser,
+  mockCertificates,
   mockCourseDetail,
+  mockNotifications,
   premiumUser,
   setAuthenticatedUser,
   setEnglishLanguage,
@@ -35,12 +37,14 @@ test.describe('Course detail - E2E tests', () => {
     ).toBeVisible();
     await expect(
       page.getByRole('main').getByRole('link', { name: 'login', exact: true }),
-    ).toHaveAttribute('href', '/auth/login');
+    ).toHaveAttribute('href', '/login');
   });
 
   test('free user can access free course content and navigate with next', async ({ page }) => {
     const course = createCourse('free');
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser);
 
     await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
@@ -57,6 +61,8 @@ test.describe('Course detail - E2E tests', () => {
   test('reader can hide and restore the course outline', async ({ page }) => {
     const course = createCourse('free');
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser);
 
     await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
@@ -73,6 +79,8 @@ test.describe('Course detail - E2E tests', () => {
   test('free user sees premium access message on premium course content', async ({ page }) => {
     const course = createCourse('premium');
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser);
 
     await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
@@ -89,6 +97,8 @@ test.describe('Course detail - E2E tests', () => {
   test('premium user can access premium course content', async ({ page }) => {
     const course = createCourse('premium');
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
     await mockCourseDetail(page, course, premiumUser);
 
     await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
@@ -103,6 +113,8 @@ test.describe('Course detail - E2E tests', () => {
   test('authenticated user resumes the course from saved progress', async ({ page }) => {
     const course = createCourse('free');
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser, {
       id: 'progress-restore',
       userId: freeUser.id,
@@ -131,6 +143,8 @@ test.describe('Course detail - E2E tests', () => {
     let lastSavedPayload: Record<string, unknown> | null = null;
 
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser, {
       id: 'progress-complete',
       userId: freeUser.id,
@@ -146,8 +160,8 @@ test.describe('Course detail - E2E tests', () => {
       updatedAt: '2026-01-02T00:00:00.000Z',
     });
 
-    await page.unroute(`${API_BASE}/progress/me/course/${course.id}`);
-    await page.route(`${API_BASE}/progress/me/course/${course.id}`, async (route) => {
+    await page.unroute(buildApiPattern(`/progress/me/course/${course.id}`));
+    await page.route(buildApiPattern(`/progress/me/course/${course.id}`), async (route) => {
       if (route.request().method() === 'GET') {
         await route.fulfill({
           status: 200,
@@ -196,7 +210,7 @@ test.describe('Course detail - E2E tests', () => {
     await Promise.all([
       page.waitForResponse(
         (response) =>
-          response.url() === `${API_BASE}/progress/me/course/${course.id}` &&
+          response.url().includes(`/progress/me/course/${course.id}`) &&
           response.request().method() === 'PUT',
       ),
       page.getByRole('button', { name: /introduction/i }).click(),

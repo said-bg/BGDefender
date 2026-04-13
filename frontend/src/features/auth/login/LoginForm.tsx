@@ -16,9 +16,7 @@ export function LoginForm() {
           <p className={styles.subtitle}>{t('login.subtitle')}</p>
         </div>
 
-        {displayedFormError && (
-          <div className={styles.errorMessage}>Error: {displayedFormError}</div>
-        )}
+        {displayedFormError && <div className={styles.errorMessage}>{displayedFormError}</div>}
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.formGroup}>
@@ -31,7 +29,7 @@ export function LoginForm() {
               name="email"
               autoComplete="email"
               className={styles.input}
-              placeholder="you@example.com"
+              placeholder={t('login.emailPlaceholder')}
               value={form.email}
               onChange={handleChange}
               disabled={isLoading}
@@ -49,7 +47,7 @@ export function LoginForm() {
               name="password"
               autoComplete="current-password"
               className={styles.input}
-              placeholder="password"
+              placeholder={t('login.passwordPlaceholder')}
               value={form.password}
               onChange={handleChange}
               disabled={isLoading}

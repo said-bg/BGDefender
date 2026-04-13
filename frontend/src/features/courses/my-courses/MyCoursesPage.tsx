@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/auth';
 import { useAuth } from '@/hooks';
 import type { Course } from '@/services/course';
 import CourseProgressCard from '@/features/courses/components/CourseProgressCard';
+import { UserRole } from '@/types/api';
 import useMyCoursesPage from './useMyCoursesPage';
 
 function MyCoursesPageContent() {
@@ -108,7 +109,10 @@ function MyCoursesPageContent() {
 
 export default function MyCoursesPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute
+      requiredRole={[UserRole.USER, UserRole.CREATOR]}
+      unauthorizedRedirect="/admin"
+    >
       <MyCoursesPageContent />
     </ProtectedRoute>
   );

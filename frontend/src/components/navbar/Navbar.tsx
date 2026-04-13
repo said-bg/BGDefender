@@ -14,6 +14,8 @@ import styles from './Navbar.module.css';
 export const Navbar = () => {
   const { t, i18n } = useTranslation('navbar');
   const { isAuthenticated, logout, user } = useAuth();
+  const isAdmin = user?.role === UserRole.ADMIN;
+  const homeHref = isAdmin ? '/admin' : '/';
 
   const changeLanguage = (lang: 'en' | 'fi') => {
     if (typeof window !== 'undefined') {
@@ -27,7 +29,7 @@ export const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.container}>
         <div className={styles.leftSection}>
-          <Link href="/" className={styles.logo}>
+          <Link href={homeHref} className={styles.logo}>
             <Image
               src="/assets/images/bgdefender.jpeg"
               alt="BGDefender"
@@ -42,8 +44,10 @@ export const Navbar = () => {
           </Link>
 
           <NavbarLinks
+            adminLabel={t('admin')}
             favoritesLabel={t('favorites')}
             homeLabel={t('home')}
+            isAdmin={isAdmin}
             isAuthenticated={isAuthenticated}
             myCoursesLabel={t('myCourses')}
           />

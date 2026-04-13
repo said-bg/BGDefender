@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-const API_BASE = 'http://localhost:3001/api';
+import { buildApiPattern } from './support/courseFixtures';
+
 const TOKEN_KEY = 'bg_defender_token';
 const LOCAL_COVER_IMAGE = '/assets/images/home-bg.png';
 
@@ -80,7 +81,7 @@ test.describe('Home progression - E2E tests', () => {
       window.localStorage.setItem('i18nextLng', 'en');
     }, [TOKEN_KEY]);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -88,7 +89,7 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/courses*`, async (route) => {
+    await page.route(buildApiPattern('/courses'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -96,7 +97,7 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/progress/me`, async (route) => {
+    await page.route(buildApiPattern('/progress/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -119,7 +120,23 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me'), async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
+    await page.route(buildApiPattern('/notifications/me'), async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ data: [], count: 0 }),
+      });
+    });
+
+    await page.route(buildApiPattern('/certificates/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -138,7 +155,12 @@ test.describe('Home progression - E2E tests', () => {
     ).toBeVisible();
     await expect(continueSection.getByText('Blue Team Basics')).toBeVisible();
     await expect(continueSection.getByText('67%')).toBeVisible();
-    await expect(continueSection.getByRole('link', { name: 'Resume' })).toBeVisible();
+    await expect(
+      continueSection.getByRole('link', { name: 'View all my courses' }),
+    ).toBeVisible();
+    await expect(
+      continueSection.getByRole('link', { name: /Blue Team Basics/i }),
+    ).toBeVisible();
   });
 
   // Verifies that completed courses stay in My Courses but do not show up in Continue Learning.
@@ -150,7 +172,7 @@ test.describe('Home progression - E2E tests', () => {
       window.localStorage.setItem('i18nextLng', 'en');
     }, [TOKEN_KEY]);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -158,7 +180,7 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/courses*`, async (route) => {
+    await page.route(buildApiPattern('/courses'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -166,7 +188,7 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/progress/me`, async (route) => {
+    await page.route(buildApiPattern('/progress/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -189,7 +211,23 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me'), async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
+    await page.route(buildApiPattern('/notifications/me'), async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ data: [], count: 0 }),
+      });
+    });
+
+    await page.route(buildApiPattern('/certificates/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

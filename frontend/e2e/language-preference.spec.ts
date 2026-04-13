@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-const API_BASE = 'http://localhost:3001/api';
+import { buildApiPattern } from './support/courseFixtures';
+
 const TOKEN_KEY = 'bg_defender_token';
 
 test.describe('Language preference - E2E tests', () => {
@@ -15,7 +16,7 @@ test.describe('Language preference - E2E tests', () => {
       }
     }, [TOKEN_KEY]);
 
-    await page.route(`${API_BASE}/courses*`, async (route) => {
+    await page.route(buildApiPattern('/courses'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -27,13 +28,19 @@ test.describe('Language preference - E2E tests', () => {
 
     await expect(page.getByRole('link', { name: 'Etusivu' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'EN' }).click();
+    const languageSwitcher = page
+      .locator('[aria-label="Language switcher"], [aria-label="Kielen valitsin"]')
+      .getByRole('button');
+
+    await languageSwitcher.click();
+    await page.getByRole('button', { name: 'English' }).click();
     await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
 
     await page.reload({ waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
 
-    await page.getByRole('button', { name: 'FI' }).click();
+    await languageSwitcher.click();
+    await page.getByRole('button', { name: 'Suomi' }).click();
     await expect(page.getByRole('link', { name: 'Etusivu' })).toBeVisible();
 
     await page.reload({ waitUntil: 'domcontentloaded' });

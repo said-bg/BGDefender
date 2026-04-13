@@ -17,11 +17,11 @@ export function ForgotPasswordForm() {
         </div>
 
         {success && (
-          <div className={styles.successMessage}>Success: {t('forgotPassword.successMessage')}</div>
+          <div className={styles.successMessage}>{t('forgotPassword.successMessage')}</div>
         )}
 
         {errors.form && !success && (
-          <div className={styles.errorMessage}>Error: {errors.form}</div>
+          <div className={styles.errorMessage}>{errors.form}</div>
         )}
 
         {!success && <div className={styles.infoMessage}>{t('forgotPassword.infoMessage')}</div>}
@@ -38,7 +38,7 @@ export function ForgotPasswordForm() {
                 name="email"
                 autoComplete="email"
                 className={styles.input}
-                placeholder="you@example.com"
+                placeholder={t('forgotPassword.emailPlaceholder')}
                 value={form.email}
                 onChange={handleChange}
                 disabled={isLoading}

@@ -53,7 +53,7 @@ test.describe('Authentication - E2E Tests', () => {
       });
     });
 
-    await page.goto('/auth/register', { waitUntil: 'networkidle' });
+    await page.goto('/register', { waitUntil: 'networkidle' });
     await expect(page.locator('h1')).toContainText(/create account/i);
 
     // Fill form
@@ -63,8 +63,8 @@ test.describe('Authentication - E2E Tests', () => {
 
     // Submit and verify redirect to login
     await page.getByRole('button', { name: /create account/i }).click();
-    await page.waitForURL(/.*\/auth\/login/, { timeout: 10000 });
-    expect(page.url()).toContain('/auth/login');
+    await page.waitForURL(/.*\/login/, { timeout: 10000 });
+    expect(page.url()).toContain('/login');
   });
 
   /**
@@ -79,10 +79,10 @@ test.describe('Authentication - E2E Tests', () => {
     await page.goto('/my-courses', { waitUntil: 'domcontentloaded' });
 
     // ProtectedRoute redirects on the client once auth finishes initializing.
-    await page.waitForURL(/\/auth\/login\?redirect=/, { timeout: 10000 });
+    await page.waitForURL(/\/login\?redirect=/, { timeout: 10000 });
 
     // Should be redirected to login
-    expect(page.url()).toContain('/auth/login');
+    expect(page.url()).toContain('/login');
 
     // Verify login page is visible (title is "Welcome Back")
     await expect(page.locator('h1')).toContainText(/welcome back/i);
@@ -100,7 +100,7 @@ test.describe('Authentication - E2E Tests', () => {
    * - Has signup link
    */
   test('should have proper login page structure', async ({ page }) => {
-    await page.goto('/auth/login', { waitUntil: 'networkidle' });
+    await page.goto('/login', { waitUntil: 'networkidle' });
 
     // Verify title and form structure
     await expect(page.locator('h1')).toContainText(/welcome back/i);
@@ -133,7 +133,7 @@ test.describe('Authentication - E2E Tests', () => {
    * - Has login link for existing users
    */
   test('should have proper register page structure', async ({ page }) => {
-    await page.goto('/auth/register', { waitUntil: 'networkidle' });
+    await page.goto('/register', { waitUntil: 'networkidle' });
 
     // Verify title and form structure
     await expect(page.locator('h1')).toContainText(/create account/i);
@@ -164,7 +164,7 @@ test.describe('Authentication - E2E Tests', () => {
    * - Submitting with non-matching passwords shows error
    */
   test('should display validation errors on invalid input', async ({ page }) => {
-    await page.goto('/auth/register', { waitUntil: 'networkidle' });
+    await page.goto('/register', { waitUntil: 'networkidle' });
 
     // Test 1: Submit empty form should show errors
     await page.getByRole('button', { name: /create account/i }).click();
@@ -208,7 +208,7 @@ test.describe('Authentication - E2E Tests', () => {
       });
     });
 
-    await page.goto('/auth/login', { waitUntil: 'networkidle' });
+    await page.goto('/login', { waitUntil: 'networkidle' });
 
     await page.locator('input[name="email"]').fill('wrong@example.com');
     await page.locator('input[name="password"]').fill('WrongPassword123');
@@ -216,7 +216,8 @@ test.describe('Authentication - E2E Tests', () => {
 
     await expect(page.getByText('Invalid email or password')).toBeVisible();
 
-    await page.getByRole('button', { name: 'FI' }).click();
+    await page.getByRole('button', { name: /select language/i }).click();
+    await page.getByRole('button', { name: 'Suomi' }).click();
 
     await expect(page.getByText('Invalid email or password')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: /tervetuloa takaisin/i })).toBeVisible();

@@ -1,8 +1,11 @@
 import { expect, test } from '@playwright/test';
 import {
   API_BASE,
+  buildApiPattern,
   createCourse,
   freeUser,
+  mockCertificates,
+  mockNotifications,
   setAuthenticatedUser,
 } from './support/courseFixtures';
 
@@ -30,8 +33,10 @@ const publishedCourses = {
 test.describe('My Courses - E2E tests', () => {
   test('authenticated user can filter started and completed courses', async ({ page }) => {
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -39,7 +44,7 @@ test.describe('My Courses - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/courses*`, async (route) => {
+    await page.route(buildApiPattern('/courses'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -47,7 +52,7 @@ test.describe('My Courses - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/progress/me`, async (route) => {
+    await page.route(buildApiPattern('/progress/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -84,7 +89,7 @@ test.describe('My Courses - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',

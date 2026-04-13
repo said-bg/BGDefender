@@ -10,6 +10,7 @@ import {
   SelectedContent,
   ViewState,
   buildNavigationItems,
+  formatCourseDuration,
   getLocalizedText,
   getOverviewParagraphs,
   getSelectedContent,
@@ -204,10 +205,7 @@ export function useCourseDetailPage() {
     : '';
   const overviewParagraphs = course ? getOverviewParagraphs(activeLanguage, course) : [];
   const heroSummary = overviewParagraphs[0] || selectedContent?.description || '';
-  const durationLabel =
-    course?.estimatedDuration && course.estimatedDuration > 0
-      ? `${course.estimatedDuration} min`
-      : null;
+  const durationLabel = formatCourseDuration(course?.estimatedDuration);
 
   return {
     accessState,

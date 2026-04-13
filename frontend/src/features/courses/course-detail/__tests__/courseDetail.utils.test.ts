@@ -1,6 +1,7 @@
 import {
   calculateCompletionPercentage,
   buildNavigationItems,
+  formatCourseDuration,
   getChapterProgressPercentage,
   getCourseProgressPercentage,
   getProgressPayloadFromView,
@@ -107,6 +108,12 @@ const t = (key: string) =>
   })[key] ?? key;
 
 describe('course-detail.utils', () => {
+  it('formats course duration into a readable hour and minute label', () => {
+    expect(formatCourseDuration(50)).toBe('50 min');
+    expect(formatCourseDuration(80)).toBe('1h 20 min');
+    expect(formatCourseDuration(900)).toBe('15h');
+  });
+
   // Verifies that preview text is only shortened when it exceeds the given limit.
   it('truncates preview text only when needed', () => {
     expect(getPreviewText('short text', 20)).toBe('short text');

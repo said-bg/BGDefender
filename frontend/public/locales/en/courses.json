@@ -36,6 +36,8 @@
     "start": "Start",
     "resume": "Resume",
     "viewAllMyCourses": "View all my courses",
+    "scrollLeft": "Scroll left",
+    "scrollRight": "Scroll right",
     "loadingCourses": "Loading courses...",
     "noCoursesAvailable": "No courses available",
     "failedToLoadCourses": "Failed to load courses. Please try again later.",

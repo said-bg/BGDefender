@@ -1,6 +1,15 @@
 import type { Editor } from '@tiptap/react';
 import { SelectedMediaState, toVideoAlign } from './richTextBlockEditor.utils';
 
+export type RichTextCommandLabels = {
+  imagePromptTitle: string;
+  linkPromptTitle: string;
+  pdfLinkLabel: string;
+  pdfPromptTitle: string;
+  uploadFailed: string;
+  videoPromptTitle: string;
+};
+
 export const applyFontFamilyCommand = (editor: Editor, value: string) => {
   if (value === 'Default') {
     editor.chain().focus().unsetFontFamily().run();
@@ -32,9 +41,9 @@ export const setHeadingLevelCommand = (editor: Editor, value: string) => {
     .run();
 };
 
-export const setLinkCommand = (editor: Editor) => {
+export const setLinkCommand = (editor: Editor, labels: RichTextCommandLabels) => {
   const previousUrl = editor.getAttributes('link').href ?? '';
-  const nextUrl = window.prompt('URL', previousUrl);
+  const nextUrl = window.prompt(labels.linkPromptTitle, previousUrl);
 
   if (nextUrl === null) {
     return;
@@ -48,8 +57,8 @@ export const setLinkCommand = (editor: Editor) => {
   editor.chain().focus().setLink({ href: nextUrl.trim() }).run();
 };
 
-export const insertImageFromUrlCommand = (editor: Editor) => {
-  const nextUrl = window.prompt('Image URL');
+export const insertImageFromUrlCommand = (editor: Editor, labels: RichTextCommandLabels) => {
+  const nextUrl = window.prompt(labels.imagePromptTitle);
 
   if (!nextUrl?.trim()) {
     return;
@@ -62,8 +71,8 @@ export const insertImageFromUrlCommand = (editor: Editor) => {
     .run();
 };
 
-export const insertVideoFromUrlCommand = (editor: Editor) => {
-  const nextUrl = window.prompt('Video URL');
+export const insertVideoFromUrlCommand = (editor: Editor, labels: RichTextCommandLabels) => {
+  const nextUrl = window.prompt(labels.videoPromptTitle);
 
   if (!nextUrl?.trim()) {
     return;
@@ -72,8 +81,8 @@ export const insertVideoFromUrlCommand = (editor: Editor) => {
   editor.chain().focus().setVideo({ src: nextUrl.trim(), width: 960, align: 'center' }).run();
 };
 
-export const insertPdfFromUrlCommand = (editor: Editor) => {
-  const nextUrl = window.prompt('PDF URL');
+export const insertPdfFromUrlCommand = (editor: Editor, labels: RichTextCommandLabels) => {
+  const nextUrl = window.prompt(labels.pdfPromptTitle);
 
   if (!nextUrl?.trim()) {
     return;
@@ -83,7 +92,7 @@ export const insertPdfFromUrlCommand = (editor: Editor) => {
     .chain()
     .focus()
     .insertContent(
-      `<p><a href="${nextUrl.trim()}" target="_blank" rel="noreferrer">Open PDF</a></p>`,
+      `<p><a href="${nextUrl.trim()}" target="_blank" rel="noreferrer">${labels.pdfLinkLabel}</a></p>`,
     )
     .run();
 };

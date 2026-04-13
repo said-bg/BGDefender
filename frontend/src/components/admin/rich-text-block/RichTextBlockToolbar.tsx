@@ -1,6 +1,7 @@
 'use client';
 
 import type { Editor } from '@tiptap/react';
+import { useTranslation } from 'react-i18next';
 import {
   BLOCK_OPTIONS,
   FONT_FAMILY_OPTIONS,
@@ -44,9 +45,10 @@ export default function RichTextBlockToolbar({
   onInsertPdfFromUrl,
   onUploadPdf,
 }: RichTextBlockToolbarProps) {
-  const inlineActions = buildInlineActions(editor);
-  const listActions = buildListActions(editor);
-  const alignActions = buildAlignActions(editor);
+  const { t } = useTranslation('admin');
+  const inlineActions = buildInlineActions(editor, t);
+  const listActions = buildListActions(editor, t);
+  const alignActions = buildAlignActions(editor, t);
   const insertActions = buildInsertActions({
     editor,
     isUploading,
@@ -57,6 +59,7 @@ export default function RichTextBlockToolbar({
     onInsertPdfFromUrl,
     onUploadPdf,
     onSetLink,
+    t,
   });
 
   const renderActionGroup = (actions: ToolbarAction[]) =>
@@ -79,7 +82,7 @@ export default function RichTextBlockToolbar({
         <button
           type="button"
           className={styles.toolbarButton}
-          title="Undo"
+          title={t('richText.undo', { defaultValue: 'Undo' })}
           onClick={() => editor.chain().focus().undo().run()}
         >
           Un
@@ -87,7 +90,7 @@ export default function RichTextBlockToolbar({
         <button
           type="button"
           className={styles.toolbarButton}
-          title="Redo"
+          title={t('richText.redo', { defaultValue: 'Redo' })}
           onClick={() => editor.chain().focus().redo().run()}
         >
           Re
@@ -97,7 +100,7 @@ export default function RichTextBlockToolbar({
       <div className={styles.toolbarGroup}>
         <select
           className={styles.toolbarSelect}
-          aria-label="Block style"
+          aria-label={t('richText.blockStyle', { defaultValue: 'Block style' })}
           defaultValue="paragraph"
           onChange={(event) => onSetHeadingLevel(event.target.value)}
         >
@@ -109,7 +112,7 @@ export default function RichTextBlockToolbar({
         </select>
         <select
           className={styles.toolbarSelect}
-          aria-label="Font family"
+          aria-label={t('richText.fontFamily', { defaultValue: 'Font family' })}
           defaultValue="Default"
           onChange={(event) => onApplyFontFamily(event.target.value)}
         >
@@ -121,7 +124,7 @@ export default function RichTextBlockToolbar({
         </select>
         <select
           className={styles.toolbarSelect}
-          aria-label="Font size"
+          aria-label={t('richText.fontSize', { defaultValue: 'Font size' })}
           defaultValue="Default"
           onChange={(event) => onApplyFontSize(event.target.value)}
         >

@@ -1,8 +1,7 @@
 import { expect, test } from '@playwright/test';
 import {
   adminUser,
-  mockAuthMe,
-  setAuthenticatedUser,
+  mockAuthenticatedSession,
 } from './support/courseFixtures';
 
 const authors = [
@@ -19,12 +18,11 @@ const authors = [
   },
 ];
 
-const AUTHORS_ROUTE = /http:\/\/localhost:3001\/api\/authors(?:\?.*)?$/;
+const AUTHORS_ROUTE = /\/api\/authors(?:\?.*)?$/;
 
 test.describe('Admin authors', () => {
   test.beforeEach(async ({ page }) => {
-    await setAuthenticatedUser(page);
-    await mockAuthMe(page, adminUser);
+    await mockAuthenticatedSession(page, adminUser);
   });
 
   // Verifies that an authenticated admin can load the author management surface.

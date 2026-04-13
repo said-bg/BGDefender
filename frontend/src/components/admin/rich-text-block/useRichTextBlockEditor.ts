@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useEditor } from '@tiptap/react';
+import { useTranslation } from 'react-i18next';
 import courseService from '@/services/course';
 import {
   applyFontFamilyCommand,
@@ -9,6 +10,7 @@ import {
   insertImageFromUrlCommand,
   insertPdfFromUrlCommand,
   insertUploadedMediaCommand,
+  RichTextCommandLabels,
   insertVideoFromUrlCommand,
   setHeadingLevelCommand,
   setLinkCommand,
@@ -30,10 +32,23 @@ export default function useRichTextBlockEditor({
   placeholder,
   language,
 }: UseRichTextBlockEditorParams) {
+  const { t } = useTranslation('admin');
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const videoInputRef = useRef<HTMLInputElement | null>(null);
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  const commandLabels = useMemo<RichTextCommandLabels>(
+    () => ({
+      imagePromptTitle: t('richText.imagePromptTitle', { defaultValue: 'Image URL' }),
+      linkPromptTitle: t('richText.linkPromptTitle', { defaultValue: 'URL' }),
+      pdfLinkLabel: t('richText.pdfLinkLabel', { defaultValue: 'Open PDF' }),
+      pdfPromptTitle: t('richText.pdfPromptTitle', { defaultValue: 'PDF URL' }),
+      uploadFailed: t('richText.uploadFailed', { defaultValue: 'Upload failed.' }),
+      videoPromptTitle: t('richText.videoPromptTitle', { defaultValue: 'Video URL' }),
+    }),
+    [t],
+  );
 
   const uploadMedia = useCallback(async (file: File) => {
     const uploaded = await courseService.uploadCourseMedia(file);
@@ -97,32 +112,32 @@ export default function useRichTextBlockEditor({
       return;
     }
 
-    setLinkCommand(editor);
-  }, [editor]);
+    setLinkCommand(editor, commandLabels);
+  }, [commandLabels, editor]);
 
   const insertImageFromUrl = useCallback(() => {
     if (!editor) {
       return;
     }
 
-    insertImageFromUrlCommand(editor);
-  }, [editor]);
+    insertImageFromUrlCommand(editor, commandLabels);
+  }, [commandLabels, editor]);
 
   const insertVideoFromUrl = useCallback(() => {
     if (!editor) {
       return;
     }
 
-    insertVideoFromUrlCommand(editor);
-  }, [editor]);
+    insertVideoFromUrlCommand(editor, commandLabels);
+  }, [commandLabels, editor]);
 
   const insertPdfFromUrl = useCallback(() => {
     if (!editor) {
       return;
     }
 
-    insertPdfFromUrlCommand(editor);
-  }, [editor]);
+    insertPdfFromUrlCommand(editor, commandLabels);
+  }, [commandLabels, editor]);
 
   const uploadAndInsert = useCallback(
     async (file: File | undefined, kind: 'image' | 'video' | 'pdf') => {
@@ -135,12 +150,12 @@ export default function useRichTextBlockEditor({
         const uploaded = await courseService.uploadCourseMedia(file);
         insertUploadedMediaCommand(editor, kind, uploaded.url, file.name);
       } catch {
-        window.alert('Upload failed.');
+        window.alert(commandLabels.uploadFailed);
       } finally {
         setIsUploading(false);
       }
     },
-    [editor],
+    [commandLabels.uploadFailed, editor],
   );
 
   return {

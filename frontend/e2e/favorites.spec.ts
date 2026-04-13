@@ -1,8 +1,11 @@
 import { expect, test } from '@playwright/test';
 import {
   API_BASE,
+  buildApiPattern,
   createCourse,
   freeUser,
+  mockCertificates,
+  mockNotifications,
   setAuthenticatedUser,
   setEnglishLanguage,
 } from './support/courseFixtures';
@@ -35,8 +38,10 @@ test.describe('Favorites - E2E tests', () => {
 
   test('authenticated user can review and remove a favorite course', async ({ page }) => {
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -44,7 +49,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -52,7 +57,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/courses*`, async (route) => {
+    await page.route(buildApiPattern('/courses'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -60,7 +65,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/progress/me`, async (route) => {
+    await page.route(buildApiPattern('/progress/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -83,7 +88,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me/course/favorite-course`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me/course/favorite-course'), async (route) => {
       if (route.request().method() === 'DELETE') {
         await route.fulfill({ status: 204, body: '' });
         return;
@@ -113,8 +118,10 @@ test.describe('Favorites - E2E tests', () => {
     let favorites = [] as typeof favoriteRow[];
 
     await setAuthenticatedUser(page);
+    await mockNotifications(page);
+    await mockCertificates(page);
 
-    await page.route(`${API_BASE}/auth/me`, async (route) => {
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -122,7 +129,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/courses/favorite-course`, async (route) => {
+    await page.route(buildApiPattern('/courses/favorite-course'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -130,7 +137,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/courses*`, async (route) => {
+    await page.route(buildApiPattern('/courses'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -138,7 +145,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/progress/me/course/favorite-course`, async (route) => {
+    await page.route(buildApiPattern('/progress/me/course/favorite-course'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -162,7 +169,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/progress/me`, async (route) => {
+    await page.route(buildApiPattern('/progress/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -185,7 +192,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -193,7 +200,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(`${API_BASE}/favorites/me/course/favorite-course`, async (route) => {
+    await page.route(buildApiPattern('/favorites/me/course/favorite-course'), async (route) => {
       if (route.request().method() === 'PUT') {
         favorites = [favoriteRow];
 
@@ -218,7 +225,7 @@ test.describe('Favorites - E2E tests', () => {
     await Promise.all([
       page.waitForResponse(
         (response) =>
-          response.url() === `${API_BASE}/favorites/me/course/favorite-course` &&
+          response.url().includes('/favorites/me/course/favorite-course') &&
           response.request().method() === 'PUT',
       ),
       page.getByRole('button', { name: 'Add to favorites' }).click(),

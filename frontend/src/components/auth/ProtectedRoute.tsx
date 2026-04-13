@@ -25,6 +25,7 @@ interface ProtectedRouteProps {
   children: ReactNode;
   requiredRole?: string[]; // Optional: require specific roles
   fallback?: ReactNode; // Custom loading component
+  unauthorizedRedirect?: string;
 }
 
 /**
@@ -34,6 +35,7 @@ export function ProtectedRoute({
   children,
   requiredRole,
   fallback,
+  unauthorizedRedirect = '/unauthorized',
 }: ProtectedRouteProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -54,10 +56,10 @@ export function ProtectedRoute({
 
     // Check role if required
     if (requiredRole && user && !requiredRole.includes(user.role)) {
-      router.replace('/unauthorized');
+      router.replace(unauthorizedRedirect);
       return;
     }
-  }, [isAuthenticated, isInitialized, user, requiredRole, router, pathname]);
+  }, [isAuthenticated, isInitialized, user, requiredRole, unauthorizedRedirect, router, pathname]);
 
   // Show loading state while initializing
   if (!isInitialized) {

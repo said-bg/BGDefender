@@ -4,6 +4,11 @@ export const API_BASE = 'http://localhost:3001/api';
 export const TOKEN_KEY = 'bg_defender_token';
 export const LOCAL_COVER_IMAGE = '/assets/images/home-bg.png';
 
+const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+export const buildApiPattern = (path: string) =>
+  new RegExp(`(?:https?:\\/\\/[^/]+)?\\/api${escapeRegex(path)}(?:\\?.*)?$`);
+const buildApiRoute = buildApiPattern;
+
 export type MockUser = {
   id: number;
   email: string;
@@ -152,8 +157,38 @@ export async function setAuthenticatedUser(page: Page) {
   }, [TOKEN_KEY]);
 }
 
+export async function mockNotifications(page: Page, notifications: Record<string, unknown>[] = []) {
+  await page.route(buildApiRoute('/notifications/me'), async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        data: notifications,
+        unreadCount: notifications.filter((notification) => !notification.isRead).length,
+      }),
+    });
+  });
+}
+
+export async function mockCertificates(page: Page, certificates: Record<string, unknown>[] = []) {
+  await page.route(buildApiRoute('/certificates/me'), async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(certificates),
+    });
+  });
+}
+
+export async function mockAuthenticatedSession(page: Page, user?: MockUser) {
+  await setAuthenticatedUser(page);
+  await mockAuthMe(page, user);
+  await mockNotifications(page);
+  await mockCertificates(page);
+}
+
 export async function mockAuthMe(page: Page, user?: MockUser) {
-  await page.route(`${API_BASE}/auth/me`, async (route) => {
+  await page.route(buildApiRoute('/auth/me'), async (route) => {
     if (!user) {
       await route.fulfill({
         status: 401,
@@ -177,7 +212,7 @@ export async function mockCourseDetail(
   user?: MockUser,
   storedProgress: Record<string, unknown> | null = null,
 ) {
-  await page.route(`${API_BASE}/courses/${course.id}`, async (route) => {
+  await page.route(buildApiRoute(`/courses/${course.id}`), async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -187,7 +222,7 @@ export async function mockCourseDetail(
 
   await mockAuthMe(page, user);
 
-  await page.route(`${API_BASE}/favorites/me`, async (route) => {
+  await page.route(buildApiRoute('/favorites/me'), async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -195,7 +230,7 @@ export async function mockCourseDetail(
     });
   });
 
-  await page.route(`${API_BASE}/progress/me/course/${course.id}`, async (route) => {
+  await page.route(buildApiRoute(`/progress/me/course/${course.id}`), async (route) => {
     const method = route.request().method();
 
     if (method === 'GET') {

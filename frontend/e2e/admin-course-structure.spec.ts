@@ -2,20 +2,15 @@ import { expect, test } from '@playwright/test';
 import {
   adminUser,
   createCourse,
-  mockAuthMe,
-  setAuthenticatedUser,
+  mockAuthenticatedSession,
   type MockCourse,
 } from './support/courseFixtures';
 
 const COURSE_ID = 'course-structure';
-const COURSE_ROUTE = new RegExp(
-  `http://localhost:3001/api/courses/${COURSE_ID}$`,
-);
-const CHAPTERS_ROUTE = new RegExp(
-  `http://localhost:3001/api/courses/${COURSE_ID}/chapters$`,
-);
+const COURSE_ROUTE = new RegExp(`/api/courses/${COURSE_ID}$`);
+const CHAPTERS_ROUTE = new RegExp(`/api/courses/${COURSE_ID}/chapters$`);
 const SUB_CHAPTERS_ROUTE = new RegExp(
-  `http://localhost:3001/api/courses/${COURSE_ID}/chapters/chapter-1/sub-chapters$`,
+  `/api/courses/${COURSE_ID}/chapters/chapter-1/sub-chapters$`,
 );
 
 const buildCourse = (overrides: Partial<MockCourse> = {}): MockCourse => ({
@@ -39,8 +34,7 @@ const chapter = {
 
 test.describe('Admin course structure', () => {
   test.beforeEach(async ({ page }) => {
-    await setAuthenticatedUser(page);
-    await mockAuthMe(page, adminUser);
+    await mockAuthenticatedSession(page, adminUser);
   });
 
   // Verifies chapter creation from an empty structure and covers partial API responses.

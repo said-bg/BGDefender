@@ -8,7 +8,10 @@ type AdminDashboardToolbarProps = {
 
 export default function AdminDashboardToolbar({ t }: AdminDashboardToolbarProps) {
   return (
-    <section className={styles.toolbar} aria-label="Admin actions">
+    <section
+      className={styles.toolbar}
+      aria-label={t('dashboard.toolbarLabel', { defaultValue: 'Admin actions' })}
+    >
       <Link href="/admin/courses" className={styles.secondaryAction}>
         {t('manageCourses', { defaultValue: 'Open course library' })}
       </Link>

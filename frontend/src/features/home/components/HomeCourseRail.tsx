@@ -70,7 +70,7 @@ export default function HomeCourseRail({
               type="button"
               className={`${styles.railNav} ${styles.railNavLeft}`}
               onClick={() => scrollByViewport('left')}
-              aria-label="Scroll left"
+              aria-label={t('page.scrollLeft', { defaultValue: 'Scroll left' })}
             >
               {'\u2039'}
             </button>
@@ -99,7 +99,7 @@ export default function HomeCourseRail({
               type="button"
               className={`${styles.railNav} ${styles.railNavRight}`}
               onClick={() => scrollByViewport('right')}
-              aria-label="Scroll right"
+              aria-label={t('page.scrollRight', { defaultValue: 'Scroll right' })}
             >
               {'\u203A'}
             </button>

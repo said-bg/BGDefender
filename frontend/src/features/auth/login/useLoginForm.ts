@@ -29,23 +29,36 @@ const errorsReducer = (state: LoginFormErrors, action: LoginErrorAction): LoginF
 export function useLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || '/';
+  const requestedRedirectPath = searchParams.get('redirect');
   const { t, i18n } = useTranslation('auth');
   const { login, isLoading, error: authError, setError } = useAuth();
   const [form, setForm] = useState<LoginFormState>(initialForm);
   const [errors, dispatch] = useReducer(errorsReducer, {});
 
-  const getSafeRedirectPath = (requestedPath: string, role: UserRole) => {
+  const getSafeRedirectPath = (requestedPath: string | null, role: UserRole) => {
+    if (!requestedPath || requestedPath === '/') {
+      return role === UserRole.ADMIN ? '/admin' : '/';
+    }
+
     if (!requestedPath.startsWith('/')) {
-      return '/';
+      return role === UserRole.ADMIN ? '/admin' : '/';
     }
 
     if (requestedPath === '/unauthorized') {
-      return '/';
+      return role === UserRole.ADMIN ? '/admin' : '/';
     }
 
     if (requestedPath.startsWith('/admin') && role !== UserRole.ADMIN) {
       return '/';
+    }
+
+    if (
+      role === UserRole.ADMIN &&
+      ['/favorites', '/my-courses', '/resources', '/certificates'].some(
+        (path) => requestedPath === path || requestedPath.startsWith(`${path}/`),
+      )
+    ) {
+      return '/admin';
     }
 
     return requestedPath;
@@ -106,7 +119,7 @@ export function useLoginForm() {
 
     try {
       const authenticatedUser = await login(form.email, form.password);
-      router.replace(getSafeRedirectPath(redirectPath, authenticatedUser.role));
+      router.replace(getSafeRedirectPath(requestedRedirectPath, authenticatedUser.role));
     } catch (error) {
       const errorMessage = handleAuthError(error, 'login.failed', t);
       dispatch({ type: 'SET', payload: { form: errorMessage } });

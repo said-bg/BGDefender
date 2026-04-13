@@ -6,6 +6,7 @@ import styles from './FavoritesPage.module.css';
 import { ProtectedRoute } from '@/components/auth';
 import type { Course } from '@/services/course';
 import CourseProgressCard from '@/features/courses/components/CourseProgressCard';
+import { UserRole } from '@/types/api';
 import useFavoritesPage from './useFavoritesPage';
 
 function FavoritesPageContent() {
@@ -77,7 +78,10 @@ function FavoritesPageContent() {
 
 export default function FavoritesPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute
+      requiredRole={[UserRole.USER, UserRole.CREATOR]}
+      unauthorizedRedirect="/admin"
+    >
       <FavoritesPageContent />
     </ProtectedRoute>
   );

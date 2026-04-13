@@ -55,7 +55,7 @@ async function bootstrap() {
 
   const shouldSeedOnBoot =
     !isProduction &&
-    configService.get<string>('SEED_ON_BOOT', 'true') === 'true';
+    configService.get<string>('SEED_ON_BOOT', 'false') === 'true';
 
   if (shouldSeedOnBoot) {
     // Keep the course seed opt-in for development bootstrapping only.

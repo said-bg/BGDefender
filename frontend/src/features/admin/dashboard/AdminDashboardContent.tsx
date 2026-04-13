@@ -15,7 +15,7 @@ export default function AdminDashboardContent() {
 
   return (
     <div className={styles.page}>
-      <AdminDashboardHero t={t} />
+      <AdminDashboardHero language={i18n.language} t={t} />
       <AdminDashboardToolbar t={t} />
 
       {loading ? (

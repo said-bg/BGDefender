@@ -1,15 +1,16 @@
 {
   "home": "Etusivu",
   "admin": "Hallintapaneeli",
-  "certificates": "Certificates",
+  "certificates": "Sertifikaatit",
   "login": "Kirjaudu sisään",
   "register": "Rekisteröidy",
   "myCourses": "Kurssit",
+  "resources": "Resurssit",
   "logout": "Kirjaudu ulos",
   "favorites": "Suosikit",
   "profile": "Profiili",
   "language": {
-    "switcherLabel": "Kielen valitsin",
+    "switcherLabel": "Kielivalitsin",
     "triggerEnglish": "Valitse kieli: englanti",
     "triggerFinnish": "Valitse kieli: suomi",
     "english": "English",
@@ -18,7 +19,7 @@
   "badges": {
     "free": "Ilmainen",
     "premium": "Premium",
-    "creator": "Luoja",
+    "creator": "Sisällöntuottaja",
     "admin": "Ylläpitäjä",
     "user": "Käyttäjä"
   }

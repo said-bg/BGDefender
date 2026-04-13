@@ -2,16 +2,13 @@ import { expect, test } from '@playwright/test';
 import {
   adminUser,
   createCourse,
-  mockAuthMe,
-  setAuthenticatedUser,
+  mockAuthenticatedSession,
 } from './support/courseFixtures';
 
-const AUTHORS_ROUTE = /http:\/\/localhost:3001\/api\/authors(?:\?.*)?$/;
-const COURSES_ROUTE = /http:\/\/localhost:3001\/api\/courses$/;
-const ADMIN_COURSES_LIST_ROUTE =
-  /http:\/\/localhost:3001\/api\/courses\/admin\/list(?:\?.*)?$/;
-const ADMIN_COURSES_SUMMARY_ROUTE =
-  /http:\/\/localhost:3001\/api\/courses\/admin\/summary$/;
+const AUTHORS_ROUTE = /\/api\/authors(?:\?.*)?$/;
+const COURSES_ROUTE = /\/api\/courses$/;
+const ADMIN_COURSES_LIST_ROUTE = /\/api\/courses\/admin\/list(?:\?.*)?$/;
+const ADMIN_COURSES_SUMMARY_ROUTE = /\/api\/courses\/admin\/summary$/;
 
 const authors = [
   {
@@ -29,8 +26,7 @@ const authors = [
 
 test.describe('Admin courses', () => {
   test.beforeEach(async ({ page }) => {
-    await setAuthenticatedUser(page);
-    await mockAuthMe(page, adminUser);
+    await mockAuthenticatedSession(page, adminUser);
 
     await page.route(AUTHORS_ROUTE, async (route) => {
       await route.fulfill({

@@ -6,6 +6,7 @@ import CertificatePreview from './components/CertificatePreview';
 import CertificatesLibrary from './components/CertificatesLibrary';
 import useCertificatesPage from './hooks/useCertificatesPage';
 import styles from './CertificatesPage.module.css';
+import { UserRole } from '@/types/api';
 
 function CertificatesPageContent() {
   const {
@@ -89,7 +90,10 @@ function CertificatesPageContent() {
 
 export default function CertificatesPage() {
   return (
-    <ProtectedRoute>
+    <ProtectedRoute
+      requiredRole={[UserRole.USER, UserRole.CREATOR]}
+      unauthorizedRedirect="/admin"
+    >
       <CertificatesPageContent />
     </ProtectedRoute>
   );
