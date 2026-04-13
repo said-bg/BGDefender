@@ -264,7 +264,7 @@ SEED_ON_BOOT=false
 
 Restart:
 ```bash
-docker compose up -d
+docker compose down -v and restart : docker compose up -d
 ```
 
 Done! Seeds won't run again and data is permanent.
