@@ -103,6 +103,12 @@ export default function useHomeCourses() {
             mapCourseWithStats(course, progressByCourseId),
           ),
         }));
+        const collectionCourseIds = new Set(
+          collectionsWithStats.flatMap((collection) => collection.courses.map((course) => course.id)),
+        );
+        const uncategorizedCourses = coursesWithStats.filter(
+          (course) => !collectionCourseIds.has(course.id),
+        );
 
         setCourses({
           inProgress: coursesWithStats
@@ -113,8 +119,8 @@ export default function useHomeCourses() {
 
               return rightTime - leftTime;
             }),
-          free: coursesWithStats.filter((course) => course.level === 'free'),
-          premium: coursesWithStats.filter((course) => course.level === 'premium'),
+          free: uncategorizedCourses.filter((course) => course.level === 'free'),
+          premium: uncategorizedCourses.filter((course) => course.level === 'premium'),
           issuedCertificates: certificateRows.filter(
             (certificate) => certificate.status === CertificateStatus.ISSUED,
           ).length,

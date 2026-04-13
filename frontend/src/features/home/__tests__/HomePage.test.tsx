@@ -222,4 +222,45 @@ describe('HomePage', () => {
       screen.getByText('Hand-picked courses from your admin team.'),
     ).toBeInTheDocument();
   });
+
+  it('keeps collection courses out of the fallback free and premium rails', () => {
+    mockUseHomeCourses.mockReturnValue(
+      createHomeState({
+        courses: {
+          inProgress: [],
+          free: [],
+          premium: [],
+          collections: [
+            {
+              id: 'collection-1',
+              titleEn: 'Cybersecurity Track',
+              titleFi: 'Cybersecurity Track',
+              descriptionEn: 'Grouped courses.',
+              descriptionFi: 'Grouped courses.',
+              orderIndex: 1,
+              isPublished: true,
+              courses: [],
+              createdAt: '2026-04-10T00:00:00.000Z',
+              updatedAt: '2026-04-10T00:00:00.000Z',
+            },
+          ],
+          issuedCertificates: 0,
+          pendingCertificates: 0,
+          loading: false,
+          error: null,
+        },
+        getCollectionTitle: jest.fn(() => 'Cybersecurity Track'),
+        getCollectionDescription: jest.fn(() => 'Grouped courses.'),
+      }),
+    );
+
+    render(<HomePage />);
+
+    expect(
+      screen.queryByTestId('rail-Free courses'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('rail-Premium courses'),
+    ).not.toBeInTheDocument();
+  });
 });
