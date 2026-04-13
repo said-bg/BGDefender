@@ -25,7 +25,12 @@ export class UsersService {
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     if (query.search) {
-      const normalizedSearch = `%${query.search.toLowerCase()}%`;
+      const normalizedSearchValue = query.search
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+      const normalizedSearch = `%${normalizedSearchValue}%`;
+
       queryBuilder.andWhere(
         new Brackets((qb) => {
           qb.where('LOWER(user.email) LIKE :search', {
@@ -39,7 +44,19 @@ export class UsersService {
             })
             .orWhere('LOWER(user.occupation) LIKE :search', {
               search: normalizedSearch,
-            });
+            })
+            .orWhere(
+              "LOWER(TRIM(CONCAT(COALESCE(user.firstName, ''), ' ', COALESCE(user.lastName, '')))) LIKE :search",
+              {
+                search: normalizedSearch,
+              },
+            )
+            .orWhere(
+              "LOWER(TRIM(CONCAT(COALESCE(user.lastName, ''), ' ', COALESCE(user.firstName, '')))) LIKE :search",
+              {
+                search: normalizedSearch,
+              },
+            );
         }),
       );
     }
@@ -128,7 +145,7 @@ export class UsersService {
     if (user.id === currentAdminId) {
       throw new BadRequestException(
         language === 'fi'
-          ? 'Et voi poistaa omaa tiliäsi'
+          ? 'Et voi poistaa omaa tiliasi'
           : 'You cannot delete your own account',
       );
     }

@@ -36,10 +36,6 @@
   background: #f59e0b;
 }
 
-.archivedDot {
-  background: #64748b;
-}
-
 .courseTitle {
   margin: 0 0 4px;
   color: #111827;
@@ -92,11 +88,6 @@
 .statusDraft {
   background: #fff4db;
   color: #cc7a00;
-}
-
-.statusArchived {
-  background: #f2f4f7;
-  color: #526581;
 }
 
 .courseDescription {

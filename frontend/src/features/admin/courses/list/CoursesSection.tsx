@@ -16,7 +16,7 @@ type CoursesSectionProps = {
   loading: boolean;
   error: string | null;
   onDelete: (course: Course) => void;
-  onStatusChange: (course: Course, nextStatus: 'draft' | 'published' | 'archived') => void;
+  onStatusChange: (course: Course, nextStatus: 'draft' | 'published') => void;
   t: (key: string, options?: Record<string, unknown>) => string;
 };
 

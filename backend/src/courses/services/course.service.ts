@@ -107,8 +107,8 @@ export class CourseService {
     return {
       totalCourses,
       publishedCourses,
-      draftCourses,
-      archivedCourses,
+      draftCourses: draftCourses + archivedCourses,
+      archivedCourses: 0,
     };
   }
 

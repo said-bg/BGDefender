@@ -13,7 +13,6 @@ export default function CourseMetrics({ summary, t }: CourseMetricsProps) {
     { key: 'totalCourses', label: t('metrics.totalCourses') },
     { key: 'publishedCourses', label: t('metrics.published') },
     { key: 'draftCourses', label: t('metrics.drafts') },
-    { key: 'archivedCourses', label: t('metrics.archived') },
   ] as const;
 
   return (

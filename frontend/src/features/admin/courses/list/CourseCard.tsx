@@ -12,7 +12,7 @@ type CourseCardProps = {
   formatStatus: (status: Course['status']) => string;
   formatUpdatedAt: (updatedAt: string) => string;
   onDelete: (course: Course) => void;
-  onStatusChange: (course: Course, nextStatus: 'draft' | 'published' | 'archived') => void;
+  onStatusChange: (course: Course, nextStatus: 'draft' | 'published') => void;
   t: (key: string, options?: Record<string, unknown>) => string;
 };
 
@@ -27,11 +27,7 @@ export default function CourseCard({
   t,
 }: CourseCardProps) {
   const statusDotClass =
-    course.status === 'published'
-      ? styles.publishedDot
-      : course.status === 'archived'
-        ? styles.archivedDot
-        : styles.draftDot;
+    course.status === 'published' ? styles.publishedDot : styles.draftDot;
 
   return (
     <article className={styles.courseCard}>
@@ -58,9 +54,7 @@ export default function CourseCard({
             className={`${styles.statusBadge} ${
               course.status === 'published'
                 ? styles.statusPublished
-                : course.status === 'archived'
-                  ? styles.statusArchived
-                  : styles.statusDraft
+                : styles.statusDraft
             }`}
           >
             {formatStatus(course.status)}
@@ -116,17 +110,6 @@ export default function CourseCard({
             disabled={actingCourseId === course.id}
           >
             {t('courseActions.moveToDraft', { defaultValue: 'Move to draft' })}
-          </button>
-        ) : null}
-
-        {course.status !== 'archived' ? (
-          <button
-            type="button"
-            className={styles.inlineAction}
-            onClick={() => onStatusChange(course, 'archived')}
-            disabled={actingCourseId === course.id}
-          >
-            {t('courseActions.archive', { defaultValue: 'Archive' })}
           </button>
         ) : null}
 

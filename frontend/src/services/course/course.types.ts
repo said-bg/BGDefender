@@ -278,7 +278,7 @@ export interface CreateCourseRequest {
   descriptionEn: string;
   descriptionFi: string;
   level?: 'free' | 'premium';
-  status?: 'draft' | 'published' | 'archived';
+  status?: 'draft' | 'published';
   estimatedDuration?: number;
   coverImage?: string;
   authorIds?: string[];
@@ -290,7 +290,7 @@ export interface UpdateCourseRequest {
   descriptionEn?: string;
   descriptionFi?: string;
   level?: 'free' | 'premium';
-  status?: 'draft' | 'published' | 'archived';
+  status?: 'draft' | 'published';
   estimatedDuration?: number;
   coverImage?: string;
   authorIds?: string[];

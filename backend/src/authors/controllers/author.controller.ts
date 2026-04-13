@@ -100,14 +100,14 @@ export class AuthorController {
             ? _request.headers['accept-language']
             : undefined,
         );
-        const isImage = /^image\/(jpeg|jpg|png|webp|gif)$/i.test(file.mimetype);
+        const isImage = /^image\/(jpeg|jpg|png|webp)$/i.test(file.mimetype);
 
         if (!isImage) {
           callback(
             new BadRequestException(
               language === 'fi'
-                ? 'Vain JPG-, PNG-, WEBP- tai GIF-tiedostot ovat sallittuja'
-                : 'Only JPG, PNG, WEBP, or GIF files are allowed',
+                ? 'Vain JPG-, PNG- tai WEBP-tiedostot ovat sallittuja'
+                : 'Only JPG, PNG, or WEBP files are allowed',
             ),
             false,
           );

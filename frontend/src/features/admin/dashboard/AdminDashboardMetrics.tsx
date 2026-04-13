@@ -21,10 +21,6 @@ export default function AdminDashboardMetrics({ summary, t }: AdminDashboardMetr
       label: t('metrics.drafts'),
       value: summary?.draftCourses ?? 0,
     },
-    {
-      label: t('metrics.archived'),
-      value: summary?.archivedCourses ?? 0,
-    },
   ];
 
   return (

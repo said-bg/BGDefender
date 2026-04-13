@@ -60,7 +60,7 @@ export default function CoverImageField({
           <label className={detailStyles.uploadLabel}>
             <input
               type="file"
-              accept="image/png,image/jpeg,image/webp,image/gif"
+              accept="image/png,image/jpeg,image/webp"
               className={detailStyles.hiddenFileInput}
               onChange={(event) => {
                 const file = event.target.files?.[0];
@@ -80,7 +80,7 @@ export default function CoverImageField({
             </span>
             <span className={detailStyles.uploadHelper}>
               {t('create.coverUploadHint', {
-                defaultValue: 'JPG, PNG, WEBP, or GIF up to 5 MB.',
+                defaultValue: 'JPG, PNG, or WEBP up to 5 MB.',
               })}
             </span>
           </label>

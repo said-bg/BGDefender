@@ -34,8 +34,8 @@ export default function NavbarLanguageSwitcher({
   }, []);
 
   const options: Array<{ code: SupportedLanguage; label: string }> = [
-    { code: 'en', label: t('language.english') },
     { code: 'fi', label: t('language.finnish') },
+    { code: 'en', label: t('language.english') },
   ];
   const triggerLabel =
     normalizedLanguage === 'fi'

@@ -4,7 +4,7 @@ export type EditCourseFormState = {
   descriptionEn: string;
   descriptionFi: string;
   level: 'free' | 'premium';
-  status: 'draft' | 'published' | 'archived';
+  status: 'draft' | 'published';
   estimatedDuration: string;
   coverImage: string;
   authorIds: string[];

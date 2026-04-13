@@ -12,7 +12,7 @@ export type LocalizedAdminCourse = Course & {
 const statusSummaryKeys: Record<'draft' | 'published' | 'archived', keyof AdminCourseSummary> = {
   draft: 'draftCourses',
   published: 'publishedCourses',
-  archived: 'archivedCourses',
+  archived: 'draftCourses',
 };
 
 export const toLocalizedCourse = (course: Course, language: string): LocalizedAdminCourse => {
@@ -75,8 +75,6 @@ export const formatAdminCourseStatus = (status: Course['status'], t: Translation
   switch (status) {
     case 'published':
       return t('status.published');
-    case 'archived':
-      return t('status.archived');
     default:
       return t('status.draft');
   }

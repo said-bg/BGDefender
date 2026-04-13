@@ -65,6 +65,12 @@ describe('details.helpers', () => {
     });
   });
 
+  it('maps archived courses back to draft in the form', () => {
+    expect(mapCourseToForm(createCourse({ status: 'archived' }))).toMatchObject({
+      status: 'draft',
+    });
+  });
+
   // Keeps page headings bilingual and safe before the course has loaded.
   it('returns the localized course title with empty fallback', () => {
     expect(getLocalizedCourseTitle(createCourse(), 'fi')).toBe('Finnish title');

@@ -1,6 +1,4 @@
 'use client';
-
-import Image from 'next/image';
 import formStyles from './AuthorForm.module.css';
 import photoStyles from './AuthorPhotoField.module.css';
 import pageStyles from '@/features/admin/authors/AdminAuthorsPage.module.css';
@@ -68,7 +66,7 @@ export default function AuthorPhotoField({
           <label className={photoStyles.uploadLabel}>
             <input
               type="file"
-              accept="image/png,image/jpeg,image/webp,image/gif"
+              accept="image/png,image/jpeg,image/webp"
               className={photoStyles.hiddenFileInput}
               onChange={(event) => {
                 const file = event.target.files?.[0];
@@ -88,7 +86,7 @@ export default function AuthorPhotoField({
             </span>
             <span className={photoStyles.uploadHelper}>
               {t('authors.photoUploadHint', {
-                defaultValue: 'JPG, PNG, WEBP, or GIF up to 5 MB.',
+                defaultValue: 'JPG, PNG, or WEBP up to 5 MB.',
               })}
             </span>
           </label>
@@ -110,12 +108,13 @@ export default function AuthorPhotoField({
 
       {photo ? (
         <div className={photoStyles.photoPreview}>
-          <Image
+          <img
             src={photo}
             alt={formName || t('authors.photoPreviewAlt', { defaultValue: 'Author preview' })}
             className={photoStyles.photoPreviewImage}
             width={64}
             height={64}
+            loading="lazy"
           />
           <div className={photoStyles.photoPreviewCopy}>
             <strong className={photoStyles.photoPreviewTitle}>

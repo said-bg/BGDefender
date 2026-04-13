@@ -64,9 +64,6 @@ export default function CourseSettingsFields({
             <option value="published">
               {t('status.published', { defaultValue: 'Published' })}
             </option>
-            <option value="archived">
-              {t('status.archived', { defaultValue: 'Archived' })}
-            </option>
           </select>
         </label>
       </div>

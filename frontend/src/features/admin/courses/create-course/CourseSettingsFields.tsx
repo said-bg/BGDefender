@@ -46,15 +46,12 @@ export default function CourseSettingsFields({
           <select
             value={form.status}
             onChange={(event) =>
-              setField('status', event.target.value as 'draft' | 'published' | 'archived')
+              setField('status', event.target.value as 'draft' | 'published')
             }
           >
             <option value="draft">{t('status.draft', { defaultValue: 'Draft' })}</option>
             <option value="published">
               {t('status.published', { defaultValue: 'Published' })}
-            </option>
-            <option value="archived">
-              {t('status.archived', { defaultValue: 'Archived' })}
             </option>
           </select>
         </label>

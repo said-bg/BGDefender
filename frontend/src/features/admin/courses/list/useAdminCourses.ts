@@ -73,7 +73,7 @@ export default function useAdminCourses() {
 
   const handleStatusChange = async (
     course: Course,
-    nextStatus: 'draft' | 'published' | 'archived',
+    nextStatus: 'draft' | 'published',
   ) => {
     if (course.status === nextStatus) {
       return;

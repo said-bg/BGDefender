@@ -70,7 +70,7 @@ const createSummary = (
   totalCourses: 4,
   publishedCourses: 1,
   draftCourses: 2,
-  archivedCourses: 1,
+  archivedCourses: 0,
   ...overrides,
 });
 
@@ -94,7 +94,7 @@ describe('courseAdmin.utils', () => {
       totalCourses: 4,
       publishedCourses: 2,
       draftCourses: 1,
-      archivedCourses: 1,
+      archivedCourses: 0,
     });
   });
 
@@ -116,7 +116,7 @@ describe('courseAdmin.utils', () => {
     ).toEqual({
       totalCourses: 0,
       publishedCourses: 1,
-      draftCourses: 2,
+      draftCourses: 1,
       archivedCourses: 0,
     });
   });

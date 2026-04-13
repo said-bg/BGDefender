@@ -254,7 +254,7 @@ function AdminUsersPageContent() {
                     onClick={() => void handleDeleteUser(user)}
                     disabled={isActing || user.isCurrentAdmin}
                   >
-                    {t('users.delete', { defaultValue: 'Delete account' })}
+                    {t('users.deleteShort', { defaultValue: 'Delete' })}
                   </button>
                 </div>
               </article>

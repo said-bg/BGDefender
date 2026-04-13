@@ -8,7 +8,7 @@ export const mapCourseToForm = (course: Course): EditCourseFormState => ({
   descriptionEn: course.descriptionEn,
   descriptionFi: course.descriptionFi,
   level: course.level,
-  status: (course.status as EditCourseFormState['status']) || 'draft',
+  status: course.status === 'published' ? 'published' : 'draft',
   estimatedDuration: course.estimatedDuration ? String(course.estimatedDuration) : '',
   coverImage: course.coverImage || '',
   authorIds: course.authors.map((author) => author.id),

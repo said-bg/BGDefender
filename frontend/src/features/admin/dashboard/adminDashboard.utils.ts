@@ -18,8 +18,6 @@ export function formatCourseStatus(
   switch (status) {
     case 'published':
       return t('status.published', { defaultValue: 'Published' });
-    case 'archived':
-      return t('status.archived', { defaultValue: 'Archived' });
     default:
       return t('status.draft', { defaultValue: 'Draft' });
   }
