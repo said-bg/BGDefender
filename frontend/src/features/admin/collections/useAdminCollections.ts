@@ -71,11 +71,7 @@ export default function useAdminCollections() {
         );
       } catch (loadError) {
         console.error('Failed to load collections:', loadError);
-        setError(
-          t('collections.failedToLoad', {
-            defaultValue: 'Failed to load collections.',
-          }),
-        );
+        setError(t('collections.failedToLoad'));
       } finally {
         setLoading(false);
       }
@@ -203,11 +199,7 @@ export default function useAdminCollections() {
       setImageMode('upload');
     } catch (uploadError) {
       console.error('Failed to upload collection cover:', uploadError);
-      setCoverUploadError(
-        t('collections.coverUploadFailed', {
-          defaultValue: 'Failed to upload collection cover image.',
-        }),
-      );
+      setCoverUploadError(t('collections.coverUploadFailed'));
     } finally {
       setIsUploadingCover(false);
     }
@@ -215,11 +207,7 @@ export default function useAdminCollections() {
 
   const handleSubmit = async () => {
     if (!form.titleEn.trim() || !form.titleFi.trim()) {
-      setError(
-        t('collections.titleRequired', {
-          defaultValue: 'Both English and Finnish titles are required.',
-        }),
-      );
+      setError(t('collections.titleRequired'));
       return;
     }
 
@@ -242,16 +230,16 @@ export default function useAdminCollections() {
 
       setMessage(
         editingCollectionId
-          ? t('collections.updated', { defaultValue: 'Collection updated successfully.' })
-          : t('collections.created', { defaultValue: 'Collection created successfully.' }),
+          ? t('collections.updated')
+          : t('collections.created'),
       );
       resetForm();
     } catch (submitError) {
       console.error('Failed to save collection:', submitError);
       setError(
         editingCollectionId
-          ? t('collections.updateFailed', { defaultValue: 'Failed to update collection.' })
-          : t('collections.createFailed', { defaultValue: 'Failed to create collection.' }),
+          ? t('collections.updateFailed')
+          : t('collections.createFailed'),
       );
     } finally {
       setSubmitting(false);
@@ -266,18 +254,14 @@ export default function useAdminCollections() {
     try {
       await collectionService.deleteCollection(collection.id);
       setCollections((current) => current.filter((item) => item.id !== collection.id));
-      setMessage(
-        t('collections.deleted', { defaultValue: 'Collection deleted successfully.' }),
-      );
+      setMessage(t('collections.deleted'));
 
       if (editingCollectionId === collection.id) {
         resetForm();
       }
     } catch (deleteError) {
       console.error('Failed to delete collection:', deleteError);
-      setError(
-        t('collections.deleteFailed', { defaultValue: 'Failed to delete collection.' }),
-      );
+      setError(t('collections.deleteFailed'));
     } finally {
       setDeletingId(null);
     }
@@ -298,6 +282,7 @@ export default function useAdminCollections() {
     handleToggleCourse,
     imageMode,
     isUploadingCover,
+    language: i18n.language,
     loading,
     message,
     preparedCollections,

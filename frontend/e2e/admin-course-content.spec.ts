@@ -59,9 +59,10 @@ test.describe('Admin course content', () => {
       waitUntil: 'networkidle',
     });
 
-    await expect(page.getByRole('heading', { name: 'Content', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Content Subchapter' })).toBeVisible();
-    await expect(page.getByText('No content blocks in this subchapter yet.')).toBeVisible();
+    await expect(
+      page.getByText(/No content blocks in this subchapter yet\.|ei ole viel[aä] sis[aä]lt[oö]lohkoja/i),
+    ).toBeVisible();
   });
 
   // Verifies a rich text block can be saved with both EN and FI content.
@@ -86,8 +87,12 @@ test.describe('Admin course content', () => {
       waitUntil: 'networkidle',
     });
 
-    await page.getByLabel(/Title \(English\)/i).fill('Incident checklist');
-    await page.getByLabel(/Title \(Finnish\)/i).fill('Poikkeamalista');
+    await page
+      .getByLabel(/Title \(English\)|Otsikko \(englanniksi\)/i)
+      .fill('Incident checklist');
+    await page
+      .getByLabel(/Title \(Finnish\)|Otsikko \(suomeksi\)/i)
+      .fill('Poikkeamalista');
 
     const editor = page.locator('.ProseMirror').first();
     await expect(editor).toBeVisible();
@@ -98,9 +103,11 @@ test.describe('Admin course content', () => {
     await expect(finnishEditor).toBeVisible();
     await finnishEditor.fill('Suomenkielinen poikkeamalista.');
 
-    await page.getByRole('button', { name: /save block/i }).click();
+    await page.getByRole('button', { name: /save block|tallenna lohko/i }).click();
 
-    await expect(page.getByText('Content block created successfully.')).toBeVisible();
+    await expect(
+      page.getByText(/Content block created successfully\.|Sis[aä]lt[oö]lohko luotiin onnistuneesti\./i),
+    ).toBeVisible();
     expect(createdPayload).toMatchObject({
       titleEn: 'Incident checklist',
       titleFi: 'Poikkeamalista',

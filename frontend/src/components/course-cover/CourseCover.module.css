@@ -4,15 +4,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  background:
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 32%),
-    radial-gradient(circle at bottom left, rgba(15, 23, 42, 0.12), transparent 34%),
-    linear-gradient(
-      135deg,
-      var(--course-cover-start, #ffb21f) 0%,
-      var(--course-cover-middle, #ffa600) 52%,
-      var(--course-cover-end, #eb8f00) 100%
-    );
+  background: var(--course-cover-solid, #ffa600);
 }
 
 .coverFallbackCard {
@@ -24,14 +16,12 @@
   background: #ffa600;
 }
 
-.coverGlow {
-  position: absolute;
-  inset: auto auto 10% -8%;
-  width: 36%;
-  aspect-ratio: 1;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
-  filter: blur(24px);
+.coverFallbackCollection {
+  border-radius: inherit;
+}
+
+.coverFallbackStack {
+  border-radius: inherit;
 }
 
 .coverPlate {

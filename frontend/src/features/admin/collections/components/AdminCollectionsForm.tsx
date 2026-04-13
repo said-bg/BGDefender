@@ -33,6 +33,7 @@ type AdminCollectionsFormProps = {
   handleToggleCourse: (courseId: string) => void;
   imageMode: CollectionImageMode;
   isUploadingCover: boolean;
+  language: string;
   resetForm: () => void;
   selectedCourses: Course[];
   submitting: boolean;
@@ -56,6 +57,7 @@ export default function AdminCollectionsForm({
   handleToggleCourse,
   imageMode,
   isUploadingCover,
+  language,
   resetForm,
   selectedCourses,
   submitting,
@@ -63,26 +65,33 @@ export default function AdminCollectionsForm({
   uploadedFilename,
   updateForm,
 }: AdminCollectionsFormProps) {
+  const getLocalizedCourseTitle = (course: Course) =>
+    language === 'fi' ? course.titleFi || course.titleEn : course.titleEn || course.titleFi;
+
+  const getLocalizedLevel = (course: Course) =>
+    course.level === 'premium'
+      ? t('levels.premium')
+      : t('levels.free');
+
+  const publishedLabel = t('collections.published');
+
   return (
     <section className={styles.formCard}>
       <div className={styles.cardHeader}>
         <h2 className={styles.sectionTitle}>
           {editingCollectionId
-            ? t('collections.editTitle', { defaultValue: 'Edit collection' })
-            : t('collections.createTitle', { defaultValue: 'Create collection' })}
+            ? t('collections.editTitle')
+            : t('collections.createTitle')}
         </h2>
         <p className={styles.sectionDescription}>
-          {t('collections.formDescription', {
-            defaultValue:
-              'Build custom course groups for the learner home, then control their title, order, and visibility from one place.',
-          })}
+          {t('collections.formDescription')}
         </p>
       </div>
 
       <div className={styles.formGrid}>
         <div className={styles.fieldGroup}>
           <label className={styles.fieldLabel} htmlFor="collection-title-en">
-            {t('collections.titleEn', { defaultValue: 'Title (English)' })}
+            {t('collections.titleEn')}
           </label>
           <input
             id="collection-title-en"
@@ -94,7 +103,7 @@ export default function AdminCollectionsForm({
 
         <div className={styles.fieldGroup}>
           <label className={styles.fieldLabel} htmlFor="collection-title-fi">
-            {t('collections.titleFi', { defaultValue: 'Title (Finnish)' })}
+            {t('collections.titleFi')}
           </label>
           <input
             id="collection-title-fi"
@@ -106,7 +115,7 @@ export default function AdminCollectionsForm({
 
         <div className={`${styles.fieldGroup} ${styles.fieldGroupFull}`}>
           <label className={styles.fieldLabel}>
-            {t('collections.coverImage', { defaultValue: 'Collection image (optional)' })}
+            {t('collections.coverImage')}
           </label>
           <div className={styles.modeSwitch}>
             <button
@@ -114,14 +123,14 @@ export default function AdminCollectionsForm({
               className={`${styles.modeButton} ${imageMode === 'url' ? styles.modeButtonActive : ''}`}
               onClick={() => handleImageModeChange('url')}
             >
-              {t('collections.imageModeUrl', { defaultValue: 'Use URL' })}
+              {t('collections.imageModeUrl')}
             </button>
             <button
               type="button"
               className={`${styles.modeButton} ${imageMode === 'upload' ? styles.modeButtonActive : ''}`}
               onClick={() => handleImageModeChange('upload')}
             >
-              {t('collections.imageModeUpload', { defaultValue: 'Upload image' })}
+              {t('collections.imageModeUpload')}
             </button>
           </div>
 
@@ -130,9 +139,7 @@ export default function AdminCollectionsForm({
               className={styles.input}
               value={form.coverImage}
               onChange={(event) => updateForm('coverImage', event.target.value)}
-              placeholder={t('collections.coverImagePlaceholder', {
-                defaultValue: 'https://example.com/collection-cover.jpg',
-              })}
+              placeholder={t('collections.coverImagePlaceholder')}
             />
           ) : (
             <div className={styles.uploadBox}>
@@ -150,25 +157,17 @@ export default function AdminCollectionsForm({
                 />
                 <span className={styles.uploadLabelText}>
                   {isUploadingCover
-                    ? t('collections.coverUploading', {
-                        defaultValue: 'Uploading image...',
-                      })
-                    : t('collections.coverUploadCta', {
-                        defaultValue: 'Choose a collection image to upload',
-                      })}
+                    ? t('collections.coverUploading')
+                    : t('collections.coverUploadCta')}
                 </span>
                 <span className={styles.uploadHelper}>
-                  {t('collections.coverUploadHint', {
-                    defaultValue: 'JPG, PNG, or WEBP up to 5 MB.',
-                  })}
+                  {t('collections.coverUploadHint')}
                 </span>
               </label>
 
               {uploadedFilename ? (
                 <p className={styles.statusMessage}>
-                  {t('collections.coverUploadSuccess', {
-                    defaultValue: 'Uploaded file:',
-                  })}{' '}
+                  {t('collections.coverUploadSuccess')}{' '}
                   {uploadedFilename}
                 </p>
               ) : null}
@@ -182,9 +181,7 @@ export default function AdminCollectionsForm({
 
         <div className={`${styles.fieldGroup} ${styles.fieldGroupFull}`}>
           <label className={styles.fieldLabel} htmlFor="collection-description-en">
-            {t('collections.descriptionEn', {
-              defaultValue: 'Description (English)',
-            })}
+            {t('collections.descriptionEn')}
           </label>
           <textarea
             id="collection-description-en"
@@ -196,9 +193,7 @@ export default function AdminCollectionsForm({
 
         <div className={`${styles.fieldGroup} ${styles.fieldGroupFull}`}>
           <label className={styles.fieldLabel} htmlFor="collection-description-fi">
-            {t('collections.descriptionFi', {
-              defaultValue: 'Description (Finnish)',
-            })}
+            {t('collections.descriptionFi')}
           </label>
           <textarea
             id="collection-description-fi"
@@ -210,7 +205,7 @@ export default function AdminCollectionsForm({
 
         <div className={styles.fieldGroup}>
           <label className={styles.fieldLabel} htmlFor="collection-order">
-            {t('collections.order', { defaultValue: 'Display order' })}
+            {t('collections.order')}
           </label>
           <input
             id="collection-order"
@@ -224,7 +219,7 @@ export default function AdminCollectionsForm({
 
         <div className={styles.fieldGroup}>
           <span className={styles.fieldLabel}>
-            {t('collections.visibility', { defaultValue: 'Visibility' })}
+            {t('collections.visibility')}
           </span>
           <label className={styles.checkboxRow}>
             <input
@@ -233,9 +228,7 @@ export default function AdminCollectionsForm({
               onChange={(event) => updateForm('isPublished', event.target.checked)}
             />
             <span>
-              {t('collections.visibilityPublished', {
-                defaultValue: 'Show this collection on the learner home',
-              })}
+              {t('collections.visibilityPublished')}
             </span>
           </label>
         </div>
@@ -244,15 +237,10 @@ export default function AdminCollectionsForm({
           <div className={styles.pickerLayout}>
             <div className={styles.coursePickerCard}>
               <h3 className={styles.pickerTitle}>
-                {t('collections.availableCourses', {
-                  defaultValue: 'Available published courses',
-                })}
+                {t('collections.availableCourses')}
               </h3>
               <p className={styles.pickerDescription}>
-                {t('collections.availableCoursesHint', {
-                  defaultValue:
-                    'Pick the published courses you want to feature inside this collection.',
-                })}
+                {t('collections.availableCoursesHint')}
               </p>
 
               <div className={styles.courseOptionList}>
@@ -264,9 +252,11 @@ export default function AdminCollectionsForm({
                       onChange={() => handleToggleCourse(course.id)}
                     />
                     <div className={styles.courseOptionCopy}>
-                      <p className={styles.courseOptionTitle}>{course.titleEn}</p>
+                      <p className={styles.courseOptionTitle}>
+                        {getLocalizedCourseTitle(course)}
+                      </p>
                       <p className={styles.courseOptionMeta}>
-                        {course.level} - {course.status}
+                        {getLocalizedLevel(course)} - {publishedLabel}
                       </p>
                     </div>
                   </label>
@@ -276,29 +266,19 @@ export default function AdminCollectionsForm({
 
             <div className={styles.coursePickerCard}>
               <h3 className={styles.pickerTitle}>
-                {t('collections.selectedCourses', {
-                  defaultValue: 'Selected courses',
-                })}
+                {t('collections.selectedCourses')}
               </h3>
               <p className={styles.pickerDescription}>
-                {t('collections.selectedCoursesHint', {
-                  defaultValue:
-                    'Adjust the order here. The learner home will show the courses in this same sequence.',
-                })}
+                {t('collections.selectedCoursesHint')}
               </p>
 
               {selectedCourses.length === 0 ? (
                 <div className={styles.emptyState}>
                   <h4 className={styles.emptyTitle}>
-                    {t('collections.noSelectedCourses', {
-                      defaultValue: 'No courses selected yet',
-                    })}
+                    {t('collections.noSelectedCourses')}
                   </h4>
                   <p className={styles.emptyDescription}>
-                    {t('collections.noSelectedCoursesHint', {
-                      defaultValue:
-                        'Choose at least one published course from the left panel.',
-                    })}
+                    {t('collections.noSelectedCoursesHint')}
                   </p>
                 </div>
               ) : (
@@ -306,12 +286,11 @@ export default function AdminCollectionsForm({
                   {selectedCourses.map((course, index) => (
                     <article key={course.id} className={styles.selectedCourseCard}>
                       <div className={styles.selectedCourseCopy}>
-                        <p className={styles.selectedCourseTitle}>{course.titleEn}</p>
+                        <p className={styles.selectedCourseTitle}>
+                          {getLocalizedCourseTitle(course)}
+                        </p>
                         <p className={styles.selectedCourseMeta}>
-                          {t('collections.selectedPosition', {
-                            defaultValue: 'Position {{position}}',
-                            position: index + 1,
-                          })}
+                          {t('collections.selectedPosition', { position: index + 1 })}
                         </p>
                       </div>
                       <div className={styles.selectedCourseActions}>
@@ -321,7 +300,7 @@ export default function AdminCollectionsForm({
                           onClick={() => handleMoveCourse(course.id, 'up')}
                           disabled={index === 0}
                         >
-                          {t('collections.moveUp', { defaultValue: 'Move up' })}
+                          {t('collections.moveUp')}
                         </button>
                         <button
                           type="button"
@@ -329,14 +308,14 @@ export default function AdminCollectionsForm({
                           onClick={() => handleMoveCourse(course.id, 'down')}
                           disabled={index === selectedCourses.length - 1}
                         >
-                          {t('collections.moveDown', { defaultValue: 'Move down' })}
+                          {t('collections.moveDown')}
                         </button>
                         <button
                           type="button"
                           className={styles.dangerButton}
                           onClick={() => handleToggleCourse(course.id)}
                         >
-                          {t('collections.removeCourse', { defaultValue: 'Remove' })}
+                          {t('collections.removeCourse')}
                         </button>
                       </div>
                     </article>
@@ -355,12 +334,10 @@ export default function AdminCollectionsForm({
             disabled={submitting}
           >
             {submitting
-              ? t('collections.saving', {
-                  defaultValue: 'Saving collection...',
-                })
+              ? t('collections.saving')
               : editingCollectionId
-                ? t('collections.save', { defaultValue: 'Save collection' })
-                : t('collections.create', { defaultValue: 'Create collection' })}
+                ? t('collections.save')
+                : t('collections.create')}
           </button>
           <button
             type="button"
@@ -368,8 +345,8 @@ export default function AdminCollectionsForm({
             onClick={resetForm}
           >
             {editingCollectionId
-              ? t('collections.cancelEdit', { defaultValue: 'Cancel edit' })
-              : t('collections.reset', { defaultValue: 'Reset form' })}
+              ? t('collections.cancelEdit')
+              : t('collections.reset')}
           </button>
         </div>
       </div>

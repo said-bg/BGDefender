@@ -33,6 +33,7 @@ function AdminCollectionsPageContent() {
     handleToggleCourse,
     imageMode,
     isUploadingCover,
+    language,
     loading,
     message,
     preparedCollections,
@@ -70,6 +71,7 @@ function AdminCollectionsPageContent() {
           handleToggleCourse={handleToggleCourse}
           imageMode={imageMode}
           isUploadingCover={isUploadingCover}
+          language={language}
           resetForm={resetForm}
           selectedCourses={selectedCourses}
           submitting={submitting}
@@ -80,6 +82,8 @@ function AdminCollectionsPageContent() {
         <AdminCollectionsList
           deletingId={deletingId}
           handleDelete={handleDelete}
+          handleMoveCourse={handleMoveCourse}
+          language={language}
           loading={loading}
           preparedCollections={preparedCollections}
           search={search}

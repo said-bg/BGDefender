@@ -26,7 +26,23 @@ jest.mock('@/services/notifications', () => ({
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
     i18n: { language: 'en' },
-    t: (key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? key,
+    t: (key: string, options?: Record<string, string>) => {
+      const values: Record<string, string> = {
+        'notifications.trigger': 'Notifications',
+        'notifications.title': 'Notifications',
+        'notifications.markAllRead': 'Mark all as read',
+        'notifications.clearAll': 'Clear all',
+        'notifications.loading': 'Loading notifications...',
+        'notifications.empty':
+          'No notifications yet. New course updates and learner alerts will appear here.',
+        'notifications.resourceSharedTitle': 'New resource shared',
+        'notifications.resourceSharedBody':
+          `"${options?.resourceTitle ?? ''}" has been shared with you.`,
+        'notifications.privateResourceFallback': 'A private resource',
+      };
+
+      return values[key] ?? key;
+    },
   }),
 }));
 

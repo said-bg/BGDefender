@@ -23,6 +23,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
+  const [isClearingAll, setIsClearingAll] = useState(false);
   const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -87,7 +88,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
             void loadNotifications();
           }
         }}
-        aria-label={t('notifications.trigger', { defaultValue: 'Notifications' })}
+        aria-label={t('notifications.trigger')}
         aria-controls={isOpen ? menuId : undefined}
       >
         <span className={styles.bellIcon} aria-hidden="true">
@@ -110,11 +111,11 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
         <section
           id={menuId}
           className={styles.menu}
-          aria-label={t('notifications.title', { defaultValue: 'Notifications' })}
+          aria-label={t('notifications.title')}
         >
           <div className={styles.menuHeader}>
             <p className={styles.menuTitle}>
-              {t('notifications.title', { defaultValue: 'Notifications' })}
+              {t('notifications.title')}
             </p>
             <button
               type="button"
@@ -140,20 +141,38 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
                 }
               }}
             >
-              {t('notifications.markAllRead', { defaultValue: 'Mark all as read' })}
+              {t('notifications.markAllRead')}
+            </button>
+            <button
+              type="button"
+              className={styles.clearAllButton}
+              disabled={notifications.length === 0 || isClearingAll}
+              onClick={async () => {
+                setIsClearingAll(true);
+
+                try {
+                  await notificationService.clearAll();
+                  setNotifications([]);
+                  setUnreadCount(0);
+                } catch (error) {
+                  console.error('Failed to clear notifications:', error);
+                } finally {
+                  setIsClearingAll(false);
+                }
+              }}
+            >
+              {t('notifications.clearAll')}
             </button>
           </div>
 
           <div className={styles.menuBody}>
             {isLoading ? (
               <p className={styles.loadingState}>
-                {t('notifications.loading', { defaultValue: 'Loading notifications...' })}
+                {t('notifications.loading')}
               </p>
             ) : notifications.length === 0 ? (
               <p className={styles.emptyState}>
-                {t('notifications.empty', {
-                  defaultValue: 'No notifications yet. New course updates and learner alerts will appear here.',
-                })}
+                {t('notifications.empty')}
               </p>
             ) : (
               <ul className={styles.notificationList}>

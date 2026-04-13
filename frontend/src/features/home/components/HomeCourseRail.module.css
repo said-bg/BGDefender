@@ -115,22 +115,15 @@
 }
 
 .railEdge {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-  width: 2.6rem;
-  pointer-events: none;
+  display: none;
 }
 
 .railEdgeLeft {
   left: 0;
-  background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.84) 34%, rgba(255, 255, 255, 0) 100%);
 }
 
 .railEdgeRight {
   right: 0;
-  background: linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0.84) 34%, rgba(255, 255, 255, 0) 100%);
 }
 
 .railNav {

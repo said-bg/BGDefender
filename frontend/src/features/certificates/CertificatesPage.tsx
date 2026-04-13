@@ -29,35 +29,32 @@ function CertificatesPageContent() {
       <section className={styles.content}>
         <header className={styles.pageHeader}>
           <p className={styles.eyebrow}>
-            {t('eyebrow', { defaultValue: 'Certificates' })}
+            {t('eyebrow')}
           </p>
           <h1 className={styles.title}>
-            {t('title', { defaultValue: 'My certificates' })}
+            {t('title')}
           </h1>
           <p className={styles.subtitle}>
-            {t('subtitle', {
-              defaultValue:
-                'Keep every earned certificate in one place and complete your profile whenever a passed course is waiting for certificate generation.',
-            })}
+            {t('subtitle')}
           </p>
         </header>
 
         <section className={styles.summary}>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryTotal', { defaultValue: 'Total records' })}
+              {t('summaryTotal')}
             </span>
             <strong className={styles.summaryValue}>{summary.total}</strong>
           </article>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryIssued', { defaultValue: 'Issued certificates' })}
+              {t('summaryIssued')}
             </span>
             <strong className={styles.summaryValue}>{summary.issued}</strong>
           </article>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryPending', { defaultValue: 'Pending profile completion' })}
+              {t('summaryPending')}
             </span>
             <strong className={styles.summaryValue}>{summary.pending}</strong>
           </article>

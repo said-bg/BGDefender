@@ -33,6 +33,8 @@
     "collectionLabel": "Collection",
     "collectionCourseCount": "{{count}} courses included",
     "collectionCardFallbackDescription": "{{count}} courses grouped into one guided learning path.",
+    "collectionPathLabel": "Structured learning path",
+    "collectionPreviewMore": "+{{count}} more",
     "openCollection": "Open collection",
     "freeDescription": "Start with beginner-friendly lessons and build a strong cybersecurity foundation.",
     "premiumDescription": "Unlock deeper content for advanced practice, premium topics, and professional growth.",

@@ -11,6 +11,8 @@ type CollectionsTranslate = (
 type AdminCollectionsListProps = {
   deletingId: string | null;
   handleDelete: (collection: CourseCollection) => Promise<void>;
+  handleMoveCourse: (collectionId: string, direction: 'up' | 'down') => void;
+  language: string;
   loading: boolean;
   preparedCollections: CourseCollection[];
   search: string;
@@ -22,6 +24,8 @@ type AdminCollectionsListProps = {
 export default function AdminCollectionsList({
   deletingId,
   handleDelete,
+  handleMoveCourse,
+  language,
   loading,
   preparedCollections,
   search,
@@ -29,17 +33,24 @@ export default function AdminCollectionsList({
   startEdit,
   t,
 }: AdminCollectionsListProps) {
+  const getLocalizedCollectionTitle = (collection: CourseCollection) =>
+    language === 'fi'
+      ? collection.titleFi || collection.titleEn
+      : collection.titleEn || collection.titleFi;
+
+  const getLocalizedCollectionDescription = (collection: CourseCollection) =>
+    language === 'fi'
+      ? collection.descriptionFi || collection.descriptionEn
+      : collection.descriptionEn || collection.descriptionFi;
+
   return (
     <section className={styles.listCard}>
       <div className={styles.cardHeader}>
         <h2 className={styles.sectionTitle}>
-          {t('collections.listTitle', { defaultValue: 'Existing collections' })}
+          {t('collections.listTitle')}
         </h2>
         <p className={styles.sectionDescription}>
-          {t('collections.listDescription', {
-            defaultValue:
-              'Review all custom sections, update their visibility, and keep the learner home curated the way you want.',
-          })}
+          {t('collections.listDescription')}
         </p>
       </div>
 
@@ -48,26 +59,21 @@ export default function AdminCollectionsList({
           className={styles.searchInput}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder={t('collections.searchPlaceholder', {
-            defaultValue: 'Search by title or description',
-          })}
+          placeholder={t('collections.searchPlaceholder')}
         />
       </div>
 
       {loading ? (
         <p className={styles.statusMessage}>
-          {t('loading', { defaultValue: 'Loading admin data...' })}
+          {t('loading')}
         </p>
       ) : preparedCollections.length === 0 ? (
         <section className={styles.emptyState}>
           <h3 className={styles.emptyTitle}>
-            {t('collections.emptyTitle', { defaultValue: 'No collections yet' })}
+            {t('collections.emptyTitle')}
           </h3>
           <p className={styles.emptyDescription}>
-            {t('collections.emptyDescription', {
-              defaultValue:
-                'Create the first curated section and it will be ready for the learner home right away.',
-            })}
+            {t('collections.emptyDescription')}
           </p>
         </section>
       ) : (
@@ -75,12 +81,12 @@ export default function AdminCollectionsList({
           {preparedCollections.map((collection) => (
             <article key={collection.id} className={styles.collectionCard}>
               <div className={styles.collectionCopy}>
-                <h3 className={styles.collectionTitle}>{collection.titleEn}</h3>
+                <h3 className={styles.collectionTitle}>
+                  {getLocalizedCollectionTitle(collection)}
+                </h3>
                 <p className={styles.collectionMeta}>
-                  {collection.descriptionEn ||
-                    t('collections.noDescription', {
-                      defaultValue: 'No description added yet.',
-                    })}
+                  {getLocalizedCollectionDescription(collection) ||
+                    t('collections.noDescription')}
                 </p>
                 <div className={styles.badgeRow}>
                   <span
@@ -91,14 +97,11 @@ export default function AdminCollectionsList({
                     }`}
                   >
                     {collection.isPublished
-                      ? t('collections.published', { defaultValue: 'Published' })
-                      : t('collections.hidden', { defaultValue: 'Hidden' })}
+                      ? t('collections.published')
+                      : t('collections.hidden')}
                   </span>
                   <span className={`${styles.badge} ${styles.badgeHidden}`}>
-                    {t('collections.courseCount', {
-                      defaultValue: '{{count}} courses',
-                      count: collection.courses.length,
-                    })}
+                    {t('collections.courseCount', { count: collection.courses.length })}
                   </span>
                 </div>
               </div>
@@ -107,9 +110,27 @@ export default function AdminCollectionsList({
                 <button
                   type="button"
                   className={styles.actionButton}
+                  onClick={() => handleMoveCourse(collection.id, 'up')}
+                  disabled={preparedCollections.indexOf(collection) === 0}
+                  title={t('collections.moveUp')}
+                >
+                  Move up
+                </button>
+                <button
+                  type="button"
+                  className={styles.actionButton}
+                  onClick={() => handleMoveCourse(collection.id, 'down')}
+                  disabled={preparedCollections.indexOf(collection) === preparedCollections.length - 1}
+                  title={t('collections.moveDown')}
+                >
+                  Move down
+                </button>
+                <button
+                  type="button"
+                  className={styles.actionButton}
                   onClick={() => startEdit(collection)}
                 >
-                  {t('collections.editAction', { defaultValue: 'Edit' })}
+                  {t('collections.editAction')}
                 </button>
                 <button
                   type="button"
@@ -118,8 +139,8 @@ export default function AdminCollectionsList({
                   disabled={deletingId === collection.id}
                 >
                   {deletingId === collection.id
-                    ? t('collections.deleting', { defaultValue: 'Deleting...' })
-                    : t('collections.delete', { defaultValue: 'Delete' })}
+                    ? t('collections.deleting')
+                    : t('collections.delete')}
                 </button>
               </div>
             </article>

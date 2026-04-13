@@ -1,4 +1,5 @@
 {
+  "brandShort": "Defender",
   "home": "Etusivu",
   "admin": "Hallintapaneeli",
   "certificates": "Sertifikaatit",
@@ -22,5 +23,24 @@
     "creator": "Sisällöntuottaja",
     "admin": "Ylläpitäjä",
     "user": "Käyttäjä"
+  },
+  "notifications": {
+    "trigger": "Ilmoitukset",
+    "title": "Ilmoitukset",
+    "markAllRead": "Merkitse kaikki luetuiksi",
+    "clearAll": "Tyhjennä kaikki",
+    "loading": "Ladataan ilmoituksia...",
+    "empty": "Ilmoituksia ei vielä ole. Uudet kurssi- ja oppimispäivitykset näkyvät täällä.",
+    "coursePublishedTitle": "Uusi kurssi julkaistu",
+    "resourceSharedTitle": "Uusi resurssi jaettu",
+    "certificateAvailableTitle": "Sertifikaatti saatavilla",
+    "completeProfileTitle": "Täydennä profiilisi",
+    "defaultTitle": "Uusi päivitys",
+    "coursePublishedBody": "\"{{courseTitle}}\" on nyt saatavilla kurssikirjastossa.",
+    "resourceSharedBody": "\"{{resourceTitle}}\" on jaettu sinulle.",
+    "certificateAvailableBody": "Sertifikaattisi kurssista \"{{courseTitle}}\" on nyt valmis.",
+    "completeProfileBody": "Läpäisit kurssin \"{{courseTitle}}\". Lisää etu- ja sukunimesi, jotta voimme luoda sertifikaatin.",
+    "defaultBody": "Oppimistilaasi on tullut uusi päivitys.",
+    "privateResourceFallback": "Yksityinen resurssi"
   }
 }

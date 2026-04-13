@@ -132,6 +132,8 @@ export function useCourseDetailPage() {
         ? 'final-test'
       : selectedView.type === 'chapter'
         ? `chapter:${selectedView.chapterId}`
+      : selectedView.type === 'quiz'
+        ? `quiz:${selectedView.chapterId}`
         : `subchapter:${selectedView.subChapterId}`;
   const currentNavigationIndex = navigationItems.findIndex((item) => item.key === currentViewKey);
   const previousItem =
@@ -148,7 +150,7 @@ export function useCourseDetailPage() {
         : null;
 
   const navigateToView = (view: ViewState) => {
-    if (view.type === 'overview') {
+    if (view.type === 'overview' || view.type === 'final-test') {
       setSelectedView(view);
       return;
     }

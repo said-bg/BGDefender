@@ -27,6 +27,7 @@ export default function HomeCourseCard({
           <CourseCover
             src={course.coverImage}
             title={getCourseTitle(course)}
+            seedKey={course.id}
             sizes="(max-width: 768px) 90vw, 314px"
             imageClassName={styles.cardImage}
             fallbackClassName={styles.cardImagePlaceholder}

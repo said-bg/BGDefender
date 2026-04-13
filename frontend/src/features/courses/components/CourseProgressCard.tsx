@@ -46,6 +46,7 @@ export default function CourseProgressCard({
         <CourseCover
           src={course.coverImage || undefined}
           title={title}
+          seedKey={course.id}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           imageClassName={styles.cardImage}
           fallbackClassName={styles.cardImagePlaceholder}

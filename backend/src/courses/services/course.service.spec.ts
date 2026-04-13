@@ -116,6 +116,7 @@ describe('CourseService', () => {
   let authorRepository: MockAuthorRepository;
   const notificationsService = {
     notifyCoursePublished: jest.fn(),
+    deleteCourseNotifications: jest.fn(),
   };
 
   beforeEach(async () => {

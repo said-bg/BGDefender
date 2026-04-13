@@ -19,19 +19,16 @@ export default function AdminCollectionsHero({
     <section className={styles.hero}>
       <div className={styles.heroCopy}>
         <Link href="/admin" className={styles.backLink}>
-          {t('backToOverview', { defaultValue: 'Back to dashboard' })}
+          {t('backToOverview')}
         </Link>
         <p className={styles.eyebrow}>
-          {t('collections.eyebrow', { defaultValue: 'Curated sections' })}
+          {t('collections.eyebrow')}
         </p>
         <h1 className={styles.title}>
-          {t('collections.title', { defaultValue: 'Manage collections' })}
+          {t('collections.title')}
         </h1>
         <p className={styles.subtitle}>
-          {t('collections.subtitle', {
-            defaultValue:
-              'Create custom learner sections, give them the title you want, and decide exactly which published courses should appear inside each collection.',
-          })}
+          {t('collections.subtitle')}
         </p>
       </div>
     </section>

@@ -32,6 +32,8 @@ export class NotificationsService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Resource)
     private readonly resourceRepository: Repository<Resource>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
   ) {}
 
   async listMyNotifications(
@@ -52,8 +54,9 @@ export class NotificationsService {
         },
       }),
     ]);
-    const cleanedNotifications =
-      await this.removeOrphanedResourceNotifications(notifications);
+    const cleanedNotifications = await this.removeOrphanedNotifications(
+      notifications,
+    );
     const cleanedUnreadCount = cleanedNotifications.filter(
       (notification) => !notification.isRead,
     ).length;
@@ -109,6 +112,10 @@ export class NotificationsService {
     await this.notificationRepository.save(unreadNotifications);
   }
 
+  async clearAll(userId: number): Promise<void> {
+    await this.notificationRepository.delete({ userId });
+  }
+
   async notifyCoursePublished(course: Course): Promise<void> {
     const targetUsers = await this.userRepository.find({
       where:
@@ -153,6 +160,11 @@ export class NotificationsService {
       return;
     }
 
+    await this.notificationRepository.delete({
+      courseId: course.id,
+      type: NotificationType.COURSE_PUBLISHED,
+    });
+
     const notifications = targetUsers.map((user) =>
       this.notificationRepository.create({
         userId: user.id,
@@ -196,6 +208,12 @@ export class NotificationsService {
     await this.notificationRepository.delete({
       resourceId,
       type: NotificationType.RESOURCE_SHARED,
+    });
+  }
+
+  async deleteCourseNotifications(courseId: string): Promise<void> {
+    await this.notificationRepository.delete({
+      courseId,
     });
   }
 
@@ -259,6 +277,15 @@ export class NotificationsService {
     };
   }
 
+  private async removeOrphanedNotifications(
+    notifications: Notification[],
+  ): Promise<Notification[]> {
+    const validAfterResourceCleanup =
+      await this.removeOrphanedResourceNotifications(notifications);
+
+    return this.removeOrphanedCourseNotifications(validAfterResourceCleanup);
+  }
+
   private async removeOrphanedResourceNotifications(
     notifications: Notification[],
   ): Promise<Notification[]> {
@@ -291,6 +318,52 @@ export class NotificationsService {
       (notification) =>
         notification.resourceId &&
         !existingResourceIds.has(notification.resourceId),
+    );
+
+    if (orphanedNotifications.length === 0) {
+      return notifications;
+    }
+
+    await this.notificationRepository.delete(
+      orphanedNotifications.map((notification) => notification.id),
+    );
+
+    const orphanedIds = new Set(
+      orphanedNotifications.map((notification) => notification.id),
+    );
+
+    return notifications.filter(
+      (notification) => !orphanedIds.has(notification.id),
+    );
+  }
+
+  private async removeOrphanedCourseNotifications(
+    notifications: Notification[],
+  ): Promise<Notification[]> {
+    const courseNotifications = notifications.filter((notification) =>
+      Boolean(notification.courseId),
+    );
+
+    if (courseNotifications.length === 0) {
+      return notifications;
+    }
+
+    const courseIds = courseNotifications
+      .map((notification) => notification.courseId)
+      .filter((courseId): courseId is string => Boolean(courseId));
+
+    const existingCourses = await this.courseRepository.find({
+      where: {
+        id: In(courseIds),
+      },
+      select: {
+        id: true,
+      },
+    });
+    const existingCourseIds = new Set(existingCourses.map((course) => course.id));
+    const orphanedNotifications = courseNotifications.filter(
+      (notification) =>
+        notification.courseId && !existingCourseIds.has(notification.courseId),
     );
 
     if (orphanedNotifications.length === 0) {

@@ -75,11 +75,7 @@ function ContentEditorPanel({
     return (
       <section className={styles.contentEditorPanel}>
         <div className={styles.emptyState}>
-          <p className={styles.emptyTitle}>
-            {t('edit.contentBlocks.emptyWithoutSubChapterTitle', {
-              defaultValue: 'Create a subchapter first',
-            })}
-          </p>
+          <p className={styles.emptyTitle}>{t('edit.contentBlocks.emptyWithoutSubChapterTitle')}</p>
         </div>
       </section>
     );
@@ -93,7 +89,7 @@ function ContentEditorPanel({
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.contentEditorMetaRow}>
           <label className={styles.field}>
-            <span>{t('create.titleEn', { defaultValue: 'Title (English)' })}</span>
+            <span>{t('create.titleEn')}</span>
             <input
               value={draft.titleEn}
               onChange={(event) =>
@@ -103,7 +99,7 @@ function ContentEditorPanel({
           </label>
 
           <label className={styles.field}>
-            <span>{t('create.titleFi', { defaultValue: 'Title (Finnish)' })}</span>
+            <span>{t('create.titleFi')}</span>
             <input
               value={draft.titleFi}
               onChange={(event) =>
@@ -113,7 +109,7 @@ function ContentEditorPanel({
           </label>
 
           <label className={styles.field}>
-            <span>{t('edit.contentBlocks.orderInput', { defaultValue: 'Order' })}</span>
+            <span>{t('edit.contentBlocks.orderInput')}</span>
             <input
               type="number"
               min="1"
@@ -164,10 +160,7 @@ function ContentEditorPanel({
         </div>
 
         <div className={styles.helperText}>
-          {t('edit.contentBlocks.editingSubchapter', {
-            title: localizedSubChapterTitle,
-            defaultValue: 'Editing subchapter: {{title}}',
-          })}
+          {t('edit.contentBlocks.editingSubchapter', { title: localizedSubChapterTitle })}
         </div>
 
         {contentMessage ? <p className={styles.successMessage}>{contentMessage}</p> : null}
@@ -175,12 +168,12 @@ function ContentEditorPanel({
 
         <div className={styles.actions}>
           <button type="button" className={styles.secondaryAction} onClick={onReset}>
-            {t('edit.contentBlocks.cancelEdit', { defaultValue: 'Cancel block edit' })}
+            {t('edit.contentBlocks.cancelEdit')}
           </button>
           <button type="submit" className={styles.primaryAction} disabled={isSubmittingContent}>
             {isSubmittingContent
-              ? t('edit.contentBlocks.saving', { defaultValue: 'Saving block...' })
-              : t('edit.contentBlocks.save', { defaultValue: 'Save block' })}
+              ? t('edit.contentBlocks.saving')
+              : t('edit.contentBlocks.save')}
           </button>
         </div>
       </form>

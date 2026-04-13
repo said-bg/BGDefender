@@ -29,6 +29,10 @@ describe('NotificationsService', () => {
     find: jest.fn(),
   };
 
+  const courseRepository = {
+    find: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
     notificationRepository.create.mockImplementation(
@@ -49,6 +53,10 @@ describe('NotificationsService', () => {
         {
           provide: getRepositoryToken(Resource),
           useValue: resourceRepository,
+        },
+        {
+          provide: getRepositoryToken(Course),
+          useValue: courseRepository,
         },
       ],
     }).compile();
@@ -74,6 +82,7 @@ describe('NotificationsService', () => {
     ]);
     notificationRepository.count.mockResolvedValue(1);
     resourceRepository.find.mockResolvedValue([{ id: 'resource-1' }]);
+    courseRepository.find.mockResolvedValue([]);
 
     const result = await service.listMyNotifications(7);
 
@@ -151,6 +160,7 @@ describe('NotificationsService', () => {
     ]);
     notificationRepository.count.mockResolvedValue(1);
     resourceRepository.find.mockResolvedValue([]);
+    courseRepository.find.mockResolvedValue([]);
 
     const result = await service.listMyNotifications(7);
 
@@ -159,5 +169,50 @@ describe('NotificationsService', () => {
     ]);
     expect(result.data).toEqual([]);
     expect(result.unreadCount).toBe(0);
+  });
+
+  it('deletes course-linked notifications for a removed course', async () => {
+    await service.deleteCourseNotifications('course-1');
+
+    expect(notificationRepository.delete).toHaveBeenCalledWith({
+      courseId: 'course-1',
+    });
+  });
+
+  it('cleans orphaned course notifications while listing', async () => {
+    notificationRepository.find.mockResolvedValue([
+      {
+        id: 'notification-course-1',
+        type: NotificationType.COURSE_PUBLISHED,
+        courseId: 'course-missing',
+        courseTitleEnSnapshot: 'Old course',
+        courseTitleFiSnapshot: 'Vanha kurssi',
+        resourceId: null,
+        resourceTitleSnapshot: null,
+        link: '/courses/course-missing',
+        isRead: false,
+        readAt: null,
+        createdAt: new Date(),
+      },
+    ]);
+    notificationRepository.count.mockResolvedValue(1);
+    resourceRepository.find.mockResolvedValue([]);
+    courseRepository.find.mockResolvedValue([]);
+
+    const result = await service.listMyNotifications(7);
+
+    expect(notificationRepository.delete).toHaveBeenCalledWith([
+      'notification-course-1',
+    ]);
+    expect(result.data).toEqual([]);
+    expect(result.unreadCount).toBe(0);
+  });
+
+  it('clears all notifications for a user', async () => {
+    await service.clearAll(42);
+
+    expect(notificationRepository.delete).toHaveBeenCalledWith({
+      userId: 42,
+    });
   });
 });

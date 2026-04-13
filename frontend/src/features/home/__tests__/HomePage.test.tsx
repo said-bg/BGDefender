@@ -82,23 +82,29 @@ jest.mock('../components/HomeCollectionsSection', () => ({
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (key: string, options?: { defaultValue?: string; name?: string }) => {
-      if (options?.defaultValue) {
-        return options.defaultValue.replace('{{name}}', options.name ?? '');
-      }
-
+    t: (key: string, options?: { name?: string }) => {
       const values: Record<string, string> = {
         'page.heroTitle': 'Master Cybersecurity Skills for the Real World',
         'page.heroDescription':
           'Learn incident response, cloud security, pentesting, and digital forensics.',
         'page.exploreCourses': 'Explore Courses',
+        'page.resumeLearning': 'Resume learning',
         'page.viewPremium': 'View Premium Plans',
+        'page.completeProfileCta': 'Complete profile',
+        'page.viewCertificatesCta': 'View certificates',
+        'page.welcomeEyebrow': 'Your learning space',
+        'page.welcomeFirstTitle': `Welcome, ${options?.name ?? ''}`,
+        'page.welcomeTitle': `Welcome back, ${options?.name ?? ''}`,
+        'page.welcomeFirstDescription': 'Let’s get your learning space ready.',
+        'page.welcomeDescription': 'Pick up where you left off.',
+        'page.welcomeDescriptionIncomplete': 'Complete your profile to unlock certificates.',
         'page.continueLearning': 'Continue Learning',
         'page.continueLearningDescription': 'Pick up where you left off.',
         'page.noCoursesAvailable': 'No courses available',
         'page.viewAllMyCourses': 'View all my courses',
         'page.collections': 'Collections',
-        'page.collectionsDescription': 'Browse grouped learning paths.',
+        'page.collectionsDescription':
+          'Open themed collections that group related courses into clear learning paths.',
         'page.free': 'Free courses',
         'page.freeDescription': 'Start with free tracks.',
         'page.premium': 'Premium courses',
@@ -126,7 +132,6 @@ const createHomeState = (overrides?: Record<string, unknown>) => ({
   getCollectionTitle: jest.fn(),
   getCardDescription: jest.fn(),
   getTitle: jest.fn(),
-  hasAnyLearnerActivity: false,
   hasIncompleteProfile: false,
   isAuthenticated: true,
   isLearnerHome: true,
@@ -221,6 +226,7 @@ describe('HomePage', () => {
               titleFi: 'Incident Response Track',
               descriptionEn: 'Hand-picked courses from your admin team.',
               descriptionFi: 'Hand-picked courses from your admin team.',
+              coverImage: null,
               orderIndex: 1,
               isPublished: true,
               courses: [],
@@ -249,13 +255,21 @@ describe('HomePage', () => {
     ).toBeInTheDocument();
   });
 
-  it('keeps collection courses out of the fallback free and premium rails', () => {
+  it('keeps free and premium rails visible even when collections exist', () => {
     mockUseHomeCourses.mockReturnValue(
       createHomeState({
         courses: {
           inProgress: [],
-          free: [],
-          premium: [],
+          free: [
+            {
+              id: 'course-free-1',
+            },
+          ],
+          premium: [
+            {
+              id: 'course-premium-1',
+            },
+          ],
           collections: [
             {
               id: 'collection-1',
@@ -263,6 +277,7 @@ describe('HomePage', () => {
               titleFi: 'Cybersecurity Track',
               descriptionEn: 'Grouped courses.',
               descriptionFi: 'Grouped courses.',
+              coverImage: null,
               orderIndex: 1,
               isPublished: true,
               courses: [],
@@ -283,10 +298,10 @@ describe('HomePage', () => {
     render(<HomePage />);
 
     expect(
-      screen.queryByTestId('rail-Free courses'),
-    ).not.toBeInTheDocument();
+      screen.getByTestId('rail-Free courses'),
+    ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('rail-Premium courses'),
-    ).not.toBeInTheDocument();
+      screen.getByTestId('rail-Premium courses'),
+    ).toBeInTheDocument();
   });
 });

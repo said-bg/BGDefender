@@ -44,8 +44,7 @@ function EditCourseContentInner() {
     return (
       <EditCourseErrorState
         message={
-          studio.loadError ||
-          t('edit.contentBlocks.missingCourseId', { defaultValue: 'Missing course id.' })
+          studio.loadError || t('edit.contentBlocks.missingCourseId')
         }
       />
     );
@@ -55,11 +54,8 @@ function EditCourseContentInner() {
     <EditCourseShell
       courseId={courseId}
       section="content"
-      title={t('edit.tabs.content', { defaultValue: 'Content' })}
-      subtitle={t('edit.contentBlocks.workspaceSubtitle', {
-        defaultValue:
-          'Pick a subchapter on the left and manage its lesson blocks from this focused content workspace.',
-      })}
+      title={t('edit.tabs.content')}
+      subtitle={t('edit.contentBlocks.workspaceSubtitle')}
       courseTitle={studio.localizedCourseTitle}
       wide
     >
@@ -87,9 +83,7 @@ function EditCourseContentInner() {
                   className={styles.inlineAction}
                   onClick={() => studio.setIsSidebarOpen(true)}
                 >
-                  {t('edit.contentBlocks.showStructure', {
-                    defaultValue: 'Show structure',
-                  })}
+                  {t('edit.contentBlocks.showStructure')}
                 </button>
               </div>
             ) : null}

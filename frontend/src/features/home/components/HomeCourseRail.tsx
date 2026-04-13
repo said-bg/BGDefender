@@ -50,7 +50,7 @@ export default function HomeCourseRail({
 
       {courses.length === 0 ? (
         <p className={styles.emptyState}>{emptyLabel}</p>
-      ) : courses.length <= 4 ? (
+      ) : courses.length <= 3 ? (
         <div className={styles.grid}>
           {courses.map((course, index) => (
             <HomeCourseCard
@@ -70,7 +70,7 @@ export default function HomeCourseRail({
               type="button"
               className={`${styles.railNav} ${styles.railNavLeft}`}
               onClick={() => scrollByViewport('left')}
-              aria-label={t('page.scrollLeft', { defaultValue: 'Scroll left' })}
+              aria-label={t('page.scrollLeft')}
             >
               {'\u2039'}
             </button>
@@ -99,7 +99,7 @@ export default function HomeCourseRail({
               type="button"
               className={`${styles.railNav} ${styles.railNavRight}`}
               onClick={() => scrollByViewport('right')}
-              aria-label={t('page.scrollRight', { defaultValue: 'Scroll right' })}
+              aria-label={t('page.scrollRight')}
             >
               {'\u203A'}
             </button>

@@ -43,7 +43,7 @@ export default function useAdminUsers() {
         setError(
           getApiErrorMessage(
             loadError,
-            t('users.failedToLoad', { defaultValue: 'Failed to load users.' }),
+            t('users.failedToLoad'),
           ),
         );
       } finally {
@@ -64,13 +64,13 @@ export default function useAdminUsers() {
         previous.map((entry) => (entry.id === userId ? updatedUser : entry)),
       );
       setMessage(
-        t('users.updated', { defaultValue: 'User access updated successfully.' }),
+        t('users.updated'),
       );
     } catch (updateError) {
       setError(
         getApiErrorMessage(
           updateError,
-          t('users.updateFailed', { defaultValue: 'Failed to update user access.' }),
+          t('users.updateFailed'),
         ),
       );
     } finally {
@@ -80,9 +80,7 @@ export default function useAdminUsers() {
 
   const handleDeleteUser = async (user: User) => {
     const confirmed = window.confirm(
-      t('users.deleteConfirm', {
-        defaultValue: 'Delete this user account permanently? This action cannot be undone.',
-      }),
+      t('users.deleteConfirm'),
     );
 
     if (!confirmed) {
@@ -97,13 +95,13 @@ export default function useAdminUsers() {
       setUsers((previous) => previous.filter((entry) => entry.id !== user.id));
       setMessage(
         response.message ||
-          t('users.deleted', { defaultValue: 'User deleted successfully.' }),
+          t('users.deleted'),
       );
     } catch (deleteError) {
       setError(
         getApiErrorMessage(
           deleteError,
-          t('users.deleteFailed', { defaultValue: 'Failed to delete user account.' }),
+          t('users.deleteFailed'),
         ),
       );
     } finally {

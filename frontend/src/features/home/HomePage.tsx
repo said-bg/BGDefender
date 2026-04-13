@@ -52,25 +52,15 @@ export default function HomePage() {
 
   const heroTitle = isLearnerHome
     ? t(isFirstLearnerVisit ? 'page.welcomeFirstTitle' : 'page.welcomeTitle', {
-        defaultValue: isFirstLearnerVisit ? 'Welcome, {{name}}' : 'Welcome back, {{name}}',
         name: welcomeName,
       })
     : t('page.heroTitle');
   const heroDescription = isLearnerHome
     ? isFirstLearnerVisit
-      ? t('page.welcomeFirstDescription', {
-          defaultValue:
-            'Start your learning journey with a clean path, complete your profile when you are ready, and build toward your first certificate.',
-        })
+      ? t('page.welcomeFirstDescription')
       : hasIncompleteProfile
-      ? t('page.welcomeDescriptionIncomplete', {
-          defaultValue:
-            'Complete your profile, keep learning, and unlock certificates as soon as you pass certifying courses.',
-        })
-      : t('page.welcomeDescription', {
-          defaultValue:
-            'Pick up your learning path, review your latest progress, and keep your certificates within easy reach.',
-        })
+      ? t('page.welcomeDescriptionIncomplete')
+      : t('page.welcomeDescription')
     : t('page.heroDescription');
   const heroActions = isLearnerHome
     ? [
@@ -78,14 +68,14 @@ export default function HomePage() {
           href: visibleInProgressCourses.length > 0 ? '/my-courses' : '#free-courses',
           label:
             visibleInProgressCourses.length > 0
-              ? t('page.resumeLearning', { defaultValue: 'Resume learning' })
+              ? t('page.resumeLearning')
               : t('page.exploreCourses'),
         },
         {
           href: hasIncompleteProfile ? '/account' : '/certificates',
           label: hasIncompleteProfile
-            ? t('page.completeProfileCta', { defaultValue: 'Complete profile' })
-            : t('page.viewCertificatesCta', { defaultValue: 'View certificates' }),
+            ? t('page.completeProfileCta')
+            : t('page.viewCertificatesCta'),
           secondary: true,
         },
       ]
@@ -119,7 +109,7 @@ export default function HomePage() {
         description={heroDescription}
         eyebrow={
           isLearnerHome
-            ? t('page.welcomeEyebrow', { defaultValue: 'Your learning space' })
+            ? t('page.welcomeEyebrow')
             : undefined
         }
         heroTitle={heroTitle}
@@ -143,15 +133,11 @@ export default function HomePage() {
       {courses.collections.length > 0 && (
         <HomeCollectionsSection
           collections={courses.collections}
-          title={t('page.collections', { defaultValue: 'Collections' })}
-          description={t('page.collectionsDescription', {
-            defaultValue:
-              'Open themed collections that group related courses into clear learning paths.',
-          })}
+          title={t('page.collections')}
+          description={t('page.collectionsDescription')}
           emptyLabel={t('page.noCoursesAvailable')}
           getCollectionDescription={getCollectionDescription}
           getCollectionTitle={getCollectionTitle}
-          getCourseTitle={getTitle}
           t={t}
         />
       )}

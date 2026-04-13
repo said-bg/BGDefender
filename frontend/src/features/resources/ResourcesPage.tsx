@@ -34,16 +34,13 @@ function ResourcesPageContent() {
         <header className={styles.pageHeader}>
           <div>
             <p className={styles.eyebrow}>
-              {t('eyebrow', { defaultValue: 'Private resources' })}
+              {t('eyebrow')}
             </p>
             <h1 className={styles.title}>
-              {t('title', { defaultValue: 'My resources' })}
+              {t('title')}
             </h1>
             <p className={styles.subtitle}>
-              {t('subtitle', {
-                defaultValue:
-                  'Keep your private documents and useful links in one clean space. Admin-shared files and your own uploads both live here.',
-              })}
+              {t('subtitle')}
             </p>
           </div>
         </header>
@@ -51,31 +48,31 @@ function ResourcesPageContent() {
         <section className={styles.summary}>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryTotal', { defaultValue: 'Total resources' })}
+              {t('summaryTotal')}
             </span>
             <strong className={styles.summaryValue}>{summary.total}</strong>
           </article>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryFiles', { defaultValue: 'Documents' })}
+              {t('summaryFiles')}
             </span>
             <strong className={styles.summaryValue}>{summary.files}</strong>
           </article>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryLinks', { defaultValue: 'Links' })}
+              {t('summaryLinks')}
             </span>
             <strong className={styles.summaryValue}>{summary.links}</strong>
           </article>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryAdminSent', { defaultValue: 'Shared by admin' })}
+              {t('summaryAdminSent')}
             </span>
             <strong className={styles.summaryValue}>{summary.adminShared}</strong>
           </article>
           <article className={styles.summaryCard}>
             <span className={styles.summaryLabel}>
-              {t('summaryMine', { defaultValue: 'My uploads' })}
+              {t('summaryMine')}
             </span>
             <strong className={styles.summaryValue}>{summary.mine}</strong>
           </article>
@@ -85,13 +82,10 @@ function ResourcesPageContent() {
           <section className={styles.formCard}>
             <div className={styles.cardHeader}>
               <h2 className={styles.sectionTitle}>
-                {t('formTitle', { defaultValue: 'Add a resource' })}
+                {t('formTitle')}
               </h2>
               <p className={styles.sectionDescription}>
-                {t('formDescription', {
-                  defaultValue:
-                    'Upload a private document for yourself or save a useful link so it stays easy to find later.',
-                })}
+                {t('formDescription')}
               </p>
             </div>
 
@@ -102,7 +96,7 @@ function ResourcesPageContent() {
 
               <div className={styles.fieldGroup}>
                 <span className={styles.fieldLabel}>
-                  {t('type', { defaultValue: 'Resource type' })}
+                  {t('type')}
                 </span>
                 <div className={styles.modeGroup}>
                   <button
@@ -112,7 +106,7 @@ function ResourcesPageContent() {
                     }`}
                     onClick={() => updateForm('type', ResourceType.FILE)}
                   >
-                    {t('typeFile', { defaultValue: 'Document' })}
+                    {t('typeFile')}
                   </button>
                   <button
                     type="button"
@@ -121,52 +115,47 @@ function ResourcesPageContent() {
                     }`}
                     onClick={() => updateForm('type', ResourceType.LINK)}
                   >
-                    {t('typeLink', { defaultValue: 'Link' })}
+                    {t('typeLink')}
                   </button>
                 </div>
               </div>
 
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel} htmlFor="my-resource-title">
-                  {t('resourceTitle', { defaultValue: 'Title' })}
+                  {t('resourceTitle')}
                 </label>
                 <input
                   id="my-resource-title"
                   className={styles.input}
                   value={form.title}
                   onChange={(event) => updateForm('title', event.target.value)}
-                  placeholder={t('resourceTitlePlaceholder', {
-                    defaultValue: 'Example: Personal incident response notes',
-                  })}
+                  placeholder={t('resourceTitlePlaceholder')}
                 />
               </div>
 
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel} htmlFor="my-resource-description">
-                  {t('resourceDescription', { defaultValue: 'Description' })}
+                  {t('resourceDescription')}
                 </label>
                 <textarea
                   id="my-resource-description"
                   className={styles.textarea}
                   value={form.description}
                   onChange={(event) => updateForm('description', event.target.value)}
-                  placeholder={t('resourceDescriptionPlaceholder', {
-                    defaultValue:
-                      'Add a short note so you remember why this resource matters.',
-                  })}
+                  placeholder={t('resourceDescriptionPlaceholder')}
                 />
               </div>
 
               {form.type === ResourceType.FILE ? (
                 <div className={styles.fieldGroup}>
                   <span className={styles.fieldLabel}>
-                    {t('uploadLabel', { defaultValue: 'Document upload' })}
+                    {t('uploadLabel')}
                   </span>
                   <div className={styles.uploadBox}>
                     <label className={styles.uploadLabel}>
                       {isUploading
-                        ? t('uploading', { defaultValue: 'Uploading document...' })
-                        : t('uploadCta', { defaultValue: 'Choose a document to upload' })}
+                        ? t('uploading')
+                        : t('uploadCta')}
                       <input
                         className={styles.uploadInput}
                         type="file"
@@ -176,30 +165,22 @@ function ResourcesPageContent() {
                     </label>
                     <p className={styles.uploadMeta}>
                       {form.filename
-                        ? t('uploadedFile', {
-                            defaultValue: 'Uploaded file: {{name}}',
-                            name: form.filename,
-                          })
-                        : t('uploadHelper', {
-                            defaultValue:
-                              'Supported: PDF, Word, Excel, PowerPoint, TXT, or CSV up to 15 MB.',
-                          })}
+                          ? t('uploadedFile', { name: form.filename })
+                        : t('uploadHelper')}
                     </p>
                   </div>
                 </div>
               ) : (
                 <div className={styles.fieldGroup}>
                   <label className={styles.fieldLabel} htmlFor="my-resource-link">
-                    {t('linkLabel', { defaultValue: 'Link URL' })}
+                    {t('linkLabel')}
                   </label>
                   <input
                     id="my-resource-link"
                     className={styles.input}
                     value={form.linkUrl}
                     onChange={(event) => updateForm('linkUrl', event.target.value)}
-                    placeholder={t('linkPlaceholder', {
-                      defaultValue: 'https://example.com/private-resource',
-                    })}
+                    placeholder={t('linkPlaceholder')}
                   />
                 </div>
               )}
@@ -212,8 +193,8 @@ function ResourcesPageContent() {
                   disabled={submitting || isUploading}
                 >
                   {submitting
-                    ? t('sending', { defaultValue: 'Saving resource...' })
-                    : t('submit', { defaultValue: 'Save resource' })}
+                    ? t('sending')
+                    : t('submit')}
                 </button>
               </div>
             </div>
@@ -222,13 +203,10 @@ function ResourcesPageContent() {
           <section className={styles.listCard}>
             <div className={styles.cardHeader}>
               <h2 className={styles.sectionTitle}>
-                {t('listTitle', { defaultValue: 'My resource library' })}
+                {t('listTitle')}
               </h2>
               <p className={styles.sectionDescription}>
-                {t('listDescription', {
-                  defaultValue:
-                    'Everything shared with you by the admin and everything you have uploaded for yourself in one place.',
-                })}
+                {t('listDescription')}
               </p>
             </div>
 
@@ -237,9 +215,7 @@ function ResourcesPageContent() {
                 className={styles.searchInput}
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder={t('searchPlaceholder', {
-                  defaultValue: 'Search by title or description',
-                })}
+                placeholder={t('searchPlaceholder')}
               />
               <select
                 className={styles.filterSelect}
@@ -249,31 +225,28 @@ function ResourcesPageContent() {
                 }
               >
                 <option value="all">
-                  {t('filterAllTypes', { defaultValue: 'All types' })}
+                  {t('filterAllTypes')}
                 </option>
                 <option value={ResourceType.FILE}>
-                  {t('typeFile', { defaultValue: 'Document' })}
+                  {t('typeFile')}
                 </option>
                 <option value={ResourceType.LINK}>
-                  {t('typeLink', { defaultValue: 'Link' })}
+                  {t('typeLink')}
                 </option>
               </select>
             </div>
 
             {loading ? (
               <p className={styles.helperMessage}>
-                {t('loading', { defaultValue: 'Loading resources...' })}
+                {t('loading')}
               </p>
             ) : filteredResources.length === 0 ? (
               <div className={styles.emptyState}>
                 <h3 className={styles.emptyTitle}>
-                  {t('emptyTitle', { defaultValue: 'No resources yet' })}
+                  {t('emptyTitle')}
                 </h3>
                 <p className={styles.emptyDescription}>
-                  {t('emptyDescription', {
-                    defaultValue:
-                      'When an admin shares a document or you upload one yourself, it will appear here.',
-                  })}
+                  {t('emptyDescription')}
                 </p>
               </div>
             ) : (
@@ -297,8 +270,8 @@ function ResourcesPageContent() {
                           }`}
                         >
                           {resource.type === ResourceType.FILE
-                            ? t('typeFile', { defaultValue: 'Document' })
-                            : t('typeLink', { defaultValue: 'Link' })}
+                            ? t('typeFile')
+                            : t('typeLink')}
                         </span>
                         <span
                           className={`${styles.badge} ${
@@ -308,15 +281,15 @@ function ResourcesPageContent() {
                           }`}
                         >
                           {resource.source === ResourceSource.ADMIN
-                            ? t('sourceAdmin', { defaultValue: 'Shared by admin' })
-                            : t('sourceUser', { defaultValue: 'My upload' })}
+                            ? t('sourceAdmin')
+                            : t('sourceUser')}
                         </span>
                       </div>
                     </div>
 
                     <div className={styles.resourceMeta}>
                       <span>
-                        {t('createdLabel', { defaultValue: 'Created' })}:{' '}
+                        {t('createdLabel')}:{' '}
                         {new Date(resource.createdAt).toLocaleDateString()}
                       </span>
                       {resource.filename ? <span>{resource.filename}</span> : null}
@@ -330,7 +303,7 @@ function ResourcesPageContent() {
                           rel="noreferrer"
                           className={styles.inlineLink}
                         >
-                          {t('openFile', { defaultValue: 'Open document' })}
+                          {t('openFile')}
                         </a>
                       ) : null}
                       {resource.type === ResourceType.LINK && resource.linkUrl ? (
@@ -340,7 +313,7 @@ function ResourcesPageContent() {
                           rel="noreferrer"
                           className={styles.inlineLink}
                         >
-                          {t('openLink', { defaultValue: 'Open link' })}
+                          {t('openLink')}
                         </a>
                       ) : null}
                       {resource.source === ResourceSource.USER ? (
@@ -351,8 +324,8 @@ function ResourcesPageContent() {
                           disabled={deletingId === resource.id}
                         >
                           {deletingId === resource.id
-                            ? t('deleting', { defaultValue: 'Deleting...' })
-                            : t('delete', { defaultValue: 'Delete' })}
+                            ? t('deleting')
+                            : t('delete')}
                         </button>
                       ) : null}
                     </div>

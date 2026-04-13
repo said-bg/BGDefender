@@ -36,12 +36,8 @@ function ContentWorkbench({
 }: ContentWorkbenchProps) {
   if (!selectedChapter || !selectedSubChapter) {
     return (
-      <div className={styles.emptyState}>
-        <p className={styles.emptyTitle}>
-          {t('edit.contentBlocks.emptyWithoutSubChapterTitle', {
-            defaultValue: 'Create a subchapter first',
-          })}
-        </p>
+        <div className={styles.emptyState}>
+        <p className={styles.emptyTitle}>{t('edit.contentBlocks.emptyWithoutSubChapterTitle')}</p>
       </div>
     );
   }
@@ -56,17 +52,13 @@ function ContentWorkbench({
         </div>
 
         <button type="button" className={styles.inlineAction} onClick={onCreate}>
-          {t('edit.contentBlocks.addBlock', { defaultValue: 'Add block' })}
+          {t('edit.contentBlocks.addBlock')}
         </button>
       </div>
 
       {contentBlocks.length === 0 ? (
         <div className={styles.emptyState}>
-          <p className={styles.emptyTitle}>
-            {t('edit.contentBlocks.emptyTitle', {
-              defaultValue: 'No content blocks in this subchapter yet.',
-            })}
-          </p>
+          <p className={styles.emptyTitle}>{t('edit.contentBlocks.emptyTitle')}</p>
         </div>
       ) : (
         <div className={styles.contentBlocksCompact}>
@@ -80,8 +72,7 @@ function ContentWorkbench({
               <div className={styles.chapterCardHeader}>
                 <div>
                   <p className={styles.chapterOrderLabel}>
-                    {t('edit.contentBlocks.orderLabel', { defaultValue: 'Block' })}{' '}
-                    {content.orderIndex}
+                    {t('edit.contentBlocks.orderLabel')} {content.orderIndex}
                   </p>
                   <h4 className={styles.contentBlockTitle}>
                     {language === 'fi' ? content.titleFi : content.titleEn}
@@ -95,7 +86,7 @@ function ContentWorkbench({
                   className={styles.inlineAction}
                   onClick={() => onEdit(selectedChapter, selectedSubChapter, content)}
                 >
-                  {t('edit.contentBlocks.editAction', { defaultValue: 'Open editor' })}
+                  {t('edit.contentBlocks.editAction')}
                 </button>
                 <button
                   type="button"
@@ -104,8 +95,8 @@ function ContentWorkbench({
                   onClick={() => onDelete(selectedChapter.id, selectedSubChapter.id, content.id)}
                 >
                   {deletingContentId === content.id
-                    ? t('edit.contentBlocks.deleting', { defaultValue: 'Deleting...' })
-                    : t('courseActions.delete', { defaultValue: 'Delete' })}
+                    ? t('edit.contentBlocks.deleting')
+                    : t('courseActions.delete')}
                 </button>
               </div>
             </article>

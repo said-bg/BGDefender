@@ -39,7 +39,7 @@ export const Navbar = () => {
               priority
             />
             <span className={styles.logoText}>
-              {t('brandShort', { defaultValue: 'Defender' })}
+              {t('brandShort')}
             </span>
           </Link>
 
@@ -66,12 +66,12 @@ export const Navbar = () => {
                   admin: t('admin'),
                   adminBadge: t('badges.admin'),
                   creatorBadge: t('badges.creator'),
-                  certificates: t('certificates', { defaultValue: 'Certificates' }),
+                  certificates: t('certificates'),
                   freeBadge: t('badges.free'),
                   logout: t('logout'),
                   premiumBadge: t('badges.premium'),
                   profile: t('profile'),
-                  resources: t('resources', { defaultValue: 'Resources' }),
+                  resources: t('resources'),
                   userBadge: t('badges.user'),
                 }}
               />

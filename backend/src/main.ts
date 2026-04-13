@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
 import { seedCourses } from './database/seeds/courses.seed';
+import { seedUsers } from './database/seeds/users.seed';
 
 function resolveCorsOrigins(
   configService: ConfigService,
@@ -62,6 +63,7 @@ async function bootstrap() {
     const dataSource = app.get(DataSource);
 
     try {
+      await seedUsers(dataSource);
       await seedCourses(dataSource);
     } catch (error) {
       console.error('[MAIN] Seed execution failed:', error);

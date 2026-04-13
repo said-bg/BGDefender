@@ -36,20 +36,15 @@ export default function EditCourseChapterForm({
       <div className={styles.cardHeader}>
         <h3 className={styles.sectionTitle}>
           {editingChapterId
-            ? t('edit.chapters.editTitle', { defaultValue: 'Edit chapter' })
-            : t('edit.chapters.createTitle', { defaultValue: 'Create chapter' })}
+            ? t('edit.chapters.editTitle')
+            : t('edit.chapters.createTitle')}
         </h3>
-        <p className={styles.sectionDescription}>
-          {t('edit.chapters.formDescription', {
-            defaultValue:
-              'Add the chapter shell now. Subchapters will be the next step right after this one.',
-          })}
-        </p>
+        <p className={styles.sectionDescription}>{t('edit.chapters.formDescription')}</p>
       </div>
 
       <form className={styles.form} onSubmit={onSubmit}>
         <label className={styles.field}>
-          <span>{t('create.titleEn', { defaultValue: 'Title (English)' })}</span>
+          <span>{t('create.titleEn')}</span>
           <input
             value={chapterForm.titleEn}
             onChange={(event) =>
@@ -58,14 +53,12 @@ export default function EditCourseChapterForm({
                 titleEn: event.target.value,
               }))
             }
-            placeholder={t('edit.chapters.titleEnPlaceholder', {
-              defaultValue: 'Enter the English chapter title',
-            })}
+            placeholder={t('edit.chapters.titleEnPlaceholder')}
           />
         </label>
 
         <label className={styles.field}>
-          <span>{t('create.titleFi', { defaultValue: 'Title (Finnish)' })}</span>
+          <span>{t('create.titleFi')}</span>
           <input
             value={chapterForm.titleFi}
             onChange={(event) =>
@@ -74,14 +67,12 @@ export default function EditCourseChapterForm({
                 titleFi: event.target.value,
               }))
             }
-            placeholder={t('edit.chapters.titleFiPlaceholder', {
-              defaultValue: 'Enter the Finnish chapter title',
-            })}
+            placeholder={t('edit.chapters.titleFiPlaceholder')}
           />
         </label>
 
         <label className={styles.fieldWide}>
-          <span>{t('edit.chapters.descriptionEn', { defaultValue: 'Description (English)' })}</span>
+          <span>{t('edit.chapters.descriptionEn')}</span>
           <textarea
             className={styles.textareaField}
             rows={5}
@@ -92,14 +83,12 @@ export default function EditCourseChapterForm({
                 descriptionEn: event.target.value,
               }))
             }
-            placeholder={t('edit.chapters.descriptionEnPlaceholder', {
-              defaultValue: 'Write the English chapter description.',
-            })}
+            placeholder={t('edit.chapters.descriptionEnPlaceholder')}
           />
         </label>
 
         <label className={styles.fieldWide}>
-          <span>{t('edit.chapters.descriptionFi', { defaultValue: 'Description (Finnish)' })}</span>
+          <span>{t('edit.chapters.descriptionFi')}</span>
           <textarea
             className={styles.textareaField}
             rows={5}
@@ -110,14 +99,12 @@ export default function EditCourseChapterForm({
                 descriptionFi: event.target.value,
               }))
             }
-            placeholder={t('edit.chapters.descriptionFiPlaceholder', {
-              defaultValue: 'Write the Finnish chapter description.',
-            })}
+            placeholder={t('edit.chapters.descriptionFiPlaceholder')}
           />
         </label>
 
         <label className={styles.field}>
-          <span>{t('edit.chapters.orderInput', { defaultValue: 'Order' })}</span>
+          <span>{t('edit.chapters.orderInput')}</span>
           <input
             type="number"
             min="1"
@@ -143,11 +130,11 @@ export default function EditCourseChapterForm({
           <button type="submit" className={styles.primaryAction} disabled={isSubmittingChapter}>
             {isSubmittingChapter
               ? editingChapterId
-                ? t('edit.chapters.saving', { defaultValue: 'Saving chapter...' })
-                : t('edit.chapters.creating', { defaultValue: 'Creating chapter...' })
+                ? t('edit.chapters.saving')
+                : t('edit.chapters.creating')
               : editingChapterId
-                ? t('edit.chapters.save', { defaultValue: 'Save chapter' })
-                : t('edit.chapters.create', { defaultValue: 'Create chapter' })}
+                ? t('edit.chapters.save')
+                : t('edit.chapters.create')}
           </button>
         </div>
       </form>

@@ -16,7 +16,7 @@ export default function SubChapterContentFields({
   return (
     <>
       <label className={formStyles.field}>
-        <span>{t('create.titleEn', { defaultValue: 'Title (English)' })}</span>
+        <span>{t('create.titleEn')}</span>
         <input
           value={subChapterForm.titleEn}
           onChange={(event) =>
@@ -25,14 +25,12 @@ export default function SubChapterContentFields({
               titleEn: event.target.value,
             }))
           }
-          placeholder={t('edit.subchapters.titleEnPlaceholder', {
-            defaultValue: 'Enter the English subchapter title',
-          })}
+          placeholder={t('edit.subchapters.titleEnPlaceholder')}
         />
       </label>
 
       <label className={formStyles.field}>
-        <span>{t('create.titleFi', { defaultValue: 'Title (Finnish)' })}</span>
+        <span>{t('create.titleFi')}</span>
         <input
           value={subChapterForm.titleFi}
           onChange={(event) =>
@@ -41,14 +39,12 @@ export default function SubChapterContentFields({
               titleFi: event.target.value,
             }))
           }
-          placeholder={t('edit.subchapters.titleFiPlaceholder', {
-            defaultValue: 'Enter the Finnish subchapter title',
-          })}
+          placeholder={t('edit.subchapters.titleFiPlaceholder')}
         />
       </label>
 
       <label className={formStyles.fieldWide}>
-        <span>{t('edit.subchapters.descriptionEn', { defaultValue: 'Description (English)' })}</span>
+        <span>{t('edit.subchapters.descriptionEn')}</span>
         <textarea
           className={formStyles.textareaField}
           rows={4}
@@ -59,14 +55,12 @@ export default function SubChapterContentFields({
               descriptionEn: event.target.value,
             }))
           }
-          placeholder={t('edit.subchapters.descriptionEnPlaceholder', {
-            defaultValue: 'Write the English subchapter description.',
-          })}
+          placeholder={t('edit.subchapters.descriptionEnPlaceholder')}
         />
       </label>
 
       <label className={formStyles.fieldWide}>
-        <span>{t('edit.subchapters.descriptionFi', { defaultValue: 'Description (Finnish)' })}</span>
+        <span>{t('edit.subchapters.descriptionFi')}</span>
         <textarea
           className={formStyles.textareaField}
           rows={4}
@@ -77,14 +71,12 @@ export default function SubChapterContentFields({
               descriptionFi: event.target.value,
             }))
           }
-          placeholder={t('edit.subchapters.descriptionFiPlaceholder', {
-            defaultValue: 'Write the Finnish subchapter description.',
-          })}
+          placeholder={t('edit.subchapters.descriptionFiPlaceholder')}
         />
       </label>
 
       <label className={formStyles.field}>
-        <span>{t('edit.subchapters.orderInput', { defaultValue: 'Order' })}</span>
+        <span>{t('edit.subchapters.orderInput')}</span>
         <input
           type="number"
           min="1"

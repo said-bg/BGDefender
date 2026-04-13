@@ -27,27 +27,25 @@ export default function AdminCollectionsSummary({
     <section className={styles.summary}>
       <article className={styles.summaryCard}>
         <span className={styles.summaryLabel}>
-          {t('collections.summaryTotal', { defaultValue: 'Collections' })}
+          {t('collections.summaryTotal')}
         </span>
         <strong className={styles.summaryValue}>{summary.total}</strong>
       </article>
       <article className={styles.summaryCard}>
         <span className={styles.summaryLabel}>
-          {t('collections.summaryPublished', { defaultValue: 'Published' })}
+          {t('collections.summaryPublished')}
         </span>
         <strong className={styles.summaryValue}>{summary.published}</strong>
       </article>
       <article className={styles.summaryCard}>
         <span className={styles.summaryLabel}>
-          {t('collections.summaryHidden', { defaultValue: 'Hidden' })}
+          {t('collections.summaryHidden')}
         </span>
         <strong className={styles.summaryValue}>{summary.hidden}</strong>
       </article>
       <article className={styles.summaryCard}>
         <span className={styles.summaryLabel}>
-          {t('collections.summaryAssignedCourses', {
-            defaultValue: 'Assigned courses',
-          })}
+          {t('collections.summaryAssignedCourses')}
         </span>
         <strong className={styles.summaryValue}>{summary.assignedCourses}</strong>
       </article>

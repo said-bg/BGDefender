@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import CourseCover from '@/components/course-cover/CourseCover';
+import useHomeCourseRailScroll from '../hooks/useHomeCourseRailScroll';
 import type { HomeCourseCollection } from '../lib/home.types';
 import styles from './HomeCollectionsSection.module.css';
 
@@ -12,7 +13,6 @@ type HomeCollectionsSectionProps = {
   title: string;
   getCollectionDescription: (collection: HomeCourseCollection) => string;
   getCollectionTitle: (collection: HomeCourseCollection) => string;
-  getCourseTitle: (course: HomeCourseCollection['courses'][number]) => string;
   t: (key: string, options?: Record<string, unknown>) => string;
 };
 
@@ -23,9 +23,108 @@ export default function HomeCollectionsSection({
   title,
   getCollectionDescription,
   getCollectionTitle,
-  getCourseTitle,
   t,
 }: HomeCollectionsSectionProps) {
+  const { canScrollLeft, canScrollRight, scrollByViewport, viewportRef } =
+    useHomeCourseRailScroll(collections.length);
+
+  const renderCollectionCard = (collection: HomeCourseCollection, index: number) => {
+    const collectionTitle = getCollectionTitle(collection);
+    const collectionDescription =
+      getCollectionDescription(collection) ||
+      t('page.collectionCardFallbackDescription', {
+        count: collection.courses.length,
+      });
+    const stackDepth = Math.min(Math.max(collection.courses.length - 1, 0), 2);
+    const stackCourses = collection.courses.slice(0, 2);
+
+    return (
+      <article key={collection.id} className={styles.card}>
+        <Link href={`/collections/${collection.id}`} className={styles.cardLink}>
+          {stackDepth > 0 ? (
+            <div className={styles.stackFrame}>
+              {stackDepth >= 2 ? (
+                <div className={`${styles.stackLayer} ${styles.stackLayerBack}`}>
+                  <CourseCover
+                    src={stackCourses[1]?.coverImage}
+                    title={
+                      stackCourses[1]?.titleEn ||
+                      stackCourses[1]?.titleFi ||
+                      t('page.collectionLabel')
+                    }
+                    seedKey={stackCourses[1]?.id || `${collection.id}-stack-back`}
+                    sizes="280px"
+                    imageClassName={styles.stackLayerImage}
+                    fallbackClassName={styles.stackLayerFill}
+                    variant="stack"
+                  />
+                </div>
+              ) : null}
+              <div className={`${styles.stackLayer} ${styles.stackLayerMid}`}>
+                <CourseCover
+                  src={stackCourses[0]?.coverImage}
+                  title={
+                    stackCourses[0]?.titleEn ||
+                    stackCourses[0]?.titleFi ||
+                      t('page.collectionLabel')
+                  }
+                  seedKey={stackCourses[0]?.id || `${collection.id}-stack-mid`}
+                  sizes="280px"
+                  imageClassName={styles.stackLayerImage}
+                  fallbackClassName={styles.stackLayerFill}
+                  variant="stack"
+                />
+              </div>
+            </div>
+          ) : null}
+
+          <div className={styles.cardHero}>
+            <CourseCover
+              src={collection.coverImage}
+              title={collectionTitle}
+              seedKey={collection.id}
+              sizes="(max-width: 768px) 90vw, 360px"
+              imageClassName={styles.cardImage}
+              fallbackClassName={styles.cardImagePlaceholder}
+              priority={index === 0}
+              variant="collection"
+            />
+
+            <div className={styles.heroPanel}>
+              <span className={styles.collectionLabel}>
+                {t('page.collectionLabel')}
+              </span>
+              <h3 className={styles.heroTitle}>{collectionTitle}</h3>
+              <div className={styles.heroFooter}>
+                <div className={styles.heroMetaGroup}>
+                  <p className={styles.heroMeta}>
+                    {t('page.collectionCourseCount', {
+                      count: collection.courses.length,
+                    })}
+                  </p>
+                  <p className={styles.heroHint}>
+                    {t('page.collectionPathLabel')}
+                  </p>
+                </div>
+                <span className={styles.openButton}>
+                  {t('page.openCollection')}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.cardBody}>
+            <p className={styles.cardDescription}>{collectionDescription}</p>
+
+            {collection.courses.length === 0 ? (
+              <p className={styles.previewEmpty}>{emptyLabel}</p>
+            ) : null}
+          </div>
+        </Link>
+      </article>
+    );
+  };
+
   return (
     <section className={styles.section}>
       <div className={styles.sectionHeader}>
@@ -37,67 +136,45 @@ export default function HomeCollectionsSection({
 
       {collections.length === 0 ? (
         <p className={styles.emptyState}>{emptyLabel}</p>
-      ) : (
+      ) : collections.length <= 3 ? (
         <div className={styles.grid}>
-          {collections.map((collection, index) => {
-            const collectionTitle = getCollectionTitle(collection);
-            const collectionDescription =
-              getCollectionDescription(collection) ||
-              t('page.collectionCardFallbackDescription', {
-                count: collection.courses.length,
-                defaultValue: '{{count}} courses grouped into one guided learning path.',
-              });
-            const previewCourses = collection.courses.slice(0, 3);
+          {collections.map((collection, index) => renderCollectionCard(collection, index))}
+        </div>
+      ) : (
+        <div className={styles.railShell}>
+          {canScrollLeft ? (
+            <button
+              type="button"
+              className={`${styles.railNav} ${styles.railNavLeft}`}
+              onClick={() => scrollByViewport('left')}
+              aria-label={t('page.scrollLeft')}
+            >
+              {'\u2039'}
+            </button>
+          ) : null}
 
-            return (
-              <article key={collection.id} className={styles.card}>
-                <Link href={`/collections/${collection.id}`} className={styles.cardLink}>
-                  <div className={styles.cardHero}>
-                    <CourseCover
-                      src={collection.coverImage}
-                      title={collectionTitle}
-                      sizes="(max-width: 768px) 90vw, 360px"
-                      imageClassName={styles.cardImage}
-                      fallbackClassName={styles.cardImagePlaceholder}
-                      priority={index === 0}
-                    />
-                    <span className={styles.collectionLabel}>
-                      {t('page.collectionLabel', { defaultValue: 'Collection' })}
-                    </span>
-                    <span className={styles.courseCountBadge}>
-                      {t('page.collectionCourseCount', {
-                        count: collection.courses.length,
-                        defaultValue: '{{count}} courses included',
-                      })}
-                    </span>
-                  </div>
+          <div className={styles.railFrame}>
+            {canScrollLeft ? <div className={`${styles.railEdge} ${styles.railEdgeLeft}`} /> : null}
+            <div ref={viewportRef} className={styles.railViewport}>
+              {collections.map((collection, index) => (
+                <div key={collection.id} className={styles.railCard}>
+                  {renderCollectionCard(collection, index)}
+                </div>
+              ))}
+            </div>
+            {canScrollRight ? <div className={`${styles.railEdge} ${styles.railEdgeRight}`} /> : null}
+          </div>
 
-                  <div className={styles.cardBody}>
-                    <h3 className={styles.cardTitle}>{collectionTitle}</h3>
-                    <p className={styles.cardDescription}>{collectionDescription}</p>
-
-                    {previewCourses.length > 0 ? (
-                      <ul className={styles.previewList}>
-                        {previewCourses.map((course) => (
-                          <li key={course.id} className={styles.previewItem}>
-                            {getCourseTitle(course)}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className={styles.previewEmpty}>{emptyLabel}</p>
-                    )}
-
-                    <span className={styles.openLink}>
-                      {t('page.openCollection', {
-                        defaultValue: 'Open collection',
-                      })}
-                    </span>
-                  </div>
-                </Link>
-              </article>
-            );
-          })}
+          {canScrollRight ? (
+            <button
+              type="button"
+              className={`${styles.railNav} ${styles.railNavRight}`}
+              onClick={() => scrollByViewport('right')}
+              aria-label={t('page.scrollRight')}
+            >
+              {'\u203A'}
+            </button>
+          ) : null}
         </div>
       )}
     </section>

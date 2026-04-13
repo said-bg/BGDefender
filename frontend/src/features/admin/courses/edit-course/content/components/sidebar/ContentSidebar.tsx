@@ -33,39 +33,25 @@ function ContentSidebar({
     <aside className={`${styles.contentSidebar} ${className ?? ''}`}>
       <div className={styles.sidebarHeaderRow}>
         <div className={styles.chapterLibraryHeader}>
-          <h3 className={styles.chapterSectionTitle}>
-            {t('edit.tabs.structure', { defaultValue: 'Structure' })}
-          </h3>
+          <h3 className={styles.chapterSectionTitle}>{t('edit.tabs.structure')}</h3>
         </div>
 
         <button type="button" className={styles.inlineAction} onClick={onToggleVisibility}>
-          {t('edit.contentBlocks.hideStructure', {
-            defaultValue: 'Hide structure',
-          })}
+          {t('edit.contentBlocks.hideStructure')}
         </button>
       </div>
 
       {!hasSubChapters ? (
         <div className={styles.emptyState}>
-          <p className={styles.emptyTitle}>
-            {t('edit.contentBlocks.emptyWithoutSubChapterTitle', {
-              defaultValue: 'Create a subchapter first',
-            })}
-          </p>
-          <p className={styles.emptyDescription}>
-            {t('edit.contentBlocks.emptyWithoutSubChapterDescription', {
-              defaultValue:
-                'Content blocks live inside subchapters, so add at least one subchapter above before creating lesson content.',
-            })}
-          </p>
+          <p className={styles.emptyTitle}>{t('edit.contentBlocks.emptyWithoutSubChapterTitle')}</p>
+          <p className={styles.emptyDescription}>{t('edit.contentBlocks.emptyWithoutSubChapterDescription')}</p>
         </div>
       ) : (
         <div className={styles.contentSidebarGroups}>
           {chapters.map((chapter) => (
             <section key={chapter.id} className={styles.contentSidebarGroup}>
               <p className={styles.chapterOrderLabel}>
-                {t('edit.chapters.orderLabel', { defaultValue: 'Chapter' })}{' '}
-                {chapter.orderIndex}
+                {t('edit.chapters.orderLabel')} {chapter.orderIndex}
               </p>
               <h4 className={styles.chapterTitle}>
                 {language === 'fi' ? chapter.titleFi : chapter.titleEn}
@@ -88,7 +74,6 @@ function ContentSidebar({
                       <span className={styles.subChapterNavMeta}>
                         {t('edit.contentBlocks.blockCount', {
                           count: subChapter.pedagogicalContents.length,
-                          defaultValue: '{{count}} blocks',
                         })}
                       </span>
                     </button>
@@ -96,9 +81,7 @@ function ContentSidebar({
                 </div>
               ) : (
                 <p className={styles.emptyDescription}>
-                  {t('edit.subchapters.emptyTitle', {
-                    defaultValue: 'No subchapters in this chapter yet.',
-                  })}
+                  {t('edit.subchapters.emptyTitle')}
                 </p>
               )}
             </section>

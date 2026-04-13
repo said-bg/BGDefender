@@ -32,7 +32,7 @@ export default function useCertificatesPage() {
         setError(
           getApiErrorMessage(
             loadError,
-            t('loadFailed', { defaultValue: 'Failed to load your certificates.' }),
+            t('loadFailed'),
           ),
         );
       } finally {

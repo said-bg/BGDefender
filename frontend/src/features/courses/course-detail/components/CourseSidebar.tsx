@@ -104,6 +104,7 @@ export function CourseSidebar({
           const isExpanded = expandedChapters.has(chapter.id);
           const isChapterActive =
             selectedView.type !== 'overview' &&
+            selectedView.type !== 'final-test' &&
             selectedView.chapterId === chapter.id;
           const chapterProgress = getChapterProgressPercentage(
             course,

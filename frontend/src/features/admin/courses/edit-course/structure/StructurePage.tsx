@@ -62,10 +62,7 @@ function StructurePageContent() {
     return (
       <EditCourseErrorState
         message={
-          structure.loadError ||
-          t('edit.chapters.missingCourseId', {
-            defaultValue: 'Missing course id.',
-          })
+          structure.loadError || t('edit.chapters.missingCourseId')
         }
       />
     );
@@ -75,23 +72,15 @@ function StructurePageContent() {
     <EditCourseShell
       courseId={structure.courseId}
       section="structure"
-      title={t('edit.tabs.structure', { defaultValue: 'Structure' })}
-      subtitle={t('edit.chapters.description', {
-        defaultValue:
-          'Build the course structure here first. We will add subchapters and lesson content right after this step.',
-      })}
+      title={t('edit.tabs.structure')}
+      subtitle={t('edit.chapters.description')}
       courseTitle={structure.localizedCourseTitle}
     >
       <section className={styles.formCard}>
         <div className={styles.cardHeader}>
-          <h2 className={styles.sectionTitle}>
-            {t('edit.chapters.title', { defaultValue: 'Chapters' })}
-          </h2>
+          <h2 className={styles.sectionTitle}>{t('edit.chapters.title')}</h2>
           <p className={styles.sectionDescription}>
-            {t('edit.subchapters.description', {
-              defaultValue:
-                'Create the lesson shells inside each chapter before we move into the real lesson content editor.',
-            })}
+            {t('edit.subchapters.description')}
           </p>
         </div>
 
@@ -99,14 +88,9 @@ function StructurePageContent() {
           <aside className={styles.contentSidebar}>
             <div className={styles.chapterLibrary}>
               <div className={styles.chapterLibraryHeader}>
-                <h3 className={styles.chapterSectionTitle}>
-                  {t('edit.chapters.libraryTitle', { defaultValue: 'Current structure' })}
-                </h3>
+                <h3 className={styles.chapterSectionTitle}>{t('edit.chapters.libraryTitle')}</h3>
                 <p className={styles.sectionDescription}>
-                  {t('edit.subchapters.libraryDescription', {
-                    defaultValue:
-                      'Browse subchapters grouped by chapter, then edit or delete the one you want to update.',
-                  })}
+                  {t('edit.subchapters.libraryDescription')}
                 </p>
               </div>
 
@@ -120,7 +104,7 @@ function StructurePageContent() {
                   }`}
                   onClick={workspace.openCreateChapter}
                 >
-                  {t('edit.chapters.createTitle', { defaultValue: 'Create chapter' })}
+                  {t('edit.chapters.createTitle')}
                 </button>
 
                 <button
@@ -133,9 +117,7 @@ function StructurePageContent() {
                   onClick={workspace.openCreateSubChapter}
                   disabled={!hasChapters}
                 >
-                  {t('edit.subchapters.createTitle', {
-                    defaultValue: 'Create subchapter',
-                  })}
+                  {t('edit.subchapters.createTitle')}
                 </button>
               </div>
 

@@ -81,23 +81,23 @@ export function EditCourseShell({
   const tabs: Array<{ key: EditCourseSection; label: string }> = [
     {
       key: 'details',
-      label: t('edit.tabs.details', { defaultValue: 'Course details' }),
+      label: t('edit.tabs.details'),
     },
     {
       key: 'structure',
-      label: t('edit.tabs.structure', { defaultValue: 'Structure' }),
+      label: t('edit.tabs.structure'),
     },
     {
       key: 'content',
-      label: t('edit.tabs.content', { defaultValue: 'Content' }),
+      label: t('edit.tabs.content'),
     },
     {
       key: 'quiz',
-      label: t('edit.tabs.quiz', { defaultValue: 'Training quiz' }),
+      label: t('edit.tabs.quiz'),
     },
     {
       key: 'final-test',
-      label: t('edit.tabs.finalTest', { defaultValue: 'Final test' }),
+      label: t('edit.tabs.finalTest'),
     },
   ];
 
@@ -106,13 +106,9 @@ export function EditCourseShell({
       <section className={shellStyles.hero}>
         <div className={shellStyles.heroCopy}>
           <Link href="/admin/courses" className={shellStyles.backLink}>
-            {t('edit.backToCourses', {
-              defaultValue: 'Back to course library',
-            })}
+            {t('edit.backToCourses')}
           </Link>
-          <p className={shellStyles.eyebrow}>
-            {t('edit.eyebrow', { defaultValue: 'Edit course' })}
-          </p>
+          <p className={shellStyles.eyebrow}>{t('edit.eyebrow')}</p>
           <h1 className={shellStyles.title}>{title}</h1>
           {subtitle ? <p className={shellStyles.subtitle}>{subtitle}</p> : null}
           {courseTitle ? <p className={sharedStyles.helperText}>{courseTitle}</p> : null}
@@ -144,9 +140,7 @@ export function EditCourseLoadingState() {
   return (
     <div className={shellStyles.page}>
       <section className={formStyles.formCard}>
-        <p className={sharedStyles.helperMessage}>
-          {t('loading', { defaultValue: 'Loading admin data...' })}
-        </p>
+        <p className={sharedStyles.helperMessage}>{t('loading')}</p>
       </section>
     </div>
   );
@@ -161,7 +155,7 @@ export function EditCourseErrorState({ message }: { message: string }) {
         <p className={sharedStyles.errorMessage}>{message}</p>
         <div className={sharedStyles.actions}>
           <Link href="/admin/courses" className={sharedStyles.secondaryAction}>
-            {t('backToOverview', { defaultValue: 'Back to dashboard' })}
+            {t('backToOverview')}
           </Link>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import { NotificationRecord, NotificationType } from '@/types/api';
 
-type TranslateFn = (key: string, options?: { defaultValue?: string }) => string;
+type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
 
 export const getNotificationTitle = (
   notification: NotificationRecord,
@@ -8,25 +8,15 @@ export const getNotificationTitle = (
 ): string => {
   switch (notification.type) {
     case NotificationType.COURSE_PUBLISHED:
-      return t('notifications.coursePublishedTitle', {
-        defaultValue: 'New course published',
-      });
+      return t('notifications.coursePublishedTitle');
     case NotificationType.RESOURCE_SHARED:
-      return t('notifications.resourceSharedTitle', {
-        defaultValue: 'New resource shared',
-      });
+      return t('notifications.resourceSharedTitle');
     case NotificationType.CERTIFICATE_AVAILABLE:
-      return t('notifications.certificateAvailableTitle', {
-        defaultValue: 'Certificate available',
-      });
+      return t('notifications.certificateAvailableTitle');
     case NotificationType.COMPLETE_PROFILE_FOR_CERTIFICATE:
-      return t('notifications.completeProfileTitle', {
-        defaultValue: 'Complete your profile',
-      });
+      return t('notifications.completeProfileTitle');
     default:
-      return t('notifications.defaultTitle', {
-        defaultValue: 'New update',
-      });
+      return t('notifications.defaultTitle');
   }
 };
 
@@ -43,24 +33,22 @@ export const getNotificationBody = (
   switch (notification.type) {
     case NotificationType.COURSE_PUBLISHED:
       return t('notifications.coursePublishedBody', {
-        defaultValue: `"${courseTitle}" is now available in the course library.`,
+        courseTitle,
       });
     case NotificationType.RESOURCE_SHARED:
       return t('notifications.resourceSharedBody', {
-        defaultValue: `"${notification.resourceTitle || 'A private resource'}" has been shared with you.`,
+        resourceTitle: notification.resourceTitle || t('notifications.privateResourceFallback'),
       });
     case NotificationType.CERTIFICATE_AVAILABLE:
       return t('notifications.certificateAvailableBody', {
-        defaultValue: `Your certificate for "${courseTitle}" is now ready.`,
+        courseTitle,
       });
     case NotificationType.COMPLETE_PROFILE_FOR_CERTIFICATE:
       return t('notifications.completeProfileBody', {
-        defaultValue: `You passed "${courseTitle}". Add your first and last name to generate your certificate.`,
+        courseTitle,
       });
     default:
-      return t('notifications.defaultBody', {
-        defaultValue: 'You have a new update in your learning space.',
-      });
+      return t('notifications.defaultBody');
   }
 };
 

@@ -1,4 +1,5 @@
 {
+    "brandShort":  "Defender",
     "home":  "Home",
     "admin":  "Dashboard",
     "certificates":  "Certificates",
@@ -22,5 +23,24 @@
                    "creator":  "Creator",
                    "admin":  "Admin",
                    "user":  "User"
-               }
+               },
+    "notifications": {
+                     "trigger": "Notifications",
+                     "title": "Notifications",
+                     "markAllRead": "Mark all as read",
+                     "clearAll": "Clear all",
+                     "loading": "Loading notifications...",
+                     "empty": "No notifications yet. New course updates and learner alerts will appear here.",
+                     "coursePublishedTitle": "New course published",
+                     "resourceSharedTitle": "New resource shared",
+                     "certificateAvailableTitle": "Certificate available",
+                     "completeProfileTitle": "Complete your profile",
+                     "defaultTitle": "New update",
+                     "coursePublishedBody": "\"{{courseTitle}}\" is now available in the course library.",
+                     "resourceSharedBody": "\"{{resourceTitle}}\" has been shared with you.",
+                     "certificateAvailableBody": "Your certificate for \"{{courseTitle}}\" is now ready.",
+                     "completeProfileBody": "You passed \"{{courseTitle}}\". Add your first and last name to generate your certificate.",
+                     "defaultBody": "You have a new update in your learning space.",
+                     "privateResourceFallback": "A private resource"
+                 }
 }

@@ -160,6 +160,11 @@ export class CourseService {
       savedCourse.status === CourseStatus.PUBLISHED
     ) {
       await this.notificationsService.notifyCoursePublished(savedCourse);
+    } else if (
+      previousStatus === CourseStatus.PUBLISHED &&
+      savedCourse.status !== CourseStatus.PUBLISHED
+    ) {
+      await this.notificationsService.deleteCourseNotifications(savedCourse.id);
     }
 
     return savedCourse;
@@ -168,6 +173,7 @@ export class CourseService {
   async delete(id: string): Promise<void> {
     const course = await this.findById(id);
     await this.courseRepository.remove(course);
+    await this.notificationsService.deleteCourseNotifications(course.id);
   }
 
   private sortCourseTree(course: Course): Course {

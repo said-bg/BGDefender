@@ -61,7 +61,7 @@ export default function useResourcesPage() {
       const messageText =
         loadError instanceof Error
           ? loadError.message
-          : t('loadFailed', { defaultValue: 'Failed to load resources.' });
+          : t('loadFailed');
       setError(messageText);
     } finally {
       setLoading(false);
@@ -137,7 +137,7 @@ export default function useResourcesPage() {
       setUploadError(
         uploadFailure instanceof Error
           ? uploadFailure.message
-          : t('createFailed', { defaultValue: 'Failed to save resource.' }),
+          : t('createFailed'),
       );
     } finally {
       setIsUploading(false);
@@ -150,24 +150,20 @@ export default function useResourcesPage() {
     setUploadError(null);
 
     if (!form.title.trim()) {
-      setError(t('validationTitle', { defaultValue: 'A title is required.' }));
+      setError(t('validationTitle'));
       return;
     }
 
     if (form.type === ResourceType.FILE && !form.fileUrl) {
       setError(
-        t('validationFile', {
-          defaultValue: 'Upload a document before saving this resource.',
-        }),
+        t('validationFile'),
       );
       return;
     }
 
     if (form.type === ResourceType.LINK && !isProbablyUrl(form.linkUrl.trim())) {
       setError(
-        t('validationLink', {
-          defaultValue: 'A valid link is required.',
-        }),
+        t('validationLink'),
       );
       return;
     }
@@ -186,7 +182,7 @@ export default function useResourcesPage() {
       });
 
       setMessage(
-        t('createSuccess', { defaultValue: 'Resource saved successfully.' }),
+        t('createSuccess'),
       );
       resetForm();
       await loadResources();
@@ -194,7 +190,7 @@ export default function useResourcesPage() {
       setError(
         submitFailure instanceof Error
           ? submitFailure.message
-          : t('createFailed', { defaultValue: 'Failed to save resource.' }),
+          : t('createFailed'),
       );
     } finally {
       setSubmitting(false);
@@ -204,17 +200,13 @@ export default function useResourcesPage() {
   const handleDelete = async (resource: Resource) => {
     if (resource.source === ResourceSource.ADMIN) {
       setError(
-        t('cannotDeleteAdmin', {
-          defaultValue: 'Admin-shared resources cannot be deleted from your space.',
-        }),
+        t('cannotDeleteAdmin'),
       );
       return;
     }
 
     const confirmed = window.confirm(
-      t('deleteConfirm', {
-        defaultValue: 'Delete this resource? This action cannot be undone.',
-      }),
+      t('deleteConfirm'),
     );
 
     if (!confirmed) {
@@ -228,14 +220,14 @@ export default function useResourcesPage() {
     try {
       await resourceService.deleteMyResource(resource.id);
       setMessage(
-        t('deleteSuccess', { defaultValue: 'Resource deleted successfully.' }),
+        t('deleteSuccess'),
       );
       await loadResources();
     } catch (deleteFailure) {
       setError(
         deleteFailure instanceof Error
           ? deleteFailure.message
-          : t('deleteFailed', { defaultValue: 'Failed to delete resource.' }),
+          : t('deleteFailed'),
       );
     } finally {
       setDeletingId(null);

@@ -40,15 +40,8 @@ export default function EditCourseStructureLibrary({
   if (chapters.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <p className={styles.emptyTitle}>
-          {t('edit.chapters.emptyTitle', { defaultValue: 'No chapters yet' })}
-        </p>
-        <p className={styles.emptyDescription}>
-          {t('edit.chapters.emptyDescription', {
-            defaultValue:
-              'Create the first chapter and it will appear here as the start of the course structure.',
-          })}
-        </p>
+        <p className={styles.emptyTitle}>{t('edit.chapters.emptyTitle')}</p>
+        <p className={styles.emptyDescription}>{t('edit.chapters.emptyDescription')}</p>
       </div>
     );
   }
@@ -90,11 +83,7 @@ export default function EditCourseStructureLibrary({
             </div>
           ) : (
             <div className={styles.emptyState}>
-              <p className={styles.emptyTitle}>
-                {t('edit.subchapters.emptyTitle', {
-                  defaultValue: 'No subchapters in this chapter yet.',
-                })}
-              </p>
+              <p className={styles.emptyTitle}>{t('edit.subchapters.emptyTitle')}</p>
             </div>
           )}
         </article>

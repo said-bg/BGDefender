@@ -143,7 +143,7 @@
 
 .card {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 16rem 22rem;
+  grid-template-columns: minmax(0, 1fr) 21.5rem 25.5rem;
   gap: 1rem;
   align-items: center;
   border: 1px solid #e6ebf2;
@@ -197,22 +197,25 @@
 }
 
 .meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem;
+  display: grid;
+  grid-template-columns: 5.4rem 6.4rem 7rem;
+  gap: 0.28rem;
   align-items: center;
   justify-content: flex-start;
-  min-width: 16rem;
+  min-width: 0;
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  min-height: 1.85rem;
+  justify-content: center;
+  width: 100%;
+  min-height: 1.58rem;
   border-radius: 999px;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  padding: 0.15rem 0.7rem;
+  padding: 0.08rem 0.5rem;
+  white-space: nowrap;
 }
 
 .badgeFree {
@@ -250,25 +253,31 @@
   color: #be123c;
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
+.badgePlaceholder {
   width: 100%;
-  gap: 0.55rem;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  width: 100%;
+  gap: 0.42rem;
   justify-content: flex-end;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .actionButton {
-  min-height: 2.1rem;
-  border-radius: 0.8rem;
+  min-height: 1.95rem;
+  border-radius: 0.72rem;
   border: 1px solid #ffa600;
   background: #fff;
   color: #ffa600;
   font: inherit;
-  font-size: 0.85rem;
+  font-size: 0.76rem;
   font-weight: 600;
-  padding: 0.32rem 0.74rem;
+  padding: 0.24rem 0.58rem;
   transition:
     border-color 0.18s ease,
     background-color 0.18s ease,
@@ -294,6 +303,12 @@
 .dangerAction:hover:not(:disabled) {
   background: #fff5f5;
   color: #991b1b;
+}
+
+.actionPlaceholder {
+  width: 0;
+  min-width: 0;
+  visibility: hidden;
 }
 
 .emptyState {
@@ -337,8 +352,18 @@
     grid-template-columns: 1fr;
   }
 
+  .meta {
+    grid-template-columns: repeat(auto-fit, max-content);
+  }
+
   .actions {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: flex-start;
+  }
+
+  .actionPlaceholder {
+    display: none;
   }
 }
 

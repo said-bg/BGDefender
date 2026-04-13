@@ -100,9 +100,19 @@
   font-weight: 600;
 }
 
-.markAllButton:disabled {
+.markAllButton:disabled,
+.clearAllButton:disabled {
   color: #98a2b3;
   cursor: default;
+}
+
+.clearAllButton {
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 600;
 }
 
 .menuBody {

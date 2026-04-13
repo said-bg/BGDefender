@@ -63,7 +63,7 @@ export default function useCourseProgressSync({
 
         const restoredView = getViewStateFromProgress(progress);
 
-        if (restoredView.type !== 'overview') {
+        if (restoredView.type !== 'overview' && restoredView.type !== 'final-test') {
           setExpandedChapters(new Set([restoredView.chapterId]));
         }
 

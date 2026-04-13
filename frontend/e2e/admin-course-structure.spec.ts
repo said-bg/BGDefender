@@ -25,7 +25,7 @@ const buildCourse = (overrides: Partial<MockCourse> = {}): MockCourse => ({
 const chapter = {
   id: 'chapter-1',
   titleEn: 'Understanding Risk',
-  titleFi: 'Riskin ymmärtäminen',
+  titleFi: 'Riskin ymmartaminen',
   descriptionEn: 'Risk chapter description',
   descriptionFi: 'Riskin luvun kuvaus',
   orderIndex: 1,
@@ -37,7 +37,6 @@ test.describe('Admin course structure', () => {
     await mockAuthenticatedSession(page, adminUser);
   });
 
-  // Verifies chapter creation from an empty structure and covers partial API responses.
   test('creates a chapter from the structure editor', async ({ page }) => {
     let createdPayload: Record<string, unknown> | null = null;
 
@@ -67,31 +66,35 @@ test.describe('Admin course structure', () => {
     });
 
     await page
-      .getByPlaceholder('Enter the English chapter title')
+      .getByPlaceholder(/Enter the English chapter title|Syot[aä] luvun englanninkielinen otsikko/i)
       .fill('  Understanding Risk  ');
     await page
-      .getByPlaceholder('Enter the Finnish chapter title')
-      .fill('  Riskin ymmärtäminen  ');
+      .getByPlaceholder(/Enter the Finnish chapter title|Syot[aä] luvun suomenkielinen otsikko/i)
+      .fill('  Riskin ymmartaminen  ');
     await page
-      .getByPlaceholder('Write the English chapter description.')
+      .getByPlaceholder(/Write the English chapter description\.|Kirjoita luvun englanninkielinen kuvaus\./i)
       .fill('  Risk chapter description  ');
     await page
-      .getByPlaceholder('Write the Finnish chapter description.')
+      .getByPlaceholder(/Write the Finnish chapter description\.|Kirjoita luvun suomenkielinen kuvaus\./i)
       .fill('  Riskin luvun kuvaus  ');
-    await page.locator('form').getByRole('button', { name: /^Create chapter$/i }).click();
+    await page
+      .locator('form')
+      .getByRole('button', { name: /Create chapter|Luo luku/i })
+      .click();
 
-    await expect(page.getByText('Chapter created successfully.')).toBeVisible();
+    await expect(
+      page.getByText(/Chapter created successfully\.|Luku luotiin onnistuneesti\./i),
+    ).toBeVisible();
     await expect(page.getByText('Understanding Risk')).toBeVisible();
     expect(createdPayload).toMatchObject({
       titleEn: 'Understanding Risk',
-      titleFi: 'Riskin ymmärtäminen',
+      titleFi: 'Riskin ymmartaminen',
       descriptionEn: 'Risk chapter description',
       descriptionFi: 'Riskin luvun kuvaus',
       orderIndex: 1,
     });
   });
 
-  // Verifies subchapter creation inside an existing chapter without relying on a real backend.
   test('creates a subchapter from the structure editor', async ({ page }) => {
     let createdPayload: Record<string, unknown> | null = null;
 
@@ -125,22 +128,24 @@ test.describe('Admin course structure', () => {
       waitUntil: 'networkidle',
     });
 
-    await page.getByRole('button', { name: /^Create subchapter$/i }).click();
+    await page.getByRole('button', { name: /Create subchapter|Luo alaluku/i }).click();
     await page
-      .getByPlaceholder('Enter the English subchapter title')
+      .getByPlaceholder(/Enter the English subchapter title|Syot[aä] alaluvun englanninkielinen otsikko/i)
       .fill('  Risk Signals  ');
     await page
-      .getByPlaceholder('Enter the Finnish subchapter title')
+      .getByPlaceholder(/Enter the Finnish subchapter title|Syot[aä] alaluvun suomenkielinen otsikko/i)
       .fill('  Riskisignaalit  ');
     await page
-      .getByPlaceholder('Write the English subchapter description.')
+      .getByPlaceholder(/Write the English subchapter description\.|Kirjoita alaluvun englanninkielinen kuvaus\./i)
       .fill('  Risk signals description  ');
     await page
-      .getByPlaceholder('Write the Finnish subchapter description.')
+      .getByPlaceholder(/Write the Finnish subchapter description\.|Kirjoita alaluvun suomenkielinen kuvaus\./i)
       .fill('  Riskisignaalien kuvaus  ');
-    await page.getByRole('button', { name: /^Create subchapter$/i }).last().click();
+    await page.getByRole('button', { name: /Create subchapter|Luo alaluku/i }).last().click();
 
-    await expect(page.getByText('Subchapter created successfully.')).toBeVisible();
+    await expect(
+      page.getByText(/Subchapter created successfully\.|Alaluku luotiin onnistuneesti\./i),
+    ).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Risk Signals' })).toBeVisible();
     expect(createdPayload).toMatchObject({
       titleEn: 'Risk Signals',

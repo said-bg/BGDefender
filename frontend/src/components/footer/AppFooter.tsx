@@ -11,9 +11,7 @@ export default function AppFooter() {
     <footer className={styles.footer}>
       <div className={styles.row}>
         <p className={styles.text}>
-          {`Copyright ${currentYear} ${t('footer.rights', {
-            defaultValue: 'BG Defender. All rights reserved.',
-          })}`}
+          {`Copyright ${currentYear} ${t('footer.rights')}`}
         </p>
       </div>
     </footer>

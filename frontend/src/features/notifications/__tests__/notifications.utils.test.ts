@@ -5,8 +5,19 @@ import {
 } from '../lib/notifications.utils';
 import { NotificationType, type NotificationRecord } from '@/types/api';
 
-const translate = (key: string, options?: { defaultValue?: string }) =>
-  options?.defaultValue ?? key;
+const translate = (key: string, options?: Record<string, string>) => {
+  const values: Record<string, string> = {
+    'notifications.certificateAvailableTitle': 'Certificate available',
+    'notifications.defaultTitle': 'New update',
+    'notifications.privateResourceFallback': 'A private resource',
+  };
+
+  if (key === 'notifications.certificateAvailableBody') {
+    return `Your certificate for "${options?.courseTitle ?? ''}" is now ready.`;
+  }
+
+  return values[key] ?? key;
+};
 
 const createNotification = (
   overrides: Partial<NotificationRecord> = {},

@@ -2,12 +2,24 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import useResourcesPage from '../hooks/useResourcesPage';
 import { ResourceSource, ResourceType, type Resource } from '@/types/api';
 
-const translate = (key: string, options?: { defaultValue?: string; name?: string }) => {
-  if (options?.name && options.defaultValue?.includes('{{name}}')) {
-    return options.defaultValue.replace('{{name}}', options.name);
+const translations: Record<string, string> = {
+  loadFailed: 'Failed to load your resources.',
+  createFailed: 'Failed to save resource.',
+  validationTitle: 'A title is required.',
+  validationFile: 'Upload a file before saving.',
+  validationLink: 'Enter a valid link before saving.',
+  createSuccess: 'Resource saved successfully.',
+  cannotDeleteAdmin: 'Admin-shared resources cannot be deleted from your space.',
+  deleteConfirm: 'Delete this resource?',
+  deleteSuccess: 'Resource deleted successfully.',
+};
+
+const translate = (key: string, options?: { name?: string }) => {
+  if (key === 'uploadedFile' && options?.name) {
+    return `Uploaded file: ${options.name}`;
   }
 
-  return options?.defaultValue ?? key;
+  return translations[key] ?? key;
 };
 
 jest.mock('react-i18next', () => ({

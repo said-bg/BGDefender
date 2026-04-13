@@ -41,6 +41,7 @@ export default function CourseDetailHero({
       <CourseCover
         src={course.coverImage || undefined}
         title={courseTitle}
+        seedKey={course.id}
         sizes="100vw"
         imageClassName={styles.heroBackground}
         fallbackClassName={styles.heroFallback}

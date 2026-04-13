@@ -7,11 +7,12 @@ import styles from './CourseCover.module.css';
 type CourseCoverProps = {
   src?: string | null;
   title: string;
+  seedKey?: string | number | null;
   sizes: string;
   priority?: boolean;
   imageClassName?: string;
   fallbackClassName?: string;
-  variant?: 'card' | 'hero';
+  variant?: 'card' | 'hero' | 'collection' | 'stack';
 };
 
 function getDisplayTitle(title: string, fallback: string) {
@@ -19,24 +20,27 @@ function getDisplayTitle(title: string, fallback: string) {
   return normalizedTitle || fallback;
 }
 
-const fallbackPalettes = [
-  ['#ffb21f', '#ffa600', '#eb8f00'],
-  ['#2563eb', '#3b82f6', '#1d4ed8'],
-  ['#0f766e', '#14b8a6', '#115e59'],
-  ['#7c3aed', '#8b5cf6', '#6d28d9'],
-  ['#be185d', '#ec4899', '#9d174d'],
-  ['#0f766e', '#22c55e', '#15803d'],
-  ['#b45309', '#f59e0b', '#d97706'],
-  ['#334155', '#475569', '#1e293b'],
-];
-
 function getPaletteIndex(seed: string) {
-  return Array.from(seed).reduce((total, character) => total + character.charCodeAt(0), 0);
+  return Array.from(seed).reduce(
+    (total, character, index) => (total * 33 + character.charCodeAt(0) * (index + 1)) >>> 0,
+    5381,
+  );
+}
+
+function getFallbackColors(seed: number, variant: CourseCoverProps['variant']) {
+  const hue = Math.round(((seed * 137.508) % 360 + 360) % 360);
+  const saturation = variant === 'hero' ? 78 : variant === 'collection' ? 72 : 68;
+  const lightness = variant === 'hero' ? 52 : variant === 'collection' ? 48 : 54;
+
+  return {
+    solid: `hsl(${hue} ${saturation}% ${lightness}%)`,
+  };
 }
 
 export default function CourseCover({
   src,
   title,
+  seedKey,
   sizes,
   priority = false,
   imageClassName,
@@ -47,8 +51,15 @@ export default function CourseCover({
     title,
     'Untitled course',
   );
-  const [startColor, middleColor, endColor] =
-    fallbackPalettes[getPaletteIndex(displayTitle) % fallbackPalettes.length];
+  const paletteSeed = getPaletteIndex(
+    seedKey !== undefined && seedKey !== null && `${seedKey}`.length > 0
+      ? String(seedKey)
+      : displayTitle,
+  );
+  const { solid: solidColor } = getFallbackColors(
+    paletteSeed,
+    variant,
+  );
 
   if (src) {
     return (
@@ -67,20 +78,23 @@ export default function CourseCover({
   return (
     <div
       className={`${styles.coverFallback} ${
-        variant === 'hero' ? styles.coverFallbackHero : styles.coverFallbackCard
+        variant === 'hero'
+          ? styles.coverFallbackHero
+          : variant === 'collection'
+            ? styles.coverFallbackCollection
+            : variant === 'stack'
+              ? styles.coverFallbackStack
+            : styles.coverFallbackCard
       } ${fallbackClassName ?? ''}`}
       style={
         {
-          '--course-cover-start': startColor,
-          '--course-cover-middle': middleColor,
-          '--course-cover-end': endColor,
+          '--course-cover-solid': solidColor,
         } as CSSProperties
       }
       aria-label={displayTitle}
     >
-      {variant === 'hero' ? null : (
+      {variant === 'hero' || variant === 'stack' || variant === 'collection' ? null : (
         <>
-          <div className={styles.coverGlow} />
           <div className={styles.coverPlate}>
             <strong className={styles.coverTitle}>{displayTitle}</strong>
           </div>

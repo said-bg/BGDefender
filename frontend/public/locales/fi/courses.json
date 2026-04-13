@@ -33,6 +33,8 @@
     "collectionLabel": "Kokoelma",
     "collectionCourseCount": "{{count}} kurssia mukana",
     "collectionCardFallbackDescription": "{{count}} kurssia yhdelle ohjatulle oppimispolulle ryhmiteltynä.",
+    "collectionPathLabel": "Rakenteinen oppimispolku",
+    "collectionPreviewMore": "+{{count}} lisää",
     "openCollection": "Avaa kokoelma",
     "freeDescription": "Aloita aloittelijaystävällisillä oppitunneilla ja rakenna vahva perusta kyberturvallisuudessa.",
     "premiumDescription": "Avaa syvällisempää sisältöä edistyneeseen harjoitteluun, premium-aiheisiin ja ammatilliseen kehittymiseen.",

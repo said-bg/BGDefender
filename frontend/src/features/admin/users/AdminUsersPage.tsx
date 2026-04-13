@@ -42,19 +42,16 @@ function AdminUsersPageContent() {
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <Link href="/admin" className={styles.backLink}>
-            {t('backToOverview', { defaultValue: 'Back to dashboard' })}
+            {t('backToOverview')}
           </Link>
           <p className={styles.eyebrow}>
-            {t('users.eyebrow', { defaultValue: 'User management' })}
+            {t('users.eyebrow')}
           </p>
           <h1 className={styles.title}>
-            {t('users.title', { defaultValue: 'Manage users' })}
+            {t('users.title')}
           </h1>
           <p className={styles.subtitle}>
-            {t('users.subtitle', {
-              defaultValue:
-                'Manage access plans, creator permissions, and account status from one simple admin space.',
-            })}
+            {t('users.subtitle')}
           </p>
         </div>
       </section>
@@ -65,25 +62,25 @@ function AdminUsersPageContent() {
       <section className={styles.summary}>
         <article className={styles.summaryCard}>
           <span className={styles.summaryLabel}>
-            {t('users.summaryVisible', { defaultValue: 'Visible users' })}
+            {t('users.summaryVisible')}
           </span>
           <strong className={styles.summaryValue}>{summary.visible}</strong>
         </article>
         <article className={styles.summaryCard}>
           <span className={styles.summaryLabel}>
-            {t('users.summaryPremium', { defaultValue: 'Premium users' })}
+            {t('users.summaryPremium')}
           </span>
           <strong className={styles.summaryValue}>{summary.premium}</strong>
         </article>
         <article className={styles.summaryCard}>
           <span className={styles.summaryLabel}>
-            {t('users.summaryCreators', { defaultValue: 'Creators' })}
+            {t('users.summaryCreators')}
           </span>
           <strong className={styles.summaryValue}>{summary.creators}</strong>
         </article>
         <article className={styles.summaryCard}>
           <span className={styles.summaryLabel}>
-            {t('users.summaryInactive', { defaultValue: 'Inactive accounts' })}
+            {t('users.summaryInactive')}
           </span>
           <strong className={styles.summaryValue}>{summary.inactive}</strong>
         </article>
@@ -94,9 +91,7 @@ function AdminUsersPageContent() {
           className={styles.searchInput}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder={t('users.searchPlaceholder', {
-            defaultValue: 'Search by name or email',
-          })}
+          placeholder={t('users.searchPlaceholder')}
         />
         <select
           className={styles.selectInput}
@@ -104,13 +99,13 @@ function AdminUsersPageContent() {
           onChange={(event) => setPlanFilter(event.target.value as 'all' | UserPlan)}
         >
           <option value="all">
-            {t('users.filterAllPlans', { defaultValue: 'All plans' })}
+            {t('users.filterAllPlans')}
           </option>
           <option value={UserPlan.FREE}>
-            {t('levels.free', { defaultValue: 'Free' })}
+            {t('levels.free')}
           </option>
           <option value={UserPlan.PREMIUM}>
-            {t('levels.premium', { defaultValue: 'Premium' })}
+            {t('levels.premium')}
           </option>
         </select>
         <select
@@ -119,33 +114,31 @@ function AdminUsersPageContent() {
           onChange={(event) => setRoleFilter(event.target.value as 'all' | UserRole)}
         >
           <option value="all">
-            {t('users.filterAllRoles', { defaultValue: 'All roles' })}
+            {t('users.filterAllRoles')}
           </option>
           <option value={UserRole.USER}>
-            {t('users.roleUser', { defaultValue: 'User' })}
+            {t('users.roleUser')}
           </option>
           <option value={UserRole.CREATOR}>
-            {t('users.roleCreator', { defaultValue: 'Creator' })}
+            {t('users.roleCreator')}
           </option>
           <option value={UserRole.ADMIN}>
-            {t('users.roleAdmin', { defaultValue: 'Admin' })}
+            {t('users.roleAdmin')}
           </option>
         </select>
       </section>
 
       {loading ? (
         <p className={styles.statusMessage}>
-          {t('loading', { defaultValue: 'Loading admin data...' })}
+          {t('loading')}
         </p>
       ) : preparedUsers.length === 0 ? (
         <section className={styles.emptyState}>
           <h2 className={styles.emptyTitle}>
-            {t('users.emptyTitle', { defaultValue: 'No users found' })}
+            {t('users.emptyTitle')}
           </h2>
           <p className={styles.emptyDescription}>
-            {t('users.empty', {
-              defaultValue: 'No users match the current filters.',
-            })}
+            {t('users.empty')}
           </p>
         </section>
       ) : (
@@ -178,16 +171,21 @@ function AdminUsersPageContent() {
                   {showPlan ? (
                     <span className={`${styles.badge} ${planBadgeClass}`}>
                       {user.plan === UserPlan.PREMIUM
-                        ? t('levels.premium', { defaultValue: 'Premium' })
-                        : t('levels.free', { defaultValue: 'Free' })}
+                        ? t('levels.premium')
+                        : t('levels.free')}
                     </span>
-                  ) : null}
+                  ) : (
+                    <span
+                      aria-hidden="true"
+                      className={`${styles.badge} ${styles.badgePlaceholder}`}
+                    />
+                  )}
                   <span className={`${styles.badge} ${roleBadgeClass}`}>
                     {user.role === UserRole.ADMIN
-                      ? t('users.roleAdmin', { defaultValue: 'Admin' })
+                      ? t('users.roleAdmin')
                       : user.role === UserRole.CREATOR
-                        ? t('users.roleCreator', { defaultValue: 'Creator' })
-                        : t('users.roleUser', { defaultValue: 'User' })}
+                        ? t('users.roleCreator')
+                        : t('users.roleUser')}
                   </span>
                   <span
                     className={`${styles.badge} ${
@@ -195,8 +193,8 @@ function AdminUsersPageContent() {
                     }`}
                   >
                     {user.isActive
-                      ? t('users.active', { defaultValue: 'Active' })
-                      : t('users.inactive', { defaultValue: 'Inactive' })}
+                      ? t('users.active')
+                      : t('users.inactive')}
                   </span>
                 </div>
 
@@ -209,14 +207,12 @@ function AdminUsersPageContent() {
                       disabled={isActing}
                     >
                       {user.plan === UserPlan.PREMIUM
-                        ? t('users.removePremium', {
-                            defaultValue: 'Remove premium',
-                          })
-                        : t('users.grantPremium', {
-                            defaultValue: 'Grant premium',
-                          })}
+                        ? t('users.removePremium')
+                        : t('users.grantPremium')}
                     </button>
-                  ) : null}
+                  ) : (
+                    <span aria-hidden="true" className={styles.actionPlaceholder} />
+                  )}
 
                   {user.role !== UserRole.ADMIN ? (
                     <button
@@ -226,14 +222,12 @@ function AdminUsersPageContent() {
                       disabled={isActing}
                     >
                       {user.role === UserRole.CREATOR
-                        ? t('users.removeCreator', {
-                            defaultValue: 'Remove creator',
-                          })
-                        : t('users.grantCreator', {
-                            defaultValue: 'Grant creator',
-                          })}
+                        ? t('users.removeCreator')
+                        : t('users.grantCreator')}
                     </button>
-                  ) : null}
+                  ) : (
+                    <span aria-hidden="true" className={styles.actionPlaceholder} />
+                  )}
 
                   <button
                     type="button"
@@ -244,8 +238,8 @@ function AdminUsersPageContent() {
                     disabled={isActing || user.isCurrentAdmin}
                   >
                     {user.isActive
-                      ? t('users.deactivate', { defaultValue: 'Deactivate' })
-                      : t('users.reactivate', { defaultValue: 'Reactivate' })}
+                      ? t('users.deactivate')
+                      : t('users.reactivate')}
                   </button>
 
                   <button
@@ -254,7 +248,7 @@ function AdminUsersPageContent() {
                     onClick={() => void handleDeleteUser(user)}
                     disabled={isActing || user.isCurrentAdmin}
                   >
-                    {t('users.deleteShort', { defaultValue: 'Delete' })}
+                    {t('users.deleteShort')}
                   </button>
                 </div>
               </article>

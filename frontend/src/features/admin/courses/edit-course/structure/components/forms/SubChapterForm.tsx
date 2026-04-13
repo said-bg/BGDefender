@@ -45,30 +45,16 @@ export default function EditCourseSubChapterForm({
       <div className={styles.cardHeader}>
         <h3 className={styles.sectionTitle}>
           {editingSubChapterId
-            ? t('edit.subchapters.editTitle', { defaultValue: 'Edit subchapter' })
-            : t('edit.subchapters.createTitle', { defaultValue: 'Create subchapter' })}
+            ? t('edit.subchapters.editTitle')
+            : t('edit.subchapters.createTitle')}
         </h3>
-        <p className={styles.sectionDescription}>
-          {t('edit.subchapters.formDescription', {
-            defaultValue:
-              'Attach the subchapter to a chapter, then we will plug real lesson content into it next.',
-          })}
-        </p>
+        <p className={styles.sectionDescription}>{t('edit.subchapters.formDescription')}</p>
       </div>
 
       {chapters.length === 0 ? (
         <div className={styles.emptyState}>
-          <p className={styles.emptyTitle}>
-            {t('edit.subchapters.emptyWithoutChapterTitle', {
-              defaultValue: 'Create a chapter first',
-            })}
-          </p>
-          <p className={styles.emptyDescription}>
-            {t('edit.subchapters.emptyWithoutChapterDescription', {
-              defaultValue:
-                'Subchapters live inside chapters, so start by creating at least one chapter above.',
-            })}
-          </p>
+          <p className={styles.emptyTitle}>{t('edit.subchapters.emptyWithoutChapterTitle')}</p>
+          <p className={styles.emptyDescription}>{t('edit.subchapters.emptyWithoutChapterDescription')}</p>
         </div>
       ) : (
         <form className={styles.form} onSubmit={onSubmit}>
@@ -102,13 +88,11 @@ export default function EditCourseSubChapterForm({
             <button type="submit" className={styles.primaryAction} disabled={isSubmittingSubChapter}>
               {isSubmittingSubChapter
                 ? editingSubChapterId
-                  ? t('edit.subchapters.saving', { defaultValue: 'Saving subchapter...' })
-                  : t('edit.subchapters.creating', {
-                      defaultValue: 'Creating subchapter...',
-                    })
+                  ? t('edit.subchapters.saving')
+                  : t('edit.subchapters.creating')
                 : editingSubChapterId
-                  ? t('edit.subchapters.save', { defaultValue: 'Save subchapter' })
-                  : t('edit.subchapters.create', { defaultValue: 'Create subchapter' })}
+                  ? t('edit.subchapters.save')
+                  : t('edit.subchapters.create')}
             </button>
           </div>
         </form>

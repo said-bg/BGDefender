@@ -143,7 +143,6 @@ export default function CollectionDetailPage() {
       fallbackDescription ||
       t('page.collectionCardFallbackDescription', {
         count: collection.courses.length,
-        defaultValue: '{{count}} courses grouped into one guided learning path.',
       })
     ).trim();
   }, [collection, i18n.language, t]);
@@ -162,33 +161,29 @@ export default function CollectionDetailPage() {
     <div className={styles.container}>
       <section className={styles.shell}>
         <Link href="/" className={styles.backLink}>
-          {t('collectionDetail.back', { defaultValue: 'Back to home' })}
+          {t('collectionDetail.back')}
         </Link>
 
         {loading ? (
           <div className={styles.stateCard}>
-            {t('collectionDetail.loading', { defaultValue: 'Loading collection...' })}
+            {t('collectionDetail.loading')}
           </div>
         ) : error || !collection ? (
           <div className={styles.stateCard}>
             <h1 className={styles.stateTitle}>
-              {t('collectionDetail.notFoundTitle', {
-                defaultValue: 'Collection not found',
-              })}
+              {t('collectionDetail.notFoundTitle')}
             </h1>
             <p className={styles.stateDescription}>
               {error === t('page.failedToLoadCourses')
                 ? error
-                : t('collectionDetail.notFoundDescription', {
-                    defaultValue: 'This collection is not available right now.',
-                  })}
+                : t('collectionDetail.notFoundDescription')}
             </p>
           </div>
         ) : (
           <>
             <header className={styles.header}>
               <span className={styles.eyebrow}>
-                {t('page.collections', { defaultValue: 'Collections' })}
+                {t('page.collections')}
               </span>
               <h1 className={styles.title}>{collectionTitle}</h1>
               <p className={styles.description}>{collectionDescription}</p>
@@ -197,14 +192,10 @@ export default function CollectionDetailPage() {
             {courses.length === 0 ? (
               <div className={styles.stateCard}>
                 <h2 className={styles.stateTitle}>
-                  {t('collectionDetail.emptyTitle', {
-                    defaultValue: 'No courses in this collection yet',
-                  })}
+                  {t('collectionDetail.emptyTitle')}
                 </h2>
                 <p className={styles.stateDescription}>
-                  {t('collectionDetail.emptyDescription', {
-                    defaultValue: 'Add published courses to this collection from the admin panel.',
-                  })}
+                  {t('collectionDetail.emptyDescription')}
                 </p>
               </div>
             ) : (
