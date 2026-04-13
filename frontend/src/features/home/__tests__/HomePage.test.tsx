@@ -133,6 +133,19 @@ describe('HomePage', () => {
     expect(window.localStorage.getItem(state.learnerHomeStorageKey)).toBe('1');
   });
 
+  it('keeps Welcome on rerender during the first learner visit', () => {
+    const state = createHomeState();
+    mockUseHomeCourses.mockReturnValue(state);
+
+    const { rerender } = render(<HomePage />);
+
+    rerender(<HomePage />);
+
+    expect(
+      screen.getByRole('heading', { name: 'Welcome, Ait' }),
+    ).toBeInTheDocument();
+  });
+
   it('shows Welcome back after the learner home has already been seen', () => {
     const state = createHomeState();
     window.localStorage.setItem(state.learnerHomeStorageKey, '1');

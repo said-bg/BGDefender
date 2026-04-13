@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import HomeCourseRail from './components/HomeCourseRail';
 import HomeHero from './components/HomeHero';
@@ -21,11 +21,25 @@ export default function HomePage() {
     visibleInProgressCourses,
     welcomeName,
   } = useHomeCourses();
-  const isFirstLearnerVisit =
-    isLearnerHome &&
-    Boolean(learnerHomeStorageKey) &&
-    typeof window !== 'undefined' &&
-    window.localStorage.getItem(learnerHomeStorageKey) !== '1';
+  const learnerVisitSnapshotRef = useRef<Record<string, boolean>>({});
+  const isFirstLearnerVisit = useMemo(() => {
+    if (
+      !isLearnerHome ||
+      !learnerHomeStorageKey ||
+      typeof window === 'undefined'
+    ) {
+      return false;
+    }
+
+    const cachedVisitState = learnerVisitSnapshotRef.current[learnerHomeStorageKey];
+    if (typeof cachedVisitState === 'boolean') {
+      return cachedVisitState;
+    }
+
+    const isFirstVisit = window.localStorage.getItem(learnerHomeStorageKey) !== '1';
+    learnerVisitSnapshotRef.current[learnerHomeStorageKey] = isFirstVisit;
+    return isFirstVisit;
+  }, [isLearnerHome, learnerHomeStorageKey]);
 
   useEffect(() => {
     if (!isLearnerHome || !learnerHomeStorageKey) {
