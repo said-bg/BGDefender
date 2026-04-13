@@ -78,6 +78,39 @@ export default function useAdminUsers() {
     }
   };
 
+  const handleDeleteUser = async (user: User) => {
+    const confirmed = window.confirm(
+      t('users.deleteConfirm', {
+        defaultValue: 'Delete this user account permanently? This action cannot be undone.',
+      }),
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setActingUserId(user.id);
+      setError(null);
+      setMessage(null);
+      const response = await userService.deleteAdminUser(user.id);
+      setUsers((previous) => previous.filter((entry) => entry.id !== user.id));
+      setMessage(
+        response.message ||
+          t('users.deleted', { defaultValue: 'User deleted successfully.' }),
+      );
+    } catch (deleteError) {
+      setError(
+        getApiErrorMessage(
+          deleteError,
+          t('users.deleteFailed', { defaultValue: 'Failed to delete user account.' }),
+        ),
+      );
+    } finally {
+      setActingUserId(null);
+    }
+  };
+
   const handleTogglePlan = async (user: User) => {
     if (!canManagePlan(user)) {
       return;
@@ -133,6 +166,7 @@ export default function useAdminUsers() {
     actingUserId,
     canManagePlan,
     error,
+    handleDeleteUser,
     handleToggleActive,
     handleToggleCreator,
     handleTogglePlan,

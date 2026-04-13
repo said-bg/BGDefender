@@ -111,4 +111,35 @@ export class UsersService {
     const updatedUser = await this.userRepository.save(user);
     return toSafeUser(updatedUser);
   }
+
+  async deleteAdminUser(
+    userId: number,
+    currentAdminId: number,
+    language: AppLanguage = 'en',
+  ): Promise<{ message: string }> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (user.id === currentAdminId) {
+      throw new BadRequestException(
+        language === 'fi'
+          ? 'Et voi poistaa omaa tiliäsi'
+          : 'You cannot delete your own account',
+      );
+    }
+
+    await this.userRepository.remove(user);
+
+    return {
+      message:
+        language === 'fi'
+          ? 'Kayttaja poistettiin onnistuneesti.'
+          : 'User deleted successfully.',
+    };
+  }
 }

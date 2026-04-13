@@ -21,6 +21,7 @@ function AdminUsersPageContent() {
     actingUserId,
     canManagePlan,
     error,
+    handleDeleteUser,
     handleToggleActive,
     handleToggleCreator,
     handleTogglePlan,
@@ -245,6 +246,15 @@ function AdminUsersPageContent() {
                     {user.isActive
                       ? t('users.deactivate', { defaultValue: 'Deactivate' })
                       : t('users.reactivate', { defaultValue: 'Reactivate' })}
+                  </button>
+
+                  <button
+                    type="button"
+                    className={`${styles.actionButton} ${styles.dangerAction}`}
+                    onClick={() => void handleDeleteUser(user)}
+                    disabled={isActing || user.isCurrentAdmin}
+                  >
+                    {t('users.delete', { defaultValue: 'Delete account' })}
                   </button>
                 </div>
               </article>

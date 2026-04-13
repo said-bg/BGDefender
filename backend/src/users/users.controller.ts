@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Patch,
+  Delete,
   Body,
   Param,
   ParseIntPipe,
@@ -38,6 +39,19 @@ export class UsersController {
     return this.usersService.updateAdminUser(
       id,
       updateAdminUserDto,
+      currentUser.id,
+      resolveLanguage(acceptLanguage),
+    );
+  }
+
+  @Delete(':id')
+  async deleteUser(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() currentUser: SafeUser,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    return this.usersService.deleteAdminUser(
+      id,
       currentUser.id,
       resolveLanguage(acceptLanguage),
     );

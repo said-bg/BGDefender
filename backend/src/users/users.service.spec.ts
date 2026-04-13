@@ -8,6 +8,7 @@ type MockUserRepository = {
   createQueryBuilder: jest.Mock;
   findOne: jest.Mock;
   save: jest.Mock;
+  remove: jest.Mock;
 };
 
 describe('UsersService', () => {
@@ -33,6 +34,7 @@ describe('UsersService', () => {
       createQueryBuilder: jest.fn(),
       findOne: jest.fn(),
       save: jest.fn(),
+      remove: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -141,5 +143,31 @@ describe('UsersService', () => {
         1,
       ),
     ).rejects.toThrow(NotFoundException);
+  });
+
+  it('deletes another user account', async () => {
+    userRepository.findOne.mockResolvedValue({ ...mockUser });
+    userRepository.remove.mockResolvedValue(undefined);
+
+    const result = await service.deleteAdminUser(mockUser.id, 999);
+
+    expect(userRepository.remove).toHaveBeenCalledWith(
+      expect.objectContaining({ id: mockUser.id }),
+    );
+    expect(result).toEqual({
+      message: 'User deleted successfully.',
+    });
+  });
+
+  it('rejects deleting own account', async () => {
+    userRepository.findOne.mockResolvedValue({
+      ...mockUser,
+      id: 42,
+      role: UserRole.ADMIN,
+    });
+
+    await expect(service.deleteAdminUser(42, 42)).rejects.toThrow(
+      BadRequestException,
+    );
   });
 });

@@ -1,6 +1,10 @@
 import apiClient from '../api/apiClient';
 import type { AdminUsersResponse, UpdateAdminUserRequest, User, UserPlan, UserRole } from '@/types/api';
 
+type DeleteAdminUserResponse = {
+  message: string;
+};
+
 type GetAdminUsersParams = {
   limit?: number;
   offset?: number;
@@ -20,6 +24,11 @@ const userService = {
 
   async updateAdminUser(id: number, payload: UpdateAdminUserRequest): Promise<User> {
     const response = await apiClient.patch<User>(`/admin/users/${id}`, payload);
+    return response.data;
+  },
+
+  async deleteAdminUser(id: number): Promise<DeleteAdminUserResponse> {
+    const response = await apiClient.delete<DeleteAdminUserResponse>(`/admin/users/${id}`);
     return response.data;
   },
 };
