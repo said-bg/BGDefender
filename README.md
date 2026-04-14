@@ -129,8 +129,6 @@ Edit `frontend/.env.local`:
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
-(Only needed for local dev - not in production)
-
 ### Step 3: Start Everything with Docker
 
 **First time ONLY** (clean database):
