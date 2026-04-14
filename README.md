@@ -1,4 +1,4 @@
-# BG Academy - Full Stack Learning Platform
+# BG Defender Academy - Learning Platform
 
 A cybersecurity course management platform for creating, managing, and delivering online courses.
 
