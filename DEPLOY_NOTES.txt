@@ -1,0 +1,150 @@
+BG Academy - Deployment Notes
+
+1. Overview
+
+This package contains the BG Academy source code for internal restricted testing.
+
+Stack:
+- Frontend: Next.js
+- Backend: NestJS
+- Database: MySQL
+- Container support: Docker / Docker Compose
+
+Recommended public URL:
+- Frontend website: https://academy.bg.fi
+- Backend API: https://academy.bg.fi/api
+
+The frontend should call the backend through /api on the same domain.
+
+
+2. Prerequisites
+
+Required on the target server:
+- Node.js 18+ with npm
+- Docker and Docker Compose
+- MySQL access through Docker or server environment
+
+
+3. Files Included
+
+Main files/folders:
+- backend/
+- frontend/
+- docker-compose.yml
+- db_schema.sql
+- package.json
+- package-lock.json
+- README.md
+
+Notes:
+- db_schema.sql contains database structure only
+- Demo content is provided through backend seed data on first launch
+
+
+4. Environment Setup
+
+4.1 Backend
+
+Use:
+- backend/.env.production
+
+Before running in production, copy it to:
+- backend/.env
+
+Then fill in the real production values:
+- DATABASE_HOST
+- DATABASE_PORT
+- DATABASE_USERNAME
+- DATABASE_PASSWORD
+- DATABASE_NAME
+- JWT_SECRET
+- SMTP_USER
+- SMTP_PASS
+- SMTP_FROM
+
+Already prepared values:
+- NODE_ENV=production
+- PORT=3001
+- FRONTEND_URL=https://academy.bg.fi
+- CORS_ORIGIN=https://academy.bg.fi
+
+Important:
+- For first deployment only, keep:
+  SEED_ON_BOOT=true
+- After the first successful launch, change it to:
+  SEED_ON_BOOT=false
+
+
+4.2 Frontend
+
+Use:
+- frontend/.env.production
+
+Important variable:
+- NEXT_PUBLIC_API_URL=https://academy.bg.fi/api
+
+This value is required when building the frontend for production.
+
+
+5. Database
+
+This package includes:
+- db_schema.sql
+
+This is a schema-only dump.
+Demo users/courses are not included in the SQL dump.
+Instead, demo data is created by the backend seed on first launch when:
+- SEED_ON_BOOT=true
+
+
+6. Install Dependencies
+
+From the project root:
+
+npm ci
+
+If preferred, npm install can also be used in development, but npm ci is recommended for clean server installs.
+
+
+7. Start the Database
+
+From the project root:
+
+docker compose up -d
+
+This docker-compose file is mainly used for the MySQL database service.
+The database values in docker-compose.yml can be adjusted on the target server if different credentials or container settings are preferred.
+If they change the database name, username, password, or host in docker-compose.yml, they must also use matching values in backend/.env.
+
+
+8. Build
+
+From the project root:
+
+Backend:
+npm --workspace=backend run build
+
+Frontend:
+npm --workspace=frontend run build
+
+If building the frontend manually, make sure NEXT_PUBLIC_API_URL points to:
+- https://academy.bg.fi/api
+
+
+9. Run
+
+Backend:
+npm --workspace=backend run start:prod
+
+Frontend:
+npm --workspace=frontend run start
+
+Backend should run with the completed backend/.env file.
+Frontend should run after the production build has been created.
+
+Optional local development shortcut:
+npm run start
+
+This root command starts backend and frontend together in development mode.
+It is useful for local development, but for deployment the production start commands above are recommended.
+
