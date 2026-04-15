@@ -113,7 +113,7 @@ export function EditCourseShell({
           {subtitle ? <p className={shellStyles.subtitle}>{subtitle}</p> : null}
           {courseTitle ? <p className={sharedStyles.helperText}>{courseTitle}</p> : null}
 
-          <nav className={shellStyles.sectionNav} aria-label="Edit course sections">
+          <nav className={shellStyles.sectionNav} aria-label={t('edit.courseSection')}>
             {tabs.map((tab) => (
               <Link
                 key={tab.key}

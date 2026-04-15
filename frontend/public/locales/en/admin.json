@@ -81,6 +81,7 @@
   },
   "edit": {
     "backToCourses": "Back to course library",
+    "courseSection": "Edit course sections",
     "eyebrow": "Edit course",
     "title": "Edit course",
     "subtitle": "Update the course shell before moving into chapters, subchapters, and content editing.",
