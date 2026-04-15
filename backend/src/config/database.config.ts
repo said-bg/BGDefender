@@ -34,9 +34,9 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
       type: 'mysql',
       host: this.configService.get('DATABASE_HOST') || 'localhost',
       port: this.configService.get('DATABASE_PORT') || 3306,
-      username: this.configService.getOrThrow('DATABASE_USERNAME'), // Obligatoire desde .env
-      password: this.configService.getOrThrow('DATABASE_PASSWORD'), // Obligatoire, jamais en clair
-      database: this.configService.getOrThrow('DATABASE_NAME'), // Obligatoire
+      username: this.configService.getOrThrow('DATABASE_USERNAME'),
+      password: this.configService.getOrThrow('DATABASE_PASSWORD'),
+      database: this.configService.getOrThrow('DATABASE_NAME'),
       entities: [
         User,
         PasswordResetToken,

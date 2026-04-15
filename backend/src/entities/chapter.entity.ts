@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -47,9 +48,10 @@ export class Chapter {
   @ManyToOne(() => Course, (course) => course.chapters, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'courseId' })
   course: Course;
 
-  @Column()
+  @Column('uuid')
   courseId: string;
 
   @OneToMany(() => SubChapter, (subChapter) => subChapter.chapter)

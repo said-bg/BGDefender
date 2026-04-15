@@ -147,4 +147,3 @@ npm run start
 
 This root command starts backend and frontend together in development mode.
 It is useful for local development, but for deployment the production start commands above are recommended.
-
