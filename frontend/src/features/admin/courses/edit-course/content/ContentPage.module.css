@@ -16,6 +16,7 @@
 .contentEditorColumn {
   display: grid;
   gap: 0.8rem;
+  min-width: 0;
 }
 
 .editorTopActions {
@@ -65,6 +66,7 @@
 .contentEditorPanel {
   display: grid;
   gap: 0.8rem;
+  min-width: 0;
   padding: 16px;
   border: 1px solid #e6ebf2;
   border-radius: 1rem;
