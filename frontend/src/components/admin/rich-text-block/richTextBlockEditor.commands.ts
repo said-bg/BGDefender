@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/react';
+import { NodeSelection } from '@tiptap/pm/state';
 import { SelectedMediaState, toVideoAlign } from './richTextBlockEditor.utils';
 
 export type RichTextCommandLabels = {
@@ -142,14 +143,32 @@ export const insertUploadedMediaCommand = (
     .run();
 };
 
+const getSelectedMediaNodeName = (editor: Editor) => {
+  const { selection } = editor.state;
+
+  if (!(selection instanceof NodeSelection)) {
+    return null;
+  }
+
+  const nodeName = selection.node.type.name.toLowerCase();
+  return nodeName.includes('image') || nodeName.includes('video') ? selection.node.type.name : null;
+};
+
 export const applyMediaWidthCommand = (
   editor: Editor,
   selectedMedia: SelectedMediaState,
   width: number,
 ) => {
-  // Note: Direct media attribute updates are not supported with current TipTap setup
-  // Media updates require re-inserting the content. Consider refactoring to support this.
-  console.warn('Media width updates are not fully supported in this version');
+  const nodeName = getSelectedMediaNodeName(editor);
+
+  if (!nodeName) {
+    return;
+  }
+
+  const nextWidth =
+    selectedMedia.type === 'video' ? `${width}px` : width;
+
+  editor.chain().focus().updateAttributes(nodeName, { width: nextWidth }).run();
 };
 
 export const applyMediaAlignCommand = (
@@ -157,7 +176,14 @@ export const applyMediaAlignCommand = (
   selectedMedia: SelectedMediaState,
   align: 'left' | 'center' | 'right',
 ) => {
-  // Note: Direct media attribute updates are not supported with current TipTap setup
-  // Media updates require re-inserting the content. Consider refactoring to support this.
-  console.warn('Media alignment updates are not fully supported in this version');
+  const nodeName = getSelectedMediaNodeName(editor);
+
+  if (!nodeName) {
+    return;
+  }
+
+  const nextAlign =
+    selectedMedia.type === 'video' ? toVideoAlign(align) : align;
+
+  editor.chain().focus().updateAttributes(nodeName, { align: nextAlign }).run();
 };
