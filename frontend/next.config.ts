@@ -34,6 +34,10 @@ const nextConfig: NextConfig = {
         hostname: "cdn.educba.com",
       },
       {
+        protocol: "https",
+        hostname: "wisdomplexus.com",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
         port: "3001",
