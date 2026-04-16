@@ -81,7 +81,11 @@ export const insertVideoFromUrlCommand = (editor: Editor, labels: RichTextComman
   editor
     .chain()
     .focus()
-    .insertContent(`<video src="${nextUrl.trim()}" style="width: 960px; display: block; margin: 0 auto;" controls />`)
+    .setVideo({
+      src: nextUrl.trim(),
+      width: '100%',
+      align: 'center',
+    })
     .run();
 };
 
@@ -120,7 +124,11 @@ export const insertUploadedMediaCommand = (
     editor
       .chain()
       .focus()
-      .insertContent(`<video src="${uploadedUrl}" style="width: 960px; display: block; margin: 0 auto;" controls />`)
+      .setVideo({
+        src: uploadedUrl,
+        width: '100%',
+        align: 'center',
+      })
       .run();
     return;
   }
