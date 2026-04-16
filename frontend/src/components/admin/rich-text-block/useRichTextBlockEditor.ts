@@ -69,6 +69,13 @@ export default function useRichTextBlockEditor({
     onUpdate: ({ editor: currentEditor }) => {
       onChange(currentEditor.isEmpty ? '' : currentEditor.getHTML());
     },
+    onTransaction: ({ editor: currentEditor, transaction }) => {
+      if (!transaction.docChanged) {
+        return;
+      }
+
+      onChange(currentEditor.isEmpty ? '' : currentEditor.getHTML());
+    },
   });
 
   const { selectedMedia, handleMediaWidthChange, applyMediaAlign } =

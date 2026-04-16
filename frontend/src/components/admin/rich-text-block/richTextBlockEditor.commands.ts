@@ -1,5 +1,4 @@
 import type { Editor } from '@tiptap/react';
-import { NodeSelection } from '@tiptap/pm/state';
 import { SelectedMediaState, toVideoAlign } from './richTextBlockEditor.utils';
 
 export type RichTextCommandLabels = {
@@ -143,32 +142,25 @@ export const insertUploadedMediaCommand = (
     .run();
 };
 
-const getSelectedMediaNodeName = (editor: Editor) => {
-  const { selection } = editor.state;
-
-  if (!(selection instanceof NodeSelection)) {
-    return null;
-  }
-
-  const nodeName = selection.node.type.name.toLowerCase();
-  return nodeName.includes('image') || nodeName.includes('video') ? selection.node.type.name : null;
-};
-
 export const applyMediaWidthCommand = (
   editor: Editor,
   selectedMedia: SelectedMediaState,
   width: number,
 ) => {
-  const nodeName = getSelectedMediaNodeName(editor);
-
-  if (!nodeName) {
+  if (selectedMedia.type === 'video') {
+    editor
+      .chain()
+      .focus()
+      .updateVideo({ width: `${width}px` })
+      .run();
     return;
   }
 
-  const nextWidth =
-    selectedMedia.type === 'video' ? `${width}px` : width;
-
-  editor.chain().focus().updateAttributes(nodeName, { width: nextWidth }).run();
+  editor
+    .chain()
+    .focus()
+    .updateImage({ width })
+    .run();
 };
 
 export const applyMediaAlignCommand = (
@@ -176,14 +168,18 @@ export const applyMediaAlignCommand = (
   selectedMedia: SelectedMediaState,
   align: 'left' | 'center' | 'right',
 ) => {
-  const nodeName = getSelectedMediaNodeName(editor);
-
-  if (!nodeName) {
+  if (selectedMedia.type === 'video') {
+    editor
+      .chain()
+      .focus()
+      .updateVideo({ align: toVideoAlign(align) })
+      .run();
     return;
   }
 
-  const nextAlign =
-    selectedMedia.type === 'video' ? toVideoAlign(align) : align;
-
-  editor.chain().focus().updateAttributes(nodeName, { align: nextAlign }).run();
+  editor
+    .chain()
+    .focus()
+    .setAlignImage(align)
+    .run();
 };
