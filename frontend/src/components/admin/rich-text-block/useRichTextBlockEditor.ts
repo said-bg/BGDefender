@@ -65,18 +65,26 @@ export default function useRichTextBlockEditor({
     shouldRerenderOnTransaction: false,
     content: normalizeEditorContent(initialValue),
     textDirection: language === 'fi' ? 'ltr' : 'auto',
+    editorProps: {
+      attributes: {
+        lang: language,
+        spellcheck: 'false',
+        autocapitalize: 'off',
+        autocorrect: 'off',
+      },
+    },
     extensions,
     onUpdate: ({ editor: currentEditor }) => {
-      onChange(currentEditor.isEmpty ? '' : currentEditor.getHTML());
+      const html = currentEditor.isEmpty ? '' : currentEditor.getHTML();
+      onChange(html);
     },
     onTransaction: ({ editor: currentEditor, transaction }) => {
-      // Trigger onChange on any transaction with changes (including attribute updates)
-      // The transaction has steps if there are any modifications
       if (transaction.steps.length === 0) {
         return;
       }
 
-      onChange(currentEditor.isEmpty ? '' : currentEditor.getHTML());
+      const html = currentEditor.isEmpty ? '' : currentEditor.getHTML();
+      onChange(html);
     },
   });
 
@@ -186,6 +194,4 @@ export default function useRichTextBlockEditor({
     applyMediaAlign,
   };
 }
-
-
 

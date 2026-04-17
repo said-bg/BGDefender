@@ -15,12 +15,28 @@ export default function CourseContentNavigation({
   previousItem,
   t,
 }: CourseContentNavigationProps) {
+  const handleNavigate = (item: NavigationItem | null) => {
+    if (!item) {
+      return;
+    }
+
+    onNavigateToView(item.view);
+
+    const contentPanel = document.querySelector<HTMLElement>('[data-course-content-panel]');
+    if (contentPanel) {
+      contentPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className={styles.navigationFooter}>
       <button
         type="button"
         className={styles.navigationButton}
-        onClick={() => previousItem && onNavigateToView(previousItem.view)}
+        onClick={() => handleNavigate(previousItem)}
         disabled={!previousItem}
       >
         {t('detail.previous')}
@@ -28,7 +44,7 @@ export default function CourseContentNavigation({
       <button
         type="button"
         className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
-        onClick={() => nextItem && onNavigateToView(nextItem.view)}
+        onClick={() => handleNavigate(nextItem)}
         disabled={!nextItem}
       >
         {t('detail.next')}

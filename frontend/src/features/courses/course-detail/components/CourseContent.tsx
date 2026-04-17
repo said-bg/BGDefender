@@ -60,7 +60,10 @@ export function CourseContent({
   const publishedFinalTest = course.finalTests?.find((finalTest) => finalTest.isPublished) ?? null;
 
   return (
-    <main className={`${styles.contentPanel} ${isFocusMode ? styles.contentPanelFocus : ''}`}>
+    <main
+      className={`${styles.contentPanel} ${isFocusMode ? styles.contentPanelFocus : ''}`}
+      data-course-content-panel
+    >
       <div className={styles.contentHeader}>
         {headerAction ? <div className={styles.contentHeaderAction}>{headerAction}</div> : null}
         <div>

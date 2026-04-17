@@ -5,6 +5,7 @@ import {
   getChapterProgressPercentage,
   getCourseProgressPercentage,
   getProgressPayloadFromView,
+  isCourseProgressSynced,
   preserveCompletedProgress,
   getAuthorRole,
   getChapterParagraphs,
@@ -334,6 +335,57 @@ describe('course-detail.utils', () => {
       lastViewedType: 'chapter',
       lastChapterId: 'chapter-1',
     });
+  });
+
+  it('detects when the current progress payload is already saved', () => {
+    expect(
+      isCourseProgressSynced(
+        {
+          id: 'progress-2',
+          userId: 1,
+          courseId: 'course-1',
+          completionPercentage: 50,
+          completed: false,
+          completedAt: null,
+          lastAccessedAt: '2026-01-02T00:00:00.000Z',
+          lastViewedType: 'subchapter',
+          lastChapterId: 'chapter-1',
+          lastSubChapterId: 'sub-1',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-02T00:00:00.000Z',
+        },
+        {
+          completionPercentage: 50,
+          lastViewedType: 'subchapter',
+          lastChapterId: 'chapter-1',
+          lastSubChapterId: 'sub-1',
+        },
+      ),
+    ).toBe(true);
+
+    expect(
+      isCourseProgressSynced(
+        {
+          id: 'progress-3',
+          userId: 1,
+          courseId: 'course-1',
+          completionPercentage: 50,
+          completed: false,
+          completedAt: null,
+          lastAccessedAt: '2026-01-02T00:00:00.000Z',
+          lastViewedType: 'subchapter',
+          lastChapterId: 'chapter-1',
+          lastSubChapterId: 'sub-1',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          updatedAt: '2026-01-02T00:00:00.000Z',
+        },
+        {
+          completionPercentage: 75,
+          lastViewedType: 'chapter',
+          lastChapterId: 'chapter-1',
+        },
+      ),
+    ).toBe(false);
   });
 
   // Verifies that the page safely falls back to overview content when the requested chapter is missing.

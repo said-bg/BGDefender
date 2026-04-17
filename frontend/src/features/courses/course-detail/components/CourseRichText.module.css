@@ -128,19 +128,45 @@
 .richTextContent :global(div[data-video]) {
   margin: 1rem 0;
   clear: both;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
 }
 
-.richTextContent :global(div[data-video] > div) {
+.richTextContent :global(div[data-video] > div:first-child) {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .richTextContent :global(div[data-video] > div > div) {
-  flex: none;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 18px;
 }
 
 .richTextContent :global(div[data-video] iframe) {
   display: block;
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  position: absolute;
+  top: 0;
+  left: 0;
   border-radius: 18px;
+}
+
+.richTextContent :global(div[data-video] video) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 18px;
+  background: #000000;
 }
 
 .richTextContent ul,
@@ -148,8 +174,73 @@
   padding-left: 1.4rem;
 }
 
+.richTextContent ul {
+  list-style: disc outside;
+}
+
+.richTextContent ol {
+  list-style: decimal outside;
+}
+
+.richTextContent ul ul {
+  list-style-type: circle;
+}
+
+.richTextContent ol ol {
+  list-style-type: lower-alpha;
+}
+
 .richTextContent li + li {
   margin-top: 0.35rem;
+}
+
+.richTextContent li > p {
+  margin: 0;
+}
+
+.richTextContent :global(ul[data-type='taskList']) {
+  padding-left: 0;
+  list-style: none;
+}
+
+.richTextContent :global(li[data-type='taskItem']) {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0.7rem 0;
+}
+
+.richTextContent :global(li[data-type='taskItem'] > label) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin-top: 0.22rem;
+}
+
+.richTextContent :global(li[data-type='taskItem'] > label > input[type='checkbox']) {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: #ffa600;
+  pointer-events: none;
+}
+
+.richTextContent :global(li[data-type='taskItem'] > label > span) {
+  display: none;
+}
+
+.richTextContent :global(li[data-type='taskItem'] > div) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.richTextContent :global(li[data-type='taskItem'] > div > p:first-child) {
+  margin-top: 0;
+}
+
+.richTextContent :global(li[data-type='taskItem'] > div > p:last-child) {
+  margin-bottom: 0;
 }
 
 .richTextContent blockquote {

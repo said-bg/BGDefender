@@ -3,6 +3,7 @@ import {
   ActiveLanguage,
   SelectedContent,
   getLocalizedText,
+  normalizeRichTextHtml,
   splitIntoParagraphs,
 } from '../courseDetail.utils';
 import styles from './CourseContentBlocks.module.css';
@@ -14,7 +15,7 @@ interface CourseContentBlocksProps {
 }
 
 const looksLikeRichHtml = (value: string) =>
-  /<(p|h1|h2|h3|h4|h5|h6|ul|ol|li|blockquote|pre|code|table|thead|tbody|tr|td|th|hr|a|strong|em|u|s|span)(\s|>)/i.test(
+  /<(p|div|h1|h2|h3|h4|h5|h6|ul|ol|li|blockquote|pre|code|table|thead|tbody|tr|td|th|hr|a|strong|em|u|s|span|img|iframe|video)(\s|>)/i.test(
     value,
   );
 
@@ -54,6 +55,7 @@ export default function CourseContentBlocks({
           contentBlock.contentEn,
           contentBlock.contentFi,
         );
+        const normalizedRichTextContent = normalizeRichTextHtml(localizedContent);
         const contentParagraphs = splitIntoParagraphs(localizedContent);
         const renderRichText =
           contentBlock.type === 'text' && looksLikeRichHtml(localizedContent);
@@ -81,7 +83,7 @@ export default function CourseContentBlocks({
             {renderRichText ? (
               <div
                 className={richTextStyles.richTextContent}
-                dangerouslySetInnerHTML={{ __html: localizedContent }}
+                dangerouslySetInnerHTML={{ __html: normalizedRichTextContent }}
               />
             ) : contentParagraphs.length > 0 ? (
               contentParagraphs.map((paragraph, index) => (

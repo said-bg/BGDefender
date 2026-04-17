@@ -72,6 +72,81 @@ const formatMediaWidth = (value: string | number | null | undefined, fallback = 
   return fallback;
 };
 
+const isDirectVideoFile = (src: string | null | undefined) => {
+  if (!src) {
+    return false;
+  }
+
+  try {
+    const normalized = new URL(src, 'http://localhost').pathname.toLowerCase();
+    return /\.(mp4|webm|ogg|mov|m4v)$/i.test(normalized);
+  } catch {
+    return /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(src.toLowerCase());
+  }
+};
+
+const normalizeEmbeddedVideoSrc = (src: string | null | undefined) => {
+  if (!src) {
+    return '';
+  }
+
+  try {
+    const url = new URL(src);
+    const hostname = url.hostname.toLowerCase();
+
+    if (hostname === 'youtu.be') {
+      const videoId = url.pathname.replace(/^\/+/, '').split('/')[0];
+      if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+      }
+    }
+
+    if (hostname === 'www.youtube.com' || hostname === 'youtube.com' || hostname === 'm.youtube.com') {
+      if (url.pathname === '/watch') {
+        const videoId = url.searchParams.get('v');
+        if (videoId) {
+          return `https://www.youtube.com/embed/${videoId}`;
+        }
+      }
+
+      const shortsMatch = url.pathname.match(/^\/shorts\/([a-zA-Z0-9_-]+)/);
+      if (shortsMatch) {
+        return `https://www.youtube.com/embed/${shortsMatch[1]}`;
+      }
+
+      const embedMatch = url.pathname.match(/^\/embed\/([a-zA-Z0-9_-]+)/);
+      if (embedMatch) {
+        return `https://www.youtube.com/embed/${embedMatch[1]}`;
+      }
+    }
+
+    const vimeoMatch = src.match(/^https:\/\/vimeo\.com\/(\d+)(?:\/([a-zA-Z0-9]+))?/);
+    if (vimeoMatch) {
+      const [, videoId, hash] = vimeoMatch;
+      return hash
+        ? `https://player.vimeo.com/video/${videoId}?h=${hash}`
+        : `https://player.vimeo.com/video/${videoId}`;
+    }
+
+    if (/^https?:\/\/www\.bilibili\.com\/video\/.*/i.test(src)) {
+      return src
+        .replace(/\?.*$/, '')
+        .replace(
+          'https://www.bilibili.com/video/',
+          'https://player.bilibili.com/player.html?bvid=',
+        );
+    }
+
+    if (src.includes('drive.google.com')) {
+      return src.replace('/view', '/preview');
+    }
+
+    return src;
+  } catch {
+    return src;
+  }
+};
+
 const AppImage = Image.extend({
   addAttributes() {
     const parentAttributes = this.parent?.call(this) ?? {};
@@ -159,21 +234,66 @@ const AppVideo = Video.extend({
           return wrapper?.getAttribute('data-video-align') || 'center';
         },
       },
+      mediaType: {
+        default: 'embed',
+        parseHTML: (element: HTMLElement) => {
+          const wrapper = element.closest('div[data-video]');
+          const src = element.getAttribute('src');
+
+          return (
+            wrapper?.getAttribute('data-video-kind') ||
+            (isDirectVideoFile(src) ? 'file' : 'embed')
+          );
+        },
+      },
     };
   },
   parseHTML() {
     return [
       {
-        tag: 'div[data-video] iframe',
+        tag: 'div[data-video] video',
+        priority: 100,
         getAttrs: (element) => {
           if (!(element instanceof HTMLElement)) {
             return false;
           }
           const wrapper = element.closest('div[data-video]');
           return {
-            src: element.getAttribute('src'),
+            src: wrapper?.getAttribute('data-video-src') || element.getAttribute('src'),
             width: wrapper?.getAttribute('data-video-width') || '100%',
             align: wrapper?.getAttribute('data-video-align') || 'center',
+            mediaType: 'file',
+          };
+        },
+      },
+      {
+        tag: 'div[data-video] iframe',
+        priority: 100,
+        getAttrs: (element) => {
+          if (!(element instanceof HTMLElement)) {
+            return false;
+          }
+          const wrapper = element.closest('div[data-video]');
+          return {
+            src: wrapper?.getAttribute('data-video-src') || element.getAttribute('src'),
+            width: wrapper?.getAttribute('data-video-width') || '100%',
+            align: wrapper?.getAttribute('data-video-align') || 'center',
+            mediaType: 'embed',
+          };
+        },
+      },
+      {
+        tag: 'video[src]',
+        priority: 60,
+        getAttrs: (element) => {
+          if (!(element instanceof HTMLElement)) {
+            return false;
+          }
+          return {
+            src: element.getAttribute('src'),
+            width: '100%',
+            align: 'center',
+            mediaType: 'file',
           };
         },
       },
@@ -184,10 +304,13 @@ const AppVideo = Video.extend({
           if (!(element instanceof HTMLElement)) {
             return false;
           }
+          // Try to find wrapper for recovery of data-video attributes
+          const wrapper = element.closest('div[data-video]');
           return {
-            src: element.getAttribute('src'),
-            width: '100%',
-            align: 'center',
+            src: wrapper?.getAttribute('data-video-src') || element.getAttribute('src'),
+            width: wrapper?.getAttribute('data-video-width') || '100%',
+            align: wrapper?.getAttribute('data-video-align') || 'center',
+            mediaType: 'embed',
           };
         },
       },
@@ -197,12 +320,48 @@ const AppVideo = Video.extend({
     const width = node.attrs.width || '100%';
     const align = node.attrs.align || 'center';
     const mediaWidth = formatMediaWidth(width, '100%');
+    const src = (node.attrs.src as string | null | undefined) || HTMLAttributes.src;
+    const mediaType =
+      node.attrs.mediaType === 'file' || isDirectVideoFile(src) ? 'file' : 'embed';
+    const normalizedSrc = mediaType === 'file' ? src : normalizeEmbeddedVideoSrc(src);
+
+    if (mediaType === 'file') {
+      return [
+        'div',
+        {
+          class: 'video-file-wrapper',
+          'data-video': 'true',
+          'data-video-kind': 'file',
+          'data-video-src': String(src || ''),
+          'data-video-width': String(width),
+          'data-video-align': String(align),
+        },
+        [
+          'div',
+          {
+            style: `display: flex; justify-content: ${align};`,
+          },
+          [
+            'video',
+            {
+              src,
+              controls: 'true',
+              playsinline: 'true',
+              preload: 'metadata',
+              style: `width: ${mediaWidth}; max-width: 100%; height: auto; display: block;`,
+            },
+          ],
+        ],
+      ];
+    }
 
     return [
       'div',
       {
         class: 'iframe-wrapper',
-        'data-video': '',
+        'data-video': 'true',
+        'data-video-kind': 'embed',
+        'data-video-src': String(normalizedSrc || ''),
         'data-video-width': String(width),
         'data-video-align': String(align),
       },
@@ -219,9 +378,14 @@ const AppVideo = Video.extend({
           [
             'iframe',
             {
-              src: HTMLAttributes.src,
+              ...HTMLAttributes,
+              src: normalizedSrc,
               width: '100%',
               height: '100%',
+              allow:
+                'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+              allowfullscreen: 'true',
+              referrerpolicy: 'strict-origin-when-cross-origin',
               style: 'position: absolute; inset: 0; width: 100%; height: 100%; border: 0;',
             },
           ],

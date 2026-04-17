@@ -240,3 +240,24 @@ export const preserveCompletedProgress = (
   return { ...payload, completionPercentage: 100 };
 };
 
+export const isCourseProgressSynced = (
+  existingProgress: CourseProgress | null,
+  payload: {
+    completionPercentage: number;
+    lastViewedType: ProgressViewType;
+    lastChapterId?: string;
+    lastSubChapterId?: string;
+  },
+) => {
+  if (!existingProgress) {
+    return false;
+  }
+
+  return (
+    existingProgress.completionPercentage === payload.completionPercentage &&
+    existingProgress.lastViewedType === payload.lastViewedType &&
+    (existingProgress.lastChapterId ?? undefined) === payload.lastChapterId &&
+    (existingProgress.lastSubChapterId ?? undefined) === payload.lastSubChapterId
+  );
+};
+

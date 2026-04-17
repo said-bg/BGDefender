@@ -108,6 +108,25 @@ const nextItem: NavigationItem = {
 };
 
 describe('CourseContent', () => {
+  const scrollToMock = jest.fn();
+  const scrollIntoViewMock = jest.fn();
+
+  beforeAll(() => {
+    Object.defineProperty(window, 'scrollTo', {
+      value: scrollToMock,
+      writable: true,
+    });
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      value: scrollIntoViewMock,
+      writable: true,
+    });
+  });
+
+  beforeEach(() => {
+    scrollToMock.mockClear();
+    scrollIntoViewMock.mockClear();
+  });
+
   // Verifies the readable state: authors, fallback author role, and visible paragraphs.
   it('renders authors and content when reading is allowed', () => {
     render(
@@ -221,6 +240,15 @@ describe('CourseContent', () => {
 
     expect(onNavigateToView).toHaveBeenNthCalledWith(1, previousItem.view);
     expect(onNavigateToView).toHaveBeenNthCalledWith(2, nextItem.view);
+    expect(scrollIntoViewMock).toHaveBeenNthCalledWith(1, {
+      behavior: 'smooth',
+      block: 'start',
+    });
+    expect(scrollIntoViewMock).toHaveBeenNthCalledWith(2, {
+      behavior: 'smooth',
+      block: 'start',
+    });
+    expect(scrollToMock).not.toHaveBeenCalled();
   });
 
   // Verifies the edge case where the current view has no previous or next step.
@@ -243,6 +271,193 @@ describe('CourseContent', () => {
 
     expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
+  });
+
+  it('renders uploaded video files as html5 video in rich text blocks', () => {
+    const { container } = render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={{
+          kind: 'subchapter',
+          title: 'Lesson video',
+          description: 'Video description',
+          paragraphs: [],
+          parentTitle: 'Chapter 1',
+          contentBlocks: [
+            {
+              id: 'content-video-1',
+              titleEn: 'Video lesson',
+              titleFi: 'Video lesson',
+              type: 'text',
+              contentEn:
+                '<div data-video><div><div><iframe src="http://localhost:3001/uploads/course-content-media/demo.mp4"></iframe></div></div></div>',
+              contentFi:
+                '<div data-video><div><div><iframe src="http://localhost:3001/uploads/course-content-media/demo.mp4"></iframe></div></div></div>',
+              url: null,
+              orderIndex: 1,
+            },
+          ],
+        }}
+        accessState="public"
+        canAccessAssessments={false}
+        canReadContent
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        previousItem={null}
+        nextItem={null}
+        onNavigateToView={jest.fn()}
+      />,
+    );
+
+    expect(
+      container.querySelector(
+        'video[src="http://localhost:3001/uploads/course-content-media/demo.mp4"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      container.querySelector(
+        'iframe[src="http://localhost:3001/uploads/course-content-media/demo.mp4"]',
+      ),
+    ).toBeNull();
+  });
+
+  it('normalizes youtube watch urls to embed urls in rich text blocks', () => {
+    const { container } = render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={{
+          kind: 'subchapter',
+          title: 'Lesson video',
+          description: 'Video description',
+          paragraphs: [],
+          parentTitle: 'Chapter 1',
+          contentBlocks: [
+            {
+              id: 'content-video-2',
+              titleEn: 'YouTube lesson',
+              titleFi: 'YouTube lesson',
+              type: 'text',
+              contentEn:
+                '<div data-video><div><div><iframe src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></iframe></div></div></div>',
+              contentFi:
+                '<div data-video><div><div><iframe src="https://www.youtube.com/watch?v=dQw4w9WgXcQ"></iframe></div></div></div>',
+              url: null,
+              orderIndex: 2,
+            },
+          ],
+        }}
+        accessState="public"
+        canAccessAssessments={false}
+        canReadContent
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        previousItem={null}
+        nextItem={null}
+        onNavigateToView={jest.fn()}
+      />,
+    );
+
+    expect(
+      container.querySelector(
+        'iframe[src="https://www.youtube.com/embed/dQw4w9WgXcQ"]',
+      ),
+    ).toBeTruthy();
+  });
+
+  it('restores iframe src from wrapper data when rich text video html is partially broken', () => {
+    const { container } = render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={{
+          kind: 'subchapter',
+          title: 'Lesson video',
+          description: 'Video description',
+          paragraphs: [],
+          parentTitle: 'Chapter 1',
+          contentBlocks: [
+            {
+              id: 'content-video-3',
+              titleEn: 'Recovered YouTube lesson',
+              titleFi: 'Recovered YouTube lesson',
+              type: 'text',
+              contentEn:
+                '<div data-video data-video-kind="embed" data-video-src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-video-width="440px" data-video-align="center"><div><div><iframe width="100%" height="100%"></iframe></div></div></div>',
+              contentFi:
+                '<div data-video data-video-kind="embed" data-video-src="https://www.youtube.com/watch?v=dQw4w9WgXcQ" data-video-width="440px" data-video-align="center"><div><div><iframe width="100%" height="100%"></iframe></div></div></div>',
+              url: null,
+              orderIndex: 3,
+            },
+          ],
+        }}
+        accessState="public"
+        canAccessAssessments={false}
+        canReadContent
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        previousItem={null}
+        nextItem={null}
+        onNavigateToView={jest.fn()}
+      />,
+    );
+
+    expect(
+      container.querySelector(
+        'iframe[src="https://www.youtube.com/embed/dQw4w9WgXcQ"]',
+      ),
+    ).toBeTruthy();
+
+    const videoFrame = container.querySelector('div[data-video] > div > div');
+    expect(videoFrame).toHaveAttribute(
+      'style',
+      expect.stringContaining('width: 440px'),
+    );
+  });
+
+  it('preserves inline rich text formatting like underline, font size and horizontal rules', () => {
+    const { container } = render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={{
+          kind: 'subchapter',
+          title: 'Formatted lesson',
+          description: 'Formatting description',
+          paragraphs: [],
+          parentTitle: 'Chapter 1',
+          contentBlocks: [
+            {
+              id: 'content-formatting-1',
+              titleEn: 'Formatting lesson',
+              titleFi: 'Formatting lesson',
+              type: 'text',
+              contentEn:
+                '<p><u>Underlined text</u> <span style="font-size: 14px; font-family: Georgia, serif;">Small styled text</span></p><hr />',
+              contentFi:
+                '<p><u>Underlined text</u> <span style="font-size: 14px; font-family: Georgia, serif;">Small styled text</span></p><hr />',
+              url: null,
+              orderIndex: 4,
+            },
+          ],
+        }}
+        accessState="public"
+        canAccessAssessments={false}
+        canReadContent
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        previousItem={null}
+        nextItem={null}
+        onNavigateToView={jest.fn()}
+      />,
+    );
+
+    expect(container.querySelector('u')).toHaveTextContent('Underlined text');
+    expect(container.querySelector('span[style*="font-size: 14px"]')).toHaveTextContent(
+      'Small styled text',
+    );
+    expect(container.querySelector('hr')).toBeTruthy();
   });
 });
 

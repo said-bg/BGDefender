@@ -16,6 +16,11 @@ export const normalizeEditorContent = (value: string) => {
 
 export const clampMediaWidth = (width: number) => Math.max(160, Math.min(width, 1400));
 
+const parsePixelWidth = (value: string) => {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
 const resolveMediaWidth = (editor: Editor, selection: NodeSelection) => {
   const rawWidth = selection.node.attrs.width;
 
@@ -25,18 +30,19 @@ const resolveMediaWidth = (editor: Editor, selection: NodeSelection) => {
 
   if (typeof rawWidth === 'string') {
     const trimmed = rawWidth.trim();
+    const parsed = parsePixelWidth(trimmed);
 
-    if (/^\d+$/.test(trimmed)) {
-      return clampMediaWidth(Number(trimmed));
+    if (parsed !== null) {
+      return clampMediaWidth(parsed);
     }
   }
 
   const nodeDom = editor.view.nodeDOM(selection.from);
 
   if (nodeDom instanceof HTMLElement) {
-    const mediaElement = nodeDom.matches('img,video')
+    const mediaElement = nodeDom.matches('img,video,iframe')
       ? nodeDom
-      : nodeDom.querySelector('img, video');
+      : nodeDom.querySelector('img, video, iframe');
 
     if (mediaElement instanceof HTMLElement) {
       return clampMediaWidth(Math.round(mediaElement.getBoundingClientRect().width));

@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import progressService from '@/services/progress';
 import { User } from '@/types/api';
 import {
+  isCourseProgressSynced,
   NavigationItem,
   ViewState,
   getProgressPayloadFromView,
@@ -112,6 +113,10 @@ export default function useCourseProgressSync({
       getProgressPayloadFromView(navigationItems, selectedView),
     );
 
+    if (isCourseProgressSynced(savedProgress, payload)) {
+      return;
+    }
+
     void progressService
       .saveMyCourseProgress(courseId, payload)
       .then((updatedProgress) => {
@@ -135,4 +140,3 @@ export default function useCourseProgressSync({
 
   return { restoringProgress };
 }
-
