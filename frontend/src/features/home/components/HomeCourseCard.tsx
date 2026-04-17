@@ -28,7 +28,7 @@ export default function HomeCourseCard({
             src={course.coverImage}
             title={getCourseTitle(course)}
             seedKey={course.id}
-            sizes="(max-width: 768px) 90vw, 314px"
+            sizes="(max-width: 768px) 90vw, 356px"
             imageClassName={styles.cardImage}
             fallbackClassName={styles.cardImagePlaceholder}
             priority={priority}

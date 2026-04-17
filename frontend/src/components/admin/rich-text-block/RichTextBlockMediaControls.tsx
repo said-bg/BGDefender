@@ -6,24 +6,32 @@ import styles from './RichTextBlockMediaControls.module.css';
 type RichTextBlockMediaControlsProps = {
   type: 'image' | 'video';
   width: number;
+  maxWidth: number;
   align: 'left' | 'center' | 'right';
   onWidthChange: (width: number) => void;
   onAlignChange: (align: 'left' | 'center' | 'right') => void;
+  onBeginInteraction: () => void;
+  onEndInteraction: () => void;
+  onRemove: () => void;
 };
 
 export default function RichTextBlockMediaControls({
   type,
   width,
+  maxWidth,
   align,
   onWidthChange,
   onAlignChange,
+  onBeginInteraction,
+  onEndInteraction,
+  onRemove,
 }: RichTextBlockMediaControlsProps) {
   const { t } = useTranslation('admin');
   const widthInputId = `${type}-width-input`;
   const widthSliderId = `${type}-width-slider`;
 
   return (
-    <div className={styles.mediaControls}>
+    <div className={styles.mediaControls} data-media-controls="true">
       <div className={styles.mediaControlsHeader}>
         <strong>
           {type === 'image'
@@ -31,6 +39,12 @@ export default function RichTextBlockMediaControls({
             : t('richText.mediaTypeVideo', { defaultValue: 'Video' })}
         </strong>
         <span>{width}px</span>
+      </div>
+      <div className={styles.mediaHint}>
+        {t('richText.mediaMaxWidthHint', {
+          defaultValue: 'Maximum usable width: {{maxWidth}}px',
+          maxWidth,
+        })}
       </div>
 
       <div className={styles.mediaControlsRow}>
@@ -43,8 +57,8 @@ export default function RichTextBlockMediaControls({
             className={styles.mediaNumberInput}
             type="number"
             min="160"
-            max="1400"
-            step="20"
+            max={maxWidth}
+            step="1"
             title={t('richText.mediaWidthTitle', {
               defaultValue: 'Media width in pixels',
             })}
@@ -52,6 +66,10 @@ export default function RichTextBlockMediaControls({
               defaultValue: 'Media width in pixels',
             })}
             value={width}
+            onMouseDownCapture={onBeginInteraction}
+            onTouchStartCapture={onBeginInteraction}
+            onFocus={onBeginInteraction}
+            onBlur={onEndInteraction}
             onChange={(event) => onWidthChange(Number(event.target.value))}
           />
         </label>
@@ -61,8 +79,8 @@ export default function RichTextBlockMediaControls({
           className={styles.mediaSlider}
           type="range"
           min="160"
-          max="1400"
-          step="20"
+          max={maxWidth}
+          step="1"
           title={t('richText.mediaWidthAdjust', {
             defaultValue: 'Adjust media width',
           })}
@@ -70,6 +88,10 @@ export default function RichTextBlockMediaControls({
             defaultValue: 'Adjust media width',
           })}
           value={width}
+          onMouseDownCapture={onBeginInteraction}
+          onMouseUpCapture={onEndInteraction}
+          onTouchStartCapture={onBeginInteraction}
+          onTouchEndCapture={onEndInteraction}
           onChange={(event) => onWidthChange(Number(event.target.value))}
         />
       </div>
@@ -101,6 +123,15 @@ export default function RichTextBlockMediaControls({
             {t('richText.mediaAlignRight', { defaultValue: 'Right' })}
           </button>
         </div>
+        <button
+          type="button"
+          className={styles.mediaRemoveButton}
+          onClick={onRemove}
+        >
+          {type === 'image'
+            ? t('richText.removeImage', { defaultValue: 'Remove image' })
+            : t('richText.removeVideo', { defaultValue: 'Remove video' })}
+        </button>
       </div>
     </div>
   );

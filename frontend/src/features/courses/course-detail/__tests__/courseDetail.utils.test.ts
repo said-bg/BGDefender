@@ -162,7 +162,7 @@ describe('course-detail.utils', () => {
   });
 
   // Verifies the linear navigation order used by Previous/Next.
-  it('builds navigation items in overview-chapter-subchapter order', () => {
+  it('builds navigation items in overview-chapter-subchapter-final-test order', () => {
     const course = createCourse();
     expect(buildNavigationItems(course)).toEqual([
       { key: 'overview', view: { type: 'overview' } },
@@ -189,6 +189,10 @@ describe('course-detail.utils', () => {
         key: 'chapter:chapter-2',
         view: { type: 'chapter', chapterId: 'chapter-2' },
       },
+      {
+        key: 'final-test',
+        view: { type: 'final-test' },
+      },
     ]);
   });
 
@@ -205,20 +209,25 @@ describe('course-detail.utils', () => {
         type: 'chapter',
         chapterId: 'chapter-1',
       }),
-    ).toBe(25);
+    ).toBe(20);
     expect(
       calculateCompletionPercentage(navigationItems, {
         type: 'subchapter',
         chapterId: 'chapter-1',
         subChapterId: 'sub-1',
       }),
-    ).toBe(50);
+    ).toBe(40);
     expect(
       calculateCompletionPercentage(navigationItems, {
         type: 'quiz',
         chapterId: 'chapter-1',
       }),
-    ).toBe(75);
+    ).toBe(60);
+    expect(
+      calculateCompletionPercentage(navigationItems, {
+        type: 'final-test',
+      }),
+    ).toBe(100);
   });
 
   // Verifies the simplified sidebar progress values for the whole course and each chapter.
@@ -287,7 +296,7 @@ describe('course-detail.utils', () => {
         chapterId: 'chapter-1',
       }),
     ).toEqual({
-      completionPercentage: 75,
+      completionPercentage: 60,
       lastViewedType: 'chapter',
       lastChapterId: 'chapter-1',
     });
@@ -299,7 +308,7 @@ describe('course-detail.utils', () => {
         subChapterId: 'sub-1',
       }),
     ).toEqual({
-      completionPercentage: 50,
+      completionPercentage: 40,
       lastViewedType: 'subchapter',
       lastChapterId: 'chapter-1',
       lastSubChapterId: 'sub-1',

@@ -25,6 +25,12 @@
   font-weight: 700;
 }
 
+.mediaHint {
+  color: #526581;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 .mediaControlsRow {
   display: flex;
   align-items: center;
@@ -85,4 +91,21 @@
   border-color: #111827;
   background: #111827;
   color: #ffffff;
+}
+
+.mediaRemoveButton {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid #ef4444;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #b91c1c;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mediaRemoveButton:hover {
+  background: #fef2f2;
 }

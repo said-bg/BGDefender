@@ -39,6 +39,10 @@ function RichTextBlockEditor({
     uploadAndInsert,
     handleMediaWidthChange,
     applyMediaAlign,
+    beginMediaInteraction,
+    endMediaInteraction,
+    removeSelectedMedia,
+    maxMediaWidth,
   } = useRichTextBlockEditor({
     initialValue,
     onChange,
@@ -77,9 +81,13 @@ function RichTextBlockEditor({
         <RichTextBlockMediaControls
           type={selectedMedia.type}
           width={selectedMedia.width}
+          maxWidth={maxMediaWidth}
           align={selectedMedia.align}
           onWidthChange={handleMediaWidthChange}
           onAlignChange={applyMediaAlign}
+          onBeginInteraction={beginMediaInteraction}
+          onEndInteraction={endMediaInteraction}
+          onRemove={removeSelectedMedia}
         />
       ) : null}
 

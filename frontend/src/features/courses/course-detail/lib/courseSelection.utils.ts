@@ -28,7 +28,7 @@ export const getSelectedContent = (
   if (selectedView.type === 'overview') {
     return getOverviewSelection(course, language, t);
   }
-
+  
   if (selectedView.type === 'final-test') {
     const finalTest = course.finalTests?.find((item) => item.isPublished);
 

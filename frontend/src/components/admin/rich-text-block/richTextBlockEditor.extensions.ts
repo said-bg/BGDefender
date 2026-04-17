@@ -148,6 +148,12 @@ const normalizeEmbeddedVideoSrc = (src: string | null | undefined) => {
 };
 
 const AppImage = Image.extend({
+  inline() {
+    return false;
+  },
+  group() {
+    return 'block';
+  },
   addAttributes() {
     const parentAttributes = this.parent?.call(this) ?? {};
 
@@ -165,6 +171,10 @@ const AppImage = Image.extend({
         parseHTML: (element: HTMLElement) =>
           element.getAttribute('align') || element.getAttribute('data-image-align') || 'center',
       },
+      inline: {
+        ...(parentAttributes as Record<string, unknown>).inline ?? {},
+        parseHTML: () => false,
+      },
     };
   },
   parseHTML() {
@@ -180,6 +190,7 @@ const AppImage = Image.extend({
             alt: element.getAttribute('alt'),
             width: parsePixelWidth(element.getAttribute('width') || element.getAttribute('data-image-width')) || 960,
             align: element.getAttribute('align') || element.getAttribute('data-image-align') || 'center',
+            inline: false,
           };
         },
       },
@@ -190,14 +201,13 @@ const AppImage = Image.extend({
     const align = node.attrs.align || 'center';
     const widthValue = typeof width === 'number' ? width : parsePixelWidth(String(width)) || 960;
     const widthStyle = `${widthValue}px`;
-
-    let styleStr = `width: ${widthStyle}; height: auto;`;
+    let styleStr = `width: ${widthStyle}; max-width: 100%; height: auto; display: block; float: none;`;
     if (align === 'center') {
-      styleStr += ' display: block; margin: 0 auto;';
-    } else if (align === 'left') {
-      styleStr += ' float: left; margin: 0 15px 10px 0;';
+      styleStr += ' margin: 1rem auto;';
     } else if (align === 'right') {
-      styleStr += ' float: right; margin: 0 0 10px 15px;';
+      styleStr += ' margin: 1rem 0 1rem auto;';
+    } else {
+      styleStr += ' margin: 1rem 0;';
     }
 
     return [

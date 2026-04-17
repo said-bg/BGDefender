@@ -55,6 +55,13 @@ export const buildNavigationItems = (course: Course): NavigationItem[] => {
     }
   }
 
+  if (course.finalTests?.some((finalTest) => finalTest.isPublished)) {
+    items.push({
+      key: 'final-test',
+      view: { type: 'final-test' },
+    });
+  }
+
   return items;
 };
 

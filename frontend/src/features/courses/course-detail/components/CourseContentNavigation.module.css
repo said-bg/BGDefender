@@ -51,6 +51,55 @@
   color: #ffffff;
 }
 
+.completionOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.completionCard {
+  width: min(100%, 520px);
+  padding: 1.4rem;
+  border: 1px solid #dbe4f0;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.22);
+}
+
+.completionEyebrow {
+  margin: 0 0 0.55rem;
+  color: #ffa600;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.completionTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 1.55rem;
+  line-height: 1.15;
+}
+
+.completionDescription {
+  margin: 0.85rem 0 0;
+  color: #475467;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.completionActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+ }
+
 @media (max-width: 720px) {
   .navigationFooter {
     flex-direction: column-reverse;
@@ -58,5 +107,9 @@
 
   .navigationButton {
     width: 100%;
+  }
+
+  .completionActions {
+    flex-direction: column-reverse;
   }
 }

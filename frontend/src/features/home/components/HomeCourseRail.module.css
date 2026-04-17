@@ -1,4 +1,5 @@
 .section {
+  --course-card-width: clamp(320px, 21vw, 356px);
   width: var(--page-shell-width);
   margin: 0 auto;
   padding: 0.5rem 0 1rem;
@@ -68,9 +69,12 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(286px, 320px));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--course-card-width)), var(--course-card-width))
+  );
   justify-content: start;
-  gap: 0.9rem;
+  gap: 1rem;
 }
 
 .emptyState {
@@ -95,9 +99,9 @@
 
 .railViewport {
   display: grid;
-  grid-auto-columns: clamp(286px, 18vw, 320px);
+  grid-auto-columns: var(--course-card-width);
   grid-auto-flow: column;
-  gap: 0.95rem;
+  gap: 1rem;
   overflow-x: auto;
   padding: 0.2rem 0.2rem 0.9rem 0.1rem;
   scroll-behavior: smooth;
@@ -171,7 +175,7 @@
   }
 
   .railViewport {
-    grid-auto-columns: 314px;
+    grid-auto-columns: minmax(314px, 80vw);
     padding-bottom: 0.6rem;
   }
 
@@ -197,6 +201,6 @@
   }
 
   .railViewport {
-    grid-auto-columns: minmax(280px, 86vw);
+    grid-auto-columns: minmax(280px, 88vw);
   }
 }

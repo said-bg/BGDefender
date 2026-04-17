@@ -137,17 +137,13 @@ export function useCourseDetailPage() {
         : `subchapter:${selectedView.subChapterId}`;
   const currentNavigationIndex = navigationItems.findIndex((item) => item.key === currentViewKey);
   const previousItem =
-    selectedView.type === 'final-test'
-      ? navigationItems[navigationItems.length - 1] ?? null
-      : currentNavigationIndex > 0
-        ? navigationItems[currentNavigationIndex - 1]
-        : null;
+    currentNavigationIndex > 0
+      ? navigationItems[currentNavigationIndex - 1]
+      : null;
   const nextItem =
-    selectedView.type === 'final-test'
-      ? null
-      : currentNavigationIndex >= 0 && currentNavigationIndex < navigationItems.length - 1
-        ? navigationItems[currentNavigationIndex + 1]
-        : null;
+    currentNavigationIndex >= 0 && currentNavigationIndex < navigationItems.length - 1
+      ? navigationItems[currentNavigationIndex + 1]
+      : null;
 
   const navigateToView = (view: ViewState) => {
     if (view.type === 'overview' || view.type === 'final-test') {
@@ -238,4 +234,3 @@ export function useCourseDetailPage() {
     navigateToView,
   };
 }
-

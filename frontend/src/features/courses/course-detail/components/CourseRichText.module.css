@@ -53,6 +53,22 @@
   height: auto;
   margin: 1.2rem 0;
   border-radius: 18px;
+}
+
+.richTextContent > img[align='left'],
+.richTextContent p > img[align='left'] {
+  margin: 1.2rem 0 !important;
+}
+
+.richTextContent > img[align='right'],
+.richTextContent p > img[align='right'] {
+  margin: 1.2rem 0 1.2rem auto !important;
+}
+
+.richTextContent > img[align='center'],
+.richTextContent p > img[align='center'] {
+  display: block !important;
+  margin: 1.2rem auto !important;
   clear: both;
   float: none !important;
 }
@@ -83,12 +99,7 @@
 
 .richTextContent :global(.image-view) {
   display: block !important;
-  width: auto !important;
   max-width: 100%;
-}
-
-.richTextContent :global(.image-view[style*='text-align: center']) {
-  width: 100% !important;
 }
 
 .richTextContent :global(.video-view) {

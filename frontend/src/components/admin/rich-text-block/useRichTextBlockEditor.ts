@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useEditor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
 import courseService from '@/services/course';
@@ -37,6 +37,9 @@ export default function useRichTextBlockEditor({
   const videoInputRef = useRef<HTMLInputElement | null>(null);
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const syncFrameRef = useRef<number | null>(null);
+  const lastEmittedHtmlRef = useRef(initialValue);
+  const isNativeMediaResizeRef = useRef(false);
 
   const commandLabels = useMemo<RichTextCommandLabels>(
     () => ({
@@ -60,6 +63,27 @@ export default function useRichTextBlockEditor({
     [placeholder, uploadMedia],
   );
 
+  const queueContentSync = useCallback(
+    (currentEditor: NonNullable<ReturnType<typeof useEditor>>) => {
+      if (syncFrameRef.current !== null) {
+        window.cancelAnimationFrame(syncFrameRef.current);
+      }
+
+      syncFrameRef.current = window.requestAnimationFrame(() => {
+        syncFrameRef.current = null;
+        const html = currentEditor.isEmpty ? '' : currentEditor.getHTML();
+
+        if (html === lastEmittedHtmlRef.current) {
+          return;
+        }
+
+        lastEmittedHtmlRef.current = html;
+        onChange(html);
+      });
+    },
+    [onChange],
+  );
+
   const editor = useEditor({
     immediatelyRender: false,
     shouldRerenderOnTransaction: false,
@@ -75,20 +99,86 @@ export default function useRichTextBlockEditor({
     },
     extensions,
     onUpdate: ({ editor: currentEditor }) => {
-      const html = currentEditor.isEmpty ? '' : currentEditor.getHTML();
-      onChange(html);
-    },
-    onTransaction: ({ editor: currentEditor, transaction }) => {
-      if (transaction.steps.length === 0) {
+      if (isNativeMediaResizeRef.current) {
         return;
       }
 
-      const html = currentEditor.isEmpty ? '' : currentEditor.getHTML();
-      onChange(html);
+      queueContentSync(currentEditor);
+    },
+    onTransaction: ({ editor: currentEditor, transaction }) => {
+      if (!transaction.docChanged) {
+        return;
+      }
+
+      if (isNativeMediaResizeRef.current) {
+        return;
+      }
+
+      queueContentSync(currentEditor);
     },
   });
 
-  const { selectedMedia, handleMediaWidthChange, applyMediaAlign } =
+  useEffect(
+    () => () => {
+      if (syncFrameRef.current !== null) {
+        window.cancelAnimationFrame(syncFrameRef.current);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    const beginNativeMediaResize = (event: MouseEvent | TouchEvent) => {
+      const target = event.target;
+
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      if (
+        target.closest('.image-resizer__handler') ||
+        target.closest('.video-resizer__handler')
+      ) {
+        isNativeMediaResizeRef.current = true;
+      }
+    };
+
+    const endNativeMediaResize = () => {
+      if (!isNativeMediaResizeRef.current) {
+        return;
+      }
+
+      isNativeMediaResizeRef.current = false;
+      queueContentSync(editor);
+    };
+
+    const editorElement = editor.view.dom;
+    editorElement.addEventListener('mousedown', beginNativeMediaResize, true);
+    editorElement.addEventListener('touchstart', beginNativeMediaResize, true);
+    window.addEventListener('mouseup', endNativeMediaResize, true);
+    window.addEventListener('touchend', endNativeMediaResize, true);
+
+    return () => {
+      editorElement.removeEventListener('mousedown', beginNativeMediaResize, true);
+      editorElement.removeEventListener('touchstart', beginNativeMediaResize, true);
+      window.removeEventListener('mouseup', endNativeMediaResize, true);
+      window.removeEventListener('touchend', endNativeMediaResize, true);
+    };
+  }, [editor, queueContentSync]);
+
+  const {
+    selectedMedia,
+    handleMediaWidthChange,
+    applyMediaAlign,
+    beginMediaInteraction,
+    endMediaInteraction,
+    removeSelectedMedia,
+    maxMediaWidth,
+  } =
     useRichTextSelectedMedia(editor);
 
   const applyFontFamily = useCallback(
@@ -192,6 +282,9 @@ export default function useRichTextBlockEditor({
     uploadAndInsert,
     handleMediaWidthChange,
     applyMediaAlign,
+    beginMediaInteraction,
+    endMediaInteraction,
+    removeSelectedMedia,
+    maxMediaWidth,
   };
 }
-

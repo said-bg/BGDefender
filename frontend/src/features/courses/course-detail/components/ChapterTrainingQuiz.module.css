@@ -32,6 +32,13 @@
   color: #111827;
 }
 
+.attemptSummaryCard {
+  padding: 1rem;
+  border: 1px solid #dcefe3;
+  border-radius: 0.95rem;
+  background: #f6fffa;
+}
+
 .metaLabel {
   display: block;
   color: #526581;

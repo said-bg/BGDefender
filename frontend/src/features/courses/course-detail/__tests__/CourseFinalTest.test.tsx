@@ -34,9 +34,26 @@ jest.mock('react-i18next', () => ({
 const mockedCourseService = courseService as jest.Mocked<typeof courseService>;
 
 describe('CourseFinalTest', () => {
+  const scrollIntoViewMock = jest.fn();
+
+  beforeAll(() => {
+    Object.defineProperty(window, 'requestAnimationFrame', {
+      value: (callback: FrameRequestCallback) => {
+        callback(0);
+        return 0;
+      },
+      writable: true,
+    });
+    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
+      value: scrollIntoViewMock,
+      writable: true,
+    });
+  });
+
   afterEach(() => {
     mockedCourseService.getCourseFinalTest.mockReset();
     mockedCourseService.submitCourseFinalTestAttempt.mockReset();
+    scrollIntoViewMock.mockClear();
   });
 
   it('renders a locked state until the course is completed', async () => {
@@ -235,7 +252,13 @@ describe('CourseFinalTest', () => {
     expect(
       screen.getByText('Excellent work. You passed the course final test.'),
     ).toBeInTheDocument();
+    expect(screen.getByText('Latest score')).toBeInTheDocument();
+    expect(screen.getByText('100%')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View certificates' })).toBeInTheDocument();
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({
+      behavior: 'smooth',
+      block: 'start',
+    });
   });
 
   it('shows a profile completion prompt when the certificate is pending', async () => {

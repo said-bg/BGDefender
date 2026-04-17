@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Course } from '@/services/course';
 import styles from './CourseContent.module.css';
@@ -51,6 +51,7 @@ export function CourseContent({
   onNavigateToView,
 }: CourseContentProps) {
   const { t } = useTranslation('courses');
+  const hasScrolledOnMountRef = useRef(false);
   const accessDescription =
     accessState === 'checking'
       ? t('detail.checkingAccess')
@@ -58,6 +59,26 @@ export function CourseContent({
       ? t('detail.loginRequiredDescription')
       : t('detail.premiumRequiredDescription');
   const publishedFinalTest = course.finalTests?.find((finalTest) => finalTest.isPublished) ?? null;
+
+  useEffect(() => {
+    if (!hasScrolledOnMountRef.current) {
+      hasScrolledOnMountRef.current = true;
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      const contentPanel = document.querySelector<HTMLElement>('[data-course-content-panel]');
+
+      if (contentPanel) {
+        contentPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [selectedContent.kind, selectedContent.title]);
 
   return (
     <main
@@ -121,6 +142,8 @@ export function CourseContent({
       )}
 
       <CourseContentNavigation
+        currentKind={selectedContent.kind}
+        hasFinalTest={Boolean(publishedFinalTest)}
         nextItem={nextItem}
         onNavigateToView={onNavigateToView}
         previousItem={previousItem}

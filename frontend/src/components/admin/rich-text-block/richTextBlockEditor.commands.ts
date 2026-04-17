@@ -1,5 +1,9 @@
 import type { Editor } from '@tiptap/react';
-import { SelectedMediaState, toVideoAlign } from './richTextBlockEditor.utils';
+import {
+  clearMediaWidthPreview,
+  SelectedMediaState,
+  toVideoAlign,
+} from './richTextBlockEditor.utils';
 
 export type RichTextCommandLabels = {
   imagePromptTitle: string;
@@ -67,13 +71,11 @@ export const insertImageFromUrlCommand = (editor: Editor, labels: RichTextComman
   editor
     .chain()
     .focus()
-    .insertContent({
-      type: 'image',
-      attrs: {
-        src: nextUrl.trim(),
-        width: 960,
-        align: 'left',
-      },
+    .setImageInline({
+      src: nextUrl.trim(),
+      width: 960,
+      align: 'left',
+      inline: false,
     })
     .run();
 };
@@ -122,13 +124,11 @@ export const insertUploadedMediaCommand = (
     editor
       .chain()
       .focus()
-      .insertContent({
-        type: 'image',
-        attrs: {
-          src: uploadedUrl,
-          width: 960,
-          align: 'left',
-        },
+      .setImageInline({
+        src: uploadedUrl,
+        width: 960,
+        align: 'left',
+        inline: false,
       })
       .run();
     return;
@@ -161,10 +161,13 @@ export const applyMediaWidthCommand = (
   selectedMedia: SelectedMediaState,
   width: number,
 ) => {
+  clearMediaWidthPreview(editor, selectedMedia);
+
   if (selectedMedia.type === 'video') {
     editor
       .chain()
       .focus()
+      .setNodeSelection(selectedMedia.pos)
       .updateAttributes('video', { width: `${width}px` })
       .run();
     return;
@@ -173,7 +176,8 @@ export const applyMediaWidthCommand = (
   editor
     .chain()
     .focus()
-    .updateAttributes('image', { width })
+    .setNodeSelection(selectedMedia.pos)
+    .updateImage({ width, inline: false })
     .run();
 };
 
@@ -182,10 +186,13 @@ export const applyMediaAlignCommand = (
   selectedMedia: SelectedMediaState,
   align: 'left' | 'center' | 'right',
 ) => {
+  clearMediaWidthPreview(editor, selectedMedia);
+
   if (selectedMedia.type === 'video') {
     editor
       .chain()
       .focus()
+      .setNodeSelection(selectedMedia.pos)
       .updateAttributes('video', { align: toVideoAlign(align) })
       .run();
     return;
@@ -194,9 +201,23 @@ export const applyMediaAlignCommand = (
   editor
     .chain()
     .focus()
-    .updateAttributes('image', {
+    .setNodeSelection(selectedMedia.pos)
+    .updateImage({
       align,
-      inline: align !== 'center',
+      width: selectedMedia.width,
+      inline: false,
     })
+    .run();
+};
+
+export const removeSelectedMediaCommand = (
+  editor: Editor,
+  selectedMedia: SelectedMediaState,
+) => {
+  editor
+    .chain()
+    .focus()
+    .setNodeSelection(selectedMedia.pos)
+    .deleteSelection()
     .run();
 };

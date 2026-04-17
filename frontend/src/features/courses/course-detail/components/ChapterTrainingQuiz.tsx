@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import courseService, {
   LearnerChapterQuiz,
@@ -24,6 +24,15 @@ const getLocalizedValue = (
   finnish: string | null | undefined,
 ) => (language === 'fi' ? finnish || english || '' : english || finnish || '');
 
+const scrollQuizCardIntoView = (element: HTMLElement | null) => {
+  if (!element) {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    return;
+  }
+
+  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
 export default function ChapterTrainingQuiz({
   activeLanguage,
   chapterId,
@@ -31,6 +40,7 @@ export default function ChapterTrainingQuiz({
   passingScore,
 }: ChapterTrainingQuizProps) {
   const { t } = useTranslation('courses');
+  const quizCardRef = useRef<HTMLElement | null>(null);
   const [quiz, setQuiz] = useState<LearnerChapterQuiz | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -40,6 +50,7 @@ export default function ChapterTrainingQuiz({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [latestAttempt, setLatestAttempt] = useState<QuizAttemptSummary | null>(null);
   const [bestAttempt, setBestAttempt] = useState<QuizAttemptSummary | null>(null);
+  const [isQuizActive, setIsQuizActive] = useState(true);
 
   useEffect(() => {
     const loadQuiz = async () => {
@@ -52,6 +63,7 @@ export default function ChapterTrainingQuiz({
         setLatestAttempt(learnerQuiz?.latestAttempt ?? null);
         setBestAttempt(learnerQuiz?.bestAttempt ?? null);
         setSelectedAnswers({});
+        setIsQuizActive(!Boolean(learnerQuiz?.latestAttempt?.passed));
       } catch (loadError) {
         setError(
           getApiErrorMessage(
@@ -125,6 +137,10 @@ export default function ChapterTrainingQuiz({
               defaultValue: 'You can retry this training quiz as many times as you want.',
             }),
       );
+      setIsQuizActive(!response.attempt.passed);
+      window.requestAnimationFrame(() => {
+        scrollQuizCardIntoView(quizCardRef.current);
+      });
     } catch (submissionError) {
       setSubmitError(
         getApiErrorMessage(
@@ -137,6 +153,13 @@ export default function ChapterTrainingQuiz({
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const startRetry = () => {
+    setSelectedAnswers({});
+    setSubmitError(null);
+    setSubmitMessage(null);
+    setIsQuizActive(true);
   };
 
   if (loading) {
@@ -158,7 +181,7 @@ export default function ChapterTrainingQuiz({
   }
 
   return (
-    <section className={styles.quizCard}>
+    <section ref={quizCardRef} className={styles.quizCard}>
       <div className={styles.quizHeader}>
         <span
           className={`${styles.statusBadge} ${
@@ -196,66 +219,92 @@ export default function ChapterTrainingQuiz({
         </div>
       </div>
 
-      <div className={styles.questionList}>
-        {quiz.questions.map((question, questionIndex) => (
-          <article key={question.id} className={styles.questionCard}>
-            <p className={styles.questionPrompt}>
-              {questionIndex + 1}.{' '}
-              {getLocalizedValue(activeLanguage, question.promptEn, question.promptFi)}
-            </p>
-
-            <div className={styles.questionOptions}>
-              {question.options.map((option) => {
-                const currentAnswers = selectedAnswers[question.id] ?? [];
-                const isSelected = currentAnswers.includes(option.id);
-
-                return (
-                  <label key={option.id} className={styles.optionLabel}>
-                    <input
-                      type={question.type === 'single_choice' ? 'radio' : 'checkbox'}
-                      name={question.id}
-                      checked={isSelected}
-                      onChange={(event) =>
-                        updateAnswer(question, option.id, event.target.checked)
-                      }
-                    />
-                    <span>{getLocalizedValue(activeLanguage, option.labelEn, option.labelFi)}</span>
-                  </label>
-                );
+      {!isQuizActive && latestAttempt?.passed ? (
+        <>
+          <div className={styles.attemptSummaryCard}>
+            <p className={styles.helperText}>
+              {t('detail.quizPassedSummary', {
+                defaultValue:
+                  'You already passed this training quiz. Start a new attempt whenever you want to practice again.',
               })}
-            </div>
+            </p>
+            {submitMessage ? <p className={styles.successText}>{submitMessage}</p> : null}
+          </div>
 
-            {latestAttempt ? (
-              <p className={styles.questionExplanation}>
-                {getLocalizedValue(activeLanguage, question.explanationEn, question.explanationFi)}
-              </p>
-            ) : null}
-          </article>
-        ))}
-      </div>
+          <div className={styles.quizActions}>
+            <button
+              type="button"
+              className={styles.primaryAction}
+              onClick={startRetry}
+            >
+              {t('detail.quizStartRetry', { defaultValue: 'Retry quiz' })}
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className={styles.questionList}>
+            {quiz.questions.map((question, questionIndex) => (
+              <article key={question.id} className={styles.questionCard}>
+                <p className={styles.questionPrompt}>
+                  {questionIndex + 1}.{' '}
+                  {getLocalizedValue(activeLanguage, question.promptEn, question.promptFi)}
+                </p>
 
-      {submitMessage ? <p className={styles.successText}>{submitMessage}</p> : null}
-      {submitError ? <p className={styles.errorText}>{submitError}</p> : null}
+                <div className={styles.questionOptions}>
+                  {question.options.map((option) => {
+                    const currentAnswers = selectedAnswers[question.id] ?? [];
+                    const isSelected = currentAnswers.includes(option.id);
 
-      <div className={styles.quizActions}>
-        <button
-          type="button"
-          className={styles.primaryAction}
-          disabled={isSubmitting}
-          onClick={() => void handleSubmit()}
-        >
-          {isSubmitting
-            ? t('detail.quizSubmitting', { defaultValue: 'Submitting quiz...' })
-            : t('detail.quizSubmit', { defaultValue: 'Submit quiz' })}
-        </button>
-        <button
-          type="button"
-          className={styles.secondaryAction}
-          onClick={() => setSelectedAnswers({})}
-        >
-          {t('detail.quizRetry', { defaultValue: 'Clear answers' })}
-        </button>
-      </div>
+                    return (
+                      <label key={option.id} className={styles.optionLabel}>
+                        <input
+                          type={question.type === 'single_choice' ? 'radio' : 'checkbox'}
+                          name={question.id}
+                          checked={isSelected}
+                          onChange={(event) =>
+                            updateAnswer(question, option.id, event.target.checked)
+                          }
+                        />
+                        <span>{getLocalizedValue(activeLanguage, option.labelEn, option.labelFi)}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {latestAttempt && !latestAttempt.passed ? (
+                  <p className={styles.questionExplanation}>
+                    {getLocalizedValue(activeLanguage, question.explanationEn, question.explanationFi)}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+
+          {submitMessage ? <p className={styles.successText}>{submitMessage}</p> : null}
+          {submitError ? <p className={styles.errorText}>{submitError}</p> : null}
+
+          <div className={styles.quizActions}>
+            <button
+              type="button"
+              className={styles.primaryAction}
+              disabled={isSubmitting}
+              onClick={() => void handleSubmit()}
+            >
+              {isSubmitting
+                ? t('detail.quizSubmitting', { defaultValue: 'Submitting quiz...' })
+                : t('detail.quizSubmit', { defaultValue: 'Submit quiz' })}
+            </button>
+            <button
+              type="button"
+              className={styles.secondaryAction}
+              onClick={() => setSelectedAnswers({})}
+            >
+              {t('detail.quizRetry', { defaultValue: 'Clear answers' })}
+            </button>
+          </div>
+        </>
+      )}
     </section>
   );
 }

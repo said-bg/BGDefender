@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import courseService, {
   LearnerCourseFinalTest,
@@ -24,12 +24,22 @@ const getLocalizedValue = (
   finnish: string | null | undefined,
 ) => (language === 'fi' ? finnish || english || '' : english || finnish || '');
 
+const scrollFinalTestCardIntoView = (element: HTMLElement | null) => {
+  if (!element) {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    return;
+  }
+
+  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
 export default function CourseFinalTest({
   activeLanguage,
   courseId,
   enabled,
 }: CourseFinalTestProps) {
   const { t } = useTranslation('courses');
+  const finalTestCardRef = useRef<HTMLElement | null>(null);
   const [finalTest, setFinalTest] = useState<LearnerCourseFinalTest | null>(null);
   const [loading, setLoading] = useState(enabled);
   const [error, setError] = useState<string | null>(null);
@@ -77,6 +87,29 @@ export default function CourseFinalTest({
   }, [loadFinalTest]);
 
   const certificateStatus = finalTest?.certificate?.status ?? null;
+  const summaryMessage = latestAttempt
+    ? submitMessage ??
+      (latestAttempt.passed
+        ? t('detail.finalTestPassedSummary', {
+            defaultValue:
+              'Your final result is recorded. You completed the assessment and can move to the last step of the course.',
+          })
+        : t('detail.finalTestFailedSummary', {
+            defaultValue:
+              'Your latest result is saved. Review the course, adjust your answers, and try again whenever you want.',
+          }))
+    : null;
+  const latestScoreLabel = latestAttempt ? `${latestAttempt.score}%` : '-';
+  const latestCorrectAnswersLabel = latestAttempt
+    ? `${latestAttempt.correctAnswers}/${latestAttempt.totalQuestions}`
+    : '-';
+  const completionStatusLabel = latestAttempt?.passed
+    ? t('detail.finalTestCourseCompleted', {
+        defaultValue: 'Course completed',
+      })
+    : t('detail.finalTestRetryNeeded', {
+        defaultValue: 'Retry available',
+      });
 
   const answeredCount = useMemo(
     () =>
@@ -136,6 +169,9 @@ export default function CourseFinalTest({
             }),
       );
       await loadFinalTest();
+      window.requestAnimationFrame(() => {
+        scrollFinalTestCardIntoView(finalTestCardRef.current);
+      });
     } catch (submissionError) {
       setSubmitError(
         getApiErrorMessage(
@@ -171,7 +207,7 @@ export default function CourseFinalTest({
   }
 
   return (
-    <section className={styles.quizCard}>
+    <section ref={finalTestCardRef} className={styles.quizCard}>
       <div className={styles.quizHeader}>
         <span
           className={`${styles.statusBadge} ${
@@ -216,6 +252,78 @@ export default function CourseFinalTest({
           <span className={styles.metaValue}>{bestAttempt?.score ?? '-'}</span>
         </div>
       </div>
+
+      {latestAttempt ? (
+        <div className={styles.attemptSummaryCard}>
+          <div className={styles.quizMeta}>
+            <div className={styles.metaCard}>
+              <span className={styles.metaLabel}>
+                {t('detail.finalTestLatestScore', { defaultValue: 'Latest score' })}
+              </span>
+              <span className={styles.metaValue}>{latestScoreLabel}</span>
+            </div>
+            <div className={styles.metaCard}>
+              <span className={styles.metaLabel}>
+                {t('detail.finalTestCorrectAnswers', { defaultValue: 'Correct answers' })}
+              </span>
+              <span className={styles.metaValue}>{latestCorrectAnswersLabel}</span>
+            </div>
+            <div className={styles.metaCard}>
+              <span className={styles.metaLabel}>
+                {t('detail.finalTestCourseStatus', { defaultValue: 'Course status' })}
+              </span>
+              <span className={styles.metaValue}>{completionStatusLabel}</span>
+            </div>
+          </div>
+
+          {summaryMessage ? (
+            <p className={latestAttempt.passed ? styles.successText : styles.helperText}>
+              {summaryMessage}
+            </p>
+          ) : null}
+
+          {certificateStatus === 'pending_profile' ? (
+            <div className={styles.questionCard}>
+              <p className={styles.questionPrompt}>
+                {t('detail.certificatePendingTitle', {
+                  defaultValue: 'Certificate waiting for profile completion',
+                })}
+              </p>
+              <p className={styles.helperText}>
+                {t('detail.certificatePendingDescription', {
+                  defaultValue:
+                    'You passed the final test. Complete your profile with your first and last name to generate the certificate automatically.',
+                })}
+              </p>
+              <div className={styles.quizActions}>
+                <Link href="/account" className={styles.secondaryAction}>
+                  {t('detail.completeProfile', { defaultValue: 'Complete profile' })}
+                </Link>
+              </div>
+            </div>
+          ) : null}
+
+          {certificateStatus === 'issued' ? (
+            <div className={styles.questionCard}>
+              <p className={styles.questionPrompt}>
+                {t('detail.certificateIssuedTitle', {
+                  defaultValue: 'Certificate earned',
+                })}
+              </p>
+              <p className={styles.helperText}>
+                {t('detail.certificateIssuedDescription', {
+                  defaultValue: 'Your certificate is now ready in your certificates space.',
+                })}
+              </p>
+              <div className={styles.quizActions}>
+                <Link href="/certificates" className={styles.secondaryAction}>
+                  {t('detail.viewCertificate', { defaultValue: 'View certificates' })}
+                </Link>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
 
       {!finalTest.isUnlocked ? (
         <p className={styles.helperText}>
@@ -276,7 +384,7 @@ export default function CourseFinalTest({
                   })}
                 </div>
 
-                {latestAttempt ? (
+                {latestAttempt && !latestAttempt.passed ? (
                   <p className={styles.questionExplanation}>
                     {getLocalizedValue(
                       activeLanguage,
@@ -289,48 +397,7 @@ export default function CourseFinalTest({
             ))}
           </div>
 
-          {submitMessage ? <p className={styles.successText}>{submitMessage}</p> : null}
           {submitError ? <p className={styles.errorText}>{submitError}</p> : null}
-          {certificateStatus === 'pending_profile' ? (
-            <div className={styles.questionCard}>
-              <p className={styles.questionPrompt}>
-                {t('detail.certificatePendingTitle', {
-                  defaultValue: 'Certificate waiting for profile completion',
-                })}
-              </p>
-              <p className={styles.helperText}>
-                {t('detail.certificatePendingDescription', {
-                  defaultValue:
-                    'You passed the final test. Complete your profile with your first and last name to generate the certificate automatically.',
-                })}
-              </p>
-              <div className={styles.quizActions}>
-                <Link href="/account" className={styles.secondaryAction}>
-                  {t('detail.completeProfile', { defaultValue: 'Complete profile' })}
-                </Link>
-              </div>
-            </div>
-          ) : null}
-          {certificateStatus === 'issued' ? (
-            <div className={styles.questionCard}>
-              <p className={styles.questionPrompt}>
-                {t('detail.certificateIssuedTitle', {
-                  defaultValue: 'Certificate earned',
-                })}
-              </p>
-              <p className={styles.helperText}>
-                {t('detail.certificateIssuedDescription', {
-                  defaultValue:
-                    'Your certificate is now ready in your certificates space.',
-                })}
-              </p>
-              <div className={styles.quizActions}>
-                <Link href="/certificates" className={styles.secondaryAction}>
-                  {t('detail.viewCertificate', { defaultValue: 'View certificates' })}
-                </Link>
-              </div>
-            </div>
-          ) : null}
 
           <div className={styles.quizActions}>
             <button
