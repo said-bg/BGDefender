@@ -54,19 +54,46 @@
 
 .editorSurface :global(.ProseMirror img),
 .editorSurface :global(.ProseMirror video) {
-  display: block;
   max-width: 100%;
   height: auto;
   border-radius: 18px;
 }
 
+.editorSurface :global(.ProseMirror img[align='left']) {
+  float: left;
+  margin: 0 15px 10px 0;
+}
+
+.editorSurface :global(.ProseMirror img[align='right']) {
+  float: right;
+  margin: 0 0 10px 15px;
+}
+
+.editorSurface :global(.ProseMirror img[align='center']) {
+  display: block;
+  margin: 1rem auto;
+}
+
 .editorSurface :global(.image-view),
 .editorSurface :global(.video-view) {
   position: relative;
-  width: 100%;
   max-width: 100%;
   margin: 1rem 0;
   line-height: 0;
+}
+
+.editorSurface :global(.image-view) {
+  display: block !important;
+  width: auto !important;
+  max-width: 100%;
+}
+
+.editorSurface :global(.image-view[style*='text-align: center']) {
+  width: 100% !important;
+}
+
+.editorSurface :global(.video-view) {
+  width: 100%;
 }
 
 .editorSurface :global(.image-view__body),
@@ -84,16 +111,25 @@
 
 .editorSurface :global(div[data-video]) {
   margin: 1rem 0;
+  cursor: pointer;
 }
 
 .editorSurface :global(div[data-video] > div) {
   width: 100%;
 }
 
+.editorSurface :global(div[data-video] > div > div) {
+  flex: none;
+}
+
 .editorSurface :global(div[data-video] iframe) {
   display: block;
-  width: 100%;
   border-radius: 18px;
+  pointer-events: none;
+}
+
+.editorSurface :global(.image) {
+  cursor: pointer;
 }
 
 .editorSurface :global(.ProseMirror-selectednode),

@@ -70,7 +70,9 @@ export default function useRichTextBlockEditor({
       onChange(currentEditor.isEmpty ? '' : currentEditor.getHTML());
     },
     onTransaction: ({ editor: currentEditor, transaction }) => {
-      if (!transaction.docChanged) {
+      // Trigger onChange on any transaction with changes (including attribute updates)
+      // The transaction has steps if there are any modifications
+      if (transaction.steps.length === 0) {
         return;
       }
 

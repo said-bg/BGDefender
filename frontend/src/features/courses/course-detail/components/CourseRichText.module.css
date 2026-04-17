@@ -44,8 +44,10 @@
   font-size: 1.25rem;
 }
 
-.richTextContent img,
-.richTextContent video {
+.richTextContent > img,
+.richTextContent > video,
+.richTextContent p > img,
+.richTextContent p > video {
   display: block !important;
   max-width: 100%;
   height: auto;
@@ -67,17 +69,31 @@
   height: auto;
   border-radius: 18px;
   clear: none;
+  float: unset !important;
 }
 
 .richTextContent :global(.image-view),
 .richTextContent :global(.video-view) {
   position: relative;
-  display: flex !important;
-  width: 100% !important;
   max-width: 100%;
   margin: 1rem 0;
   line-height: 0;
   clear: both;
+}
+
+.richTextContent :global(.image-view) {
+  display: block !important;
+  width: auto !important;
+  max-width: 100%;
+}
+
+.richTextContent :global(.image-view[style*='text-align: center']) {
+  width: 100% !important;
+}
+
+.richTextContent :global(.video-view) {
+  display: flex !important;
+  width: 100% !important;
   float: none !important;
 }
 
@@ -118,9 +134,12 @@
   width: 100%;
 }
 
+.richTextContent :global(div[data-video] > div > div) {
+  flex: none;
+}
+
 .richTextContent :global(div[data-video] iframe) {
   display: block;
-  width: 100%;
   border-radius: 18px;
 }
 

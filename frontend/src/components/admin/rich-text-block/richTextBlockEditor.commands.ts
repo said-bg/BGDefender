@@ -67,7 +67,14 @@ export const insertImageFromUrlCommand = (editor: Editor, labels: RichTextComman
   editor
     .chain()
     .focus()
-    .insertContent(`<img src="${nextUrl.trim()}" style="width: 960px; float: left;" />`)
+    .insertContent({
+      type: 'image',
+      attrs: {
+        src: nextUrl.trim(),
+        width: 960,
+        align: 'left',
+      },
+    })
     .run();
 };
 
@@ -115,7 +122,14 @@ export const insertUploadedMediaCommand = (
     editor
       .chain()
       .focus()
-      .insertContent(`<img src="${uploadedUrl}" style="width: 960px; float: left;" />`)
+      .insertContent({
+        type: 'image',
+        attrs: {
+          src: uploadedUrl,
+          width: 960,
+          align: 'left',
+        },
+      })
       .run();
     return;
   }
@@ -151,7 +165,7 @@ export const applyMediaWidthCommand = (
     editor
       .chain()
       .focus()
-      .updateVideo({ width: `${width}px` })
+      .updateAttributes('video', { width: `${width}px` })
       .run();
     return;
   }
@@ -159,7 +173,7 @@ export const applyMediaWidthCommand = (
   editor
     .chain()
     .focus()
-    .updateImage({ width })
+    .updateAttributes('image', { width })
     .run();
 };
 
@@ -172,7 +186,7 @@ export const applyMediaAlignCommand = (
     editor
       .chain()
       .focus()
-      .updateVideo({ align: toVideoAlign(align) })
+      .updateAttributes('video', { align: toVideoAlign(align) })
       .run();
     return;
   }
@@ -180,6 +194,9 @@ export const applyMediaAlignCommand = (
   editor
     .chain()
     .focus()
-    .setAlignImage(align)
+    .updateAttributes('image', {
+      align,
+      inline: align !== 'center',
+    })
     .run();
 };

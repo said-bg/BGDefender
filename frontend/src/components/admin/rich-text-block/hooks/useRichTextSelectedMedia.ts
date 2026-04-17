@@ -41,11 +41,12 @@ export default function useRichTextSelectedMedia(editor: Editor | null) {
         return;
       }
 
-      const mediaWrapper = target.closest('[data-node-view-wrapper]');
       const mediaElement =
-        mediaWrapper && mediaWrapper.querySelector('img, video')
-          ? mediaWrapper
-          : target.closest('img, video');
+        target.closest('[data-video]') ??
+        target.closest('.iframe-wrapper') ??
+        target.closest('[data-node-view-wrapper]') ??
+        target.closest('.image') ??
+        target.closest('img, video');
 
       if (!(mediaElement instanceof HTMLElement)) {
         return;

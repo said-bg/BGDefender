@@ -51,6 +51,186 @@ export const FONT_SIZE_OPTIONS = [
   { label: '24', value: '24px' },
 ];
 
+const parsePixelWidth = (value: string | null | undefined) => {
+  if (!value) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const formatMediaWidth = (value: string | number | null | undefined, fallback = '960px') => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return `${value}px`;
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    return value.trim();
+  }
+
+  return fallback;
+};
+
+const AppImage = Image.extend({
+  addAttributes() {
+    const parentAttributes = this.parent?.call(this) ?? {};
+
+    return {
+      ...parentAttributes,
+      width: {
+        ...(parentAttributes as Record<string, unknown>).width ?? {},
+        parseHTML: (element: HTMLElement) => {
+          const width = element.getAttribute('width') || element.getAttribute('data-image-width');
+          return parsePixelWidth(width) || 960;
+        },
+      },
+      align: {
+        ...(parentAttributes as Record<string, unknown>).align ?? {},
+        parseHTML: (element: HTMLElement) =>
+          element.getAttribute('align') || element.getAttribute('data-image-align') || 'center',
+      },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: 'img',
+        getAttrs: (element) => {
+          if (!(element instanceof HTMLElement)) {
+            return false;
+          }
+          return {
+            src: element.getAttribute('src'),
+            alt: element.getAttribute('alt'),
+            width: parsePixelWidth(element.getAttribute('width') || element.getAttribute('data-image-width')) || 960,
+            align: element.getAttribute('align') || element.getAttribute('data-image-align') || 'center',
+          };
+        },
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes, node }) {
+    const width = node.attrs.width || 960;
+    const align = node.attrs.align || 'center';
+    const widthValue = typeof width === 'number' ? width : parsePixelWidth(String(width)) || 960;
+    const widthStyle = `${widthValue}px`;
+
+    let styleStr = `width: ${widthStyle}; height: auto;`;
+    if (align === 'center') {
+      styleStr += ' display: block; margin: 0 auto;';
+    } else if (align === 'left') {
+      styleStr += ' float: left; margin: 0 15px 10px 0;';
+    } else if (align === 'right') {
+      styleStr += ' float: right; margin: 0 0 10px 15px;';
+    }
+
+    return [
+      'img',
+      {
+        ...HTMLAttributes,
+        width: widthValue,
+        'data-image-width': `${widthValue}px`,
+        align,
+        'data-image-align': align,
+        style: styleStr,
+      },
+    ];
+  },
+});
+
+const AppVideo = Video.extend({
+  addAttributes() {
+    const parentAttributes = this.parent?.call(this) ?? {};
+
+    return {
+      ...parentAttributes,
+      width: {
+        ...(parentAttributes as Record<string, unknown>).width ?? {},
+        parseHTML: (element: HTMLElement) => {
+          const wrapper = element.closest('div[data-video]');
+          return wrapper?.getAttribute('data-video-width') || '100%';
+        },
+      },
+      align: {
+        ...(parentAttributes as Record<string, unknown>).align ?? {},
+        parseHTML: (element: HTMLElement) => {
+          const wrapper = element.closest('div[data-video]');
+          return wrapper?.getAttribute('data-video-align') || 'center';
+        },
+      },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: 'div[data-video] iframe',
+        getAttrs: (element) => {
+          if (!(element instanceof HTMLElement)) {
+            return false;
+          }
+          const wrapper = element.closest('div[data-video]');
+          return {
+            src: element.getAttribute('src'),
+            width: wrapper?.getAttribute('data-video-width') || '100%',
+            align: wrapper?.getAttribute('data-video-align') || 'center',
+          };
+        },
+      },
+      {
+        tag: 'iframe[src]',
+        priority: 50,
+        getAttrs: (element) => {
+          if (!(element instanceof HTMLElement)) {
+            return false;
+          }
+          return {
+            src: element.getAttribute('src'),
+            width: '100%',
+            align: 'center',
+          };
+        },
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes, node }) {
+    const width = node.attrs.width || '100%';
+    const align = node.attrs.align || 'center';
+    const mediaWidth = formatMediaWidth(width, '100%');
+
+    return [
+      'div',
+      {
+        class: 'iframe-wrapper',
+        'data-video': '',
+        'data-video-width': String(width),
+        'data-video-align': String(align),
+      },
+      [
+        'div',
+        {
+          style: `display: flex; justify-content: ${align};`,
+        },
+        [
+          'div',
+          {
+            style: `position: relative; width: ${mediaWidth}; max-width: 100%; aspect-ratio: 16 / 9; overflow: hidden;`,
+          },
+          [
+            'iframe',
+            {
+              src: HTMLAttributes.src,
+              width: '100%',
+              height: '100%',
+              style: 'position: absolute; inset: 0; width: 100%; height: 100%; border: 0;',
+            },
+          ],
+        ],
+      ],
+    ];
+  },
+});
+
 export function buildRichTextBlockExtensions({
   placeholder,
   uploadMedia,
@@ -92,14 +272,14 @@ export function buildRichTextBlockExtensions({
     Blockquote,
     TextAlign,
     Link,
-    Image.configure({
+    AppImage.configure({
       upload: uploadMedia,
       resourceImage: 'both',
       multiple: false,
       enableAlt: true,
       defaultInline: false,
     }),
-    Video.configure({
+    AppVideo.configure({
       upload: uploadMedia,
       resourceVideo: 'both',
       videoProviders: ['.'],
