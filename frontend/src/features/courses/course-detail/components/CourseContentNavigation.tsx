@@ -117,7 +117,7 @@ export default function CourseContentNavigation({
                 {t('detail.close', { defaultValue: 'Close' })}
               </button>
               <Link
-                href="/courses"
+                href="/"
                 className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
                 onClick={() => setIsCompletionOpen(false)}
               >

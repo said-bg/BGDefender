@@ -50,6 +50,7 @@ export default function CourseFinalTest({
   const [latestAttempt, setLatestAttempt] = useState<QuizAttemptSummary | null>(null);
   const [bestAttempt, setBestAttempt] = useState<QuizAttemptSummary | null>(null);
   const [isStarted, setIsStarted] = useState(false);
+  const [isReviewMode, setIsReviewMode] = useState(false);
 
   const loadFinalTest = useCallback(async () => {
     if (!enabled) {
@@ -68,6 +69,7 @@ export default function CourseFinalTest({
       setBestAttempt(learnerFinalTest?.bestAttempt ?? null);
       setSelectedAnswers({});
       setIsStarted(Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt));
+      setIsReviewMode(Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt));
     } catch (loadError) {
       setError(
         getApiErrorMessage(
@@ -88,16 +90,13 @@ export default function CourseFinalTest({
 
   const certificateStatus = finalTest?.certificate?.status ?? null;
   const summaryMessage = latestAttempt
-    ? submitMessage ??
-      (latestAttempt.passed
-        ? t('detail.finalTestPassedSummary', {
-            defaultValue:
-              'Your final result is recorded. You completed the assessment and can move to the last step of the course.',
-          })
-        : t('detail.finalTestFailedSummary', {
-            defaultValue:
-              'Your latest result is saved. Review the course, adjust your answers, and try again whenever you want.',
-          }))
+    ? latestAttempt.passed
+      ? submitMessage
+      : submitMessage ??
+        t('detail.finalTestFailedSummary', {
+          defaultValue:
+            'Your latest result is saved. Review the course, adjust your answers, and try again whenever you want.',
+        })
     : null;
   const latestScoreLabel = latestAttempt ? `${latestAttempt.score}%` : '-';
   const latestCorrectAnswersLabel = latestAttempt
@@ -136,6 +135,17 @@ export default function CourseFinalTest({
         ...previous,
         [question.id]: nextAnswers,
       };
+    });
+  };
+
+  const startRetryAttempt = () => {
+    setSelectedAnswers({});
+    setSubmitError(null);
+    setSubmitMessage(null);
+    setIsStarted(true);
+    setIsReviewMode(false);
+    window.requestAnimationFrame(() => {
+      scrollFinalTestCardIntoView(finalTestCardRef.current);
     });
   };
 
@@ -343,11 +353,27 @@ export default function CourseFinalTest({
             <button
               type="button"
               className={styles.primaryAction}
-              onClick={() => setIsStarted(true)}
+              onClick={startRetryAttempt}
             >
               {latestAttempt
                 ? t('detail.finalTestContinue', { defaultValue: 'Continue final test' })
                 : t('detail.finalTestStart', { defaultValue: 'Start final test' })}
+            </button>
+          </div>
+        </>
+      ) : isReviewMode && latestAttempt ? (
+        <>
+          {submitError ? <p className={styles.errorText}>{submitError}</p> : null}
+
+          <div className={styles.quizActions}>
+            <button
+              type="button"
+              className={styles.primaryAction}
+              onClick={startRetryAttempt}
+            >
+              {t('detail.finalTestStartRetry', {
+                defaultValue: 'Retry final test',
+              })}
             </button>
           </div>
         </>

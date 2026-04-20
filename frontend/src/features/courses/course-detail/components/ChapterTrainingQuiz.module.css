@@ -134,6 +134,10 @@
   flex-wrap: wrap;
 }
 
+.quizActionsEnd {
+  justify-content: flex-end;
+}
+
 .primaryAction,
 .secondaryAction {
   display: inline-flex;
@@ -185,5 +189,9 @@
 @media (max-width: 720px) {
   .quizMeta {
     grid-template-columns: 1fr;
+  }
+
+  .quizActionsEnd {
+    justify-content: stretch;
   }
 }

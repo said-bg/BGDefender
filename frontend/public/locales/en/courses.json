@@ -139,6 +139,7 @@
     "finalTestSubmit": "Submit final test",
     "finalTestSubmitting": "Submitting final test...",
     "finalTestRetry": "Clear answers",
+    "finalTestStartRetry": "Retry final test",
     "finalTestSubmitFailed": "Failed to submit the final test.",
     "finalTestPassed": "Passed",
     "finalTestNotPassed": "Not passed yet",

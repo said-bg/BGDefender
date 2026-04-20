@@ -164,6 +164,11 @@ describe('ChapterTrainingQuiz', () => {
     expect(
       screen.getByText('Nice work. You passed this chapter training quiz.'),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'You already passed this training quiz. Start a new attempt whenever you want to practice again.',
+      ),
+    ).not.toBeInTheDocument();
     expect(screen.queryByText('Question 1')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Retry quiz' })).toBeInTheDocument();
     await waitFor(() => {

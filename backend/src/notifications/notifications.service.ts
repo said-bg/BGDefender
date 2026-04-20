@@ -54,9 +54,8 @@ export class NotificationsService {
         },
       }),
     ]);
-    const cleanedNotifications = await this.removeOrphanedNotifications(
-      notifications,
-    );
+    const cleanedNotifications =
+      await this.removeOrphanedNotifications(notifications);
     const cleanedUnreadCount = cleanedNotifications.filter(
       (notification) => !notification.isRead,
     ).length;
@@ -360,7 +359,9 @@ export class NotificationsService {
         id: true,
       },
     });
-    const existingCourseIds = new Set(existingCourses.map((course) => course.id));
+    const existingCourseIds = new Set(
+      existingCourses.map((course) => course.id),
+    );
     const orphanedNotifications = courseNotifications.filter(
       (notification) =>
         notification.courseId && !existingCourseIds.has(notification.courseId),

@@ -255,6 +255,8 @@ describe('CourseFinalTest', () => {
     expect(screen.getByText('Latest score')).toBeInTheDocument();
     expect(screen.getByText('100%')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View certificates' })).toBeInTheDocument();
+    expect(screen.queryByText(/Final question 1/)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Retry final test' })).toBeInTheDocument();
     expect(scrollIntoViewMock).toHaveBeenCalledWith({
       behavior: 'smooth',
       block: 'start',

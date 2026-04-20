@@ -139,7 +139,9 @@ describe('CollectionsService', () => {
     expect(result).toHaveLength(1);
     expect(result[0].courses).toHaveLength(1);
     expect(result[0].courses[0].id).toBe('course-1');
-    expect(result[0].coverImage).toBe('https://example.com/collection-cover.jpg');
+    expect(result[0].coverImage).toBe(
+      'https://example.com/collection-cover.jpg',
+    );
   });
 
   it('throws when updating a missing collection', async () => {

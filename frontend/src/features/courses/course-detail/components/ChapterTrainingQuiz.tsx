@@ -25,6 +25,13 @@ const getLocalizedValue = (
 ) => (language === 'fi' ? finnish || english || '' : english || finnish || '');
 
 const scrollQuizCardIntoView = (element: HTMLElement | null) => {
+  const contentPanel = document.querySelector<HTMLElement>('[data-course-content-panel]');
+
+  if (contentPanel) {
+    contentPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
   if (!element) {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
     return;
@@ -51,6 +58,12 @@ export default function ChapterTrainingQuiz({
   const [latestAttempt, setLatestAttempt] = useState<QuizAttemptSummary | null>(null);
   const [bestAttempt, setBestAttempt] = useState<QuizAttemptSummary | null>(null);
   const [isQuizActive, setIsQuizActive] = useState(true);
+  const passedSummaryMessage =
+    submitMessage ??
+    t('detail.quizPassedSummary', {
+      defaultValue:
+        'You already passed this training quiz. Start a new attempt whenever you want to practice again.',
+    });
 
   useEffect(() => {
     const loadQuiz = async () => {
@@ -222,13 +235,9 @@ export default function ChapterTrainingQuiz({
       {!isQuizActive && latestAttempt?.passed ? (
         <>
           <div className={styles.attemptSummaryCard}>
-            <p className={styles.helperText}>
-              {t('detail.quizPassedSummary', {
-                defaultValue:
-                  'You already passed this training quiz. Start a new attempt whenever you want to practice again.',
-              })}
+            <p className={submitMessage ? styles.successText : styles.helperText}>
+              {passedSummaryMessage}
             </p>
-            {submitMessage ? <p className={styles.successText}>{submitMessage}</p> : null}
           </div>
 
           <div className={styles.quizActions}>
@@ -284,7 +293,14 @@ export default function ChapterTrainingQuiz({
           {submitMessage ? <p className={styles.successText}>{submitMessage}</p> : null}
           {submitError ? <p className={styles.errorText}>{submitError}</p> : null}
 
-          <div className={styles.quizActions}>
+          <div className={`${styles.quizActions} ${styles.quizActionsEnd}`}>
+            <button
+              type="button"
+              className={styles.secondaryAction}
+              onClick={() => setSelectedAnswers({})}
+            >
+              {t('detail.quizRetry', { defaultValue: 'Clear answers' })}
+            </button>
             <button
               type="button"
               className={styles.primaryAction}
@@ -294,13 +310,6 @@ export default function ChapterTrainingQuiz({
               {isSubmitting
                 ? t('detail.quizSubmitting', { defaultValue: 'Submitting quiz...' })
                 : t('detail.quizSubmit', { defaultValue: 'Submit quiz' })}
-            </button>
-            <button
-              type="button"
-              className={styles.secondaryAction}
-              onClick={() => setSelectedAnswers({})}
-            >
-              {t('detail.quizRetry', { defaultValue: 'Clear answers' })}
             </button>
           </div>
         </>

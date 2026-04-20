@@ -139,6 +139,7 @@
     "finalTestSubmit": "Lähetä lopputesti",
     "finalTestSubmitting": "Lähetetään lopputestiä...",
     "finalTestRetry": "Tyhjennä vastaukset",
+    "finalTestStartRetry": "Yritä lopputestiä uudelleen",
     "finalTestSubmitFailed": "Lopputestin lähettäminen epäonnistui.",
     "finalTestPassed": "Läpäisty",
     "finalTestNotPassed": "Ei vielä läpäisty",

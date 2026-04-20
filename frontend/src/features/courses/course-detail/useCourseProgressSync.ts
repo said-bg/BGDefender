@@ -5,6 +5,7 @@ import {
   isCourseProgressSynced,
   NavigationItem,
   ViewState,
+  getViewKey,
   getProgressPayloadFromView,
   getViewStateFromProgress,
   preserveCompletedProgress,
@@ -24,6 +25,41 @@ interface UseCourseProgressSyncOptions {
   user: User | null;
 }
 
+const getStoredCourseViewKey = (courseId: string) => `course-detail:view:${courseId}`;
+
+const readStoredCourseView = (
+  courseId: string,
+  navigationItems: NavigationItem[],
+): ViewState | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const rawValue = window.sessionStorage.getItem(getStoredCourseViewKey(courseId));
+  if (!rawValue) {
+    return null;
+  }
+
+  try {
+    const parsedView = JSON.parse(rawValue) as ViewState;
+    const viewKey = getViewKey(parsedView);
+    return navigationItems.some((item) => item.key === viewKey) ? parsedView : null;
+  } catch {
+    return null;
+  }
+};
+
+const writeStoredCourseView = (courseId: string, selectedView: ViewState) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.sessionStorage.setItem(
+    getStoredCourseViewKey(courseId),
+    JSON.stringify(selectedView),
+  );
+};
+
 export default function useCourseProgressSync({
   canReadContent,
   course,
@@ -40,10 +76,20 @@ export default function useCourseProgressSync({
     ReturnType<typeof progressService.getMyCourseProgress>
   > | null>(null);
   const [restoringProgress, setRestoringProgress] = useState(false);
+  const [hasRestoredInitialView, setHasRestoredInitialView] = useState(false);
 
   useEffect(() => {
     setSavedProgress(null);
+    setHasRestoredInitialView(false);
   }, [courseId]);
+
+  useEffect(() => {
+    if (!courseId || !hasRestoredInitialView) {
+      return;
+    }
+
+    writeStoredCourseView(courseId, selectedView);
+  }, [courseId, hasRestoredInitialView, selectedView]);
 
   useEffect(() => {
     if (!courseId || !course || !isInitialized || !isAuthenticated || !user) {
@@ -55,10 +101,23 @@ export default function useCourseProgressSync({
     const restoreProgress = async () => {
       try {
         setRestoringProgress(true);
+        const restoredSessionView = readStoredCourseView(courseId, navigationItems);
+
+        if (restoredSessionView) {
+          if (
+            restoredSessionView.type !== 'overview' &&
+            restoredSessionView.type !== 'final-test'
+          ) {
+            setExpandedChapters(new Set([restoredSessionView.chapterId]));
+          }
+
+          setSelectedView(restoredSessionView);
+        }
+
         const progress = await progressService.getMyCourseProgress(courseId);
         setSavedProgress(progress);
 
-        if (!isMounted || !progress) {
+        if (!isMounted || !progress || restoredSessionView) {
           return;
         }
 
@@ -74,6 +133,7 @@ export default function useCourseProgressSync({
       } finally {
         if (isMounted) {
           setRestoringProgress(false);
+          setHasRestoredInitialView(true);
         }
       }
     };
@@ -88,6 +148,7 @@ export default function useCourseProgressSync({
     courseId,
     isAuthenticated,
     isInitialized,
+    navigationItems,
     setExpandedChapters,
     setSelectedView,
     user,
@@ -102,8 +163,7 @@ export default function useCourseProgressSync({
       !user ||
       restoringProgress ||
       !canReadContent ||
-      selectedView.type === 'overview' ||
-      selectedView.type === 'final-test'
+      selectedView.type === 'overview'
     ) {
       return;
     }
