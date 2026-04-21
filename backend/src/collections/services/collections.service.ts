@@ -1,0 +1,247 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CourseCollection } from '../../entities/course-collection.entity';
+import { CourseCollectionItem } from '../../entities/course-collection-item.entity';
+import { Course, CourseStatus } from '../../entities/course.entity';
+import { CreateCourseCollectionDto } from '../dto/create-course-collection.dto';
+import { UpdateCourseCollectionDto } from '../dto/update-course-collection.dto';
+
+type CollectionView = {
+  id: string;
+  titleEn: string;
+  titleFi: string;
+  descriptionEn: string | null;
+  descriptionFi: string | null;
+  coverImage: string | null;
+  orderIndex: number;
+  isPublished: boolean;
+  courses: Course[];
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+@Injectable()
+export class CollectionsService {
+  constructor(
+    @InjectRepository(CourseCollection)
+    private readonly collectionRepository: Repository<CourseCollection>,
+    @InjectRepository(CourseCollectionItem)
+    private readonly collectionItemRepository: Repository<CourseCollectionItem>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
+  ) {}
+
+  async listAdminCollections(): Promise<CollectionView[]> {
+    const collections = await this.collectionRepository.find({
+      relations: [
+        'items',
+        'items.course',
+        'items.course.authors',
+        'items.course.finalTests',
+        'items.course.chapters',
+        'items.course.chapters.trainingQuiz',
+        'items.course.chapters.subChapters',
+      ],
+      order: {
+        orderIndex: 'ASC',
+        createdAt: 'ASC',
+      },
+    });
+
+    return collections.map((collection) => this.toView(collection, false));
+  }
+
+  async listPublishedCollections(): Promise<CollectionView[]> {
+    const collections = await this.collectionRepository.find({
+      where: { isPublished: true },
+      relations: [
+        'items',
+        'items.course',
+        'items.course.authors',
+        'items.course.finalTests',
+        'items.course.chapters',
+        'items.course.chapters.trainingQuiz',
+        'items.course.chapters.subChapters',
+      ],
+      order: {
+        orderIndex: 'ASC',
+        createdAt: 'ASC',
+      },
+    });
+
+    return collections
+      .map((collection) => this.toView(collection, true))
+      .filter((collection) => collection.courses.length > 0);
+  }
+
+  async create(dto: CreateCourseCollectionDto): Promise<CollectionView> {
+    const courses = await this.resolveCourses(dto.courseIds ?? []);
+
+    const collection = this.collectionRepository.create({
+      titleEn: dto.titleEn.trim(),
+      titleFi: dto.titleFi.trim(),
+      descriptionEn: dto.descriptionEn?.trim() || null,
+      descriptionFi: dto.descriptionFi?.trim() || null,
+      coverImage: dto.coverImage?.trim() || null,
+      orderIndex: dto.orderIndex ?? 1,
+      isPublished: dto.isPublished ?? true,
+      items: (dto.courseIds ?? []).map((courseId, index) =>
+        this.collectionItemRepository.create({
+          courseId,
+          orderIndex: index + 1,
+          course: courses.find((course) => course.id === courseId),
+        }),
+      ),
+    });
+
+    const savedCollection = await this.collectionRepository.save(collection);
+    const hydratedCollection = await this.findCollectionOrThrow(
+      savedCollection.id,
+    );
+
+    return this.toView(hydratedCollection, false);
+  }
+
+  async update(
+    id: string,
+    dto: UpdateCourseCollectionDto,
+  ): Promise<CollectionView> {
+    const collection = await this.findCollectionOrThrow(id);
+
+    if (dto.titleEn !== undefined) {
+      collection.titleEn = dto.titleEn.trim();
+    }
+
+    if (dto.titleFi !== undefined) {
+      collection.titleFi = dto.titleFi.trim();
+    }
+
+    if (dto.descriptionEn !== undefined) {
+      collection.descriptionEn = dto.descriptionEn?.trim() || null;
+    }
+
+    if (dto.descriptionFi !== undefined) {
+      collection.descriptionFi = dto.descriptionFi?.trim() || null;
+    }
+
+    if (dto.coverImage !== undefined) {
+      collection.coverImage = dto.coverImage?.trim() || null;
+    }
+
+    if (dto.orderIndex !== undefined) {
+      collection.orderIndex = dto.orderIndex;
+    }
+
+    if (dto.isPublished !== undefined) {
+      collection.isPublished = dto.isPublished;
+    }
+
+    if (dto.courseIds !== undefined) {
+      const courses = await this.resolveCourses(dto.courseIds);
+      collection.items = dto.courseIds.map((courseId, index) =>
+        this.collectionItemRepository.create({
+          collectionId: collection.id,
+          courseId,
+          orderIndex: index + 1,
+          course: courses.find((course) => course.id === courseId),
+        }),
+      );
+    }
+
+    await this.collectionRepository.save(collection);
+    const hydratedCollection = await this.findCollectionOrThrow(collection.id);
+
+    return this.toView(hydratedCollection, false);
+  }
+
+  async delete(id: string): Promise<void> {
+    const collection = await this.findCollectionOrThrow(id);
+    await this.collectionRepository.remove(collection);
+  }
+
+  private async resolveCourses(courseIds: string[]): Promise<Course[]> {
+    if (courseIds.length === 0) {
+      return [];
+    }
+
+    const courses = await this.courseRepository.findByIds(courseIds);
+
+    if (courses.length !== courseIds.length) {
+      throw new NotFoundException('One or more courses not found');
+    }
+
+    return courses;
+  }
+
+  private async findCollectionOrThrow(id: string): Promise<CourseCollection> {
+    const collection = await this.collectionRepository.findOne({
+      where: { id },
+      relations: [
+        'items',
+        'items.course',
+        'items.course.authors',
+        'items.course.finalTests',
+        'items.course.chapters',
+        'items.course.chapters.trainingQuiz',
+        'items.course.chapters.subChapters',
+      ],
+    });
+
+    if (!collection) {
+      throw new NotFoundException(`Collection with ID ${id} not found`);
+    }
+
+    return collection;
+  }
+
+  private toView(
+    collection: CourseCollection,
+    publishedOnly: boolean,
+  ): CollectionView {
+    const sortedItems = [...(collection.items ?? [])].sort(
+      (left, right) => left.orderIndex - right.orderIndex,
+    );
+    const courses = sortedItems
+      .map((item) => item.course)
+      .filter((course): course is Course => Boolean(course))
+      .filter((course) =>
+        publishedOnly ? course.status === CourseStatus.PUBLISHED : true,
+      )
+      .map((course) => this.sortCourseTree(course));
+
+    return {
+      id: collection.id,
+      titleEn: collection.titleEn,
+      titleFi: collection.titleFi,
+      descriptionEn: collection.descriptionEn,
+      descriptionFi: collection.descriptionFi,
+      coverImage: collection.coverImage,
+      orderIndex: collection.orderIndex,
+      isPublished: collection.isPublished,
+      courses,
+      createdAt: collection.createdAt,
+      updatedAt: collection.updatedAt,
+    };
+  }
+
+  private sortCourseTree(course: Course): Course {
+    if (!course.chapters?.length) {
+      return course;
+    }
+
+    course.chapters.sort((left, right) => left.orderIndex - right.orderIndex);
+
+    for (const chapter of course.chapters) {
+      if (!chapter.subChapters?.length) {
+        continue;
+      }
+
+      chapter.subChapters.sort(
+        (left, right) => left.orderIndex - right.orderIndex,
+      );
+    }
+
+    return course;
+  }
+}

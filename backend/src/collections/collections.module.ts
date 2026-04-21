@@ -4,8 +4,8 @@ import { AdminRoleGuard } from '../auth/guards/admin-role.guard';
 import { CourseCollection } from '../entities/course-collection.entity';
 import { CourseCollectionItem } from '../entities/course-collection-item.entity';
 import { Course } from '../entities/course.entity';
-import { CollectionsController } from './collections.controller';
-import { CollectionsService } from './collections.service';
+import { CollectionsController } from './controllers/collections.controller';
+import { CollectionsService } from './services/collections.service';
 
 @Module({
   imports: [

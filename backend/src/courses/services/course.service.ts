@@ -5,7 +5,7 @@ import { Course, CourseStatus } from '../../entities/course.entity';
 import { Author } from '../../entities/author.entity';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
-import { NotificationsService } from '../../notifications/notifications.service';
+import { NotificationsService } from '../../notifications/services/notifications.service';
 
 export interface AdminCourseSummary {
   totalCourses: number;
@@ -107,8 +107,8 @@ export class CourseService {
     return {
       totalCourses,
       publishedCourses,
-      draftCourses: draftCourses + archivedCourses,
-      archivedCourses: 0,
+      draftCourses,
+      archivedCourses,
     };
   }
 

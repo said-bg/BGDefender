@@ -10,9 +10,9 @@ import { QuizAttempt } from '../entities/quiz-attempt.entity';
 import { QuizAttemptAnswer } from '../entities/quiz-attempt-answer.entity';
 import { QuizOption } from '../entities/quiz-option.entity';
 import { QuizQuestion } from '../entities/quiz-question.entity';
-import { FinalTestsController } from './final-tests.controller';
-import { QuizzesController } from './quizzes.controller';
-import { QuizzesService } from './quizzes.service';
+import { FinalTestsController } from './controllers/final-tests.controller';
+import { QuizzesController } from './controllers/quizzes.controller';
+import { QuizzesService } from './services/quizzes.service';
 
 @Module({
   imports: [

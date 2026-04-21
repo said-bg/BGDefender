@@ -6,8 +6,8 @@ import { QuizAttempt } from '../entities/quiz-attempt.entity';
 import { Quiz } from '../entities/quiz.entity';
 import { User } from '../entities/user.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
-import { CertificatesController } from './certificates.controller';
-import { CertificatesService } from './certificates.service';
+import { CertificatesController } from './controllers/certificates.controller';
+import { CertificatesService } from './services/certificates.service';
 
 @Module({
   imports: [
