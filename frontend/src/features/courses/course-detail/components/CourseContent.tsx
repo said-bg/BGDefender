@@ -28,6 +28,7 @@ type CourseContentProps = {
   course: Course;
   courseAuthorFallback: string;
   headerAction?: ReactNode;
+  isAuthenticated: boolean;
   isFocusMode?: boolean;
   nextItem: NavigationItem | null;
   onNavigateToView: (view: ViewState) => void;
@@ -45,6 +46,7 @@ export function CourseContent({
   canAccessAssessments,
   courseAuthorFallback,
   headerAction,
+  isAuthenticated,
   isFocusMode = false,
   previousItem,
   nextItem,
@@ -142,8 +144,10 @@ export function CourseContent({
       )}
 
       <CourseContentNavigation
+        accessState={accessState}
         currentKind={selectedContent.kind}
         hasFinalTest={Boolean(publishedFinalTest)}
+        isAuthenticated={isAuthenticated}
         nextItem={nextItem}
         onNavigateToView={onNavigateToView}
         previousItem={previousItem}
@@ -154,4 +158,3 @@ export function CourseContent({
 }
 
 export default CourseContent;
-

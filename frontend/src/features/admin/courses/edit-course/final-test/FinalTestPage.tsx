@@ -11,6 +11,8 @@ import formStyles from '@/features/admin/courses/edit-course/shared/EditCourseFo
 import sharedStyles from '@/features/admin/courses/edit-course/shared/EditCoursePage.module.css';
 import shellStyles from '@/features/admin/courses/edit-course/shared/EditCourseShell.module.css';
 import quizStyles from '@/features/admin/courses/edit-course/quiz/QuizPage.module.css';
+import QuizAnalyticsPanel from '@/features/admin/courses/edit-course/quiz/components/QuizAnalyticsPanel';
+import QuizAnalyticsSummaryBar from '@/features/admin/courses/edit-course/quiz/components/QuizAnalyticsSummaryBar';
 import FinalTestEditorForm from './components/FinalTestEditorForm';
 import useFinalTestPage from './hooks/useFinalTestPage';
 import featureStyles from './FinalTestPage.module.css';
@@ -34,6 +36,14 @@ export default function FinalTestPage() {
 function FinalTestPageContent() {
   const { t, i18n } = useTranslation('admin');
   const finalTestPage = useFinalTestPage(i18n.language, t);
+  const analyticsSectionId = 'course-final-test-analytics';
+
+  const scrollToAnalytics = () => {
+    document.getElementById(analyticsSectionId)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   if (finalTestPage.loadingPage) {
     return <EditCourseLoadingState />;
@@ -79,6 +89,19 @@ function FinalTestPageContent() {
 
         <div className={styles.editorLayout}>
           <div className={styles.quizEditorColumn}>
+            <QuizAnalyticsSummaryBar
+              analytics={finalTestPage.finalTestAnalytics}
+              isLoading={finalTestPage.finalTestAnalyticsLoading}
+              title={t('edit.finalTest.analyticsTitle', {
+                defaultValue: 'Learner final test analytics',
+              })}
+              styles={styles}
+              actionLabel={t('edit.finalTest.analyticsOpenDetails', {
+                defaultValue: 'View learner analytics',
+              })}
+              onOpenDetails={scrollToAnalytics}
+            />
+
             {finalTestPage.finalTestLoading ? (
               <div className={styles.emptyState}>
                 <p className={styles.emptyDescription}>
@@ -88,28 +111,46 @@ function FinalTestPageContent() {
                 </p>
               </div>
             ) : (
-              <FinalTestEditorForm
-                finalTestError={finalTestPage.finalTestError}
-                finalTestMessage={finalTestPage.finalTestMessage}
-                form={finalTestPage.form}
-                isDeletingFinalTest={finalTestPage.isDeletingFinalTest}
-                isSavingFinalTest={finalTestPage.isSavingFinalTest}
-                loadedFinalTestStats={finalTestPage.loadedFinalTest?.stats ?? null}
-                styles={styles}
-                t={t}
-                onAddOption={finalTestPage.addOption}
-                onAddQuestion={finalTestPage.addQuestion}
-                onDeleteFinalTest={() => void finalTestPage.handleDeleteFinalTest()}
-                onQuestionTypeChange={finalTestPage.handleQuestionTypeChange}
-                onRemoveOption={finalTestPage.removeOption}
-                onRemoveQuestion={finalTestPage.removeQuestion}
-                onReset={finalTestPage.resetCurrentForm}
-                onSave={() => void finalTestPage.handleSaveFinalTest()}
-                onToggleOptionCorrect={finalTestPage.toggleOptionCorrect}
-                onUpdateOptionField={finalTestPage.updateOptionField}
-                onUpdateQuestionField={finalTestPage.updateQuestionField}
-                onUpdateTopLevelField={finalTestPage.updateTopLevelField}
-              />
+              <>
+                <FinalTestEditorForm
+                  finalTestError={finalTestPage.finalTestError}
+                  finalTestMessage={finalTestPage.finalTestMessage}
+                  form={finalTestPage.form}
+                  isDeletingFinalTest={finalTestPage.isDeletingFinalTest}
+                  isSavingFinalTest={finalTestPage.isSavingFinalTest}
+                  loadedFinalTestStats={finalTestPage.loadedFinalTest?.stats ?? null}
+                  styles={styles}
+                  t={t}
+                  onAddOption={finalTestPage.addOption}
+                  onAddQuestion={finalTestPage.addQuestion}
+                  onDeleteFinalTest={() => void finalTestPage.handleDeleteFinalTest()}
+                  onQuestionTypeChange={finalTestPage.handleQuestionTypeChange}
+                  onRemoveOption={finalTestPage.removeOption}
+                  onRemoveQuestion={finalTestPage.removeQuestion}
+                  onReset={finalTestPage.resetCurrentForm}
+                  onSave={() => void finalTestPage.handleSaveFinalTest()}
+                  onToggleOptionCorrect={finalTestPage.toggleOptionCorrect}
+                  onUpdateOptionField={finalTestPage.updateOptionField}
+                  onUpdateQuestionField={finalTestPage.updateQuestionField}
+                  onUpdateTopLevelField={finalTestPage.updateTopLevelField}
+                />
+
+                <QuizAnalyticsPanel
+                  analytics={finalTestPage.finalTestAnalytics}
+                  id={analyticsSectionId}
+                  isLoading={finalTestPage.finalTestAnalyticsLoading}
+                  language={i18n.language}
+                  styles={styles}
+                  t={t}
+                  title={t('edit.finalTest.analyticsTitle', {
+                    defaultValue: 'Learner final test analytics',
+                  })}
+                  description={t('edit.finalTest.analyticsDescription', {
+                    defaultValue:
+                      'Review who attempted the final test, how often they retried it, and how they performed.',
+                  })}
+                />
+              </>
             )}
           </div>
         </div>

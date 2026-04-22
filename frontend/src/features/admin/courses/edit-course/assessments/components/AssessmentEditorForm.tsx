@@ -30,6 +30,7 @@ type AssessmentEditorFormProps = {
   message: string | null;
   error: string | null;
   stats: AssessmentStats | null;
+  showInlineStats?: boolean;
   styles: Record<string, string>;
   onAddOption: (questionId: string) => void;
   onAddQuestion: () => void;
@@ -66,6 +67,7 @@ export default function AssessmentEditorForm({
   message,
   error,
   stats,
+  showInlineStats = true,
   styles,
   onAddOption,
   onAddQuestion,
@@ -142,7 +144,7 @@ export default function AssessmentEditorForm({
           <span>{copy.publishNow}</span>
         </label>
 
-        {stats ? (
+        {stats && showInlineStats ? (
           <div className={styles.quizStatsRow}>
             <span>
               {stats.attemptCount} {copy.attemptsShort}

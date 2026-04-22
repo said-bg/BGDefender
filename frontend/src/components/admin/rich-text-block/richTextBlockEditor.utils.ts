@@ -192,9 +192,6 @@ export const clearMediaWidthPreview = (editor: Editor, media: SelectedMediaState
     const imageBody = nodeDom.matches('.image-view__body')
       ? nodeDom
       : nodeDom.querySelector<HTMLElement>('.image-view__body');
-    const imageElement = nodeDom.matches('img')
-      ? nodeDom
-      : nodeDom.querySelector<HTMLElement>('img');
 
     imageView?.style.removeProperty('width');
     imageView?.style.removeProperty('max-width');

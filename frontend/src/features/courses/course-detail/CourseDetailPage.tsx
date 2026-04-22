@@ -101,6 +101,7 @@ export default function CourseDetailPage() {
             canAccessAssessments={detail.canAccessAssessments}
             canReadContent={detail.canReadContent}
             courseAuthorFallback={detail.courseAuthorFallback}
+            isAuthenticated={detail.isAuthenticated}
             headerAction={
               !isSidebarVisible ? (
                 <button

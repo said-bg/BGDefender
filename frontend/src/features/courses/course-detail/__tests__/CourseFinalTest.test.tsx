@@ -212,6 +212,14 @@ describe('CourseFinalTest', () => {
         passed: true,
         submittedAt: '2026-04-09T10:00:00.000Z',
       },
+      answers: [
+        {
+          questionId: 'question-1',
+          selectedOptionIds: ['option-a'],
+          correctOptionIds: ['option-a'],
+          isCorrect: true,
+        },
+      ],
     });
 
     render(

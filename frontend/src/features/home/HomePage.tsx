@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import HomeCollectionsSection from './components/HomeCollectionsSection';
 import HomeCourseRail from './components/HomeCourseRail';
@@ -22,7 +22,6 @@ export default function HomePage() {
     visibleInProgressCourses,
     welcomeName,
   } = useHomeCourses();
-  const learnerVisitSnapshotRef = useRef<Record<string, boolean>>({});
   const isFirstLearnerVisit = useMemo(() => {
     if (
       !isLearnerHome ||
@@ -32,14 +31,7 @@ export default function HomePage() {
       return false;
     }
 
-    const cachedVisitState = learnerVisitSnapshotRef.current[learnerHomeStorageKey];
-    if (typeof cachedVisitState === 'boolean') {
-      return cachedVisitState;
-    }
-
-    const isFirstVisit = window.localStorage.getItem(learnerHomeStorageKey) !== '1';
-    learnerVisitSnapshotRef.current[learnerHomeStorageKey] = isFirstVisit;
-    return isFirstVisit;
+    return window.localStorage.getItem(learnerHomeStorageKey) !== '1';
   }, [isLearnerHome, learnerHomeStorageKey]);
 
   useEffect(() => {

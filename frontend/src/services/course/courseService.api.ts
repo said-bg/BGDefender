@@ -2,6 +2,8 @@ import { apiClient } from '../api';
 import type {
   AdminCourseSummary,
   AdminChapterQuiz,
+  AdminFinalTestAnalytics,
+  AdminQuizAnalytics,
   AdminCourseFinalTest,
   Chapter,
   Course,
@@ -200,6 +202,16 @@ export const courseService = {
     return response.data;
   },
 
+  async getChapterQuizAnalytics(
+    courseId: string,
+    chapterId: string,
+  ): Promise<AdminQuizAnalytics | null> {
+    const response = await apiClient.get<AdminQuizAnalytics | null>(
+      `/courses/${courseId}/chapters/${chapterId}/quiz/analytics`,
+    );
+    return response.data;
+  },
+
   async upsertChapterQuiz(
     courseId: string,
     chapterId: string,
@@ -244,6 +256,15 @@ export const courseService = {
     const response = await apiClient.put<AdminCourseFinalTest>(
       `/courses/${courseId}/final-test`,
       payload,
+    );
+    return response.data;
+  },
+
+  async getCourseFinalTestAnalytics(
+    courseId: string,
+  ): Promise<AdminFinalTestAnalytics | null> {
+    const response = await apiClient.get<AdminFinalTestAnalytics | null>(
+      `/courses/${courseId}/final-test/analytics`,
     );
     return response.data;
   },

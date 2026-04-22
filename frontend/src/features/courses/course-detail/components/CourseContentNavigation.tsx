@@ -5,8 +5,10 @@ import { NavigationItem, ViewState } from '../courseDetail.utils';
 import styles from './CourseContentNavigation.module.css';
 
 interface CourseContentNavigationProps {
+  accessState: 'public' | 'checking' | 'login_required' | 'premium_required' | 'granted';
   currentKind: 'overview' | 'chapter' | 'subchapter' | 'quiz' | 'final-test';
   hasFinalTest: boolean;
+  isAuthenticated: boolean;
   nextItem: NavigationItem | null;
   onNavigateToView: (view: ViewState) => void;
   previousItem: NavigationItem | null;
@@ -14,14 +16,22 @@ interface CourseContentNavigationProps {
 }
 
 export default function CourseContentNavigation({
+  accessState,
   currentKind,
   hasFinalTest,
+  isAuthenticated,
   nextItem,
   onNavigateToView,
   previousItem,
   t,
 }: CourseContentNavigationProps) {
   const [isCompletionOpen, setIsCompletionOpen] = useState(false);
+  const loginHref =
+    typeof window === 'undefined'
+      ? '/login'
+      : `/login?redirect=${encodeURIComponent(
+          `${window.location.pathname}${window.location.search}`,
+        )}`;
 
   const handleNavigate = (item: NavigationItem | null) => {
     if (!item) {
@@ -40,6 +50,10 @@ export default function CourseContentNavigation({
   };
 
   const isCourseEnd = !nextItem && currentKind !== 'overview';
+  const shouldPromptLogin =
+    accessState === 'login_required' || (currentKind === 'overview' && !isAuthenticated);
+  const isNavigationBlocked =
+    accessState === 'checking' || accessState === 'premium_required';
   const completionTitle =
     currentKind === 'final-test'
       ? t('detail.courseCompletedTitle', {
@@ -75,7 +89,26 @@ export default function CourseContentNavigation({
         >
           {t('detail.previous')}
         </button>
-        {isCourseEnd ? (
+        {shouldPromptLogin ? (
+          <Link
+            href={loginHref}
+            className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
+          >
+            {t('detail.next')}
+          </Link>
+        ) : isNavigationBlocked ? (
+          <button
+            type="button"
+            className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
+            disabled
+          >
+            {accessState === 'checking'
+              ? t('detail.checkingAccess', { defaultValue: 'Checking access...' })
+              : t('detail.premiumRequiredTitle', {
+                  defaultValue: 'Premium access required',
+                })}
+          </button>
+        ) : isCourseEnd ? (
           <button
             type="button"
             className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}

@@ -3,6 +3,7 @@ import {
   applyMediaWidthCommand,
   removeSelectedMediaCommand,
 } from '../richTextBlockEditor.commands';
+import type { Editor } from '@tiptap/react';
 import type { SelectedMediaState } from '../richTextBlockEditor.utils';
 
 const createMockEditor = () => {
@@ -17,7 +18,7 @@ const createMockEditor = () => {
   return {
     editor: {
       chain,
-    } as any,
+    } as unknown as Editor,
     chain,
     focus,
     setNodeSelection,

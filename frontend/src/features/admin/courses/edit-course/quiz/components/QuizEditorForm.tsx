@@ -105,6 +105,7 @@ export default function QuizEditorForm({
       isSaving={isSavingQuiz}
       message={quizMessage}
       stats={loadedQuizStats}
+      showInlineStats={false}
       styles={styles}
       onAddOption={onAddOption}
       onAddQuestion={onAddQuestion}

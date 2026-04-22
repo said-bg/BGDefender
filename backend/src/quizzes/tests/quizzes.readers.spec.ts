@@ -4,8 +4,11 @@ import { QuizOption } from '../../entities/quiz-option.entity';
 import { QuizQuestion } from '../../entities/quiz-question.entity';
 import { QuizQuestionType } from '../../entities/quiz-question-type.enum';
 import { QuizScope } from '../../entities/quiz-scope.enum';
+import { User, UserRole, UserPlan } from '../../entities/user.entity';
 import type { QuizzesServiceDependencies } from '../services/quizzes.service.dependencies';
 import {
+  getCourseFinalTestAnalyticsForAdmin,
+  getChapterQuizAnalyticsForAdmin,
   getChapterQuizForAdmin,
   getChapterQuizForLearner,
   getCourseFinalTestForAdmin,
@@ -179,6 +182,26 @@ const createAttempt = (score: number, passed: boolean): QuizAttempt =>
     ),
   });
 
+const createUser = (
+  id: number,
+  email: string,
+  firstName: string | null,
+  lastName: string | null,
+): User =>
+  Object.assign(new User(), {
+    id,
+    email,
+    firstName,
+    lastName,
+    occupation: null,
+    password: 'hashed-password',
+    role: UserRole.USER,
+    plan: UserPlan.FREE,
+    isActive: true,
+    createdAt: new Date('2026-01-01T00:00:00.000Z'),
+    updatedAt: new Date('2026-01-01T00:00:00.000Z'),
+  });
+
 describe('quizzes.readers', () => {
   it('returns null when the admin chapter quiz does not exist', async () => {
     const { deps, quizRepository } = createDependencies();
@@ -228,6 +251,79 @@ describe('quizzes.readers', () => {
     expect(result?.questions[0]?.options[0]).not.toHaveProperty('isCorrect');
   });
 
+  it('returns chapter quiz analytics grouped by learner for admins', async () => {
+    const { deps, quizRepository, quizAttemptRepository } = createDependencies();
+    quizRepository.findOne.mockResolvedValue(createQuizTree());
+    quizAttemptRepository.find.mockResolvedValue([
+      Object.assign(createAttempt(80, true), {
+        id: 'attempt-3',
+        userId: 77,
+        user: createUser(77, 'alex@example.com', 'Alex', 'Stone'),
+        submittedAt: new Date('2026-01-03T00:00:00.000Z'),
+      }),
+      Object.assign(createAttempt(60, false), {
+        id: 'attempt-2',
+        userId: 12,
+        user: createUser(12, 'user@example.com', 'User', 'Example'),
+        submittedAt: new Date('2026-01-02T00:00:00.000Z'),
+      }),
+      Object.assign(createAttempt(100, true), {
+        id: 'attempt-1',
+        userId: 12,
+        user: createUser(12, 'user@example.com', 'User', 'Example'),
+        submittedAt: new Date('2026-01-01T00:00:00.000Z'),
+      }),
+    ]);
+
+    const result = await getChapterQuizAnalyticsForAdmin(deps, 'chapter-1');
+
+    expect(result).toEqual({
+      quizId: 'quiz-1',
+      chapterId: 'chapter-1',
+      summary: {
+        learnerCount: 2,
+        attemptCount: 3,
+        latestAttemptAt: new Date('2026-01-03T00:00:00.000Z'),
+        bestScore: 100,
+        averageScore: 80,
+        passRate: 67,
+      },
+      learners: [
+        {
+          userId: 77,
+          email: 'alex@example.com',
+          firstName: 'Alex',
+          lastName: 'Stone',
+          attemptCount: 1,
+          latestScore: 80,
+          bestScore: 80,
+          hasPassed: true,
+          latestAttemptAt: new Date('2026-01-03T00:00:00.000Z'),
+        },
+        {
+          userId: 12,
+          email: 'user@example.com',
+          firstName: 'User',
+          lastName: 'Example',
+          attemptCount: 2,
+          latestScore: 60,
+          bestScore: 100,
+          hasPassed: true,
+          latestAttemptAt: new Date('2026-01-02T00:00:00.000Z'),
+        },
+      ],
+    });
+  });
+
+  it('returns null analytics when the chapter quiz does not exist', async () => {
+    const { deps, quizRepository } = createDependencies();
+    quizRepository.findOne.mockResolvedValue(null);
+
+    await expect(
+      getChapterQuizAnalyticsForAdmin(deps, 'chapter-1'),
+    ).resolves.toBeNull();
+  });
+
   it('returns null when the learner final test does not exist', async () => {
     const { deps, quizRepository } = createDependencies();
     quizRepository.findOne.mockResolvedValue(null);
@@ -235,6 +331,66 @@ describe('quizzes.readers', () => {
     await expect(
       getCourseFinalTestForLearner(deps, 'course-1', 12),
     ).resolves.toBeNull();
+  });
+
+  it('returns final test analytics grouped by learner for admins', async () => {
+    const { deps, quizRepository, quizAttemptRepository } = createDependencies();
+    quizRepository.findOne.mockResolvedValue(createFinalTestTree());
+    quizAttemptRepository.find.mockResolvedValue([
+      Object.assign(createAttempt(90, true), {
+        id: 'final-attempt-2',
+        quizId: 'final-test-1',
+        userId: 77,
+        user: createUser(77, 'alex@example.com', 'Alex', 'Stone'),
+        submittedAt: new Date('2026-01-04T00:00:00.000Z'),
+      }),
+      Object.assign(createAttempt(70, false), {
+        id: 'final-attempt-1',
+        quizId: 'final-test-1',
+        userId: 12,
+        user: createUser(12, 'user@example.com', 'User', 'Example'),
+        submittedAt: new Date('2026-01-03T00:00:00.000Z'),
+      }),
+    ]);
+
+    const result = await getCourseFinalTestAnalyticsForAdmin(deps, 'course-1');
+
+    expect(result).toEqual({
+      quizId: 'final-test-1',
+      courseId: 'course-1',
+      summary: {
+        learnerCount: 2,
+        attemptCount: 2,
+        latestAttemptAt: new Date('2026-01-04T00:00:00.000Z'),
+        bestScore: 90,
+        averageScore: 80,
+        passRate: 50,
+      },
+      learners: [
+        {
+          userId: 77,
+          email: 'alex@example.com',
+          firstName: 'Alex',
+          lastName: 'Stone',
+          attemptCount: 1,
+          latestScore: 90,
+          bestScore: 90,
+          hasPassed: true,
+          latestAttemptAt: new Date('2026-01-04T00:00:00.000Z'),
+        },
+        {
+          userId: 12,
+          email: 'user@example.com',
+          firstName: 'User',
+          lastName: 'Example',
+          attemptCount: 1,
+          latestScore: 70,
+          bestScore: 70,
+          hasPassed: false,
+          latestAttemptAt: new Date('2026-01-03T00:00:00.000Z'),
+        },
+      ],
+    });
   });
 
   it('syncs the certificate and exposes the learner final test view when a passed attempt exists', async () => {

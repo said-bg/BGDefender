@@ -17,6 +17,8 @@ import { CertificatesService } from '../../certificates/services/certificates.se
 import { SubmitChapterQuizAttemptDto } from '../dto/submit-chapter-quiz-attempt.dto';
 import { UpsertChapterQuizDto } from '../dto/upsert-chapter-quiz.dto';
 import {
+  getCourseFinalTestAnalyticsForAdmin,
+  getChapterQuizAnalyticsForAdmin,
   getChapterQuizForAdmin,
   getChapterQuizForLearner,
   getCourseFinalTestForAdmin,
@@ -25,6 +27,8 @@ import {
 import type { QuizzesServiceDependencies } from './quizzes.service.dependencies';
 import { findChapterOrFail, findCourseOrFail } from './quizzes.shared';
 import {
+  AdminFinalTestAnalyticsView,
+  AdminQuizAnalyticsView,
   AdminFinalTestView,
   AdminQuizView,
   LearnerFinalTestView,
@@ -91,6 +95,14 @@ export class QuizzesService {
     );
   }
 
+  async getChapterQuizAnalytics(
+    courseId: string,
+    chapterId: string,
+  ): Promise<AdminQuizAnalyticsView | null> {
+    await findChapterOrFail(this.dependencies, courseId, chapterId);
+    return getChapterQuizAnalyticsForAdmin(this.dependencies, chapterId);
+  }
+
   async getCourseFinalTest(
     courseId: string,
     currentUser: SafeUser,
@@ -105,6 +117,13 @@ export class QuizzesService {
       courseId,
       currentUser.id,
     );
+  }
+
+  async getCourseFinalTestAnalytics(
+    courseId: string,
+  ): Promise<AdminFinalTestAnalyticsView | null> {
+    await findCourseOrFail(this.dependencies, courseId);
+    return getCourseFinalTestAnalyticsForAdmin(this.dependencies, courseId);
   }
 
   async upsertChapterQuiz(

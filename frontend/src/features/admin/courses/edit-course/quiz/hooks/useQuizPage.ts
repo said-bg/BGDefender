@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { TFunction } from 'i18next';
 import courseService, {
   type AdminChapterQuiz,
+  type AdminQuizAnalytics,
   type Course,
   type UpsertChapterQuizRequest,
 } from '@/services/course';
@@ -30,6 +31,8 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
   const [quizError, setQuizError] = useState<string | null>(null);
   const [quizMessage, setQuizMessage] = useState<string | null>(null);
   const [loadedQuiz, setLoadedQuiz] = useState<AdminChapterQuiz | null>(null);
+  const [quizAnalytics, setQuizAnalytics] = useState<AdminQuizAnalytics | null>(null);
+  const [quizAnalyticsLoading, setQuizAnalyticsLoading] = useState(false);
   const [isSavingQuiz, setIsSavingQuiz] = useState(false);
   const [isDeletingQuiz, setIsDeletingQuiz] = useState(false);
   const assessment = useAssessmentDraftForm(createEmptyAssessmentForm());
@@ -129,19 +132,42 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     });
   }, []);
 
+  const loadQuizAnalytics = useCallback(
+    async (currentCourseId: string, currentChapterId: string) => {
+      setQuizAnalyticsLoading(true);
+      try {
+        const response = await courseService.getChapterQuizAnalytics(
+          currentCourseId,
+          currentChapterId,
+        );
+        setQuizAnalytics(response);
+      } finally {
+        setQuizAnalyticsLoading(false);
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     if (!courseId || !selectedChapterId || !selectedChapter) {
+      setLoadedQuiz(null);
+      setQuizAnalytics(null);
       return;
     }
 
     const loadQuiz = async () => {
       try {
         setQuizLoading(true);
+        setQuizAnalyticsLoading(true);
         setQuizError(null);
         setQuizMessage(null);
-        const response = await courseService.getChapterQuiz(courseId, selectedChapterId);
-        const adminQuiz = response && 'stats' in response ? response : null;
+        const [quizResponse, analyticsResponse] = await Promise.all([
+          courseService.getChapterQuiz(courseId, selectedChapterId),
+          courseService.getChapterQuizAnalytics(courseId, selectedChapterId),
+        ]);
+        const adminQuiz = quizResponse && 'stats' in quizResponse ? quizResponse : null;
         setLoadedQuiz(adminQuiz);
+        setQuizAnalytics(analyticsResponse);
         replaceForm(
           adminQuiz
             ? mapAssessmentToForm(adminQuiz)
@@ -159,8 +185,10 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
             }),
           ),
         );
+        setQuizAnalytics(null);
       } finally {
         setQuizLoading(false);
+        setQuizAnalyticsLoading(false);
       }
     };
 
@@ -217,6 +245,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
       setLoadedQuiz(savedQuiz);
       replaceForm(mapAssessmentToForm(savedQuiz));
       syncChapterQuizSummary(selectedChapterId, savedQuiz);
+      await loadQuizAnalytics(courseId, selectedChapterId);
       setQuizMessage(
         t('edit.quiz.saved', {
           defaultValue: 'Training quiz saved successfully.',
@@ -234,7 +263,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     } finally {
       setIsSavingQuiz(false);
     }
-  }, [courseId, form, replaceForm, selectedChapterId, syncChapterQuizSummary, t]);
+  }, [courseId, form, loadQuizAnalytics, replaceForm, selectedChapterId, syncChapterQuizSummary, t]);
 
   const handleDeleteQuiz = useCallback(async () => {
     if (!courseId || !selectedChapterId || !loadedQuiz) {
@@ -257,6 +286,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
       setQuizMessage(null);
       await courseService.deleteChapterQuiz(courseId, selectedChapterId);
       setLoadedQuiz(null);
+      setQuizAnalytics(null);
       replaceForm(
         createEmptyAssessmentForm(
           selectedChapter ? `${selectedChapter.titleEn} training quiz` : '',
@@ -293,6 +323,8 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     loadedQuiz,
     loadingPage,
     localizedCourseTitle,
+    quizAnalytics,
+    quizAnalyticsLoading,
     quizError,
     quizLoading,
     quizMessage,

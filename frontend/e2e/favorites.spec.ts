@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 import {
-  API_BASE,
   buildApiPattern,
   createCourse,
   freeUser,

@@ -7,6 +7,7 @@ jest.mock('@/services/course', () => ({
   default: {
     getCourseById: jest.fn(),
     getCourseFinalTest: jest.fn(),
+    getCourseFinalTestAnalytics: jest.fn(),
     upsertCourseFinalTest: jest.fn(),
     deleteCourseFinalTest: jest.fn(),
   },
@@ -73,12 +74,14 @@ describe('FinalTestPage', () => {
   afterEach(() => {
     mockedCourseService.getCourseById.mockReset();
     mockedCourseService.getCourseFinalTest.mockReset();
+    mockedCourseService.getCourseFinalTestAnalytics.mockReset();
     mockedCourseService.upsertCourseFinalTest.mockReset();
     mockedCourseService.deleteCourseFinalTest.mockReset();
   });
 
   it('loads the course final test editor', async () => {
     mockedCourseService.getCourseFinalTest.mockResolvedValue(null);
+    mockedCourseService.getCourseFinalTestAnalytics.mockResolvedValue(null);
 
     render(<FinalTestPage />);
 
@@ -91,6 +94,21 @@ describe('FinalTestPage', () => {
 
   it('saves the final test for the course', async () => {
     mockedCourseService.getCourseFinalTest.mockResolvedValue(null);
+    mockedCourseService.getCourseFinalTestAnalytics
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        quizId: 'final-test-1',
+        courseId: 'course-1',
+        summary: {
+          learnerCount: 0,
+          attemptCount: 0,
+          latestAttemptAt: null,
+          bestScore: null,
+          averageScore: null,
+          passRate: null,
+        },
+        learners: [],
+      });
     mockedCourseService.upsertCourseFinalTest.mockResolvedValue({
       id: 'final-test-1',
       courseId: 'course-1',
@@ -202,5 +220,8 @@ describe('FinalTestPage', () => {
     });
 
     expect(screen.getByText('Final test saved successfully.')).toBeInTheDocument();
+    expect(mockedCourseService.getCourseFinalTestAnalytics).toHaveBeenLastCalledWith(
+      'course-1',
+    );
   });
 });

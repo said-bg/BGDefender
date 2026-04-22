@@ -33,6 +33,14 @@ export class FinalTestsController {
     return this.quizzesService.getCourseFinalTest(courseId, currentUser);
   }
 
+  @Get('analytics')
+  @UseGuards(AdminRoleGuard)
+  async getCourseFinalTestAnalytics(
+    @Param('courseId', new ParseUUIDPipe()) courseId: string,
+  ) {
+    return this.quizzesService.getCourseFinalTestAnalytics(courseId);
+  }
+
   @Put()
   @UseGuards(AdminRoleGuard)
   async upsertCourseFinalTest(

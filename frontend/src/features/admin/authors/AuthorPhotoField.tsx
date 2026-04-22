@@ -108,6 +108,8 @@ export default function AuthorPhotoField({
 
       {photo ? (
         <div className={photoStyles.photoPreview}>
+          {/* This preview must support arbitrary external URLs entered by admins. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={photo}
             alt={formName || t('authors.photoPreviewAlt', { defaultValue: 'Author preview' })}

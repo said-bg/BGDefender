@@ -9,6 +9,7 @@
 .quizEditorColumn,
 .chapterPickerList,
 .quizEditorCard,
+.quizAnalyticsCard,
 .questionList {
   display: grid;
   gap: 0.85rem;
@@ -24,7 +25,8 @@
 }
 
 .quizSidebar,
-.quizEditorCard {
+.quizEditorCard,
+.quizAnalyticsCard {
   padding: 16px;
   border: 1px solid #e6ebf2;
   border-radius: 1rem;
@@ -177,15 +179,132 @@
   gap: 0.9rem;
 }
 
+.quizAnalyticsSummaryBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e6ebf2;
+  border-radius: 0.95rem;
+  background: linear-gradient(180deg, #fffdfa 0%, #ffffff 100%);
+}
+
+.quizAnalyticsSummaryCopy {
+  display: grid;
+  gap: 0.24rem;
+}
+
+.quizAnalyticsSummaryTitle,
+.quizAnalyticsSummaryText {
+  margin: 0;
+}
+
+.quizAnalyticsSummaryTitle {
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.quizAnalyticsSummaryText {
+  color: #526581;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.quizAnalyticsSummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.quizAnalyticsMetric,
+.quizAnalyticsLearnerCard {
+  padding: 0.95rem;
+  border: 1px solid #e6ebf2;
+  border-radius: 0.9rem;
+  background: #ffffff;
+}
+
+.quizAnalyticsMetric {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.quizAnalyticsMetricLabel,
+.quizAnalyticsLearnerEmail {
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.quizAnalyticsMetricValue,
+.quizAnalyticsLearnerName {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.quizAnalyticsMetaRow,
+.quizAnalyticsLearnerHeader,
+.quizAnalyticsLearnerStats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quizAnalyticsMetaRow,
+.quizAnalyticsLearnerStats {
+  color: #334155;
+  font-size: 0.84rem;
+}
+
+.quizAnalyticsLearnerList {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.quizAnalyticsLearnerHeader {
+  justify-content: space-between;
+}
+
+.quizAnalyticsStatusPassed,
+.quizAnalyticsStatusPending {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.85rem;
+  padding: 0.18rem 0.68rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.quizAnalyticsStatusPassed {
+  background: #e8fff3;
+  color: #047857;
+}
+
+.quizAnalyticsStatusPending {
+  background: #fff6d9;
+  color: #b45309;
+}
+
 .questionList {
   gap: 0.8rem;
 }
 
 @media (max-width: 980px) {
   .quizWorkspaceLayout,
+  .quizAnalyticsSummaryGrid,
   .quizHeaderGrid,
   .questionGrid,
   .optionRow {
     grid-template-columns: 1fr;
+  }
+
+  .quizAnalyticsSummaryBar {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

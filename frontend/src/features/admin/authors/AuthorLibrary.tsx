@@ -100,21 +100,25 @@ export default function AuthorLibrary({
             return (
               <article key={author.id} className={libraryStyles.authorCard}>
                 <div className={libraryStyles.authorHeader}>
-                  <div className={libraryStyles.authorIdentity}>
-                    {author.photo ? (
-                      <img
-                        src={author.photo}
-                        alt={author.name}
-                        className={libraryStyles.authorAvatar}
-                        width={56}
-                        height={56}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className={libraryStyles.authorAvatarFallback}>
-                        {getAuthorInitials(author.name)}
-                      </div>
-                    )}
+                    <div className={libraryStyles.authorIdentity}>
+                      {author.photo ? (
+                        <>
+                          {/* These previews support arbitrary external URLs and local uploads. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={author.photo}
+                            alt={author.name}
+                            className={libraryStyles.authorAvatar}
+                            width={56}
+                            height={56}
+                            loading="lazy"
+                          />
+                        </>
+                      ) : (
+                        <div className={libraryStyles.authorAvatarFallback}>
+                          {getAuthorInitials(author.name)}
+                        </div>
+                      )}
 
                     <div>
                       <h3 className={libraryStyles.authorName}>{author.name}</h3>

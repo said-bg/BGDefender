@@ -42,6 +42,8 @@ jest.mock('react-i18next', () => ({
         'detail.checkingAccessText': 'Checking access...',
         'detail.premiumRequiredPrompt':
           'This content is part of the premium plan. Please contact the team for access.',
+        'detail.loginAction': 'Login',
+        'detail.premiumRequiredTitle': 'Premium access required',
         'detail.previous': 'Previous',
         'detail.next': 'Next',
       })[key] ?? key,
@@ -139,6 +141,7 @@ describe('CourseContent', () => {
         canReadContent
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={null}
         nextItem={nextItem}
         onNavigateToView={jest.fn()}
@@ -170,6 +173,7 @@ describe('CourseContent', () => {
         canReadContent={false}
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated={false}
         previousItem={previousItem}
         nextItem={nextItem}
         onNavigateToView={jest.fn()}
@@ -179,9 +183,13 @@ describe('CourseContent', () => {
     expect(
       screen.getByText('Please login to open the detailed learning content.'),
     ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /login/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'login' })).toHaveAttribute(
       'href',
-      '/login',
+      '/login?redirect=%2F',
+    );
+    expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute(
+      'href',
+      '/login?redirect=%2F',
     );
   });
 
@@ -202,6 +210,7 @@ describe('CourseContent', () => {
         canReadContent={false}
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={previousItem}
         nextItem={nextItem}
         onNavigateToView={jest.fn()}
@@ -229,6 +238,7 @@ describe('CourseContent', () => {
         canReadContent
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={previousItem}
         nextItem={nextItem}
         onNavigateToView={onNavigateToView}
@@ -263,6 +273,7 @@ describe('CourseContent', () => {
         canReadContent
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={null}
         nextItem={null}
         onNavigateToView={jest.fn()}
@@ -271,6 +282,65 @@ describe('CourseContent', () => {
 
     expect(screen.getByRole('button', { name: 'Previous' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Next' })).toBeDisabled();
+  });
+
+  it('shows a login CTA instead of advancing through locked content for visitors', () => {
+    render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={overviewContent}
+        accessState="public"
+        canAccessAssessments={false}
+        canReadContent
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        isAuthenticated={false}
+        previousItem={null}
+        nextItem={nextItem}
+        onNavigateToView={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute(
+      'href',
+      '/login?redirect=%2F',
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Next' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows a login CTA on locked chapters instead of allowing fake course completion', () => {
+    render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={{
+          kind: 'chapter',
+          title: 'Chapter 1',
+          description: 'Chapter summary',
+          paragraphs: ['Secret paragraph'],
+        }}
+        accessState="login_required"
+        canAccessAssessments={false}
+        canReadContent={false}
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        isAuthenticated={false}
+        previousItem={previousItem}
+        nextItem={null}
+        onNavigateToView={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute(
+      'href',
+      '/login?redirect=%2F',
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Finish' }),
+    ).not.toBeInTheDocument();
   });
 
   it('renders uploaded video files as html5 video in rich text blocks', () => {
@@ -304,6 +374,7 @@ describe('CourseContent', () => {
         canReadContent
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={null}
         nextItem={null}
         onNavigateToView={jest.fn()}
@@ -353,6 +424,7 @@ describe('CourseContent', () => {
         canReadContent
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={null}
         nextItem={null}
         onNavigateToView={jest.fn()}
@@ -397,6 +469,7 @@ describe('CourseContent', () => {
         canReadContent
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={null}
         nextItem={null}
         onNavigateToView={jest.fn()}
@@ -447,6 +520,7 @@ describe('CourseContent', () => {
         canReadContent
         courseId="course-1"
         courseAuthorFallback="Course author"
+        isAuthenticated
         previousItem={null}
         nextItem={null}
         onNavigateToView={jest.fn()}

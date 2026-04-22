@@ -34,6 +34,15 @@ export class QuizzesController {
     return this.quizzesService.getChapterQuiz(courseId, chapterId, currentUser);
   }
 
+  @Get('analytics')
+  @UseGuards(AdminRoleGuard)
+  async getChapterQuizAnalytics(
+    @Param('courseId', new ParseUUIDPipe()) courseId: string,
+    @Param('chapterId', new ParseUUIDPipe()) chapterId: string,
+  ) {
+    return this.quizzesService.getChapterQuizAnalytics(courseId, chapterId);
+  }
+
   @Put()
   @UseGuards(AdminRoleGuard)
   async upsertChapterQuiz(

@@ -124,6 +124,7 @@ export default function FinalTestEditorForm({
       isSaving={isSavingFinalTest}
       message={finalTestMessage}
       stats={loadedFinalTestStats}
+      showInlineStats={false}
       styles={styles}
       onAddOption={onAddOption}
       onAddQuestion={onAddQuestion}

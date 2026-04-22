@@ -117,6 +117,13 @@ export interface QuizAttemptSummary {
   submittedAt: string;
 }
 
+export interface QuizAttemptAnswerReview {
+  questionId: string;
+  selectedOptionIds: string[];
+  correctOptionIds: string[];
+  isCorrect: boolean;
+}
+
 export interface AdminChapterQuiz {
   id: string;
   chapterId: string;
@@ -132,6 +139,39 @@ export interface AdminChapterQuiz {
     latestAttemptAt: string | null;
     bestScore: number | null;
   };
+}
+
+export interface AdminQuizAnalyticsLearner {
+  userId: number;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  attemptCount: number;
+  latestScore: number;
+  bestScore: number;
+  hasPassed: boolean;
+  latestAttemptAt: string;
+}
+
+export interface AdminQuizAnalytics {
+  quizId: string;
+  chapterId: string;
+  summary: {
+    learnerCount: number;
+    attemptCount: number;
+    latestAttemptAt: string | null;
+    bestScore: number | null;
+    averageScore: number | null;
+    passRate: number | null;
+  };
+  learners: AdminQuizAnalyticsLearner[];
+}
+
+export interface AdminFinalTestAnalytics {
+  quizId: string;
+  courseId: string;
+  summary: AdminQuizAnalytics['summary'];
+  learners: AdminQuizAnalyticsLearner[];
 }
 
 export interface LearnerChapterQuiz {
@@ -227,6 +267,7 @@ export interface SubmitChapterQuizAttemptResponse {
   attempt: QuizAttemptSummary;
   latestAttempt: QuizAttemptSummary;
   bestAttempt: QuizAttemptSummary;
+  answers: QuizAttemptAnswerReview[];
 }
 
 export type SubmitCourseFinalTestAttemptRequest =

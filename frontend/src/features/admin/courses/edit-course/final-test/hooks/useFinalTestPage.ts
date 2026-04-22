@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { TFunction } from 'i18next';
 import courseService, {
+  type AdminFinalTestAnalytics,
   type AdminCourseFinalTest,
   type Course,
   type UpsertCourseFinalTestRequest,
@@ -24,6 +25,10 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
   const [finalTestError, setFinalTestError] = useState<string | null>(null);
   const [finalTestMessage, setFinalTestMessage] = useState<string | null>(null);
   const [loadedFinalTest, setLoadedFinalTest] = useState<AdminCourseFinalTest | null>(null);
+  const [finalTestAnalytics, setFinalTestAnalytics] = useState<AdminFinalTestAnalytics | null>(
+    null,
+  );
+  const [finalTestAnalyticsLoading, setFinalTestAnalyticsLoading] = useState(false);
   const [isSavingFinalTest, setIsSavingFinalTest] = useState(false);
   const [isDeletingFinalTest, setIsDeletingFinalTest] = useState(false);
   const assessment = useAssessmentDraftForm(createEmptyAssessmentForm());
@@ -77,17 +82,23 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
 
   useEffect(() => {
     if (!courseId || !course) {
+      setFinalTestAnalytics(null);
       return;
     }
 
     const loadFinalTest = async () => {
       try {
         setFinalTestLoading(true);
+        setFinalTestAnalyticsLoading(true);
         setFinalTestError(null);
         setFinalTestMessage(null);
-        const response = await courseService.getCourseFinalTest(courseId);
+        const [response, analyticsResponse] = await Promise.all([
+          courseService.getCourseFinalTest(courseId),
+          courseService.getCourseFinalTestAnalytics(courseId),
+        ]);
         const adminFinalTest = response && 'stats' in response ? response : null;
         setLoadedFinalTest(adminFinalTest);
+        setFinalTestAnalytics(analyticsResponse);
         replaceForm(
           adminFinalTest
             ? mapAssessmentToForm(adminFinalTest)
@@ -105,8 +116,10 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
             }),
           ),
         );
+        setFinalTestAnalytics(null);
       } finally {
         setFinalTestLoading(false);
+        setFinalTestAnalyticsLoading(false);
       }
     };
 
@@ -133,6 +146,16 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
           ),
     );
   }, [course, loadedFinalTest, replaceForm]);
+
+  const loadFinalTestAnalytics = useCallback(async (currentCourseId: string) => {
+    setFinalTestAnalyticsLoading(true);
+    try {
+      const response = await courseService.getCourseFinalTestAnalytics(currentCourseId);
+      setFinalTestAnalytics(response);
+    } finally {
+      setFinalTestAnalyticsLoading(false);
+    }
+  }, []);
 
   const handleSaveFinalTest = useCallback(async () => {
     if (!courseId) {
@@ -170,6 +193,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
       const savedFinalTest = await courseService.upsertCourseFinalTest(courseId, payload);
       setLoadedFinalTest(savedFinalTest);
       replaceForm(mapAssessmentToForm(savedFinalTest));
+      await loadFinalTestAnalytics(courseId);
       setFinalTestMessage(
         t('edit.finalTest.saved', {
           defaultValue: 'Final test saved successfully.',
@@ -187,7 +211,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
     } finally {
       setIsSavingFinalTest(false);
     }
-  }, [courseId, form, replaceForm, t]);
+  }, [courseId, form, loadFinalTestAnalytics, replaceForm, t]);
 
   const handleDeleteFinalTest = useCallback(async () => {
     if (!courseId || !loadedFinalTest) {
@@ -210,6 +234,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
       setFinalTestMessage(null);
       await courseService.deleteCourseFinalTest(courseId);
       setLoadedFinalTest(null);
+      setFinalTestAnalytics(null);
       replaceForm(
         createEmptyAssessmentForm(
           course ? `${course.titleEn} final test` : '',
@@ -239,6 +264,8 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
     course,
     courseId,
     finalTestError,
+    finalTestAnalytics,
+    finalTestAnalyticsLoading,
     finalTestLoading,
     finalTestMessage,
     handleDeleteFinalTest,

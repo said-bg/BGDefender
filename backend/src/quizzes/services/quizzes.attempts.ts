@@ -11,7 +11,10 @@ import {
   sortQuizTree,
   toAttemptView,
 } from './quizzes.shared';
-import type { SubmitQuizAttemptResult } from './quizzes.types';
+import type {
+  QuizAttemptAnswerReviewView,
+  SubmitQuizAttemptResult,
+} from './quizzes.types';
 import { evaluateQuizAttempt } from './quizzes.utils';
 
 const buildAttemptResult = (
@@ -32,6 +35,7 @@ const buildAttemptResult = (
     passed: boolean;
     submittedAt: Date;
   }>,
+  answers: QuizAttemptAnswerReviewView[],
 ): SubmitQuizAttemptResult => {
   const latestAttempt = getLatestAttempt(attempts);
   const bestAttempt = getBestAttempt(attempts);
@@ -44,6 +48,7 @@ const buildAttemptResult = (
     attempt: toAttemptView(persistedAttempt),
     latestAttempt: toAttemptView(latestAttempt),
     bestAttempt: toAttemptView(bestAttempt),
+    answers,
   };
 };
 
@@ -111,6 +116,12 @@ export const submitChapterQuizAttempt = async (
     'Quiz attempt persistence failed',
     attempt,
     attempts,
+    evaluation.answers.map((answer) => ({
+      questionId: answer.questionId,
+      selectedOptionIds: answer.selectedOptionIds,
+      correctOptionIds: answer.correctOptionIds,
+      isCorrect: answer.isCorrect,
+    })),
   );
 };
 
@@ -176,5 +187,11 @@ export const submitCourseFinalTestAttempt = async (
     'Final test attempt persistence failed',
     attempt,
     attempts,
+    evaluation.answers.map((answer) => ({
+      questionId: answer.questionId,
+      selectedOptionIds: answer.selectedOptionIds,
+      correctOptionIds: answer.correctOptionIds,
+      isCorrect: answer.isCorrect,
+    })),
   );
 };

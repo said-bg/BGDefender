@@ -11,6 +11,13 @@ interface CourseLockedPanelProps {
 }
 
 export default function CourseLockedPanel({ accessState, t }: CourseLockedPanelProps) {
+  const loginHref =
+    typeof window === 'undefined'
+      ? '/login'
+      : `/login?redirect=${encodeURIComponent(
+          `${window.location.pathname}${window.location.search}`,
+        )}`;
+
   return (
     <div className={styles.lockedPanel}>
       {accessState === 'login_required' ? (
@@ -19,7 +26,7 @@ export default function CourseLockedPanel({ accessState, t }: CourseLockedPanelP
             t={t}
             i18nKey="detail.loginRequiredPromptInline"
             components={{
-              loginLink: <Link href="/login" className={styles.lockedInlineLink} />,
+              loginLink: <Link href={loginHref} className={styles.lockedInlineLink} />,
             }}
           />
         </p>

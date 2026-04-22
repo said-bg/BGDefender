@@ -7,6 +7,7 @@ jest.mock('@/services/course', () => ({
   default: {
     getCourseById: jest.fn(),
     getChapterQuiz: jest.fn(),
+    getChapterQuizAnalytics: jest.fn(),
     upsertChapterQuiz: jest.fn(),
     deleteChapterQuiz: jest.fn(),
   },
@@ -101,6 +102,7 @@ describe('QuizPage', () => {
   afterEach(() => {
     mockedCourseService.getCourseById.mockReset();
     mockedCourseService.getChapterQuiz.mockReset();
+    mockedCourseService.getChapterQuizAnalytics.mockReset();
     mockedCourseService.upsertChapterQuiz.mockReset();
     mockedCourseService.deleteChapterQuiz.mockReset();
   });
@@ -149,6 +151,33 @@ describe('QuizPage', () => {
           },
         ],
       });
+    mockedCourseService.getChapterQuizAnalytics
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        quizId: 'quiz-2',
+        chapterId: 'chapter-2',
+        summary: {
+          learnerCount: 2,
+          attemptCount: 4,
+          latestAttemptAt: '2026-01-03T10:00:00.000Z',
+          bestScore: 100,
+          averageScore: 78,
+          passRate: 50,
+        },
+        learners: [
+          {
+            userId: 12,
+            email: 'user@example.com',
+            firstName: 'User',
+            lastName: 'Example',
+            attemptCount: 3,
+            latestScore: 60,
+            bestScore: 100,
+            hasPassed: true,
+            latestAttemptAt: '2026-01-03T10:00:00.000Z',
+          },
+        ],
+      });
 
     render(<QuizPage />);
 
@@ -158,6 +187,10 @@ describe('QuizPage', () => {
     });
 
     expect(mockedCourseService.getChapterQuiz).toHaveBeenCalledWith('course-1', 'chapter-1');
+    expect(mockedCourseService.getChapterQuizAnalytics).toHaveBeenCalledWith(
+      'course-1',
+      'chapter-1',
+    );
     await waitFor(() => {
       expect(screen.getByLabelText('Quiz title (English)')).toHaveValue(
         'Foundations training quiz',
@@ -168,17 +201,45 @@ describe('QuizPage', () => {
 
     await waitFor(() => {
       expect(mockedCourseService.getChapterQuiz).toHaveBeenCalledWith('course-1', 'chapter-2');
+      expect(mockedCourseService.getChapterQuizAnalytics).toHaveBeenCalledWith(
+        'course-1',
+        'chapter-2',
+      );
     });
 
-    expect(screen.getByLabelText('Quiz title (English)')).toHaveValue(
-      'Applied practice training quiz',
-    );
-    expect(screen.getByLabelText('Passing score (%)')).toHaveValue(80);
-    expect(screen.getByText(/4 attempts/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByLabelText('Quiz title (English)')).toHaveValue(
+        'Applied practice training quiz',
+      );
+      expect(screen.getByLabelText('Passing score (%)')).toHaveValue(80);
+    });
+
+    expect(
+      screen.getByRole('button', { name: /view learner analytics/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Learner quiz analytics' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('user@example.com')).toBeInTheDocument();
   });
 
   it('saves the quiz for the selected chapter', async () => {
     mockedCourseService.getChapterQuiz.mockResolvedValue(null);
+    mockedCourseService.getChapterQuizAnalytics
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        quizId: 'quiz-1',
+        chapterId: 'chapter-1',
+        summary: {
+          learnerCount: 0,
+          attemptCount: 0,
+          latestAttemptAt: null,
+          bestScore: null,
+          averageScore: null,
+          passRate: null,
+        },
+        learners: [],
+      });
     mockedCourseService.upsertChapterQuiz.mockResolvedValue({
       id: 'quiz-1',
       chapterId: 'chapter-1',
@@ -291,5 +352,9 @@ describe('QuizPage', () => {
     });
 
     expect(screen.getByText('Training quiz saved successfully.')).toBeInTheDocument();
+    expect(mockedCourseService.getChapterQuizAnalytics).toHaveBeenLastCalledWith(
+      'course-1',
+      'chapter-1',
+    );
   });
 });

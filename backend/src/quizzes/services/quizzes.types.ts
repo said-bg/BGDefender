@@ -7,6 +7,13 @@ export type QuizAttemptView = {
   submittedAt: Date;
 };
 
+export type QuizAttemptAnswerReviewView = {
+  questionId: string;
+  selectedOptionIds: string[];
+  correctOptionIds: string[];
+  isCorrect: boolean;
+};
+
 export type AdminQuizQuestionView = {
   id: string;
   promptEn: string;
@@ -55,6 +62,39 @@ export type AdminQuizView = {
     latestAttemptAt: Date | null;
     bestScore: number | null;
   };
+};
+
+export type AdminQuizAnalyticsLearnerView = {
+  userId: number;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+  attemptCount: number;
+  latestScore: number;
+  bestScore: number;
+  hasPassed: boolean;
+  latestAttemptAt: Date;
+};
+
+export type AdminQuizAnalyticsView = {
+  quizId: string;
+  chapterId: string;
+  summary: {
+    learnerCount: number;
+    attemptCount: number;
+    latestAttemptAt: Date | null;
+    bestScore: number | null;
+    averageScore: number | null;
+    passRate: number | null;
+  };
+  learners: AdminQuizAnalyticsLearnerView[];
+};
+
+export type AdminFinalTestAnalyticsView = {
+  quizId: string;
+  courseId: string;
+  summary: AdminQuizAnalyticsView['summary'];
+  learners: AdminQuizAnalyticsLearnerView[];
 };
 
 export type LearnerQuizView = {
@@ -108,4 +148,5 @@ export type SubmitQuizAttemptResult = {
   attempt: QuizAttemptView;
   latestAttempt: QuizAttemptView;
   bestAttempt: QuizAttemptView;
+  answers: QuizAttemptAnswerReviewView[];
 };

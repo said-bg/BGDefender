@@ -12,6 +12,8 @@ import sharedStyles from '@/features/admin/courses/edit-course/shared/EditCourse
 import sidebarStyles from '@/features/admin/courses/edit-course/shared/EditCourseSidebar.module.css';
 import shellStyles from '@/features/admin/courses/edit-course/shared/EditCourseShell.module.css';
 import QuizChapterSidebar from './components/QuizChapterSidebar';
+import QuizAnalyticsPanel from './components/QuizAnalyticsPanel';
+import QuizAnalyticsSummaryBar from './components/QuizAnalyticsSummaryBar';
 import QuizEditorForm from './components/QuizEditorForm';
 import useQuizPage from './hooks/useQuizPage';
 import featureStyles from './QuizPage.module.css';
@@ -35,6 +37,14 @@ export default function QuizPage() {
 function QuizPageContent() {
   const { t, i18n } = useTranslation('admin');
   const quizPage = useQuizPage(i18n.language, t);
+  const analyticsSectionId = 'chapter-quiz-analytics';
+
+  const scrollToAnalytics = () => {
+    document.getElementById(analyticsSectionId)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   if (quizPage.loadingPage) {
     return <EditCourseLoadingState />;
@@ -108,6 +118,19 @@ function QuizPageContent() {
                   </p>
                 </div>
 
+                <QuizAnalyticsSummaryBar
+                  analytics={quizPage.quizAnalytics}
+                  isLoading={quizPage.quizAnalyticsLoading}
+                  title={t('edit.quiz.analyticsTitle', {
+                    defaultValue: 'Learner quiz analytics',
+                  })}
+                  styles={styles}
+                  actionLabel={t('edit.quiz.analyticsOpenDetails', {
+                    defaultValue: 'View learner analytics',
+                  })}
+                  onOpenDetails={scrollToAnalytics}
+                />
+
                 {quizPage.quizLoading ? (
                   <div className={styles.emptyState}>
                     <p className={styles.emptyDescription}>
@@ -115,28 +138,46 @@ function QuizPageContent() {
                     </p>
                   </div>
                 ) : (
-                  <QuizEditorForm
-                    form={quizPage.form}
-                    isDeletingQuiz={quizPage.isDeletingQuiz}
-                    isSavingQuiz={quizPage.isSavingQuiz}
-                    loadedQuizStats={quizPage.loadedQuiz?.stats ?? null}
-                    quizError={quizPage.quizError}
-                    quizMessage={quizPage.quizMessage}
-                    styles={styles}
-                    t={t}
-                    onAddOption={quizPage.addOption}
-                    onAddQuestion={quizPage.addQuestion}
-                    onDeleteQuiz={() => void quizPage.handleDeleteQuiz()}
-                    onQuestionTypeChange={quizPage.handleQuestionTypeChange}
-                    onRemoveOption={quizPage.removeOption}
-                    onRemoveQuestion={quizPage.removeQuestion}
-                    onReset={quizPage.resetCurrentForm}
-                    onSave={() => void quizPage.handleSaveQuiz()}
-                    onToggleOptionCorrect={quizPage.toggleOptionCorrect}
-                    onUpdateOptionField={quizPage.updateOptionField}
-                    onUpdateQuestionField={quizPage.updateQuestionField}
-                    onUpdateTopLevelField={quizPage.updateTopLevelField}
-                  />
+                  <>
+                    <QuizEditorForm
+                      form={quizPage.form}
+                      isDeletingQuiz={quizPage.isDeletingQuiz}
+                      isSavingQuiz={quizPage.isSavingQuiz}
+                      loadedQuizStats={quizPage.loadedQuiz?.stats ?? null}
+                      quizError={quizPage.quizError}
+                      quizMessage={quizPage.quizMessage}
+                      styles={styles}
+                      t={t}
+                      onAddOption={quizPage.addOption}
+                      onAddQuestion={quizPage.addQuestion}
+                      onDeleteQuiz={() => void quizPage.handleDeleteQuiz()}
+                      onQuestionTypeChange={quizPage.handleQuestionTypeChange}
+                      onRemoveOption={quizPage.removeOption}
+                      onRemoveQuestion={quizPage.removeQuestion}
+                      onReset={quizPage.resetCurrentForm}
+                      onSave={() => void quizPage.handleSaveQuiz()}
+                      onToggleOptionCorrect={quizPage.toggleOptionCorrect}
+                      onUpdateOptionField={quizPage.updateOptionField}
+                      onUpdateQuestionField={quizPage.updateQuestionField}
+                      onUpdateTopLevelField={quizPage.updateTopLevelField}
+                    />
+
+                    <QuizAnalyticsPanel
+                      analytics={quizPage.quizAnalytics}
+                      id={analyticsSectionId}
+                      isLoading={quizPage.quizAnalyticsLoading}
+                      language={i18n.language}
+                      styles={styles}
+                      t={t}
+                      title={t('edit.quiz.analyticsTitle', {
+                        defaultValue: 'Learner quiz analytics',
+                      })}
+                      description={t('edit.quiz.analyticsDescription', {
+                        defaultValue:
+                          'Review who attempted this quiz, how often they retried it, and how they performed.',
+                      })}
+                    />
+                  </>
                 )}
               </>
             ) : (
