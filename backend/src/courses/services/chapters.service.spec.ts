@@ -14,10 +14,11 @@ import { ChapterService } from './chapters.service';
 
 type MockChapterRepository = Pick<
   Repository<Chapter>,
-  'create' | 'save' | 'findAndCount' | 'findOne' | 'remove'
+  'create' | 'save' | 'find' | 'findAndCount' | 'findOne' | 'remove'
 > & {
   create: jest.Mock;
   save: jest.Mock;
+  find: jest.Mock;
   findAndCount: jest.Mock;
   findOne: jest.Mock;
   remove: jest.Mock;
@@ -70,6 +71,7 @@ describe('ChapterService', () => {
     chapterRepository = {
       create: jest.fn(),
       save: jest.fn(),
+      find: jest.fn(),
       findAndCount: jest.fn(),
       findOne: jest.fn(),
       remove: jest.fn(),
@@ -112,6 +114,7 @@ describe('ChapterService', () => {
     const createdChapter = createChapterEntity();
 
     courseRepository.findOne.mockResolvedValue(course);
+    chapterRepository.find.mockResolvedValue([]);
     chapterRepository.create.mockReturnValue(createdChapter);
     chapterRepository.save.mockResolvedValue(createdChapter);
 
@@ -217,10 +220,10 @@ describe('ChapterService', () => {
     const existingChapter = createChapterEntity();
     const dto: UpdateChapterDto = {
       titleEn: 'Updated Introduction',
-      orderIndex: 2,
     };
 
     chapterRepository.findOne.mockResolvedValue(existingChapter);
+    chapterRepository.find.mockResolvedValue([existingChapter]);
     chapterRepository.save.mockImplementation((chapter: Chapter) =>
       Promise.resolve(chapter),
     );
@@ -231,7 +234,7 @@ describe('ChapterService', () => {
       expect.objectContaining({
         id: existingChapter.id,
         titleEn: 'Updated Introduction',
-        orderIndex: 2,
+        orderIndex: existingChapter.orderIndex,
         titleFi: existingChapter.titleFi,
       }),
     );
@@ -239,7 +242,7 @@ describe('ChapterService', () => {
       expect.objectContaining({
         id: existingChapter.id,
         titleEn: 'Updated Introduction',
-        orderIndex: 2,
+        orderIndex: existingChapter.orderIndex,
       }),
     );
   });
@@ -257,6 +260,7 @@ describe('ChapterService', () => {
   it('deletes an existing chapter after loading it first', async () => {
     const chapter = createChapterEntity();
     chapterRepository.findOne.mockResolvedValue(chapter);
+    chapterRepository.find.mockResolvedValue([chapter]);
     chapterRepository.remove.mockResolvedValue(undefined);
 
     await service.delete(chapter.id);
@@ -273,5 +277,109 @@ describe('ChapterService', () => {
     );
 
     expect(chapterRepository.remove).not.toHaveBeenCalled();
+  });
+
+  it('shifts later chapters when creating a chapter in the middle', async () => {
+    const firstChapter = createChapterEntity();
+    const secondChapter = createChapterEntity();
+    secondChapter.id = 'chapter-2';
+    secondChapter.orderIndex = 2;
+
+    const createdChapter = createChapterEntity();
+    createdChapter.id = 'chapter-new';
+    createdChapter.orderIndex = 2;
+
+    courseRepository.findOne.mockResolvedValue(createCourseEntity());
+    chapterRepository.find.mockResolvedValue([firstChapter, secondChapter]);
+    chapterRepository.create.mockReturnValue(createdChapter);
+    chapterRepository.save
+      .mockResolvedValueOnce([firstChapter, secondChapter])
+      .mockResolvedValueOnce(createdChapter);
+
+    const result = await service.create('course-1', {
+      titleEn: 'Inserted chapter',
+      titleFi: 'Inserted chapter',
+      descriptionEn: 'Inserted chapter',
+      descriptionFi: 'Inserted chapter',
+      orderIndex: 2,
+    });
+
+    expect(secondChapter.orderIndex).toBe(3);
+    expect(chapterRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ orderIndex: 2, courseId: 'course-1' }),
+    );
+    expect(result).toEqual(createdChapter);
+  });
+
+  it('normalizes duplicate legacy chapter orders before inserting a new chapter', async () => {
+    const firstChapter = createChapterEntity();
+    const secondChapter = createChapterEntity();
+    secondChapter.id = 'chapter-2';
+    secondChapter.orderIndex = 1;
+
+    const createdChapter = createChapterEntity();
+    createdChapter.id = 'chapter-new';
+    createdChapter.orderIndex = 1;
+
+    courseRepository.findOne.mockResolvedValue(createCourseEntity());
+    chapterRepository.find.mockResolvedValue([firstChapter, secondChapter]);
+    chapterRepository.create.mockReturnValue(createdChapter);
+    chapterRepository.save
+      .mockResolvedValueOnce([secondChapter])
+      .mockResolvedValueOnce([firstChapter, secondChapter])
+      .mockResolvedValueOnce(createdChapter);
+
+    await service.create('course-1', {
+      titleEn: 'Inserted chapter',
+      titleFi: 'Inserted chapter',
+      descriptionEn: 'Inserted chapter',
+      descriptionFi: 'Inserted chapter',
+      orderIndex: 1,
+    });
+
+    expect(firstChapter.orderIndex).toBe(2);
+    expect(secondChapter.orderIndex).toBe(3);
+  });
+
+  it('reorders sibling chapters when a chapter moves up', async () => {
+    const firstChapter = createChapterEntity();
+    const secondChapter = createChapterEntity();
+    secondChapter.id = 'chapter-2';
+    secondChapter.orderIndex = 2;
+    const thirdChapter = createChapterEntity();
+    thirdChapter.id = 'chapter-3';
+    thirdChapter.orderIndex = 3;
+
+    chapterRepository.findOne.mockResolvedValue(thirdChapter);
+    chapterRepository.find.mockResolvedValue([firstChapter, secondChapter, thirdChapter]);
+    chapterRepository.save.mockImplementation((chapter: Chapter | Chapter[]) =>
+      Promise.resolve(chapter),
+    );
+
+    const result = await service.update('chapter-3', { orderIndex: 1 });
+
+    expect(firstChapter.orderIndex).toBe(2);
+    expect(secondChapter.orderIndex).toBe(3);
+    expect(result).toEqual(expect.objectContaining({ id: 'chapter-3', orderIndex: 1 }));
+  });
+
+  it('closes order gaps after deleting a chapter', async () => {
+    const firstChapter = createChapterEntity();
+    const secondChapter = createChapterEntity();
+    secondChapter.id = 'chapter-2';
+    secondChapter.orderIndex = 2;
+    const thirdChapter = createChapterEntity();
+    thirdChapter.id = 'chapter-3';
+    thirdChapter.orderIndex = 3;
+
+    chapterRepository.findOne.mockResolvedValue(secondChapter);
+    chapterRepository.find.mockResolvedValue([firstChapter, secondChapter, thirdChapter]);
+    chapterRepository.remove.mockResolvedValue(undefined);
+    chapterRepository.save.mockResolvedValue([thirdChapter]);
+
+    await service.delete('chapter-2');
+
+    expect(thirdChapter.orderIndex).toBe(2);
+    expect(chapterRepository.save).toHaveBeenCalledWith([thirdChapter]);
   });
 });

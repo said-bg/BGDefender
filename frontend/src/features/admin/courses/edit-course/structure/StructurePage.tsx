@@ -75,50 +75,61 @@ function StructurePageContent() {
       title={t('edit.tabs.structure')}
       subtitle={t('edit.chapters.description')}
       courseTitle={structure.localizedCourseTitle}
+      actions={
+        <>
+        <button
+          type="button"
+          className={`${styles.pageToolbarButton} ${
+            workspace.effectiveWorkspaceMode === 'create-subchapter'
+              ? styles.pageToolbarButtonActive
+              : styles.pageToolbarButtonSecondary
+          }`}
+          onClick={workspace.openCreateSubChapter}
+          disabled={!hasChapters}
+        >
+          <span className={styles.pageToolbarPlus}>+</span>
+          {t('edit.subchapters.createTitle')}
+        </button>
+
+        <button
+          type="button"
+          className={`${styles.pageToolbarButton} ${
+            workspace.effectiveWorkspaceMode === 'create-chapter'
+              ? styles.pageToolbarButtonActive
+              : ''
+          }`}
+          onClick={workspace.openCreateChapter}
+        >
+          <span className={styles.pageToolbarPlus}>+</span>
+          {t('edit.chapters.createTitle')}
+        </button>
+        </>
+      }
     >
+
       <section className={styles.formCard}>
-        <div className={styles.cardHeader}>
-          <h2 className={styles.sectionTitle}>{t('edit.chapters.title')}</h2>
-          <p className={styles.sectionDescription}>
-            {t('edit.subchapters.description')}
-          </p>
+        <div className={styles.structureIntro}>
+          <div className={styles.cardHeader}>
+            <h2 className={styles.sectionTitle}>{t('edit.chapters.title')}</h2>
+            <p className={styles.sectionDescription}>
+              {t('edit.subchapters.description')}
+            </p>
+          </div>
         </div>
 
         <div className={styles.contentStudioLayout}>
           <aside className={styles.contentSidebar}>
             <div className={styles.chapterLibrary}>
               <div className={styles.chapterLibraryHeader}>
-                <h3 className={styles.chapterSectionTitle}>{t('edit.chapters.libraryTitle')}</h3>
+                <div className={styles.libraryHeaderRow}>
+                  <h3 className={styles.chapterSectionTitle}>{t('edit.chapters.libraryTitle')}</h3>
+                  <span className={styles.libraryCountBadge}>
+                    {structure.chapters.length} {t('edit.chapters.title')}
+                  </span>
+                </div>
                 <p className={styles.sectionDescription}>
                   {t('edit.subchapters.libraryDescription')}
                 </p>
-              </div>
-
-              <div className={styles.sidebarQuickActions}>
-                <button
-                  type="button"
-                  className={`${styles.sidebarQuickAction} ${
-                    workspace.effectiveWorkspaceMode === 'create-chapter'
-                      ? styles.sidebarQuickActionActive
-                      : ''
-                  }`}
-                  onClick={workspace.openCreateChapter}
-                >
-                  {t('edit.chapters.createTitle')}
-                </button>
-
-                <button
-                  type="button"
-                  className={`${styles.sidebarQuickAction} ${
-                    workspace.effectiveWorkspaceMode === 'create-subchapter'
-                      ? styles.sidebarQuickActionActive
-                      : ''
-                  }`}
-                  onClick={workspace.openCreateSubChapter}
-                  disabled={!hasChapters}
-                >
-                  {t('edit.subchapters.createTitle')}
-                </button>
               </div>
 
               <StructureLibrary
@@ -132,6 +143,8 @@ function StructurePageContent() {
                 onDeleteSubChapter={structure.handleDeleteSubChapter}
                 onEditChapter={workspace.openEditChapter}
                 onEditSubChapter={workspace.openEditSubChapter}
+                onMoveChapter={structure.moveChapter}
+                onMoveSubChapter={structure.moveSubChapter}
                 t={t}
               />
             </div>
@@ -180,4 +193,3 @@ function StructurePageContent() {
     </EditCourseShell>
   );
 }
-

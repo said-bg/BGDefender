@@ -3,6 +3,14 @@ import { Chapter, Course, PedagogicalContent, SubChapter } from '@/services/cour
 export const sortByOrderIndex = <T extends { orderIndex: number }>(items: T[]) =>
   [...items].sort((left, right) => left.orderIndex - right.orderIndex);
 
+export const normalizeAndSortByOrderIndex = <T extends { orderIndex: number }>(
+  items: T[],
+) =>
+  sortByOrderIndex(items).map((item, index) => ({
+    ...item,
+    orderIndex: index + 1,
+  }));
+
 const getSafeSubChapters = (chapter: Chapter) => chapter.subChapters ?? [];
 
 const getSafePedagogicalContents = (subChapter: SubChapter) =>
@@ -14,7 +22,14 @@ export const upsertChapter = (course: Course, chapter: Chapter): Course => ({
     course.chapters.some((current) => current.id === chapter.id)
       ? course.chapters.map((current) =>
           current.id === chapter.id
-            ? { ...chapter, subChapters: getSafeSubChapters(chapter) }
+            ? {
+                ...current,
+                ...chapter,
+                subChapters:
+                  chapter.subChapters === undefined
+                    ? getSafeSubChapters(current)
+                    : getSafeSubChapters(chapter),
+              }
             : current,
         )
       : [...course.chapters, { ...chapter, subChapters: getSafeSubChapters(chapter) }],
@@ -39,7 +54,16 @@ export const upsertSubChapter = (
           subChapters: sortByOrderIndex(
             getSafeSubChapters(chapter).some((current) => current.id === subChapter.id)
               ? getSafeSubChapters(chapter).map((current) =>
-                  current.id === subChapter.id ? subChapter : current,
+                  current.id === subChapter.id
+                    ? {
+                        ...current,
+                        ...subChapter,
+                        pedagogicalContents:
+                          subChapter.pedagogicalContents === undefined
+                            ? getSafePedagogicalContents(current)
+                            : getSafePedagogicalContents(subChapter),
+                      }
+                    : current,
                 )
               : [...getSafeSubChapters(chapter), subChapter],
           ),

@@ -10,8 +10,14 @@ type StructureSubChapterCardProps = {
   activeSubChapterId: string | null;
   language: string;
   styles: Record<string, string>;
+  totalSubChapters: number;
   onDeleteSubChapter: (chapterId: string, subChapterId: string) => void | Promise<void>;
   onEditSubChapter: (chapter: Chapter, subChapterId: string) => void;
+  onMoveSubChapter: (
+    chapterId: string,
+    subChapterId: string,
+    direction: 'up' | 'down',
+  ) => void | Promise<void>;
   t: TranslationFn;
 };
 
@@ -22,8 +28,10 @@ export default function StructureSubChapterCard({
   activeSubChapterId,
   language,
   styles,
+  totalSubChapters,
   onDeleteSubChapter,
   onEditSubChapter,
+  onMoveSubChapter,
   t,
 }: StructureSubChapterCardProps) {
   const subChapterTitle = language === 'fi' ? subChapter.titleFi : subChapter.titleEn;
@@ -32,47 +40,60 @@ export default function StructureSubChapterCard({
 
   return (
     <div
-      className={`${styles.structureSidebarCard} ${
-        activeSubChapterId === subChapter.id ? styles.structureSidebarCardActive : ''
+      className={`${styles.structureSubChapterCard} ${
+        activeSubChapterId === subChapter.id ? styles.structureSubChapterCardActive : ''
       }`}
     >
-      <div className={styles.structureSidebarCardBody}>
-        <p className={styles.chapterOrderLabel}>
-          {t('edit.subchapters.orderLabel', {
-            defaultValue: 'Subchapter',
-          })}{' '}
-          {subChapter.orderIndex}
-        </p>
-        <h5 className={styles.subChapterTitle}>{subChapterTitle}</h5>
-        <small className={styles.sidebarPreview} title={subChapterDescription}>
-          {subChapterDescription}
-        </small>
-      </div>
+      <div className={styles.structureSubChapterBody}>
+        <div className={styles.structureSubChapterMain}>
+          <p className={styles.structureSubChapterOrder}>
+            {chapter.orderIndex}.{subChapter.orderIndex}
+          </p>
+          <h5 className={styles.structureSubChapterTitle}>{subChapterTitle}</h5>
+          <p className={styles.structureSubChapterDescription}>{subChapterDescription}</p>
+        </div>
 
-      <div className={styles.structureSidebarButtonRow}>
-        <button
-          type="button"
-          className={styles.inlineAction}
-          onClick={() => onEditSubChapter(chapter, subChapter.id)}
-        >
-          {t('edit.subchapters.editAction', {
-            defaultValue: 'Open',
-          })}
-        </button>
-        <button
-          type="button"
-          className={styles.inlineDanger}
-          disabled={deletingSubChapterId === subChapter.id}
-          onClick={() => void onDeleteSubChapter(chapter.id, subChapter.id)}
-        >
-          {deletingSubChapterId === subChapter.id
-            ? t('edit.subchapters.deleting', {
-                defaultValue: 'Deleting...',
-              })
-            : t('courseActions.delete', {
-                defaultValue: 'Delete',
-              })}
-        </button>
+        <div className={styles.structureSubChapterActions}>
+          <button
+            type="button"
+            className={styles.compactIconButton}
+            disabled={subChapter.orderIndex === 1}
+            onClick={() => void onMoveSubChapter(chapter.id, subChapter.id, 'up')}
+          >
+            Up
+          </button>
+          <button
+            type="button"
+            className={styles.compactIconButton}
+            disabled={subChapter.orderIndex === totalSubChapters}
+            onClick={() => void onMoveSubChapter(chapter.id, subChapter.id, 'down')}
+          >
+            Down
+          </button>
+          <button
+            type="button"
+            className={styles.compactAction}
+            onClick={() => onEditSubChapter(chapter, subChapter.id)}
+          >
+            {t('edit.subchapters.editAction', {
+              defaultValue: 'Open',
+            })}
+          </button>
+          <button
+            type="button"
+            className={styles.compactDanger}
+            disabled={deletingSubChapterId === subChapter.id}
+            onClick={() => void onDeleteSubChapter(chapter.id, subChapter.id)}
+          >
+            {deletingSubChapterId === subChapter.id
+              ? t('edit.subchapters.deleting', {
+                  defaultValue: 'Deleting...',
+                })
+              : t('courseActions.delete', {
+                  defaultValue: 'Delete',
+                })}
+          </button>
+        </div>
       </div>
     </div>
   );

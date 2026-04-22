@@ -141,8 +141,6 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
 
   const submitContent = async (draftForm: ContentBlockFormState) =>
     submitContentMutation({
-      activeChapter,
-      activeSubChapter,
       contentForm: draftForm,
       courseId,
       editingContentId,
@@ -156,8 +154,6 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
 
   const deleteContent = async (chapterId: string, subChapterId: string, contentId: string) =>
     deleteContentMutation({
-      activeChapter,
-      activeSubChapter,
       chapterId,
       contentId,
       courseId,

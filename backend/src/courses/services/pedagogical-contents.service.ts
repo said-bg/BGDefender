@@ -5,6 +5,13 @@ import { PedagogicalContent } from '../../entities/pedagogical-content.entity';
 import { SubChapter } from '../../entities/sub-chapter.entity';
 import { CreatePedagogicalContentDto } from '../dto/create-pedagogical-content.dto';
 import { UpdatePedagogicalContentDto } from '../dto/update-pedagogical-content.dto';
+import {
+  clampOrderIndex,
+  normalizeOrderIndexes,
+  shiftAfterDelete,
+  shiftForInsert,
+  shiftForMove,
+} from './order-index.utils';
 
 @Injectable()
 export class PedagogicalContentService {
@@ -29,8 +36,29 @@ export class PedagogicalContentService {
       );
     }
 
+    const siblings = await this.pedagogicalContentRepository.find({
+      where: { subChapterId },
+      order: { orderIndex: 'ASC' },
+    });
+    const normalizedContents = normalizeOrderIndexes(siblings);
+
+    if (normalizedContents.length > 0) {
+      await this.pedagogicalContentRepository.save(normalizedContents);
+    }
+
+    const orderIndex = clampOrderIndex(
+      createPedagogicalContentDto.orderIndex,
+      siblings.length + 1,
+    );
+    const shiftedContents = shiftForInsert(siblings, orderIndex);
+
+    if (shiftedContents.length > 0) {
+      await this.pedagogicalContentRepository.save(shiftedContents);
+    }
+
     const pedagogicalContent = this.pedagogicalContentRepository.create({
       ...createPedagogicalContentDto,
+      orderIndex,
       subChapterId,
     });
 
@@ -84,12 +112,60 @@ export class PedagogicalContentService {
     updatePedagogicalContentDto: UpdatePedagogicalContentDto,
   ): Promise<PedagogicalContent> {
     const pedagogicalContent = await this.findById(id);
+    const siblings = await this.pedagogicalContentRepository.find({
+      where: { subChapterId: pedagogicalContent.subChapterId },
+      order: { orderIndex: 'ASC' },
+    });
+    const normalizedContents = normalizeOrderIndexes(siblings);
+
+    if (normalizedContents.length > 0) {
+      await this.pedagogicalContentRepository.save(normalizedContents);
+    }
+
+    let nextOrderIndex = pedagogicalContent.orderIndex;
+    if (updatePedagogicalContentDto.orderIndex !== undefined) {
+      nextOrderIndex = clampOrderIndex(
+        updatePedagogicalContentDto.orderIndex,
+        siblings.length,
+      );
+      const shiftedContents = shiftForMove(
+        siblings,
+        pedagogicalContent.id,
+        pedagogicalContent.orderIndex,
+        nextOrderIndex,
+      );
+
+      if (shiftedContents.length > 0) {
+        await this.pedagogicalContentRepository.save(shiftedContents);
+      }
+    }
+
     Object.assign(pedagogicalContent, updatePedagogicalContentDto);
+    pedagogicalContent.orderIndex = nextOrderIndex;
     return await this.pedagogicalContentRepository.save(pedagogicalContent);
   }
 
   async delete(id: string): Promise<void> {
     const pedagogicalContent = await this.findById(id);
+    const siblings = await this.pedagogicalContentRepository.find({
+      where: { subChapterId: pedagogicalContent.subChapterId },
+      order: { orderIndex: 'ASC' },
+    });
+    const normalizedContents = normalizeOrderIndexes(siblings);
+
+    if (normalizedContents.length > 0) {
+      await this.pedagogicalContentRepository.save(normalizedContents);
+    }
     await this.pedagogicalContentRepository.remove(pedagogicalContent);
+
+    const shiftedContents = shiftAfterDelete(
+      siblings,
+      pedagogicalContent.id,
+      pedagogicalContent.orderIndex,
+    );
+
+    if (shiftedContents.length > 0) {
+      await this.pedagogicalContentRepository.save(shiftedContents);
+    }
   }
 }

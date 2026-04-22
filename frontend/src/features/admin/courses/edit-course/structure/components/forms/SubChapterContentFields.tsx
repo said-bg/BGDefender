@@ -1,6 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import formStyles from '@/features/admin/courses/edit-course/shared/EditCourseForm.module.css';
+import sharedStyles from '@/features/admin/courses/edit-course/shared/EditCoursePage.module.css';
+import featureStyles from '../../StructurePage.module.css';
 import { SubChapterFormState, TranslationFn } from '../../types';
+
+const styles = { ...formStyles, ...sharedStyles, ...featureStyles };
 
 type SubChapterContentFieldsProps = {
   onChange: Dispatch<SetStateAction<SubChapterFormState>>;
@@ -13,6 +17,8 @@ export default function SubChapterContentFields({
   subChapterForm,
   t,
 }: SubChapterContentFieldsProps) {
+  const orderIndex = Math.max(1, Number(subChapterForm.orderIndex) || 1);
+
   return (
     <>
       <label className={formStyles.field}>
@@ -77,17 +83,52 @@ export default function SubChapterContentFields({
 
       <label className={formStyles.field}>
         <span>{t('edit.subchapters.orderInput')}</span>
-        <input
-          type="number"
-          min="1"
-          value={subChapterForm.orderIndex}
-          onChange={(event) =>
-            onChange((previous) => ({
-              ...previous,
-              orderIndex: event.target.value,
-            }))
-          }
-        />
+        <div className={styles.orderEditor}>
+          <div className={styles.orderChip}>#{orderIndex}</div>
+          <input
+            type="number"
+            min="1"
+            className={styles.orderNumberInput}
+            value={subChapterForm.orderIndex}
+            onChange={(event) =>
+              onChange((previous) => ({
+                ...previous,
+                orderIndex: event.target.value,
+              }))
+            }
+          />
+          <div className={styles.orderStepper}>
+            <button
+              type="button"
+              className={styles.orderStepButton}
+              onClick={() =>
+                onChange((previous) => ({
+                  ...previous,
+                  orderIndex: String(Math.max(1, (Number(previous.orderIndex) || 1) - 1)),
+                }))
+              }
+            >
+              -
+            </button>
+            <button
+              type="button"
+              className={styles.orderStepButton}
+              onClick={() =>
+                onChange((previous) => ({
+                  ...previous,
+                  orderIndex: String(Math.max(1, (Number(previous.orderIndex) || 1) + 1)),
+                }))
+              }
+            >
+              +
+            </button>
+          </div>
+        </div>
+        <p className={styles.orderHint}>
+          {t('edit.subchapters.orderHint', {
+            defaultValue: 'Existing subchapters are shifted automatically to keep the order unique.',
+          })}
+        </p>
       </label>
     </>
   );

@@ -58,7 +58,10 @@ describe('structure.helpers', () => {
         createChapter({
           id: 'chapter-2',
           orderIndex: 2,
-          subChapters: [createSubChapter({ id: 'sub-2', orderIndex: 2 })],
+          subChapters: [
+            createSubChapter({ id: 'sub-2', orderIndex: 2 }),
+            createSubChapter({ id: 'sub-3', orderIndex: 2 }),
+          ],
         }),
         createChapter({
           id: 'chapter-1',
@@ -70,7 +73,13 @@ describe('structure.helpers', () => {
 
     expect(normalizeStructureCourse(course).chapters).toMatchObject([
       { id: 'chapter-1', subChapters: [] },
-      { id: 'chapter-2', subChapters: [{ id: 'sub-2' }] },
+      {
+        id: 'chapter-2',
+        subChapters: [
+          { id: 'sub-2', orderIndex: 1 },
+          { id: 'sub-3', orderIndex: 2 },
+        ],
+      },
     ]);
   });
 

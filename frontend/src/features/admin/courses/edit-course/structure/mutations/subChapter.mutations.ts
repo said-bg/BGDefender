@@ -1,9 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 import courseService, { Course, CreateSubChapterRequest } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
-import { removeSubChapter, upsertSubChapter } from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
 import { SubChapterFormState, TranslationFn } from '../types';
-import { buildSubChapterPayload, validateSubChapterForm } from '../lib/structure.helpers';
+import {
+  buildSubChapterPayload,
+  normalizeStructureCourse,
+  validateSubChapterForm,
+} from '../lib/structure.helpers';
 
 type SetState<T> = Dispatch<SetStateAction<T>>;
 
@@ -11,7 +14,7 @@ type SubChapterMutationParams = {
   course: Course | null;
   courseId?: string;
   editingSubChapterId: string | null;
-  resetSubChapterForm: (chapterId?: string) => void;
+  resetSubChapterForm: (chapterId?: string, chaptersSnapshot?: Course['chapters']) => void;
   setCourse: SetState<Course | null>;
   setDeletingSubChapterId: SetState<string | null>;
   setIsSubmittingSubChapter: SetState<boolean>;
@@ -56,28 +59,31 @@ export async function submitSubChapterMutation({
   try {
     setIsSubmittingSubChapter(true);
 
-    const subChapter = editingSubChapterId
+    await (
+      editingSubChapterId
       ? await courseService.updateSubChapter(
           courseId,
           subChapterForm.chapterId,
           editingSubChapterId,
           payload,
         )
-      : await courseService.createSubChapter(courseId, subChapterForm.chapterId, payload);
-
-    setCourse((current) =>
-      current ? upsertSubChapter(current, subChapterForm.chapterId, subChapter) : current,
+      : await courseService.createSubChapter(courseId, subChapterForm.chapterId, payload)
     );
+    const freshCourse = normalizeStructureCourse(
+      await courseService.getCourseById(courseId),
+    );
+
+    setCourse(freshCourse);
     setSubChapterMessage(
       editingSubChapterId
         ? t('edit.subchapters.updated', {
             defaultValue: 'Subchapter updated successfully.',
           })
         : t('edit.subchapters.created', {
-            defaultValue: 'Subchapter created successfully.',
-          }),
+          defaultValue: 'Subchapter created successfully.',
+        }),
     );
-    resetSubChapterForm(subChapterForm.chapterId);
+    resetSubChapterForm(subChapterForm.chapterId, freshCourse.chapters);
   } catch (error) {
     setSubChapterError(
       getApiErrorMessage(
@@ -140,9 +146,10 @@ export async function deleteSubChapterMutation(
   try {
     setDeletingSubChapterId(subChapterId);
     await courseService.deleteSubChapter(courseId, chapterId, subChapterId);
-    setCourse((current) =>
-      current ? removeSubChapter(current, chapterId, subChapterId) : current,
+    const freshCourse = normalizeStructureCourse(
+      await courseService.getCourseById(courseId),
     );
+    setCourse(freshCourse);
     setSubChapterMessage(
       t('edit.subchapters.deleted', {
         defaultValue: 'Subchapter deleted successfully.',
@@ -150,7 +157,7 @@ export async function deleteSubChapterMutation(
     );
 
     if (editingSubChapterId === subChapterId) {
-      resetSubChapterForm(chapterId);
+      resetSubChapterForm(chapterId, freshCourse.chapters);
     }
   } catch (error) {
     setSubChapterError(

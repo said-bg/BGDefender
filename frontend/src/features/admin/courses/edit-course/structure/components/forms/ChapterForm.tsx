@@ -31,6 +31,8 @@ export default function EditCourseChapterForm({
   onSubmit,
   t,
 }: EditCourseChapterFormProps) {
+  const orderIndex = Math.max(1, Number(chapterForm.orderIndex) || 1);
+
   return (
     <section className={styles.formCard}>
       <div className={styles.cardHeader}>
@@ -105,17 +107,52 @@ export default function EditCourseChapterForm({
 
         <label className={styles.field}>
           <span>{t('edit.chapters.orderInput')}</span>
-          <input
-            type="number"
-            min="1"
-            value={chapterForm.orderIndex}
-            onChange={(event) =>
-              onChange((previous) => ({
-                ...previous,
-                orderIndex: event.target.value,
-              }))
-            }
-          />
+          <div className={styles.orderEditor}>
+            <div className={styles.orderChip}>#{orderIndex}</div>
+            <input
+              type="number"
+              min="1"
+              className={styles.orderNumberInput}
+              value={chapterForm.orderIndex}
+              onChange={(event) =>
+                onChange((previous) => ({
+                  ...previous,
+                  orderIndex: event.target.value,
+                }))
+              }
+            />
+            <div className={styles.orderStepper}>
+              <button
+                type="button"
+                className={styles.orderStepButton}
+                onClick={() =>
+                  onChange((previous) => ({
+                    ...previous,
+                    orderIndex: String(Math.max(1, (Number(previous.orderIndex) || 1) - 1)),
+                  }))
+                }
+              >
+                -
+              </button>
+              <button
+                type="button"
+                className={styles.orderStepButton}
+                onClick={() =>
+                  onChange((previous) => ({
+                    ...previous,
+                    orderIndex: String(Math.max(1, (Number(previous.orderIndex) || 1) + 1)),
+                  }))
+                }
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <p className={styles.orderHint}>
+            {t('edit.chapters.orderHint', {
+              defaultValue: 'Existing chapters are shifted automatically to keep the order unique.',
+            })}
+          </p>
         </label>
 
         {chapterMessage ? <p className={styles.successMessage}>{chapterMessage}</p> : null}
@@ -141,4 +178,3 @@ export default function EditCourseChapterForm({
     </section>
   );
 }
-

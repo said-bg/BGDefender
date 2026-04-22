@@ -1,9 +1,12 @@
 import { Dispatch, SetStateAction } from 'react';
 import courseService, { Course, CreateChapterRequest } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
-import { removeChapter, upsertChapter } from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
 import { ChapterFormState, SubChapterFormState, TranslationFn } from '../types';
-import { buildChapterPayload, validateChapterForm } from '../lib/structure.helpers';
+import {
+  buildChapterPayload,
+  normalizeStructureCourse,
+  validateChapterForm,
+} from '../lib/structure.helpers';
 
 type SetState<T> = Dispatch<SetStateAction<T>>;
 
@@ -12,8 +15,8 @@ type ChapterMutationParams = {
   course: Course | null;
   courseId?: string;
   editingChapterId: string | null;
-  resetChapterForm: () => void;
-  resetSubChapterForm: (chapterId?: string) => void;
+  resetChapterForm: (courseSnapshot?: Course | null) => void;
+  resetSubChapterForm: (chapterId?: string, chaptersSnapshot?: Course['chapters']) => void;
   setChapterError: SetState<string | null>;
   setChapterMessage: SetState<string | null>;
   setCourse: SetState<Course | null>;
@@ -63,14 +66,17 @@ export async function submitChapterMutation({
     const chapter = editingChapterId
       ? await courseService.updateChapter(courseId, editingChapterId, payload)
       : await courseService.createChapter(courseId, payload);
+    const freshCourse = normalizeStructureCourse(
+      await courseService.getCourseById(courseId),
+    );
 
-    setCourse((current) => (current ? upsertChapter(current, chapter) : current));
+    setCourse(freshCourse);
     setChapterMessage(
       editingChapterId
         ? t('edit.chapters.updated', { defaultValue: 'Chapter updated successfully.' })
         : t('edit.chapters.created', { defaultValue: 'Chapter created successfully.' }),
     );
-    resetChapterForm();
+    resetChapterForm(freshCourse);
 
     setSubChapterForm((previous) =>
       previous.chapterId
@@ -145,7 +151,10 @@ export async function deleteChapterMutation(
   try {
     setDeletingChapterId(chapterId);
     await courseService.deleteChapter(courseId, chapterId);
-    setCourse((current) => (current ? removeChapter(current, chapterId) : current));
+    const freshCourse = normalizeStructureCourse(
+      await courseService.getCourseById(courseId),
+    );
+    setCourse(freshCourse);
     setChapterMessage(
       t('edit.chapters.deleted', {
         defaultValue: 'Chapter deleted successfully.',
@@ -153,11 +162,11 @@ export async function deleteChapterMutation(
     );
 
     if (editingChapterId === chapterId) {
-      resetChapterForm();
+      resetChapterForm(freshCourse);
     }
 
     if (subChapterForm.chapterId === chapterId) {
-      resetSubChapterForm();
+      resetSubChapterForm(undefined, freshCourse.chapters);
     }
   } catch (error) {
     setChapterError(
@@ -172,4 +181,3 @@ export async function deleteChapterMutation(
     setDeletingChapterId(null);
   }
 }
-

@@ -21,6 +21,12 @@ type EditCourseStructureLibraryProps = {
   onDeleteSubChapter: (chapterId: string, subChapterId: string) => void | Promise<void>;
   onEditChapter: (chapter: Chapter) => void;
   onEditSubChapter: (chapter: Chapter, subChapterId: string) => void;
+  onMoveChapter: (chapterId: string, direction: 'up' | 'down') => void | Promise<void>;
+  onMoveSubChapter: (
+    chapterId: string,
+    subChapterId: string,
+    direction: 'up' | 'down',
+  ) => void | Promise<void>;
   t: TranslationFn;
 };
 
@@ -35,6 +41,8 @@ export default function EditCourseStructureLibrary({
   onDeleteSubChapter,
   onEditChapter,
   onEditSubChapter,
+  onMoveChapter,
+  onMoveSubChapter,
   t,
 }: EditCourseStructureLibraryProps) {
   if (chapters.length === 0) {
@@ -52,42 +60,47 @@ export default function EditCourseStructureLibrary({
         const subChapters = chapter.subChapters ?? [];
 
         return (
-        <article key={chapter.id} className={styles.contentSidebarGroup}>
-          <StructureChapterCard
-            chapter={{ ...chapter, subChapters }}
-            deletingChapterId={deletingChapterId}
-            activeChapterId={activeChapterId}
-            language={language}
-            styles={styles}
-            onDeleteChapter={onDeleteChapter}
-            onEditChapter={onEditChapter}
-            t={t}
-          />
+          <article key={chapter.id} className={styles.structureTreeGroup}>
+            <StructureChapterCard
+              chapter={{ ...chapter, subChapters }}
+              deletingChapterId={deletingChapterId}
+              activeChapterId={activeChapterId}
+              language={language}
+              styles={styles}
+              totalChapters={chapters.length}
+              onDeleteChapter={onDeleteChapter}
+              onEditChapter={onEditChapter}
+              onMoveChapter={onMoveChapter}
+              t={t}
+            />
 
-          {subChapters.length > 0 ? (
-            <div className={styles.subChapterNav}>
-              {subChapters.map((subChapter) => (
-                <StructureSubChapterCard
-                  key={subChapter.id}
-                  chapter={{ ...chapter, subChapters }}
-                  subChapter={subChapter}
-                  deletingSubChapterId={deletingSubChapterId}
-                  activeSubChapterId={activeSubChapterId}
-                  language={language}
-                  styles={styles}
-                  onDeleteSubChapter={onDeleteSubChapter}
-                  onEditSubChapter={onEditSubChapter}
-                  t={t}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className={styles.emptyState}>
-              <p className={styles.emptyTitle}>{t('edit.subchapters.emptyTitle')}</p>
-            </div>
-          )}
-        </article>
-      )})}
+            {subChapters.length > 0 ? (
+              <div className={styles.structureSubChapterList}>
+                {subChapters.map((subChapter) => (
+                  <StructureSubChapterCard
+                    key={subChapter.id}
+                    chapter={{ ...chapter, subChapters }}
+                    subChapter={subChapter}
+                    deletingSubChapterId={deletingSubChapterId}
+                    activeSubChapterId={activeSubChapterId}
+                    language={language}
+                    styles={styles}
+                    totalSubChapters={subChapters.length}
+                    onDeleteSubChapter={onDeleteSubChapter}
+                    onEditSubChapter={onEditSubChapter}
+                    onMoveSubChapter={onMoveSubChapter}
+                    t={t}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className={styles.structureSubChapterEmpty}>
+                {t('edit.subchapters.emptyTitle')}
+              </div>
+            )}
+          </article>
+        );
+      })}
     </div>
   );
 }

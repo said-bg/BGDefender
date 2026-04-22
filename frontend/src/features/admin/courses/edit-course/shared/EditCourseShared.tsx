@@ -51,6 +51,7 @@ type EditCourseShellProps = {
   title: string;
   subtitle: string;
   courseTitle?: string;
+  actions?: ReactNode;
   wide?: boolean;
   children: ReactNode;
 };
@@ -73,6 +74,7 @@ export function EditCourseShell({
   title,
   subtitle,
   courseTitle,
+  actions,
   wide = false,
   children,
 }: EditCourseShellProps) {
@@ -113,19 +115,23 @@ export function EditCourseShell({
           {subtitle ? <p className={shellStyles.subtitle}>{subtitle}</p> : null}
           {courseTitle ? <p className={sharedStyles.helperText}>{courseTitle}</p> : null}
 
-          <nav className={shellStyles.sectionNav} aria-label={t('edit.courseSection')}>
-            {tabs.map((tab) => (
-              <Link
-                key={tab.key}
-                href={getEditCourseHref(courseId, tab.key)}
-                className={`${shellStyles.sectionNavLink} ${
-                  section === tab.key ? shellStyles.sectionNavLinkActive : ''
-                }`}
-              >
-                {tab.label}
-              </Link>
-            ))}
-          </nav>
+          <div className={shellStyles.sectionNavRow}>
+            <nav className={shellStyles.sectionNav} aria-label={t('edit.courseSection')}>
+              {tabs.map((tab) => (
+                <Link
+                  key={tab.key}
+                  href={getEditCourseHref(courseId, tab.key)}
+                  className={`${shellStyles.sectionNavLink} ${
+                    section === tab.key ? shellStyles.sectionNavLinkActive : ''
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              ))}
+            </nav>
+
+            {actions ? <div className={shellStyles.sectionActions}>{actions}</div> : null}
+          </div>
         </div>
       </section>
 

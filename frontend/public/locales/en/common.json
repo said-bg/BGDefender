@@ -2,6 +2,7 @@
   "error": "Error",
   "success": "Success",
   "loading": "Loading...",
+  "cancel": "Cancel",
   "close": "Close",
   "footer": {
     "eyebrow": "BG Defender",

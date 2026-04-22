@@ -7,17 +7,15 @@ import courseService, {
 } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import {
-  removePedagogicalContent,
-  upsertPedagogicalContent,
-} from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
-import { ContentBlockFormState, validateContentForm } from '../lib/content.utils';
+  ContentBlockFormState,
+  normalizeCourseForContentStudio,
+  validateContentForm,
+} from '../lib/content.utils';
 
 type SetState<T> = Dispatch<SetStateAction<T>>;
 type TranslationFn = (key: string, options?: Record<string, unknown>) => string;
 
 type SubmitContentParams = {
-  activeChapter: Chapter | null;
-  activeSubChapter: SubChapter | null;
   contentForm: ContentBlockFormState;
   courseId?: string;
   editingContentId: string | null;
@@ -30,8 +28,6 @@ type SubmitContentParams = {
 };
 
 export async function submitContentMutation({
-  activeChapter,
-  activeSubChapter,
   contentForm,
   courseId,
   editingContentId,
@@ -62,7 +58,8 @@ export async function submitContentMutation({
 
   try {
     setIsSubmittingContent(true);
-    const saved = editingContentId
+    await (
+      editingContentId
       ? await courseService.updatePedagogicalContent(
           courseId,
           contentForm.chapterId,
@@ -75,18 +72,19 @@ export async function submitContentMutation({
           contentForm.chapterId,
           contentForm.subChapterId,
           payload,
-        );
-
-    setCourse((current) =>
-      current
-        ? upsertPedagogicalContent(
-            current,
-            contentForm.chapterId,
-            contentForm.subChapterId,
-            saved,
-          )
-        : current,
+        )
     );
+    const freshCourse = normalizeCourseForContentStudio(
+      await courseService.getCourseById(courseId),
+    );
+    const freshChapter =
+      freshCourse.chapters.find((chapter) => chapter.id === contentForm.chapterId) ?? null;
+    const freshSubChapter =
+      freshChapter?.subChapters.find(
+        (subChapter) => subChapter.id === contentForm.subChapterId,
+      ) ?? null;
+
+    setCourse(freshCourse);
     setContentMessage(
       editingContentId
         ? t('edit.contentBlocks.updated', {
@@ -96,7 +94,7 @@ export async function submitContentMutation({
             defaultValue: 'Content block created successfully.',
           }),
     );
-    resetContentForm(activeChapter, activeSubChapter);
+    resetContentForm(freshChapter, freshSubChapter);
   } catch (error) {
     setContentError(
       getApiErrorMessage(
@@ -116,8 +114,6 @@ export async function submitContentMutation({
 }
 
 type DeleteContentParams = {
-  activeChapter: Chapter | null;
-  activeSubChapter: SubChapter | null;
   chapterId: string;
   contentId: string;
   courseId?: string;
@@ -132,8 +128,6 @@ type DeleteContentParams = {
 };
 
 export async function deleteContentMutation({
-  activeChapter,
-  activeSubChapter,
   chapterId,
   contentId,
   courseId,
@@ -166,9 +160,15 @@ export async function deleteContentMutation({
   try {
     setDeletingContentId(contentId);
     await courseService.deletePedagogicalContent(courseId, chapterId, subChapterId, contentId);
-    setCourse((current) =>
-      current ? removePedagogicalContent(current, chapterId, subChapterId, contentId) : current,
+    const freshCourse = normalizeCourseForContentStudio(
+      await courseService.getCourseById(courseId),
     );
+    const freshChapter =
+      freshCourse.chapters.find((chapter) => chapter.id === chapterId) ?? null;
+    const freshSubChapter =
+      freshChapter?.subChapters.find((subChapter) => subChapter.id === subChapterId) ?? null;
+
+    setCourse(freshCourse);
     setContentMessage(
       t('edit.contentBlocks.deleted', {
         defaultValue: 'Content block deleted successfully.',
@@ -176,7 +176,7 @@ export async function deleteContentMutation({
     );
 
     if (editingContentId === contentId) {
-      resetContentForm(activeChapter, activeSubChapter);
+      resetContentForm(freshChapter, freshSubChapter);
     }
   } catch (error) {
     setContentError(

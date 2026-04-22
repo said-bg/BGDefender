@@ -2,6 +2,7 @@
   "error": "Virhe",
   "success": "Onnistui",
   "loading": "Ladataan...",
+  "cancel": "Peruuta",
   "close": "Sulje",
   "footer": {
     "eyebrow": "BG Defender",

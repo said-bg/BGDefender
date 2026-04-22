@@ -9,8 +9,10 @@ type StructureChapterCardProps = {
   activeChapterId: string | null;
   language: string;
   styles: Record<string, string>;
+  totalChapters: number;
   onDeleteChapter: (chapterId: string) => void | Promise<void>;
   onEditChapter: (chapter: Chapter) => void;
+  onMoveChapter: (chapterId: string, direction: 'up' | 'down') => void | Promise<void>;
   t: TranslationFn;
 };
 
@@ -20,8 +22,10 @@ export default function StructureChapterCard({
   activeChapterId,
   language,
   styles,
+  totalChapters,
   onDeleteChapter,
   onEditChapter,
+  onMoveChapter,
   t,
 }: StructureChapterCardProps) {
   const chapterTitle = language === 'fi' ? chapter.titleFi : chapter.titleEn;
@@ -30,40 +34,56 @@ export default function StructureChapterCard({
 
   return (
     <div
-      className={`${styles.structureSidebarCard} ${
-        activeChapterId === chapter.id ? styles.structureSidebarCardActive : ''
+      className={`${styles.structureChapterCard} ${
+        activeChapterId === chapter.id ? styles.structureChapterCardActive : ''
       }`}
     >
-      <div className={styles.structureSidebarCardBody}>
-        <p className={styles.chapterOrderLabel}>
-          {t('edit.chapters.orderLabel', { defaultValue: 'Chapter' })} {chapter.orderIndex}
-        </p>
-        <h4 className={styles.chapterTitle}>{chapterTitle}</h4>
-        <p
-          className={`${styles.chapterDescriptionPreview} ${styles.sidebarPreview}`}
-          title={chapterDescription}
-        >
-          {chapterDescription}
-        </p>
-        <div className={styles.chapterMeta}>
-          <span>
-            {subChapterCount}{' '}
-            {t('edit.chapters.subchapterCount', {
-              defaultValue: 'subchapters',
-            })}
-          </span>
+      <div className={styles.structureNodeHeader}>
+        <div className={styles.structureIndexBadge}>{chapter.orderIndex}</div>
+        <div className={styles.structureNodeHeading}>
+          <p className={styles.structureNodeType}>
+            {t('edit.chapters.orderLabel', { defaultValue: 'Chapter' })}
+          </p>
+          <h4 className={styles.structureNodeTitle}>{chapterTitle}</h4>
+          <p className={styles.structureNodeDescription}>{chapterDescription}</p>
         </div>
+        <span className={styles.structureCountBadge}>
+          {subChapterCount}{' '}
+          {t('edit.chapters.subchapterCount', {
+            defaultValue: 'subchapters',
+          })}
+        </span>
       </div>
 
-      <div className={styles.structureSidebarButtonRow}>
-        <button type="button" className={styles.inlineAction} onClick={() => onEditChapter(chapter)}>
+      <div className={styles.structureChapterActions}>
+        <button
+          type="button"
+          className={styles.compactIconButton}
+          disabled={chapter.orderIndex === 1}
+          onClick={() => void onMoveChapter(chapter.id, 'up')}
+        >
+          Up
+        </button>
+        <button
+          type="button"
+          className={styles.compactIconButton}
+          disabled={chapter.orderIndex === totalChapters}
+          onClick={() => void onMoveChapter(chapter.id, 'down')}
+        >
+          Down
+        </button>
+        <button
+          type="button"
+          className={styles.compactAction}
+          onClick={() => onEditChapter(chapter)}
+        >
           {t('edit.chapters.editAction', {
             defaultValue: 'Open',
           })}
         </button>
         <button
           type="button"
-          className={styles.inlineDanger}
+          className={styles.compactDanger}
           disabled={deletingChapterId === chapter.id}
           onClick={() => void onDeleteChapter(chapter.id)}
         >

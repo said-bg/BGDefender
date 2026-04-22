@@ -1,5 +1,5 @@
 import { Chapter, Course, SubChapter } from '@/services/course';
-import { sortByOrderIndex } from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
+import { normalizeAndSortByOrderIndex } from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
 
 export type ContentBlockFormState = {
   chapterId: string;
@@ -23,11 +23,13 @@ export const initialContentBlockForm: ContentBlockFormState = {
 
 export const normalizeCourseForContentStudio = (course: Course): Course => ({
   ...course,
-  chapters: sortByOrderIndex(course.chapters ?? []).map((chapter) => ({
+  chapters: normalizeAndSortByOrderIndex(course.chapters ?? []).map((chapter) => ({
     ...chapter,
-    subChapters: sortByOrderIndex(chapter.subChapters ?? []).map((subChapter) => ({
+    subChapters: normalizeAndSortByOrderIndex(chapter.subChapters ?? []).map((subChapter) => ({
       ...subChapter,
-      pedagogicalContents: sortByOrderIndex(subChapter.pedagogicalContents ?? []),
+      pedagogicalContents: normalizeAndSortByOrderIndex(
+        subChapter.pedagogicalContents ?? [],
+      ),
     })),
   })),
 });

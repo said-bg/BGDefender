@@ -89,6 +89,24 @@ describe('EditCourseState.utils', () => {
     expect(upsertChapter(course, chapter).chapters[0].subChapters).toEqual([]);
   });
 
+  it('preserves existing subchapters when an updated chapter payload omits them', () => {
+    const existingSubChapter = createSubChapter({ id: 'sub-1' });
+    const course = createCourse({
+      chapters: [createChapter({ subChapters: [existingSubChapter] })],
+    });
+
+    const nextCourse = upsertChapter(
+      course,
+      createChapter({
+        id: 'chapter-1',
+        titleEn: 'Updated chapter',
+        subChapters: undefined as unknown as SubChapter[],
+      }),
+    );
+
+    expect(nextCourse.chapters[0].subChapters).toEqual([existingSubChapter]);
+  });
+
   // Handles the exact API edge case where an existing chapter has no subChapters field.
   it('upserts a subchapter when the parent chapter has missing subchapters', () => {
     const course = createCourse({
@@ -103,6 +121,36 @@ describe('EditCourseState.utils', () => {
       .toMatchObject({
         subChapters: [expect.objectContaining({ id: 'sub-1' })],
       });
+  });
+
+  it('preserves existing pedagogical contents when an updated subchapter payload omits them', () => {
+    const existingContent = createContent({ id: 'content-1' });
+    const course = createCourse({
+      chapters: [
+        createChapter({
+          subChapters: [
+            createSubChapter({
+              id: 'sub-1',
+              pedagogicalContents: [existingContent],
+            }),
+          ],
+        }),
+      ],
+    });
+
+    const nextCourse = upsertSubChapter(
+      course,
+      'chapter-1',
+      createSubChapter({
+        id: 'sub-1',
+        titleEn: 'Updated subchapter',
+        pedagogicalContents: undefined as unknown as PedagogicalContent[],
+      }),
+    );
+
+    expect(nextCourse.chapters[0].subChapters[0].pedagogicalContents).toEqual([
+      existingContent,
+    ]);
   });
 
   // Keeps lessons sorted when a new content block is added to a subchapter.

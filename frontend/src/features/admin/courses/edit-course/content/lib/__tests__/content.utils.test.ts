@@ -85,7 +85,10 @@ describe('content.utils', () => {
             createSubChapter({
               id: 'sub-2',
               orderIndex: 2,
-              pedagogicalContents: [createContent({ id: 'content-2', orderIndex: 2 })],
+              pedagogicalContents: [
+                createContent({ id: 'content-2', orderIndex: 2 }),
+                createContent({ id: 'content-3', orderIndex: 2 }),
+              ],
             }),
             createSubChapter({
               id: 'sub-1',
@@ -102,7 +105,13 @@ describe('content.utils', () => {
         id: 'chapter-1',
         subChapters: [
           { id: 'sub-1', pedagogicalContents: [] },
-          { id: 'sub-2', pedagogicalContents: [{ id: 'content-2' }] },
+          {
+            id: 'sub-2',
+            pedagogicalContents: [
+              { id: 'content-2', orderIndex: 1 },
+              { id: 'content-3', orderIndex: 2 },
+            ],
+          },
         ],
       },
       { id: 'chapter-2', subChapters: [] },

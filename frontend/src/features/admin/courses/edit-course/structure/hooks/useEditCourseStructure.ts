@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import courseService, { Course } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { sortByOrderIndex } from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
@@ -25,6 +25,17 @@ export function useEditCourseStructure({
   const [loadingPage, setLoadingPage] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
+  const reloadCourse = useCallback(async () => {
+    if (!courseId) {
+      return null;
+    }
+
+    const response = await courseService.getCourseById(courseId);
+    const normalizedCourse = normalizeStructureCourse(response);
+    setCourse(normalizedCourse);
+    return normalizedCourse;
+  }, [courseId]);
+
   useEffect(() => {
     if (!courseId) {
       setLoadError(
@@ -40,8 +51,7 @@ export function useEditCourseStructure({
       try {
         setLoadingPage(true);
         setLoadError(null);
-        const response = await courseService.getCourseById(courseId);
-        setCourse(normalizeStructureCourse(response));
+        await reloadCourse();
       } catch (error) {
         setLoadError(
           getApiErrorMessage(
@@ -57,7 +67,7 @@ export function useEditCourseStructure({
     };
 
     void loadCourse();
-  }, [courseId, t]);
+  }, [courseId, reloadCourse, t]);
 
   const chapters = useMemo(
     () => (course ? sortByOrderIndex(course.chapters) : []),
@@ -135,6 +145,79 @@ export function useEditCourseStructure({
     });
   };
 
+  const moveChapter = async (chapterId: string, direction: 'up' | 'down') => {
+    if (!courseId) {
+      return;
+    }
+
+    const chapter = chapters.find((current) => current.id === chapterId);
+    if (!chapter) {
+      return;
+    }
+
+    const nextOrderIndex =
+      direction === 'up' ? chapter.orderIndex - 1 : chapter.orderIndex + 1;
+    if (nextOrderIndex < 1 || nextOrderIndex > chapters.length) {
+      return;
+    }
+
+    await courseService.updateChapter(courseId, chapter.id, {
+      orderIndex: nextOrderIndex,
+    });
+
+    const freshCourse = await reloadCourse();
+    if (!freshCourse || editor.editingChapterId !== chapter.id) {
+      return;
+    }
+
+    const freshChapter =
+      freshCourse.chapters.find((current) => current.id === chapter.id) ?? null;
+    if (freshChapter) {
+      editor.startEditingChapter(freshChapter);
+    }
+  };
+
+  const moveSubChapter = async (
+    chapterId: string,
+    subChapterId: string,
+    direction: 'up' | 'down',
+  ) => {
+    if (!courseId) {
+      return;
+    }
+
+    const chapter = chapters.find((current) => current.id === chapterId);
+    const subChapter = chapter?.subChapters.find((current) => current.id === subChapterId);
+
+    if (!chapter || !subChapter) {
+      return;
+    }
+
+    const nextOrderIndex =
+      direction === 'up' ? subChapter.orderIndex - 1 : subChapter.orderIndex + 1;
+    if (nextOrderIndex < 1 || nextOrderIndex > chapter.subChapters.length) {
+      return;
+    }
+
+    await courseService.updateSubChapter(courseId, chapter.id, subChapter.id, {
+      orderIndex: nextOrderIndex,
+    });
+
+    const freshCourse = await reloadCourse();
+    if (!freshCourse || editor.editingSubChapterId !== subChapter.id) {
+      return;
+    }
+
+    const freshChapter =
+      freshCourse.chapters.find((current) => current.id === chapter.id) ?? null;
+    const freshSubChapter =
+      freshChapter?.subChapters.find((current) => current.id === subChapter.id) ?? null;
+
+    if (freshChapter && freshSubChapter) {
+      editor.startEditingSubChapter(freshChapter, freshSubChapter);
+    }
+  };
+
   return {
     availableParentChapter: editor.availableParentChapter,
     chapterError: editor.chapterError,
@@ -156,6 +239,8 @@ export function useEditCourseStructure({
     loadError,
     loadingPage,
     localizedCourseTitle,
+    moveChapter,
+    moveSubChapter,
     resetChapterForm: editor.resetChapterForm,
     resetSubChapterForm: editor.resetSubChapterForm,
     setChapterForm: editor.setChapterForm,

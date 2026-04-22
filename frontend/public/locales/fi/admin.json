@@ -31,7 +31,7 @@
   "chaptersCount": "lukua",
   "levels": {
     "free": "Ilmainen",
-    "premium": "Premium"
+    "premium": "Premium-taso"
   },
   "status": {
     "draft": "Luonnos",
@@ -117,6 +117,7 @@
       "descriptionEnPlaceholder": "Kirjoita luvun englanninkielinen kuvaus.",
       "descriptionFiPlaceholder": "Kirjoita luvun suomenkielinen kuvaus.",
       "orderInput": "Järjestys",
+      "orderHint": "Olemassa olevien lukujen järjestystä siirretään automaattisesti, jotta järjestys pysyy yksilöllisenä.",
       "orderLabel": "Luku",
       "subchapterCount": "alalukua",
       "create": "Luo luku",
@@ -159,6 +160,7 @@
       "descriptionEnPlaceholder": "Kirjoita alaluvun englanninkielinen kuvaus.",
       "descriptionFiPlaceholder": "Kirjoita alaluvun suomenkielinen kuvaus.",
       "orderInput": "Järjestys",
+      "orderHint": "Olemassa olevien alalukujen järjestystä siirretään automaattisesti, jotta järjestys pysyy yksilöllisenä.",
       "orderLabel": "Alaluku",
       "create": "Luo alaluku",
       "creating": "Luodaan alalukua...",

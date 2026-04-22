@@ -1,12 +1,12 @@
 import { Chapter, Course, CreateChapterRequest, CreateSubChapterRequest } from '@/services/course';
-import { sortByOrderIndex } from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
+import { normalizeAndSortByOrderIndex } from '@/features/admin/courses/edit-course/shared/EditCourseState.utils';
 import { ChapterFormState, SubChapterFormState, TranslationFn } from '../types';
 
 export const normalizeStructureCourse = (course: Course): Course => ({
   ...course,
-  chapters: sortByOrderIndex(course.chapters ?? []).map((chapter) => ({
+  chapters: normalizeAndSortByOrderIndex(course.chapters ?? []).map((chapter) => ({
     ...chapter,
-    subChapters: sortByOrderIndex(chapter.subChapters ?? []),
+    subChapters: normalizeAndSortByOrderIndex(chapter.subChapters ?? []),
   })),
 });
 
@@ -92,4 +92,3 @@ export const buildDefaultSubChapterFormState = (chapter: Chapter | null) => ({
   chapterId: chapter?.id ?? '',
   orderIndex: String((chapter?.subChapters?.length ?? 0) + 1 || 1),
 });
-

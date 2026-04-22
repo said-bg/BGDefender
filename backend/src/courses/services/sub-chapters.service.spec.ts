@@ -10,10 +10,11 @@ import { SubChapterService } from './sub-chapters.service';
 
 type MockSubChapterRepository = Pick<
   Repository<SubChapter>,
-  'create' | 'save' | 'findAndCount' | 'findOne' | 'remove'
+  'create' | 'save' | 'find' | 'findAndCount' | 'findOne' | 'remove'
 > & {
   create: jest.Mock;
   save: jest.Mock;
+  find: jest.Mock;
   findAndCount: jest.Mock;
   findOne: jest.Mock;
   remove: jest.Mock;
@@ -63,6 +64,7 @@ describe('SubChapterService', () => {
     subChapterRepository = {
       create: jest.fn(),
       save: jest.fn(),
+      find: jest.fn(),
       findAndCount: jest.fn(),
       findOne: jest.fn(),
       remove: jest.fn(),
@@ -105,6 +107,7 @@ describe('SubChapterService', () => {
     const createdSubChapter = createSubChapterEntity();
 
     chapterRepository.findOne.mockResolvedValue(chapter);
+    subChapterRepository.find.mockResolvedValue([]);
     subChapterRepository.create.mockReturnValue(createdSubChapter);
     subChapterRepository.save.mockResolvedValue(createdSubChapter);
 
@@ -210,10 +213,10 @@ describe('SubChapterService', () => {
     const existingSubChapter = createSubChapterEntity();
     const dto: UpdateSubChapterDto = {
       titleEn: 'Updated Passive Recon',
-      orderIndex: 2,
     };
 
     subChapterRepository.findOne.mockResolvedValue(existingSubChapter);
+    subChapterRepository.find.mockResolvedValue([existingSubChapter]);
     subChapterRepository.save.mockImplementation((subChapter: SubChapter) =>
       Promise.resolve(subChapter),
     );
@@ -224,7 +227,7 @@ describe('SubChapterService', () => {
       expect.objectContaining({
         id: existingSubChapter.id,
         titleEn: 'Updated Passive Recon',
-        orderIndex: 2,
+        orderIndex: existingSubChapter.orderIndex,
         titleFi: existingSubChapter.titleFi,
       }),
     );
@@ -232,7 +235,7 @@ describe('SubChapterService', () => {
       expect.objectContaining({
         id: existingSubChapter.id,
         titleEn: 'Updated Passive Recon',
-        orderIndex: 2,
+        orderIndex: existingSubChapter.orderIndex,
       }),
     );
   });
@@ -250,6 +253,7 @@ describe('SubChapterService', () => {
   it('deletes an existing subchapter after loading it first', async () => {
     const subChapter = createSubChapterEntity();
     subChapterRepository.findOne.mockResolvedValue(subChapter);
+    subChapterRepository.find.mockResolvedValue([subChapter]);
     subChapterRepository.remove.mockResolvedValue(undefined);
 
     await service.delete(subChapter.id);
@@ -266,5 +270,114 @@ describe('SubChapterService', () => {
     );
 
     expect(subChapterRepository.remove).not.toHaveBeenCalled();
+  });
+
+  it('shifts later subchapters when creating one in the middle', async () => {
+    const firstSubChapter = createSubChapterEntity();
+    const secondSubChapter = createSubChapterEntity();
+    secondSubChapter.id = 'sub-chapter-2';
+    secondSubChapter.orderIndex = 2;
+    const createdSubChapter = createSubChapterEntity();
+    createdSubChapter.id = 'sub-chapter-new';
+    createdSubChapter.orderIndex = 2;
+
+    chapterRepository.findOne.mockResolvedValue(createChapterEntity());
+    subChapterRepository.find.mockResolvedValue([firstSubChapter, secondSubChapter]);
+    subChapterRepository.create.mockReturnValue(createdSubChapter);
+    subChapterRepository.save
+      .mockResolvedValueOnce([firstSubChapter, secondSubChapter])
+      .mockResolvedValueOnce(createdSubChapter);
+
+    const result = await service.create('chapter-1', {
+      titleEn: 'Inserted subchapter',
+      titleFi: 'Inserted subchapter',
+      descriptionEn: 'Inserted subchapter',
+      descriptionFi: 'Inserted subchapter',
+      orderIndex: 2,
+    });
+
+    expect(secondSubChapter.orderIndex).toBe(3);
+    expect(result).toEqual(createdSubChapter);
+  });
+
+  it('normalizes duplicate legacy subchapter orders before inserting a new one', async () => {
+    const firstSubChapter = createSubChapterEntity();
+    const secondSubChapter = createSubChapterEntity();
+    secondSubChapter.id = 'sub-chapter-2';
+    secondSubChapter.orderIndex = 1;
+    const createdSubChapter = createSubChapterEntity();
+    createdSubChapter.id = 'sub-chapter-new';
+    createdSubChapter.orderIndex = 1;
+
+    chapterRepository.findOne.mockResolvedValue(createChapterEntity());
+    subChapterRepository.find.mockResolvedValue([firstSubChapter, secondSubChapter]);
+    subChapterRepository.create.mockReturnValue(createdSubChapter);
+    subChapterRepository.save
+      .mockResolvedValueOnce([secondSubChapter])
+      .mockResolvedValueOnce([firstSubChapter, secondSubChapter])
+      .mockResolvedValueOnce(createdSubChapter);
+
+    await service.create('chapter-1', {
+      titleEn: 'Inserted subchapter',
+      titleFi: 'Inserted subchapter',
+      descriptionEn: 'Inserted subchapter',
+      descriptionFi: 'Inserted subchapter',
+      orderIndex: 1,
+    });
+
+    expect(firstSubChapter.orderIndex).toBe(2);
+    expect(secondSubChapter.orderIndex).toBe(3);
+  });
+
+  it('reorders sibling subchapters when one moves up', async () => {
+    const firstSubChapter = createSubChapterEntity();
+    const secondSubChapter = createSubChapterEntity();
+    secondSubChapter.id = 'sub-chapter-2';
+    secondSubChapter.orderIndex = 2;
+    const thirdSubChapter = createSubChapterEntity();
+    thirdSubChapter.id = 'sub-chapter-3';
+    thirdSubChapter.orderIndex = 3;
+
+    subChapterRepository.findOne.mockResolvedValue(thirdSubChapter);
+    subChapterRepository.find.mockResolvedValue([
+      firstSubChapter,
+      secondSubChapter,
+      thirdSubChapter,
+    ]);
+    subChapterRepository.save.mockImplementation(
+      (subChapter: SubChapter | SubChapter[]) => Promise.resolve(subChapter),
+    );
+
+    const result = await service.update('sub-chapter-3', { orderIndex: 1 });
+
+    expect(firstSubChapter.orderIndex).toBe(2);
+    expect(secondSubChapter.orderIndex).toBe(3);
+    expect(result).toEqual(
+      expect.objectContaining({ id: 'sub-chapter-3', orderIndex: 1 }),
+    );
+  });
+
+  it('closes order gaps after deleting a subchapter', async () => {
+    const firstSubChapter = createSubChapterEntity();
+    const secondSubChapter = createSubChapterEntity();
+    secondSubChapter.id = 'sub-chapter-2';
+    secondSubChapter.orderIndex = 2;
+    const thirdSubChapter = createSubChapterEntity();
+    thirdSubChapter.id = 'sub-chapter-3';
+    thirdSubChapter.orderIndex = 3;
+
+    subChapterRepository.findOne.mockResolvedValue(secondSubChapter);
+    subChapterRepository.find.mockResolvedValue([
+      firstSubChapter,
+      secondSubChapter,
+      thirdSubChapter,
+    ]);
+    subChapterRepository.remove.mockResolvedValue(undefined);
+    subChapterRepository.save.mockResolvedValue([thirdSubChapter]);
+
+    await service.delete('sub-chapter-2');
+
+    expect(thirdSubChapter.orderIndex).toBe(2);
+    expect(subChapterRepository.save).toHaveBeenCalledWith([thirdSubChapter]);
   });
 });

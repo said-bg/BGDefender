@@ -51,19 +51,22 @@ export function useStructureEditorState({
     setSubChapterError(null);
   };
 
-  const resetChapterForm = () => {
+  const resetChapterForm = (courseSnapshot: Course | null = course) => {
     setEditingChapterId(null);
     setEditingSubChapterId(null);
     setChapterForm({
       ...initialChapterForm,
-      orderIndex: String((course?.chapters.length ?? 0) + 1),
+      orderIndex: String((courseSnapshot?.chapters.length ?? 0) + 1),
     });
   };
 
-  const resetSubChapterForm = (chapterId?: string) => {
+  const resetSubChapterForm = (
+    chapterId?: string,
+    chaptersSnapshot: Chapter[] = chapters,
+  ) => {
     const parentChapter =
-      chapters.find((chapter) => chapter.id === chapterId) ??
-      availableParentChapter ??
+      chaptersSnapshot.find((chapter) => chapter.id === chapterId) ??
+      chaptersSnapshot[0] ??
       null;
 
     setEditingChapterId(null);

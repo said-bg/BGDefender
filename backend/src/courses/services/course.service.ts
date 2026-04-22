@@ -6,6 +6,7 @@ import { Author } from '../../entities/author.entity';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 import { NotificationsService } from '../../notifications/services/notifications.service';
+import { normalizeOrderIndexes } from './order-index.utils';
 
 export interface AdminCourseSummary {
   totalCourses: number;
@@ -181,6 +182,7 @@ export class CourseService {
       return course;
     }
 
+    normalizeOrderIndexes(course.chapters);
     course.chapters.sort((left, right) => left.orderIndex - right.orderIndex);
 
     for (const chapter of course.chapters) {
@@ -188,6 +190,7 @@ export class CourseService {
         continue;
       }
 
+      normalizeOrderIndexes(chapter.subChapters);
       chapter.subChapters.sort(
         (left, right) => left.orderIndex - right.orderIndex,
       );
@@ -197,6 +200,7 @@ export class CourseService {
           continue;
         }
 
+        normalizeOrderIndexes(subChapter.pedagogicalContents);
         subChapter.pedagogicalContents.sort(
           (left, right) => left.orderIndex - right.orderIndex,
         );
