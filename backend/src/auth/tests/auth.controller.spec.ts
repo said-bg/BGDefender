@@ -25,6 +25,8 @@ describe('AuthController', () => {
     register: jest.fn(),
     login: jest.fn(),
     validateUser: jest.fn(),
+    findByEmail: jest.fn(),
+    updatePassword: jest.fn(),
     updateProfile: jest.fn(),
     changePassword: jest.fn(),
   };
@@ -87,7 +89,6 @@ describe('AuthController', () => {
         password: 'Password123',
       };
 
-      // 🎯 FIX: Mock doit retourner user avec l'email du DTO
       const mockUserWithCorrectEmail: SafeUser = {
         ...mockSafeUser,
         email: registerDto.email,
@@ -186,6 +187,136 @@ describe('AuthController', () => {
     });
   });
 
+  describe('forgotPassword', () => {
+    const forgotPasswordDto = {
+      email: 'test@example.com',
+    };
+
+    beforeEach(() => {
+      process.env.FRONTEND_URL = 'https://bgdefender.local';
+      delete process.env.LOG_RESET_TOKENS;
+    });
+
+    it('creates a reset token, sends the email and returns the english success message when the user exists', async () => {
+      mockAuthService.findByEmail.mockResolvedValue(mockSafeUser);
+      mockPasswordTokenService.createResetToken.mockResolvedValue('token-123');
+      mockEmailService.sendPasswordResetEmail.mockResolvedValue(undefined);
+
+      const result = await controller.forgotPassword(forgotPasswordDto);
+
+      expect(mockAuthService.findByEmail).toHaveBeenCalledWith(
+        forgotPasswordDto.email,
+      );
+      expect(mockPasswordTokenService.createResetToken).toHaveBeenCalledWith(
+        mockSafeUser.email,
+      );
+      expect(mockEmailService.sendPasswordResetEmail).toHaveBeenCalledWith(
+        mockSafeUser.email,
+        'https://bgdefender.local/auth/reset-password?token=token-123&lang=en',
+        'en',
+      );
+      expect(result).toEqual({
+        message:
+          'If an account exists with this email, a reset link has been sent',
+      });
+    });
+
+    it('does not create a token or send an email when the user does not exist', async () => {
+      mockAuthService.findByEmail.mockResolvedValue(null);
+
+      const result = await controller.forgotPassword(forgotPasswordDto);
+
+      expect(mockPasswordTokenService.createResetToken).not.toHaveBeenCalled();
+      expect(mockEmailService.sendPasswordResetEmail).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        message:
+          'If an account exists with this email, a reset link has been sent',
+      });
+    });
+
+    it('returns the translated finnish response and reset link language when requested', async () => {
+      mockAuthService.findByEmail.mockResolvedValue(mockSafeUser);
+      mockPasswordTokenService.createResetToken.mockResolvedValue('token-123');
+      mockEmailService.sendPasswordResetEmail.mockResolvedValue(undefined);
+
+      const result = await controller.forgotPassword(
+        forgotPasswordDto,
+        'fi-FI,fi;q=0.9',
+      );
+
+      expect(mockEmailService.sendPasswordResetEmail).toHaveBeenCalledWith(
+        mockSafeUser.email,
+        'https://bgdefender.local/auth/reset-password?token=token-123&lang=fi',
+        'fi',
+      );
+      expect(result).toEqual({
+        message:
+          'Jos tilisi loytyy talla sahkopostiosoitteella, palautuslinkki on lahetetty.',
+      });
+    });
+  });
+
+  describe('resetPassword', () => {
+    it('resolves the token, updates the password, marks the token as used and returns the english message', async () => {
+      const resetPasswordDto = {
+        token: 'plain-token',
+        newPassword: 'NewPassword1',
+      };
+
+      mockPasswordTokenService.findTokenByPlainToken.mockResolvedValue({
+        id: 'token-id',
+        email: 'test@example.com',
+      });
+      mockAuthService.updatePassword.mockResolvedValue(undefined);
+      mockPasswordTokenService.markAsUsed.mockResolvedValue(undefined);
+
+      const result = await controller.resetPassword(resetPasswordDto);
+
+      expect(
+        mockPasswordTokenService.findTokenByPlainToken,
+      ).toHaveBeenCalledWith(resetPasswordDto.token);
+      expect(mockAuthService.updatePassword).toHaveBeenCalledWith(
+        'test@example.com',
+        resetPasswordDto.newPassword,
+        'en',
+      );
+      expect(mockPasswordTokenService.markAsUsed).toHaveBeenCalledWith(
+        'token-id',
+      );
+      expect(result).toEqual({
+        message: 'Password has been reset successfully',
+      });
+    });
+
+    it('returns the translated finnish success message when requested', async () => {
+      const resetPasswordDto = {
+        token: 'plain-token',
+        newPassword: 'NewPassword1',
+      };
+
+      mockPasswordTokenService.findTokenByPlainToken.mockResolvedValue({
+        id: 'token-id',
+        email: 'test@example.com',
+      });
+      mockAuthService.updatePassword.mockResolvedValue(undefined);
+      mockPasswordTokenService.markAsUsed.mockResolvedValue(undefined);
+
+      const result = await controller.resetPassword(
+        resetPasswordDto,
+        'fi-FI,fi;q=0.9',
+      );
+
+      expect(mockAuthService.updatePassword).toHaveBeenCalledWith(
+        'test@example.com',
+        resetPasswordDto.newPassword,
+        'fi',
+      );
+      expect(result).toEqual({
+        message: 'Salasana on nollattu onnistuneesti.',
+      });
+    });
+  });
+
   describe('changePassword', () => {
     it('should delegate password changes to the auth service', async () => {
       const changePasswordDto = {
@@ -207,6 +338,31 @@ describe('AuthController', () => {
         'en',
       );
       expect(result).toEqual({ message: 'Password updated successfully' });
+    });
+
+    it('should return a translated success message when the request language is finnish', async () => {
+      const changePasswordDto = {
+        currentPassword: 'Password1',
+        newPassword: 'NewPassword1',
+      };
+
+      mockAuthService.changePassword.mockResolvedValue(undefined);
+
+      const result = await controller.changePassword(
+        mockSafeUser,
+        changePasswordDto,
+        'fi-FI,fi;q=0.9',
+      );
+
+      expect(mockAuthService.changePassword).toHaveBeenCalledWith(
+        mockSafeUser.id,
+        changePasswordDto.currentPassword,
+        changePasswordDto.newPassword,
+        'fi',
+      );
+      expect(result).toEqual({
+        message: 'Salasana paivitettiin onnistuneesti.',
+      });
     });
   });
 });

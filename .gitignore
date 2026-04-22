@@ -24,6 +24,10 @@ docs/
 .vscode/
 .idea/
 
+# Markdown files (except README)
+*.md
+!README.md
+
 # Build / cache
 .next/
 dist/
