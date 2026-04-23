@@ -1,11 +1,10 @@
 .navigationFooter {
+  composes: dividerSection from './CourseContentSectionShared.module.css';
   display: flex;
   justify-content: space-between;
-  max-width: 860px;
   gap: 0.9rem;
   margin-top: 2.2rem;
   padding-top: 1.4rem;
-  border-top: 1px solid #e5e7eb;
 }
 
 .navigationButton {
@@ -14,23 +13,23 @@
   justify-content: center;
   min-width: 132px;
   padding: 0.9rem 1.2rem;
-  border: 1px solid #d0d5dd;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #111827;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 700;
   transition:
-    border-color 0.18s ease,
-    background 0.18s ease,
-    color 0.18s ease,
-    transform 0.18s ease;
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .navigationButton:hover:not(:disabled) {
-  border-color: #ffa600;
-  color: #ffa600;
+  border-color: var(--color-brand);
+  color: var(--color-brand);
   transform: translateY(-1px);
 }
 
@@ -40,15 +39,15 @@
 }
 
 .navigationButtonPrimary {
-  border-color: #ffa600;
-  background: #ffa600;
-  color: #ffffff;
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
 }
 
 .navigationButtonPrimary:hover:not(:disabled) {
-  border-color: #eb9b00;
-  background: #eb9b00;
-  color: #ffffff;
+  border-color: var(--color-brand-hover);
+  background: var(--color-brand-hover);
+  color: var(--color-text-inverse);
 }
 
 .completionOverlay {
@@ -58,21 +57,21 @@
   display: grid;
   place-items: center;
   padding: 1.5rem;
-  background: rgba(15, 23, 42, 0.42);
+  background: var(--color-overlay-dark);
 }
 
 .completionCard {
   width: min(100%, 520px);
   padding: 1.4rem;
-  border: 1px solid #dbe4f0;
-  border-radius: 24px;
-  background: #ffffff;
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.22);
+  border: 1px solid var(--color-border-editor);
+  border-radius: var(--radius-3xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-modal);
 }
 
 .completionEyebrow {
   margin: 0 0 0.55rem;
-  color: #ffa600;
+  color: var(--color-brand);
   font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.12em;
@@ -80,15 +79,15 @@
 }
 
 .completionTitle {
+  composes: headingStrong from './CourseContentSectionShared.module.css';
   margin: 0;
-  color: #111827;
   font-size: 1.55rem;
   line-height: 1.15;
 }
 
 .completionDescription {
+  composes: bodyMuted from './CourseContentSectionShared.module.css';
   margin: 0.85rem 0 0;
-  color: #475467;
   font-size: 1rem;
   line-height: 1.7;
 }
@@ -98,7 +97,7 @@
   justify-content: flex-end;
   gap: 0.75rem;
   margin-top: 1.25rem;
- }
+}
 
 @media (max-width: 720px) {
   .navigationFooter {

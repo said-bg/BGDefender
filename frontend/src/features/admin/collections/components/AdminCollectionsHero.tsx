@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import styles from '../AdminCollectionsPage.module.css';
+import styles from './AdminCollectionsHero.module.css';
 
 type CollectionsTranslate = (
   key: string,

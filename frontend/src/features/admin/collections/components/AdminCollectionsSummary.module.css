@@ -1,0 +1,16 @@
+.summary {
+  composes: summary from '../../shared/AdminWorkspaceShared.module.css';
+  margin-bottom: 0.9rem;
+}
+
+.summaryCard {
+  composes: summaryCard from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.summaryLabel {
+  composes: summaryLabel from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.summaryValue {
+  composes: summaryValue from '../../shared/AdminWorkspaceShared.module.css';
+}

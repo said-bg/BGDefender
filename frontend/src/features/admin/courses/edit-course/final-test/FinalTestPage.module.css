@@ -2,3 +2,160 @@
   display: grid;
   gap: 0.95rem;
 }
+
+.quizEditorColumn {
+  composes: assessmentEditorColumn from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizEditorCard,
+.quizAnalyticsCard {
+  composes: assessmentPanel from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.questionList {
+  composes: questionList from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.questionCard {
+  composes: questionCard from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.questionGrid {
+  composes: questionGrid from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.fieldGroup {
+  composes: fieldGroup from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.fieldGroupCompact {
+  composes: fieldGroupCompact from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizStatsRow {
+  composes: quizStatsRow from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizSettingsRow {
+  composes: quizSettingsRow from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.optionsHeader {
+  composes: optionsHeader from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.questionCardHeader {
+  composes: questionCardHeader from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.questionActions {
+  composes: questionActions from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.optionRow {
+  composes: optionRow from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizHeaderGrid {
+  composes: quizHeaderGrid from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.fieldLabel {
+  composes: fieldLabel from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.input {
+  composes: input from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.textarea {
+  composes: textarea from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.select {
+  composes: select from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.checkboxRow {
+  composes: checkboxRow from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.correctToggle {
+  composes: correctToggle from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.questionsHeader {
+  composes: questionsHeader from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.optionsList {
+  composes: optionsList from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsSummaryBar {
+  composes: quizAnalyticsSummaryBar from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsSummaryCopy {
+  composes: quizAnalyticsSummaryCopy from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsSummaryTitle {
+  composes: quizAnalyticsSummaryTitle from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsSummaryText {
+  composes: quizAnalyticsSummaryText from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsSummaryGrid {
+  composes: quizAnalyticsSummaryGrid from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsMetric {
+  composes: quizAnalyticsMetric from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsLearnerCard {
+  composes: quizAnalyticsLearnerCard from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsMetricLabel {
+  composes: quizAnalyticsMetricLabel from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsLearnerEmail {
+  composes: quizAnalyticsLearnerEmail from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsMetricValue {
+  composes: quizAnalyticsMetricValue from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsLearnerName {
+  composes: quizAnalyticsLearnerName from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsMetaRow {
+  composes: quizAnalyticsMetaRow from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsLearnerHeader {
+  composes: quizAnalyticsLearnerHeader from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsLearnerStats {
+  composes: quizAnalyticsLearnerStats from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsLearnerList {
+  composes: quizAnalyticsLearnerList from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsStatusPassed {
+  composes: quizAnalyticsStatusPassed from '../assessments/AssessmentWorkspaceShared.module.css';
+}
+
+.quizAnalyticsStatusPending {
+  composes: quizAnalyticsStatusPending from '../assessments/AssessmentWorkspaceShared.module.css';
+}

@@ -141,6 +141,7 @@ export function useEditCourseStructure({
       setDeletingSubChapterId: editor.setDeletingSubChapterId,
       setSubChapterError: editor.setSubChapterError,
       setSubChapterMessage: editor.setSubChapterMessage,
+      subChapterForm: editor.subChapterForm,
       t,
     });
   };

@@ -1,0 +1,94 @@
+.listCard {
+  composes: panelCard from './CertificatesPanelShared.module.css';
+}
+
+.sectionTitle {
+  composes: sectionTitle from './CertificatesPanelShared.module.css';
+}
+
+.sectionDescription {
+  composes: sectionDescription from './CertificatesPanelShared.module.css';
+}
+
+.helperText {
+  composes: helperText from './CertificatesPanelShared.module.css';
+}
+
+.errorText {
+  composes: errorText from './CertificatesPanelShared.module.css';
+}
+
+.emptyState {
+  composes: emptyState from './CertificatesPanelShared.module.css';
+}
+
+.emptyTitle {
+  composes: emptyTitle from './CertificatesPanelShared.module.css';
+}
+
+.emptyDescription {
+  composes: emptyDescription from './CertificatesPanelShared.module.css';
+}
+
+.certificateList {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.certificateCard {
+  border: 1px solid var(--color-border-resource);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-resource-card);
+  padding: 1rem 1.05rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.certificateCardActive {
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-brand-soft);
+}
+
+.certificateTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.certificateMeta {
+  margin: 0.55rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.75rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.32rem 0.76rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.badgeIssued {
+  background: var(--color-success-bg-resource);
+  color: var(--color-success-resource);
+}
+
+.badgePending {
+  background: var(--color-brand-soft);
+  color: var(--color-warning-text-strong);
+}

@@ -1,136 +1,63 @@
 .fieldHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  composes: fieldHeader from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .fieldLabel {
-  color: #22304a;
-  font-size: 0.86rem;
-  font-weight: 600;
+  composes: fieldLabel from '../../shared/AdminCourseFormShared.module.css';
 }
 
 .modeSwitch {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.28rem;
-  border: 1px solid #dbe4f0;
-  border-radius: 0.82rem;
-  background: #ffffff;
-  width: fit-content;
+  composes: modeSwitch from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .uploadBox {
-  display: grid;
-  gap: 0.6rem;
+  composes: uploadBox from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .hiddenFileInput {
-  display: none;
+  composes: hiddenFileInput from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .uploadLabel {
-  display: grid;
-  gap: 0.35rem;
-  padding: 16px;
-  border: 1px dashed #d0d5dd;
-  border-radius: 0.9rem;
-  background: #ffffff;
-  cursor: pointer;
-}
-
-.uploadLabel:hover {
-  border-color: #ffa600;
-  background: #fffdfa;
+  composes: uploadLabel from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .uploadLabelText {
-  color: #111827;
-  font-size: 0.88rem;
-  font-weight: 600;
+  composes: uploadLabelText from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .uploadHelper {
-  color: #64748b;
-  font-size: 0.84rem;
-  line-height: 1.5;
+  composes: uploadHelper from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .inlineLink {
-  color: #ffa600;
-  font-size: 0.84rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.inlineLink:hover {
-  color: #d98200;
+  composes: inlineLink from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .authorGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  composes: authorGrid from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .authorChip {
-  min-width: 180px;
-  padding: 12px 14px;
-  border: 1px solid #e6ebf2;
-  border-radius: 0.9rem;
-  background: #ffffff;
-  display: grid;
-  gap: 4px;
-  text-align: left;
-  cursor: pointer;
-}
-
-.authorChip:hover {
-  border-color: #ffa600;
-  background: #fffdfa;
+  composes: authorChip from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .authorChipSelected {
-  border-color: #ffa600;
-  background: #fff8eb;
-  box-shadow: 0 10px 20px rgba(255, 166, 0, 0.1);
+  composes: authorChipSelected from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .authorName {
-  color: #111827;
-  font-size: 0.9rem;
-  font-weight: 600;
+  composes: authorName from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .authorRole {
-  color: #64748b;
-  font-size: 0.82rem;
+  composes: authorRole from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .selectedAuthors {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
+  composes: selectedAuthors from '../../shared/AdminCourseDetailsShared.module.css';
 }
 
 .selectedAuthorToken {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.72rem;
-  padding: 0 0.64rem;
-  border-radius: 999px;
-  background: #fff4db;
-  color: #cc7a00;
-  font-size: 0.76rem;
-  font-weight: 600;
-}
-
-@media (max-width: 900px) {
-  .fieldHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+  composes: selectedAuthorToken from '../../shared/AdminCourseDetailsShared.module.css';
 }

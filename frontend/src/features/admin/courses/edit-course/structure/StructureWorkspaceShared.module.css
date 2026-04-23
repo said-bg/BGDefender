@@ -1,0 +1,424 @@
+.contentStudioLayout {
+  display: grid;
+  grid-template-columns: minmax(430px, 560px) minmax(0, 1fr);
+  gap: 1.35rem;
+  align-items: start;
+}
+
+.contentEditorColumn,
+.chapterLibrary,
+.chapterFormCard {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.structureIntro {
+  margin-bottom: 1.1rem;
+}
+
+.structureSidebarCard {
+  display: grid;
+  gap: 0.6rem;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.structureSidebarCardActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  box-shadow: var(--shadow-brand-soft);
+}
+
+.structureSidebarCardBody {
+  display: grid;
+  gap: 8px;
+}
+
+.structureSidebarButtonRow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.sidebarPreview {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.chapterDescriptionPreview {
+  margin: 0;
+  color: var(--color-text-body);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.chapterMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  color: var(--color-text-subtle);
+  font-size: 0.84rem;
+}
+
+.subChapterTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.libraryHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.libraryCountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.8rem;
+  padding: 0.2rem 0.72rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border-soft);
+  color: var(--color-text-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.structureTreeGroup {
+  display: grid;
+  gap: 0.9rem;
+  padding: 18px 18px 18px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-editor) 100%);
+}
+
+.structureChapterCard {
+  display: grid;
+  gap: 0.9rem;
+  padding: 18px 18px 16px;
+  border: 1px solid var(--color-brand-border-soft);
+  border-radius: 0.95rem;
+  background: linear-gradient(180deg, var(--color-brand-surface-strong) 0%, var(--color-brand-surface-muted) 100%);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.structureChapterCardActive {
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-brand-medium);
+}
+
+.structureNodeHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.structureIndexBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: 0.7rem;
+  border: 1px solid var(--color-brand-border);
+  background: var(--color-surface);
+  color: var(--color-brand-active);
+  font-size: 0.96rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.structureNodeHeading {
+  min-width: 0;
+  flex: 1;
+  display: grid;
+  gap: 0.22rem;
+}
+
+.structureNodeType {
+  margin: 0;
+  color: var(--color-text-overline);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.structureNodeTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.structureNodeDescription {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 0.84rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.structureCountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.75rem;
+  padding: 0.2rem 0.62rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  color: var(--color-text-soft);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.structureCompactActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.structureChapterActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.compactAction,
+.compactDanger,
+.compactIconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.9rem;
+  padding: 0.28rem 0.66rem;
+  border-radius: 0.68rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.compactAction {
+  border: 1px solid var(--color-brand-border);
+  background: var(--color-surface);
+  color: var(--color-brand-active);
+}
+
+.compactAction:hover {
+  background: var(--color-brand-soft);
+  border-color: var(--color-brand-border-hover);
+}
+
+.compactDanger {
+  border: 1px solid var(--color-danger-border);
+  background: var(--color-danger-bg-muted);
+  color: var(--color-danger);
+}
+
+.compactDanger:hover {
+  border-color: var(--color-danger-border-hover);
+}
+
+.compactIconButton {
+  min-width: 2.8rem;
+  border: 1px solid var(--color-border-editor);
+  background: var(--color-surface);
+  color: var(--color-text-soft);
+}
+
+.compactIconButton:hover {
+  border-color: var(--color-border-hover);
+  background: var(--color-surface-subtle);
+}
+
+.compactAction:disabled,
+.compactDanger:disabled,
+.compactIconButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.structureSubChapterList {
+  display: grid;
+  gap: 0.85rem;
+  margin-left: 0.55rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--color-border-soft);
+}
+
+.structureSubChapterCard {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1rem 1.05rem;
+  border: 1px solid var(--color-border-soft-muted);
+  border-radius: 0.88rem;
+  background: var(--color-surface);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.structureSubChapterCardActive {
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-brand-soft);
+}
+
+.structureSubChapterBody {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.structureSubChapterMain {
+  min-width: 0;
+  display: grid;
+  gap: 0.28rem;
+}
+
+.structureSubChapterOrder {
+  margin: 0;
+  color: var(--color-text-overline);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.structureSubChapterTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.45;
+  max-width: 24rem;
+}
+
+.structureSubChapterDescription {
+  margin: 0;
+  color: var(--color-text-subtle);
+  font-size: 0.9rem;
+  line-height: 1.58;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.structureSubChapterActions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.structureSubChapterEmpty {
+  padding: 0.85rem 0.95rem;
+  border: 1px dashed var(--color-border-dashed);
+  border-radius: 0.88rem;
+  background: var(--color-surface-faint);
+  color: var(--color-text-subtle);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.orderEditor {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--color-brand-border);
+  border-radius: 0.85rem;
+  background: var(--color-brand-surface-muted);
+}
+
+.orderChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
+  min-height: 2.4rem;
+  padding: 0 0.7rem;
+  border-radius: 0.78rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-brand-border);
+  color: var(--color-brand-active);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.orderNumberInput {
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  font-size: 0.94rem;
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.orderNumberInput:focus {
+  outline: none;
+}
+
+.orderStepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.orderStepButton {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-brand-border);
+  border-radius: 0.68rem;
+  background: var(--color-surface);
+  color: var(--color-brand-active);
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.orderStepButton:hover {
+  background: var(--color-brand-soft);
+}
+
+.orderHint {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-subtle);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .contentStudioLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .structureCountBadge {
+    justify-self: start;
+  }
+}

@@ -17,9 +17,9 @@
 
 .contentSidebarGroup {
   padding: 14px 16px;
-  border: 1px solid #e6ebf2;
+  border: 1px solid var(--color-border-soft);
   border-radius: 0.95rem;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .chapterLibraryHeader {
@@ -29,14 +29,14 @@
 
 .chapterSectionTitle {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 1rem;
   font-weight: 600;
 }
 
 .chapterOrderLabel {
   margin: 0 0 0.2rem;
-  color: #64748b;
+  color: var(--color-text-subtle);
   font-size: 0.76rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -45,7 +45,7 @@
 
 .chapterTitle {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.96rem;
   font-weight: 600;
 }

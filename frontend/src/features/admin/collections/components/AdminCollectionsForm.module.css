@@ -1,0 +1,251 @@
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.fieldGroupFull {
+  grid-column: 1 / -1;
+}
+
+.fieldLabel {
+  color: var(--color-text-strong);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  border: 1px solid var(--color-border-field);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  color: var(--color-text-strong);
+  font: inherit;
+}
+
+.input {
+  min-height: 3rem;
+  padding: 0.78rem 0.95rem;
+}
+
+.textarea {
+  min-height: 8.5rem;
+  padding: 0.88rem 0.95rem;
+  resize: vertical;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--color-text-strong);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.modeSwitch {
+  display: inline-flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.modeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.62rem 0.9rem;
+  border: 1px solid var(--color-border-field);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-nav);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modeButtonActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-badge);
+}
+
+.uploadBox {
+  border: 1px dashed var(--color-border-field);
+  border-radius: var(--radius-xl);
+  padding: 0.85rem;
+  background: var(--color-surface-faint);
+}
+
+.uploadLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  cursor: pointer;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.uploadLabelText {
+  color: var(--color-text-strong);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.uploadHelper {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.pickerLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 1rem;
+}
+
+.coursePickerCard {
+  padding: 1rem;
+  display: grid;
+  align-content: start;
+}
+
+.pickerTitle {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.pickerDescription {
+  margin: 0.4rem 0 0.8rem;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.courseOptionList,
+.selectedCourseList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 28rem;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.courseOptionList::-webkit-scrollbar,
+.selectedCourseList::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.courseOptionList::-webkit-scrollbar-thumb,
+.selectedCourseList::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  background: var(--color-border-strong);
+}
+
+.courseOptionList::-webkit-scrollbar-track,
+.selectedCourseList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.courseOption {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.8rem 0.85rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-subtle);
+}
+
+.courseOptionCopy,
+.selectedCourseCopy {
+  min-width: 0;
+}
+
+.courseOptionTitle,
+.selectedCourseTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.courseOptionMeta,
+.selectedCourseMeta {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-subtle);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.selectedCourseCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  height: fit-content;
+}
+
+.selectedCourseActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.actionsRow {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.responsiveButton {
+  width: auto;
+}
+
+@media (max-width: 1000px) {
+  .pickerLayout,
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .courseOptionList,
+  .selectedCourseList {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .selectedCourseCard {
+    flex-direction: column;
+  }
+
+  .selectedCourseActions,
+  .actionsRow {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .responsiveButton {
+    width: 100%;
+  }
+}

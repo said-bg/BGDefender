@@ -1,32 +1,21 @@
 .metricsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  composes: summary from '../shared/AdminWorkspaceShared.module.css';
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 0;
 }
 
 .metricCard {
-  display: grid;
+  composes: summaryCard from '../shared/AdminWorkspaceShared.module.css';
   gap: 0.45rem;
   min-height: 102px;
-  padding: 16px 18px;
-  border: 1px solid #e6ebf2;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: none;
 }
 
 .metricLabel {
-  color: #526581;
-  font-size: 0.86rem;
-  font-weight: 600;
+  composes: summaryLabel from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .metricValue {
-  color: #111827;
-  font-size: 1.85rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
+  composes: summaryValue from '../shared/AdminWorkspaceShared.module.css';
 }
 
 @media (max-width: 960px) {

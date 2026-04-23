@@ -1,9 +1,6 @@
 .richTextContent {
+  composes: readerCopy from './CourseReaderTextShared.module.css';
   display: flow-root;
-  max-width: 860px;
-  color: #344054;
-  font-size: 1.08rem;
-  line-height: 1.95;
 }
 
 .richTextContent > :first-child {
@@ -27,7 +24,7 @@
 .richTextContent h2,
 .richTextContent h3 {
   margin: 1.4rem 0 0.9rem;
-  color: #111827;
+  color: var(--color-text-primary);
   font-weight: 800;
   line-height: 1.15;
 }
@@ -52,7 +49,7 @@
   max-width: 100%;
   height: auto;
   margin: 1.2rem 0;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .richTextContent > img[align='left'],
@@ -79,11 +76,10 @@
 }
 
 .richTextContent :global(.image img) {
-  display: inline-block !important;
   margin: 0 !important;
   max-width: 100%;
   height: auto;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
   clear: none;
   float: unset !important;
 }
@@ -142,7 +138,7 @@
   display: block;
   width: 100%;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .richTextContent :global(div[data-video] > div:first-child) {
@@ -157,7 +153,7 @@
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .richTextContent :global(div[data-video] iframe) {
@@ -168,7 +164,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .richTextContent :global(div[data-video] video) {
@@ -176,8 +172,8 @@
   width: 100%;
   max-width: 100%;
   height: auto;
-  border-radius: 18px;
-  background: #000000;
+  border-radius: var(--radius-2xl);
+  background: var(--color-media-backdrop);
 }
 
 .richTextContent ul,
@@ -233,7 +229,7 @@
   width: 1rem;
   height: 1rem;
   margin: 0;
-  accent-color: #ffa600;
+  accent-color: var(--color-brand);
   pointer-events: none;
 }
 
@@ -256,26 +252,26 @@
 
 .richTextContent blockquote {
   padding-left: 1rem;
-  border-left: 3px solid #ffa600;
-  color: #475467;
+  border-left: 3px solid var(--color-brand);
+  color: var(--color-text-muted);
 }
 
 .richTextContent a {
-  color: #0f4c81;
+  color: var(--color-text-reader-link);
   font-weight: 700;
   text-decoration: none;
 }
 
 .richTextContent a:hover {
-  color: #111827;
+  color: var(--color-text-primary);
   text-decoration: underline;
 }
 
 .richTextContent code {
   padding: 0.12rem 0.38rem;
   border-radius: 8px;
-  background: #eef2f7;
-  color: #7c2d12;
+  background: var(--color-border-subtle-strong);
+  color: var(--color-text-code-accent);
   font-size: 0.95em;
 }
 
@@ -283,8 +279,8 @@
   overflow-x: auto;
   padding: 1rem;
   border-radius: 16px;
-  background: #111827;
-  color: #f8fafc;
+  background: var(--color-text-primary);
+  color: var(--color-surface-subtle);
 }
 
 .richTextContent pre code {
@@ -295,7 +291,7 @@
 
 .richTextContent hr {
   border: 0;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-border);
   margin: 1.4rem 0;
 }
 
@@ -306,13 +302,13 @@
 
 .richTextContent th,
 .richTextContent td {
-  border: 1px solid #dbe4f0;
+  border: 1px solid var(--color-border-editor);
   padding: 0.7rem 0.8rem;
   text-align: left;
 }
 
 .richTextContent th {
-  color: #111827;
-  background: #f8fafc;
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
   font-weight: 800;
 }

@@ -1,0 +1,100 @@
+.card {
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  padding: 1.12rem;
+  display: grid;
+  align-content: start;
+}
+
+.panelCard {
+  composes: panelCard from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.scrollArea {
+  composes: scrollArea from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.cardHeader {
+  margin-bottom: 0.82rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.12rem;
+  font-weight: 500;
+}
+
+.sectionDescription {
+  margin: 0;
+  color: var(--color-text-subtle);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.statusMessage {
+  color: var(--color-text-soft);
+  font-size: 0.95rem;
+}
+
+.errorMessage {
+  margin: 0;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--color-danger-border-muted);
+  border-radius: var(--radius-xl);
+  background: var(--color-danger-soft);
+  color: var(--color-danger-resource);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.emptyState {
+  padding: 1.2rem;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.emptyDescription {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.pillButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.7rem;
+  padding: 0.72rem 1rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.neutralButton {
+  border: 1px solid var(--color-border-field);
+  background: var(--color-surface);
+  color: var(--color-text-nav);
+}
+
+.dangerButton {
+  border: 1px solid var(--color-danger-strong);
+  background: var(--color-surface);
+  color: var(--color-danger-strong);
+}
+
+.primaryButton {
+  border: 1px solid var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+}

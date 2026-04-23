@@ -71,6 +71,7 @@ export default function QuizEditorForm({
         cancel: t('common.cancel', { defaultValue: 'Cancel' }),
         correctAnswer: t('edit.quiz.correctAnswer', { defaultValue: 'Correct' }),
         deleteAction: t('edit.quiz.deleteQuiz', { defaultValue: 'Delete quiz' }),
+        deleteQuestion: t('edit.quiz.deleteQuestion', { defaultValue: 'Delete question' }),
         deletingAction: t('edit.quiz.deleting', { defaultValue: 'Deleting quiz...' }),
         descriptionEn: t('edit.quiz.descriptionEn', { defaultValue: 'Description (English)' }),
         descriptionFi: t('edit.quiz.descriptionFi', { defaultValue: 'Description (Finnish)' }),

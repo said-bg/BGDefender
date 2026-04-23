@@ -11,15 +11,16 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
+import styles from './AuthPageLoader.module.css';
 
 export const AuthPageLoader = () => {
   const { t } = useTranslation('common');
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        <p className="mt-4 text-gray-600">{t('loading')}</p>
+    <div className={styles.loaderPage}>
+      <div className={styles.loaderContent}>
+        <div className={styles.spinner} aria-hidden="true" />
+        <p className={styles.loadingText}>{t('loading')}</p>
       </div>
     </div>
   );

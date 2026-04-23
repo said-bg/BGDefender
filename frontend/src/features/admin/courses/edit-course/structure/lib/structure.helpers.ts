@@ -10,6 +10,13 @@ export const normalizeStructureCourse = (course: Course): Course => ({
   })),
 });
 
+export const getNextSiblingOrderIndex = (items: Array<{ orderIndex: number }> = []) =>
+  String(items.length + 1);
+
+export const buildDefaultChapterFormState = (chapters: Chapter[] = []) => ({
+  orderIndex: getNextSiblingOrderIndex(chapters),
+});
+
 export const validateChapterForm = (
   chapterForm: ChapterFormState,
   t: TranslationFn,
@@ -90,5 +97,5 @@ export const buildSubChapterPayload = (
 
 export const buildDefaultSubChapterFormState = (chapter: Chapter | null) => ({
   chapterId: chapter?.id ?? '',
-  orderIndex: String((chapter?.subChapters?.length ?? 0) + 1 || 1),
+  orderIndex: getNextSiblingOrderIndex(chapter?.subChapters ?? []),
 });

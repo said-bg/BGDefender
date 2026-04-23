@@ -23,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fi" className="h-full antialiased">
-      <body className={`${sourceSans.variable} min-h-full flex flex-col`}>
+    <html lang="fi">
+      <body className={sourceSans.variable}>
         <I18nProvider>
           <AuthProvider>
             <Navbar />

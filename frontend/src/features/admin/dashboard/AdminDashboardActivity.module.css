@@ -1,8 +1,8 @@
 .activity {
   padding: 0.95rem 1rem;
-  border: 1px solid #e6ebf2;
-  border-radius: 18px;
-  background: #ffffff;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
 }
 
 .header {
@@ -15,7 +15,7 @@
 
 .eyebrow {
   margin: 0 0 0.28rem;
-  color: #ffa600;
+  color: var(--color-brand);
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -24,7 +24,7 @@
 
 .title {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.96rem;
   font-weight: 600;
 }
@@ -35,10 +35,10 @@
   justify-content: center;
   min-height: 2rem;
   padding: 0.34rem 0.72rem;
-  border: 1px solid #ffa600;
+  border: 1px solid var(--color-brand);
   border-radius: 0.68rem;
-  background: #ffffff;
-  color: #ffa600;
+  background: var(--color-surface);
+  color: var(--color-brand);
   font: inherit;
   font-size: 0.84rem;
   font-weight: 600;
@@ -46,13 +46,13 @@
 }
 
 .toggleButton:hover {
-  background: #fff8eb;
-  color: #d98200;
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .collapsedSummary {
   margin: 0;
-  color: #64748b;
+  color: var(--color-text-subtle);
   font-size: 0.84rem;
   line-height: 1.5;
 }
@@ -68,13 +68,13 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.72rem 0.8rem;
-  border-radius: 14px;
-  background: #f8fafc;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
 }
 
 .itemTitle {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.4;
@@ -83,7 +83,7 @@
 .itemMeta,
 .itemCounts {
   margin: 0.2rem 0 0;
-  color: #64748b;
+  color: var(--color-text-subtle);
   font-size: 0.84rem;
   line-height: 1.5;
 }
@@ -96,12 +96,12 @@
 }
 
 .itemCounts strong {
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .emptyText {
   margin: 0;
-  color: #64748b;
+  color: var(--color-text-subtle);
 }
 
 @media (max-width: 860px) {

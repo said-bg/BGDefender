@@ -1,121 +1,51 @@
 .page {
-  min-height: 100vh;
-  background: #ffffff;
+  composes: page from '../components/CourseLibraryPageShared.module.css';
 }
 
 .content {
-  width: min(1360px, calc(100% - 3rem));
-  margin: 0 auto;
-  padding: 2.15rem 0 2.8rem;
+  composes: content from '../components/CourseLibraryPageShared.module.css';
 }
 
 .pageHeader {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.35rem;
+  composes: pageHeader from '../components/CourseLibraryPageShared.module.css';
 }
 
 .title {
-  margin: 0;
-  color: #0f172a;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-size: clamp(1.55rem, 2.15vw, 1.92rem);
-  line-height: 1.1;
-  font-weight: 600;
-  letter-spacing: -0.026em;
+  composes: title from '../components/CourseLibraryPageShared.module.css';
 }
 
 .subtitle {
-  margin: 0.45rem 0 0;
-  max-width: 640px;
-  color: #667085;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-size: 0.92rem;
-  line-height: 1.58;
+  composes: subtitle from '../components/CourseLibraryPageShared.module.css';
 }
 
 .courseCount {
-  margin: 0;
-  color: #667085;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-size: 0.9rem;
-  font-weight: 600;
+  composes: courseCount from '../components/CourseLibraryPageShared.module.css';
 }
 
 .stateMessage {
-  margin: 2rem 0 0;
-  color: #667085;
-  text-align: center;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-size: 0.98rem;
+  composes: stateMessage from '../components/CourseLibraryPageShared.module.css';
 }
 
 .errorMessage {
-  color: #b42318;
+  composes: errorMessage from '../components/CourseLibraryPageShared.module.css';
 }
 
 .emptyState {
-  margin-top: 2rem;
-  padding: 1.8rem 1.45rem;
-  border: 1px solid rgba(255, 166, 0, 0.14);
-  border-radius: 1.15rem;
-  background: #ffffff;
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
-  text-align: center;
+  composes: emptyState from '../components/CourseLibraryPageShared.module.css';
 }
 
 .emptyTitle {
-  margin: 0;
-  color: #111827;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-size: 1.45rem;
-  font-weight: 600;
+  composes: emptyTitle from '../components/CourseLibraryPageShared.module.css';
 }
 
 .emptyDescription {
-  max-width: 640px;
-  margin: 0.85rem auto 0;
-  color: #667085;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  line-height: 1.8;
+  composes: emptyDescription from '../components/CourseLibraryPageShared.module.css';
 }
 
 .emptyAction {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.28rem;
-  margin-top: 1.25rem;
-  padding: 0.42rem 0.86rem;
-  border: 1px solid #ffa600;
-  border-radius: 0.72rem;
-  background: #FFA600;
-  color: #ffffff;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  line-height: 1.1;
-  text-decoration: none;
+  composes: emptyAction from '../components/CourseLibraryPageShared.module.css';
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.2rem;
-}
-
-@media (max-width: 860px) {
-  .pageHeader {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-}
-
-@media (max-width: 720px) {
-  .content {
-    width: calc(100% - 1rem);
-    padding-top: 2rem;
-  }
+  composes: grid from '../components/CourseLibraryPageShared.module.css';
 }

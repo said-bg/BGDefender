@@ -9,8 +9,8 @@
   align-items: center;
   min-height: 2.12rem;
   padding: 0.28rem 0.58rem;
-  border-radius: 0.72rem;
-  color: #44516a;
+  border-radius: var(--radius-md);
+  color: var(--color-text-nav);
   text-decoration: none;
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.89rem;
@@ -18,13 +18,13 @@
   letter-spacing: 0;
   line-height: 1.2;
   transition:
-    color 0.18s ease,
-    background-color 0.18s ease;
+    color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .navLink:hover {
-  color: #ffa600;
-  background: #fff8eb;
+  color: var(--color-brand);
+  background: var(--color-brand-soft);
 }
 
 @media (max-width: 640px) {

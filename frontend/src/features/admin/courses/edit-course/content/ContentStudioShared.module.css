@@ -1,0 +1,37 @@
+.studioPanel {
+  display: grid;
+  gap: 0.8rem;
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.selectableCard {
+  display: grid;
+  width: 100%;
+  gap: 0.3rem;
+  padding: 14px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.selectableCard:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-surface);
+}
+
+.selectableCardActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  box-shadow: var(--shadow-brand-soft);
+}

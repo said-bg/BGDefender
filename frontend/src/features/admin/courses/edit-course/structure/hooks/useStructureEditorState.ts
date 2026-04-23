@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { type Dispatch, type SetStateAction, useMemo, useState } from 'react';
 import { Chapter, Course, SubChapter } from '@/services/course';
 import {
   ChapterFormState,
@@ -8,30 +8,121 @@ import {
   initialSubChapterForm,
   SubChapterFormState,
 } from '../types';
-import { buildDefaultSubChapterFormState } from '../lib/structure.helpers';
+import {
+  buildDefaultChapterFormState,
+  buildDefaultSubChapterFormState,
+} from '../lib/structure.helpers';
 
 type UseStructureEditorStateParams = {
   course: Course | null;
   chapters: Chapter[];
 };
 
+const hasChapterDraftContent = (form: ChapterFormState) =>
+  Boolean(
+    form.titleEn.trim() ||
+      form.titleFi.trim() ||
+      form.descriptionEn.trim() ||
+      form.descriptionFi.trim(),
+  );
+
+const hasSubChapterDraftContent = (form: SubChapterFormState) =>
+  Boolean(
+    form.titleEn.trim() ||
+      form.titleFi.trim() ||
+      form.descriptionEn.trim() ||
+      form.descriptionFi.trim(),
+  );
+
+const shouldUseDefaultChapterOrder = (
+  form: ChapterFormState,
+  editingChapterId: string | null,
+) =>
+  !editingChapterId &&
+  !hasChapterDraftContent(form) &&
+  form.orderIndex === initialChapterForm.orderIndex;
+
+const applyDefaultChapterOrder = (
+  form: ChapterFormState,
+  chapters: Chapter[],
+  editingChapterId: string | null,
+) =>
+  shouldUseDefaultChapterOrder(form, editingChapterId)
+    ? { ...form, ...buildDefaultChapterFormState(chapters) }
+    : form;
+
+const getDefaultSubChapterState = (
+  form: SubChapterFormState,
+  chapters: Chapter[],
+) => {
+  const parentChapter =
+    chapters.find((chapter) => chapter.id === form.chapterId) ?? chapters[0] ?? null;
+
+  return parentChapter ? buildDefaultSubChapterFormState(parentChapter) : null;
+};
+
+const shouldUseDefaultSubChapterOrder = (
+  form: SubChapterFormState,
+  editingSubChapterId: string | null,
+) =>
+  !editingSubChapterId &&
+  !hasSubChapterDraftContent(form) &&
+  (!form.chapterId || form.orderIndex === initialSubChapterForm.orderIndex);
+
+const applyDefaultSubChapterOrder = (
+  form: SubChapterFormState,
+  chapters: Chapter[],
+  editingSubChapterId: string | null,
+) => {
+  if (!shouldUseDefaultSubChapterOrder(form, editingSubChapterId)) {
+    return form;
+  }
+
+  const defaults = getDefaultSubChapterState(form, chapters);
+  return defaults ? { ...form, ...defaults } : form;
+};
+
 export function useStructureEditorState({
   course,
   chapters,
 }: UseStructureEditorStateParams) {
-  const [chapterForm, setChapterForm] = useState<ChapterFormState>(initialChapterForm);
+  const [chapterFormState, setChapterFormState] =
+    useState<ChapterFormState>(initialChapterForm);
   const [editingChapterId, setEditingChapterId] = useState<string | null>(null);
   const [chapterMessage, setChapterMessage] = useState<string | null>(null);
   const [chapterError, setChapterError] = useState<string | null>(null);
   const [isSubmittingChapter, setIsSubmittingChapter] = useState(false);
   const [deletingChapterId, setDeletingChapterId] = useState<string | null>(null);
 
-  const [subChapterForm, setSubChapterForm] = useState<SubChapterFormState>(initialSubChapterForm);
+  const [subChapterFormState, setSubChapterFormState] =
+    useState<SubChapterFormState>(initialSubChapterForm);
   const [editingSubChapterId, setEditingSubChapterId] = useState<string | null>(null);
   const [subChapterMessage, setSubChapterMessage] = useState<string | null>(null);
   const [subChapterError, setSubChapterError] = useState<string | null>(null);
   const [isSubmittingSubChapter, setIsSubmittingSubChapter] = useState(false);
   const [deletingSubChapterId, setDeletingSubChapterId] = useState<string | null>(null);
+
+  const chapterForm = applyDefaultChapterOrder(
+    chapterFormState,
+    chapters,
+    editingChapterId,
+  );
+  const subChapterForm = applyDefaultSubChapterOrder(
+    subChapterFormState,
+    chapters,
+    editingSubChapterId,
+  );
+
+  const setChapterForm: Dispatch<SetStateAction<ChapterFormState>> = (action) => {
+    setChapterFormState((previous) => {
+      const effectivePrevious = applyDefaultChapterOrder(
+        previous,
+        chapters,
+        editingChapterId,
+      );
+      return typeof action === 'function' ? action(effectivePrevious) : action;
+    });
+  };
 
   const availableParentChapter = useMemo(
     () =>
@@ -40,6 +131,17 @@ export function useStructureEditorState({
       null,
     [chapters, subChapterForm.chapterId],
   );
+
+  const setSubChapterForm: Dispatch<SetStateAction<SubChapterFormState>> = (action) => {
+    setSubChapterFormState((previous) => {
+      const effectivePrevious = applyDefaultSubChapterOrder(
+        previous,
+        chapters,
+        editingSubChapterId,
+      );
+      return typeof action === 'function' ? action(effectivePrevious) : action;
+    });
+  };
 
   const clearChapterFeedback = () => {
     setChapterMessage(null);
@@ -54,9 +156,9 @@ export function useStructureEditorState({
   const resetChapterForm = (courseSnapshot: Course | null = course) => {
     setEditingChapterId(null);
     setEditingSubChapterId(null);
-    setChapterForm({
+    setChapterFormState({
       ...initialChapterForm,
-      orderIndex: String((courseSnapshot?.chapters.length ?? 0) + 1),
+      ...buildDefaultChapterFormState(courseSnapshot?.chapters ?? chapters),
     });
   };
 
@@ -71,7 +173,7 @@ export function useStructureEditorState({
 
     setEditingChapterId(null);
     setEditingSubChapterId(null);
-    setSubChapterForm({
+    setSubChapterFormState({
       ...initialSubChapterForm,
       ...buildDefaultSubChapterFormState(parentChapter),
     });
@@ -81,7 +183,7 @@ export function useStructureEditorState({
     clearChapterFeedback();
     setEditingSubChapterId(null);
     setEditingChapterId(chapter.id);
-    setChapterForm({
+    setChapterFormState({
       titleEn: chapter.titleEn,
       titleFi: chapter.titleFi,
       descriptionEn: chapter.descriptionEn,
@@ -94,7 +196,7 @@ export function useStructureEditorState({
     clearSubChapterFeedback();
     setEditingChapterId(null);
     setEditingSubChapterId(subChapter.id);
-    setSubChapterForm({
+    setSubChapterFormState({
       chapterId: chapter.id,
       titleEn: subChapter.titleEn,
       titleFi: subChapter.titleFi,

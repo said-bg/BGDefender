@@ -285,6 +285,7 @@
       "optionEn": "Vaihtoehto (englanniksi)",
       "optionFi": "Vaihtoehto (suomeksi)",
       "deleting": "Poistetaan visaa...",
+      "deleteQuestion": "Poista kysymys",
       "deleteQuiz": "Poista visa",
       "saving": "Tallennetaan visaa...",
       "saveQuiz": "Tallenna visa",
@@ -327,6 +328,7 @@
       "optionEn": "Vaihtoehto (englanniksi)",
       "optionFi": "Vaihtoehto (suomeksi)",
       "deleting": "Poistetaan lopputestiä...",
+      "deleteQuestion": "Poista kysymys",
       "deleteTest": "Poista lopputesti",
       "saving": "Tallennetaan lopputestiä...",
       "saveTest": "Tallenna lopputesti"

@@ -7,7 +7,7 @@ export type AssessmentQuestionsCopy = {
   addOption: string;
   addQuestion: string;
   correctAnswer: string;
-  deleteAction: string;
+  deleteQuestion: string;
   explanationEn: string;
   explanationFi: string;
   multipleChoice: string;
@@ -80,14 +80,6 @@ export default function AssessmentQuestionsSection({
                   {question.promptEn.trim() || copy.untitledQuestion}
                 </h5>
               </div>
-              <button
-                type="button"
-                className={styles.inlineDanger}
-                disabled={form.questions.length === 1}
-                onClick={() => onRemoveQuestion(question.id)}
-              >
-                {copy.deleteAction}
-              </button>
             </div>
 
             <div className={styles.questionGrid}>
@@ -201,6 +193,17 @@ export default function AssessmentQuestionsSection({
                   </button>
                 </div>
               ))}
+            </div>
+
+            <div className={styles.questionActions}>
+              <button
+                type="button"
+                className={styles.inlineDanger}
+                disabled={form.questions.length === 1}
+                onClick={() => onRemoveQuestion(question.id)}
+              >
+                {copy.deleteQuestion}
+              </button>
             </div>
           </section>
         ))}

@@ -285,6 +285,7 @@
       "optionEn": "Option (English)",
       "optionFi": "Option (Finnish)",
       "deleting": "Deleting quiz...",
+      "deleteQuestion": "Delete question",
       "deleteQuiz": "Delete quiz",
       "saving": "Saving quiz...",
       "saveQuiz": "Save quiz",
@@ -327,6 +328,7 @@
       "optionEn": "Option (English)",
       "optionFi": "Option (Finnish)",
       "deleting": "Deleting final test...",
+      "deleteQuestion": "Delete question",
       "deleteTest": "Delete final test",
       "saving": "Saving final test...",
       "saveTest": "Save final test"

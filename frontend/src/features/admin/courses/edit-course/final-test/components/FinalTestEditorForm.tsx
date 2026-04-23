@@ -74,6 +74,9 @@ export default function FinalTestEditorForm({
         cancel: t('common.cancel', { defaultValue: 'Cancel' }),
         correctAnswer: t('edit.finalTest.correctAnswer', { defaultValue: 'Correct' }),
         deleteAction: t('edit.finalTest.deleteTest', { defaultValue: 'Delete final test' }),
+        deleteQuestion: t('edit.finalTest.deleteQuestion', {
+          defaultValue: 'Delete question',
+        }),
         deletingAction: t('edit.finalTest.deleting', {
           defaultValue: 'Deleting final test...',
         }),

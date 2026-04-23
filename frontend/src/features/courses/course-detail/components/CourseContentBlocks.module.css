@@ -1,9 +1,8 @@
 .contentBlock {
+  composes: dividerSection from './CourseContentSectionShared.module.css';
   display: grid;
   gap: 1rem;
-  max-width: 860px;
   padding: 1.25rem 0;
-  border-top: 1px solid #e5e7eb;
 }
 
 .contentBlockHeader {
@@ -13,16 +12,15 @@
 }
 
 .contentBlockTitle {
+  composes: headingStrong from './CourseContentSectionShared.module.css';
   margin: 0;
-  color: #111827;
   font-size: 1.2rem;
-  font-weight: 800;
 }
 
 .contentImageWrap {
   overflow: hidden;
   border-radius: 1.15rem;
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
 }
 
 .contentImage {
@@ -33,21 +31,11 @@
 }
 
 .contentResourceLink {
-  color: #0f4c81;
-  font-weight: 700;
+  composes: readerLink from './CourseReaderTextShared.module.css';
   overflow-wrap: anywhere;
-  text-decoration: none;
-}
-
-.contentResourceLink:hover {
-  color: #111827;
-  text-decoration: underline;
 }
 
 .contentParagraph {
-  max-width: 860px;
+  composes: readerCopy from './CourseReaderTextShared.module.css';
   margin: 0;
-  color: #344054;
-  font-size: 1.08rem;
-  line-height: 1.95;
 }

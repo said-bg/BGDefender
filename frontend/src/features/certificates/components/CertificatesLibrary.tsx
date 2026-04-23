@@ -1,7 +1,7 @@
 'use client';
 
 import { CertificateStatus, type CertificateRecord } from '@/types/api';
-import styles from '../CertificatesPage.module.css';
+import styles from './CertificatesLibrary.module.css';
 
 type CertificatesLibraryProps = {
   certificates: CertificateRecord[];

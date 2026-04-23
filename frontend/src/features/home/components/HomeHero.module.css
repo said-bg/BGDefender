@@ -11,10 +11,10 @@
   align-items: center;
   min-height: 360px;
   padding: 1.55rem 1.45rem 1.55rem;
-  border: 1px solid rgba(255, 166, 0, 0.2);
+  border: 1px solid var(--color-brand-border-faint);
   border-radius: 28px;
-  background: #ffffff;
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.045);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-hero-shell);
 }
 
 .heroCopy {
@@ -28,7 +28,7 @@
 
 .heroEyebrow {
   margin: 0 0 0.8rem;
-  color: #ffa600;
+  color: var(--color-brand);
   font-size: 0.72rem;
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-weight: 700;
@@ -39,7 +39,7 @@
 .heading {
   max-width: 22ch;
   margin: 0;
-  color: #0f172a;
+  color: var(--color-text-strong);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: clamp(2rem, 2.55vw, 3rem);
   font-weight: 600;
@@ -54,7 +54,7 @@
 .subheading {
   max-width: 44rem;
   margin: 1rem 0 0;
-  color: #526072;
+  color: var(--color-text-soft);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.96rem;
   font-weight: 400;
@@ -76,39 +76,39 @@
   min-width: 11.4rem;
   min-height: 2.95rem;
   padding: 0.82rem 1.22rem;
-  border: 1px solid #ffa600;
+  border: 1px solid var(--color-brand);
   border-radius: 14px;
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.93rem;
   font-weight: 600;
   text-decoration: none;
   transition:
-    box-shadow 0.18s ease,
-    background-color 0.18s ease,
-    color 0.18s ease,
-    border-color 0.18s ease;
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .primaryAction {
-  background: #ffa600;
-  color: #ffffff;
-  box-shadow: 0 12px 24px rgba(255, 166, 0, 0.2);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-brand);
 }
 
 .primaryAction:hover {
-  background: #f29d00;
+  background: var(--color-brand-hover);
 }
 
 .secondaryAction {
-  border-color: #ffa600;
-  background: #ffffff;
-  color: #ffa600;
+  border-color: var(--color-brand);
+  background: var(--color-surface);
+  color: var(--color-brand);
 }
 
 .secondaryAction:hover {
-  border-color: #ffa600;
-  background: #fff8eb;
-  color: #d98200;
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .heroHighlights {
@@ -123,10 +123,10 @@
   align-items: center;
   min-height: 2.35rem;
   padding: 0.52rem 0.82rem;
-  border: 1px solid #ffa600;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #0f172a;
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-strong);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.86rem;
   font-weight: 600;

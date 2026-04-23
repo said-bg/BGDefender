@@ -5,17 +5,17 @@
   justify-content: center;
   padding: 2rem;
   background:
-    radial-gradient(circle at top, rgba(255, 166, 0, 0.12), transparent 35%),
-    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    radial-gradient(circle at top, var(--color-brand-border-subtle), transparent 35%),
+    linear-gradient(180deg, var(--color-surface-subtle) 0%, var(--color-border-subtle-strong) 100%);
 }
 
 .card {
   width: min(100%, 38rem);
   padding: 2.5rem;
-  border: 1px solid rgba(255, 166, 0, 0.18);
-  border-radius: 1.5rem;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--color-brand-border-faint);
+  border-radius: var(--radius-3xl);
+  background: var(--color-surface-glass);
+  box-shadow: var(--shadow-reader-sidebar);
   text-align: center;
 }
 
@@ -25,21 +25,21 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #FFA600;
+  color: var(--color-brand);
 }
 
 .title {
   margin: 0.9rem 0 0;
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 800;
-  color: #0f172a;
+  color: var(--color-text-strong);
 }
 
 .description {
   margin: 1rem 0 0;
   font-size: 1rem;
   line-height: 1.7;
-  color: #475569;
+  color: var(--color-text-tertiary);
 }
 
 .actions {
@@ -57,26 +57,26 @@
   justify-content: center;
   min-width: 10rem;
   padding: 0.85rem 1.25rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-weight: 700;
   text-decoration: none;
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease,
-    color 0.2s ease;
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    background-color var(--transition-base),
+    color var(--transition-base);
 }
 
 .primaryAction {
-  background: #FFA600;
-  color: #fff;
-  box-shadow: 0 12px 24px rgba(255, 166, 0, 0.24);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-brand);
 }
 
 .secondaryAction {
-  border: 1px solid rgba(15, 23, 42, 0.12);
-  background: #fff;
-  color: #0f172a;
+  border: 1px solid var(--color-border-card);
+  background: var(--color-surface);
+  color: var(--color-text-strong);
 }
 
 .primaryAction:hover,

@@ -1,31 +1,10 @@
 .accountMenu {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  flex: 0 0 auto;
+  composes: overlayRoot from './NavbarShared.module.css';
 }
 
 .accountTrigger {
-  width: 2.15rem;
-  height: 2.15rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  line-height: 0;
-  flex: 0 0 auto;
-  transition:
-    background-color 0.2s ease;
-}
-
-.accountTrigger:hover {
-  background: #fff8eb;
+  composes: iconTrigger from './NavbarShared.module.css';
+  transition: background-color var(--transition-base);
 }
 
 .accountAvatar,
@@ -33,9 +12,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
-  background: #ffa600;
-  color: #ffffff;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-weight: 800;
 }
@@ -47,16 +26,14 @@
 }
 
 .dropdown {
+  composes: dropdownSurface from './NavbarShared.module.css';
   position: absolute;
   top: calc(100% + 0.8rem);
   right: 0;
   z-index: 20;
   width: min(300px, calc(100vw - 2rem));
   padding: 1rem 1rem 0.85rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  background: #ffffff;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
+  border-color: var(--color-border);
 }
 
 .dropdownHeader {
@@ -64,7 +41,7 @@
   gap: 0.9rem;
   align-items: center;
   padding-bottom: 0.95rem;
-  border-bottom: 1px solid #eef2f6;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .dropdownAvatar {
@@ -80,7 +57,7 @@
 
 .dropdownName {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.98rem;
   font-weight: 700;
@@ -88,7 +65,7 @@
 
 .dropdownEmail {
   margin: 0.28rem 0 0;
-  color: #667085;
+  color: var(--color-text-muted);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.84rem;
   word-break: break-word;
@@ -109,28 +86,28 @@
 }
 
 .metaDivider {
-  color: #98a2b3;
+  color: var(--color-text-placeholder-soft);
   font-size: 0.8rem;
 }
 
 .premiumTone {
-  color: #b7791f;
+  color: var(--color-brand-deep);
 }
 
 .freeTone {
-  color: #027a48;
+  color: var(--color-success);
 }
 
 .userTone {
-  color: #475467;
+  color: var(--color-text-tertiary);
 }
 
 .creatorTone {
-  color: #175cd3;
+  color: var(--color-info-link);
 }
 
 .adminTone {
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .dropdownLinks {
@@ -149,7 +126,7 @@
   border: 0;
   border-radius: 0.7rem;
   background: transparent;
-  color: #111827;
+  color: var(--color-text-primary);
   cursor: pointer;
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.9rem;
@@ -159,14 +136,14 @@
 
 .dropdownLink:hover,
 .dropdownLogout:hover {
-  background: #f8fafc;
-  color: #111827;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-primary);
 }
 
 .dropdownLogout {
   margin-top: 0.15rem;
   padding-top: 0.9rem;
-  border-top: 1px solid #eef2f6;
+  border-top: 1px solid var(--color-border-subtle);
   border-radius: 0;
 }
 

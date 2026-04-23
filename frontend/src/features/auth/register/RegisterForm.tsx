@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import sharedStyles from '../AuthFormShared.module.css';
 import PasswordRequirements from './PasswordRequirements';
-import styles from './Register.module.css';
 import { useRegisterForm } from './useRegisterForm';
 
 export function RegisterForm() {
@@ -11,20 +11,20 @@ export function RegisterForm() {
   const displayedFormError = errors.form || authError;
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>{t('register.title')}</h1>
-          <p className={styles.subtitle}>{t('register.subtitle')}</p>
+    <div className={sharedStyles.container}>
+      <div className={sharedStyles.card}>
+        <div className={sharedStyles.header}>
+          <h1 className={sharedStyles.title}>{t('register.title')}</h1>
+          <p className={sharedStyles.subtitle}>{t('register.subtitle')}</p>
         </div>
 
         {displayedFormError ? (
-          <div className={styles.errorMessage}>x {displayedFormError}</div>
+          <div className={sharedStyles.errorMessage}>x {displayedFormError}</div>
         ) : null}
 
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>
+        <form className={sharedStyles.form} onSubmit={handleSubmit}>
+          <div className={sharedStyles.formGroup}>
+            <label htmlFor="email" className={sharedStyles.label}>
               {t('register.email')}
             </label>
             <input
@@ -32,17 +32,19 @@ export function RegisterForm() {
               type="email"
               name="email"
               autoComplete="email"
-              className={styles.input}
+              className={sharedStyles.input}
               placeholder="you@example.com"
               value={form.email}
               onChange={handleChange}
               disabled={isLoading}
             />
-            {errors.email ? <span className={styles.error}>{errors.email}</span> : null}
+            {errors.email ? (
+              <span className={sharedStyles.fieldError}>{errors.email}</span>
+            ) : null}
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="password" className={styles.label}>
+          <div className={sharedStyles.formGroup}>
+            <label htmlFor="password" className={sharedStyles.label}>
               {t('register.password')}
             </label>
             <input
@@ -50,14 +52,14 @@ export function RegisterForm() {
               type="password"
               name="password"
               autoComplete="new-password"
-              className={styles.input}
+              className={sharedStyles.input}
               placeholder="********"
               value={form.password}
               onChange={handleChange}
               disabled={isLoading}
             />
             {errors.password ? (
-              <span className={styles.error}>{errors.password}</span>
+              <span className={sharedStyles.fieldError}>{errors.password}</span>
             ) : null}
             <PasswordRequirements
               password={form.password}
@@ -67,8 +69,8 @@ export function RegisterForm() {
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="confirmPassword" className={styles.label}>
+          <div className={sharedStyles.formGroup}>
+            <label htmlFor="confirmPassword" className={sharedStyles.label}>
               {t('register.confirmPassword')}
             </label>
             <input
@@ -76,21 +78,21 @@ export function RegisterForm() {
               type="password"
               name="confirmPassword"
               autoComplete="new-password"
-              className={styles.input}
+              className={sharedStyles.input}
               placeholder="********"
               value={form.confirmPassword}
               onChange={handleChange}
               disabled={isLoading}
             />
             {errors.confirmPassword ? (
-              <span className={styles.error}>{errors.confirmPassword}</span>
+              <span className={sharedStyles.fieldError}>{errors.confirmPassword}</span>
             ) : null}
           </div>
 
-          <button type="submit" className={styles.button} disabled={isLoading}>
+          <button type="submit" className={sharedStyles.button} disabled={isLoading}>
             {isLoading ? (
-              <span className={styles.buttonLoading}>
-                <span className={styles.spinner} />
+              <span className={sharedStyles.buttonLoading}>
+                <span className={sharedStyles.spinner} />
                 {t('register.creating')}
               </span>
             ) : (
@@ -99,9 +101,9 @@ export function RegisterForm() {
           </button>
         </form>
 
-        <div className={styles.footer}>
+        <div className={sharedStyles.footer}>
           {t('register.footer')}{' '}
-          <Link href="/login" className={styles.footerLink}>
+          <Link href="/login" className={sharedStyles.footerLink}>
             {t('register.footerLink')}
           </Link>
         </div>

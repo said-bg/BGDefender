@@ -8,19 +8,19 @@
   min-width: 0;
   min-height: 680px;
   padding: 20px 22px;
-  border: 2px solid #94a3b8;
+  border: 2px solid var(--color-border-muted);
   border-radius: 22px;
-  background: #fbfdff;
+  background: var(--color-surface-editor);
   box-shadow:
-    inset 0 0 0 1px rgba(203, 213, 225, 0.75),
-    0 4px 12px rgba(15, 23, 42, 0.03);
+    inset 0 0 0 1px var(--color-border-editor-inset),
+    var(--shadow-editor-surface);
 }
 
 .editorSurface :global(.ProseMirror) {
   min-height: 620px;
   min-width: 0;
   outline: none;
-  color: #111827;
+  color: var(--color-text-primary);
   line-height: 1.8;
   font-size: 1.04rem;
   overflow-wrap: anywhere;
@@ -29,13 +29,13 @@
 }
 
 .editorSurface :global(.ProseMirror p.is-editor-empty:first-child::before) {
-  color: #7b8797;
+  color: var(--color-text-placeholder);
 }
 
 .editorSurface :global(.ProseMirror h1),
 .editorSurface :global(.ProseMirror h2),
 .editorSurface :global(.ProseMirror h3) {
-  color: #111827;
+  color: var(--color-text-primary);
   font-weight: 800;
   line-height: 1.15;
 }
@@ -57,7 +57,7 @@
   display: block;
   max-width: 100%;
   height: auto;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .editorSurface :global(.ProseMirror img[align='left']) {
@@ -108,7 +108,7 @@
   display: block;
   width: 100%;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
   cursor: pointer;
 }
 
@@ -123,20 +123,20 @@
   flex: none;
   max-width: 100%;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .editorSurface :global(div[data-video] iframe) {
   display: block;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
   pointer-events: none;
 }
 
 .editorSurface :global(div[data-video] video) {
   display: block;
   max-width: 100%;
-  border-radius: 18px;
-  background: #000000;
+  border-radius: var(--radius-2xl);
+  background: var(--color-media-backdrop);
   pointer-events: none;
 }
 
@@ -147,9 +147,9 @@
 .editorSurface :global(.ProseMirror-selectednode),
 .editorSurface :global(.image-view__body--focused),
 .editorSurface :global(.video-view__body--focused) {
-  outline: 2px solid #ffa600;
+  outline: 2px solid var(--color-brand);
   outline-offset: 4px;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .editorSurface :global(div[data-video].ProseMirror-selectednode) {
@@ -157,9 +157,9 @@
 }
 
 .editorSurface :global(div[data-video].ProseMirror-selectednode > div > div) {
-  outline: 2px solid #ffa600;
+  outline: 2px solid var(--color-brand);
   outline-offset: 4px;
-  border-radius: 18px;
+  border-radius: var(--radius-2xl);
 }
 
 .editorSurface :global(.image-resizer) {
@@ -178,10 +178,10 @@
   position: absolute;
   width: 18px;
   height: 18px;
-  border: 3px solid #ffffff;
-  border-radius: 999px;
-  background: #ffa600;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.24);
+  border: 3px solid var(--color-surface);
+  border-radius: var(--radius-pill);
+  background: var(--color-brand);
+  box-shadow: var(--shadow-editor-resizer);
   pointer-events: auto;
   z-index: 5;
 }
@@ -218,14 +218,14 @@
 .editorSurface :global(.ProseMirror blockquote) {
   margin: 1rem 0;
   padding-left: 1rem;
-  border-left: 3px solid #ffa600;
-  color: #475467;
+  border-left: 3px solid var(--color-brand);
+  color: var(--color-text-muted);
 }
 
 .editorSurface :global(.ProseMirror pre) {
   overflow-x: auto;
   border-radius: 16px;
-  background: #111827;
+  background: var(--color-text-primary);
   padding: 16px;
   white-space: pre;
 }
@@ -237,7 +237,7 @@
 
 .editorSurface :global(.ProseMirror th),
 .editorSurface :global(.ProseMirror td) {
-  border: 1px solid #dbe4f0;
+  border: 1px solid var(--color-border-editor);
   padding: 10px 12px;
 }
 
@@ -245,9 +245,9 @@
   min-height: 680px;
   display: grid;
   place-items: center;
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed var(--color-border-muted);
   border-radius: 22px;
-  background: #f8fafc;
-  color: #526581;
+  background: var(--color-surface-subtle);
+  color: var(--color-text-soft);
   font-weight: 700;
 }

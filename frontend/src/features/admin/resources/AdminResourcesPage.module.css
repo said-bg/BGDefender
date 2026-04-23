@@ -1,403 +1,376 @@
 .page {
-  width: min(1360px, calc(100% - 3rem));
-  margin: 0 auto;
-  padding: 34px 0 64px;
+  composes: page from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .hero {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  composes: hero from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .heroCopy {
-  display: grid;
-  gap: 0.5rem;
+  composes: heroCopy from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .backLink {
-  color: #526581;
-  font-size: 0.86rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.backLink:hover {
-  color: #d98200;
+  composes: backLink from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .eyebrow {
-  margin: 0;
-  color: #ffa600;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  composes: eyebrow from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .title {
-  margin: 0;
-  color: #111827;
-  font-size: clamp(1.9rem, 3vw, 2.4rem);
-  font-weight: 600;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  composes: title from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .subtitle {
-  max-width: 760px;
-  margin: 0;
-  color: #526581;
-  font-size: 0.94rem;
-  line-height: 1.6;
+  composes: subtitle from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .summary {
-  display: grid;
-  gap: 0.8rem;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  composes: summary from '../shared/AdminWorkspaceShared.module.css';
   margin-bottom: 0.95rem;
 }
 
 .summaryCard {
-  display: grid;
-  gap: 0.2rem;
-  background: #fff;
-  border: 1px solid #e6ebf2;
-  border-radius: 1rem;
-  padding: 0.9rem 1rem;
+  composes: summaryCard from '../shared/AdminWorkspaceShared.module.css';
+  box-shadow: none;
 }
 
 .summaryLabel {
-  color: #64748b;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  composes: summaryLabel from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .summaryValue {
-  color: #0f172a;
-  font-size: 1.65rem;
-  font-weight: 700;
-  line-height: 1;
+  composes: summaryValue from '../shared/AdminWorkspaceShared.module.css';
 }
 
 .layout {
-  display: grid;
+  composes: layout from '../../resources/ResourceWorkspaceShared.module.css';
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   gap: 0.95rem;
+  align-items: start;
 }
 
-.formCard,
-.listCard {
-  border: 1px solid #e6ebf2;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+.formCard {
+  composes: formCard from '../../resources/ResourceWorkspaceShared.module.css';
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
   padding: 22px 24px;
+  align-self: start;
+}
+
+.listCard {
+  composes: listCard from '../../resources/ResourceWorkspaceShared.module.css';
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  align-self: start;
+  min-height: var(--resource-panel-height);
+  height: var(--resource-panel-height);
+  max-height: var(--resource-panel-height);
+  overflow: hidden;
 }
 
 .cardHeader {
+  composes: cardHeader from '../../resources/ResourceWorkspaceShared.module.css';
   display: grid;
   gap: 0.35rem;
-  margin-bottom: 1rem;
 }
 
 .sectionTitle {
-  margin: 0;
-  color: #111827;
+  composes: sectionTitle from '../../resources/ResourceWorkspaceShared.module.css';
   font-size: 1.12rem;
   font-weight: 600;
 }
 
 .sectionDescription {
+  composes: sectionDescription from '../../resources/ResourceWorkspaceShared.module.css';
   margin: 0;
-  color: #64748b;
+  color: var(--color-text-subtle);
   font-size: 0.9rem;
   line-height: 1.55;
 }
 
-.successMessage,
-.errorMessage,
-.helperMessage {
-  margin: 0;
-  line-height: 1.6;
-}
-
 .successMessage {
-  color: #15803d;
+  composes: successMessage from '../../resources/ResourceWorkspaceShared.module.css';
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-success-field);
+  font-family: inherit;
+  font-size: inherit;
   font-weight: 600;
 }
 
 .errorMessage {
-  color: #b91c1c;
+  composes: errorMessage from '../../resources/ResourceWorkspaceShared.module.css';
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-danger);
+  font-family: inherit;
+  font-size: inherit;
   font-weight: 600;
 }
 
 .helperMessage {
-  color: #64748b;
+  composes: helperMessage from '../../resources/ResourceWorkspaceShared.module.css';
+  font-family: inherit;
+  font-size: inherit;
 }
 
 .formGrid {
-  display: grid;
+  composes: formGrid from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.9rem;
 }
 
 .fieldGroup {
-  display: grid;
+  composes: fieldGroup from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.42rem;
 }
 
 .fieldLabel {
-  color: #0f172a;
+  composes: fieldLabel from '../../resources/ResourceWorkspaceShared.module.css';
+  color: var(--color-text-strong);
+  font-family: inherit;
   font-size: 0.88rem;
   font-weight: 600;
 }
 
-.input,
-.select,
-.textarea {
-  border: 1px solid #dbe4f0;
+.input {
+  composes: input from '../../resources/ResourceWorkspaceShared.module.css';
+  border: 1px solid var(--color-border-editor);
   border-radius: 0.8rem;
-  background: #fff;
-  color: #0f172a;
-  font: inherit;
+  font-family: inherit;
+  padding: 0.72rem 0.88rem;
+}
+
+.select {
+  composes: select from '../../resources/ResourceWorkspaceShared.module.css';
+  border: 1px solid var(--color-border-editor);
+  border-radius: 0.8rem;
+  font-family: inherit;
   padding: 0.72rem 0.88rem;
 }
 
 .textarea {
-  min-height: 112px;
-  resize: vertical;
+  composes: textarea from '../../resources/ResourceWorkspaceShared.module.css';
+  border: 1px solid var(--color-border-editor);
+  border-radius: 0.8rem;
+  font-family: inherit;
+  padding: 0.72rem 0.88rem;
 }
 
 .modeGroup {
-  display: inline-flex;
+  composes: modeGroup from '../../resources/ResourceWorkspaceShared.module.css';
   align-items: center;
   gap: 0.42rem;
-  flex-wrap: wrap;
 }
 
 .modeButton {
+  composes: modeButton from '../../resources/ResourceWorkspaceShared.module.css';
   min-height: 2.15rem;
+  border: 1px solid var(--color-brand-border);
   border-radius: 0.8rem;
-  border: 1px solid #ffd591;
-  background: #fffaf0;
-  color: #c97300;
-  font: inherit;
+  background: var(--color-brand-surface-strong);
+  color: var(--color-brand-admin-text);
+  font-family: inherit;
   font-size: 0.84rem;
-  font-weight: 600;
   padding: 0.34rem 0.8rem;
 }
 
 .modeButtonActive {
-  background: #ffa600;
-  border-color: #ffa600;
-  color: #fff;
+  composes: modeButtonActive from '../../resources/ResourceWorkspaceShared.module.css';
+  border-color: var(--color-brand);
 }
 
 .uploadBox {
-  display: grid;
+  composes: uploadBox from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.6rem;
   padding: 0.95rem;
-  border: 1px dashed #dbe4f0;
-  border-radius: 1rem;
-  background: #fffaf0;
+  border: 1px dashed var(--color-border-editor);
+  background: var(--color-brand-surface-strong);
 }
 
 .uploadLabel {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  composes: uploadLabel from '../../resources/ResourceWorkspaceShared.module.css';
   min-height: 2.2rem;
-  width: fit-content;
   border-radius: 0.82rem;
-  border: 1px solid #ffa600;
-  background: #fff;
-  color: #ffa600;
-  cursor: pointer;
+  font-family: inherit;
   font-size: 0.84rem;
-  font-weight: 600;
   padding: 0.35rem 0.84rem;
 }
 
-.uploadLabel:hover {
-  background: #fff6e5;
-}
-
 .uploadInput {
-  display: none;
+  composes: uploadInput from '../../resources/ResourceWorkspaceShared.module.css';
 }
 
 .uploadMeta {
-  color: #64748b;
+  composes: uploadMeta from '../../resources/ResourceWorkspaceShared.module.css';
+  font-family: inherit;
   font-size: 0.85rem;
-  line-height: 1.55;
 }
 
 .actionsRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
+  composes: actionsRow from '../../resources/ResourceWorkspaceShared.module.css';
   align-items: center;
 }
 
 .primaryAction {
+  composes: primaryAction from '../../resources/ResourceWorkspaceShared.module.css';
   min-height: 2.2rem;
   border-radius: 0.82rem;
-  border: 1px solid #ffa600;
-  background: #ffa600;
-  color: #fff;
-  font: inherit;
+  font-family: inherit;
   font-size: 0.86rem;
-  font-weight: 600;
   padding: 0.35rem 0.9rem;
 }
 
-.primaryAction:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
 .filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
+  composes: filters from '../shared/AdminWorkspaceShared.module.css';
   margin-bottom: 0.9rem;
 }
 
-.searchInput,
-.filterSelect {
-  min-height: 2.26rem;
-  border: 1px solid #dbe4f0;
-  border-radius: 0.72rem;
-  background: #fff;
-  color: #0f172a;
-  font: inherit;
-  padding: 0.4rem 0.82rem;
-}
-
 .searchInput {
+  composes: searchInput from '../shared/AdminWorkspaceShared.module.css';
+  font-family: inherit;
   min-width: min(20rem, 100%);
 }
 
+.filterSelect {
+  composes: filterSelect from '../shared/AdminWorkspaceShared.module.css';
+  font-family: inherit;
+}
+
 .resourceList {
-  display: grid;
+  composes: resourceList from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.8rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.resourceList::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.resourceList::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  background: var(--color-border-strong);
+}
+
+.resourceList::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .resourceCard {
+  composes: resourceCard from '../../resources/ResourceWorkspaceShared.module.css';
   display: grid;
   gap: 0.75rem;
-  border: 1px solid #e6ebf2;
+  border: 1px solid var(--color-border-soft);
   border-radius: 1rem;
-  background: #fefefe;
+  background: var(--color-surface-panel);
   padding: 0.95rem 1rem;
 }
 
 .resourceTop {
-  display: flex;
-  justify-content: space-between;
+  composes: resourceTop from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.8rem;
-  align-items: flex-start;
 }
 
 .resourceCopy {
+  composes: resourceCopy from '../../resources/ResourceWorkspaceShared.module.css';
   display: grid;
   gap: 0.28rem;
 }
 
 .resourceTitle {
-  margin: 0;
-  color: #111827;
-  font-size: 1rem;
-  font-weight: 700;
+  composes: resourceTitle from '../../resources/ResourceWorkspaceShared.module.css';
+  font-family: inherit;
 }
 
 .resourceDescription {
-  margin: 0;
-  color: #64748b;
-  font-size: 0.9rem;
+  composes: resourceDescription from '../../resources/ResourceWorkspaceShared.module.css';
+  font-family: inherit;
   line-height: 1.55;
 }
 
 .badgeRow {
-  display: flex;
-  flex-wrap: wrap;
+  composes: badgeRow from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.5rem;
   align-items: center;
 }
 
 .badge {
-  display: inline-flex;
-  align-items: center;
+  composes: badge from '../../resources/ResourceWorkspaceShared.module.css';
   min-height: 1.85rem;
-  border-radius: 999px;
+  font-family: inherit;
   font-size: 0.8rem;
-  font-weight: 700;
   padding: 0.15rem 0.7rem;
 }
 
 .badgeFile {
-  background: #eaf2ff;
-  color: #1d4ed8;
+  composes: badgeFile from '../../resources/ResourceWorkspaceShared.module.css';
+  background: var(--color-info-badge-bg);
+  color: var(--color-info-text);
 }
 
 .badgeLink {
-  background: #f3e8ff;
-  color: #7c3aed;
+  composes: badgeLink from '../../resources/ResourceWorkspaceShared.module.css';
+  background: var(--color-purple-bg);
+  color: var(--color-purple-text);
 }
 
 .badgeAdmin {
-  background: #fff3e0;
-  color: #c97300;
+  composes: badgeAdmin from '../../resources/ResourceWorkspaceShared.module.css';
+  background: var(--color-brand-admin-bg);
+  color: var(--color-brand-admin-text);
 }
 
 .badgeUser {
-  background: #ecfdf3;
-  color: #166534;
+  composes: badgeUser from '../../resources/ResourceWorkspaceShared.module.css';
+  background: var(--color-success-soft);
+  color: var(--color-success-dark);
 }
 
 .resourceMeta {
-  display: flex;
-  flex-wrap: wrap;
+  composes: resourceMeta from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.8rem;
-  color: #64748b;
-  font-size: 0.84rem;
+  font-family: inherit;
 }
 
 .resourceActions {
-  display: flex;
-  flex-wrap: wrap;
+  composes: resourceActions from '../../resources/ResourceWorkspaceShared.module.css';
   gap: 0.55rem;
 }
 
-.inlineLink,
-.inlineDanger {
-  min-height: 2rem;
+.inlineLink {
+  composes: inlineLink from '../../resources/ResourceWorkspaceShared.module.css';
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-border-editor);
   border-radius: 0.78rem;
-  font: inherit;
+  color: var(--color-text-strong);
+  font-family: inherit;
   font-size: 0.83rem;
-  font-weight: 600;
   padding: 0.3rem 0.78rem;
 }
 
-.inlineLink {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #dbe4f0;
-  background: #fff;
-  color: #0f172a;
-  text-decoration: none;
-}
-
 .inlineDanger {
-  border: 1px solid #fca5a5;
-  background: #fff;
-  color: #b91c1c;
+  composes: inlineDanger from '../../resources/ResourceWorkspaceShared.module.css';
+  min-height: 2rem;
+  border: 1px solid var(--color-danger-border-hover);
+  border-radius: 0.78rem;
+  color: var(--color-danger);
+  font-family: inherit;
+  font-size: 0.83rem;
+  padding: 0.3rem 0.78rem;
 }
 
 .inlineDanger:disabled {
@@ -406,50 +379,51 @@
 }
 
 .emptyState {
+  composes: emptyState from '../../resources/ResourceWorkspaceShared.module.css';
   padding: 28px 22px;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--color-border-muted);
   border-radius: 18px;
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
   display: grid;
   gap: 8px;
+  margin-top: 0;
 }
 
 .emptyTitle {
-  margin: 0;
-  color: #111827;
+  composes: emptyTitle from '../../resources/ResourceWorkspaceShared.module.css';
+  font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
 }
 
 .emptyDescription {
+  composes: emptyDescription from '../../resources/ResourceWorkspaceShared.module.css';
   margin: 0;
-  color: #526581;
+  color: var(--color-text-soft);
+  font-family: inherit;
   font-size: 0.9rem;
   line-height: 1.55;
 }
 
 @media (max-width: 980px) {
-  .page {
-    width: calc(100% - 2rem);
-    padding-top: 26px;
-  }
-
-  .hero {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .summary,
   .layout {
     grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .listCard {
+    min-height: 0;
+    height: auto;
+    max-height: none;
+  }
+
+  .resourceList {
+    overflow: visible;
+    padding-right: 0;
   }
 }
 
 @media (max-width: 640px) {
-  .page {
-    width: calc(100% - 1rem);
-  }
-
   .formCard,
   .listCard {
     padding: 18px;

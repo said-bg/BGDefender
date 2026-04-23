@@ -1,0 +1,24 @@
+.hero {
+  composes: hero from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.heroCopy {
+  composes: heroCopy from '../../shared/AdminWorkspaceShared.module.css';
+  max-width: 760px;
+}
+
+.backLink {
+  composes: backLink from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.eyebrow {
+  composes: eyebrow from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.title {
+  composes: title from '../../shared/AdminWorkspaceShared.module.css';
+}
+
+.subtitle {
+  composes: subtitle from '../../shared/AdminWorkspaceShared.module.css';
+}

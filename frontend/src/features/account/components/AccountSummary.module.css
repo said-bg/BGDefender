@@ -3,15 +3,15 @@
   position: sticky;
   top: 1.5rem;
   padding: 1.35rem;
-  border: 1px solid #e6ebf2;
+  border: 1px solid var(--color-border-soft);
   border-radius: 1.1rem;
-  background: #ffffff;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 
 .sectionTitle {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.015em;
@@ -24,7 +24,7 @@
 }
 
 .summaryList dt {
-  color: #667085;
+  color: var(--color-text-muted);
   font-size: 0.74rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -33,7 +33,7 @@
 
 .summaryList dd {
   margin: 0.3rem 0 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.92rem;
   font-weight: 600;
 }
@@ -51,7 +51,7 @@
   gap: 0.6rem;
   margin-top: 1.25rem;
   padding-top: 1rem;
-  border-top: 1px solid #eef2f6;
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .summaryActionButton {
@@ -60,40 +60,40 @@
   align-items: center;
   justify-content: flex-start;
   padding: 0.34rem 0.78rem;
-  border: 1px solid #d0d5dd;
+  border: 1px solid var(--color-border-strong);
   border-radius: 0.72rem;
-  background: #ffffff;
-  color: #111827;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
   transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    background var(--transition-base),
+    color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .summaryActionButton:hover {
-  background: #fff8eb;
-  border-color: #ffa600;
-  color: #cc7a00;
-  box-shadow: 0 8px 18px rgba(255, 166, 0, 0.08);
+  background: var(--color-brand-soft);
+  border-color: var(--color-brand);
+  color: var(--color-brand-text);
+  box-shadow: var(--shadow-brand-soft);
 }
 
 .summaryActionButton:focus-visible {
-  outline: 2px solid #ffa600;
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
 }
 
 .summaryActionButtonActive,
 .summaryActionButtonActive:hover,
 .summaryActionButtonActive:focus-visible {
-  background: #ffa600;
-  color: #ffffff;
-  border-color: #ffa600;
-  box-shadow: 0 10px 22px rgba(255, 166, 0, 0.2);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-brand);
 }
 
 @media (max-width: 900px) {

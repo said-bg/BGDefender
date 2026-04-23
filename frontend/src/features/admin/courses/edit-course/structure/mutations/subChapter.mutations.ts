@@ -113,6 +113,7 @@ export async function deleteSubChapterMutation(
     setDeletingSubChapterId,
     setSubChapterError,
     setSubChapterMessage,
+    subChapterForm,
     t,
   }: Pick<
     SubChapterMutationParams,
@@ -123,6 +124,7 @@ export async function deleteSubChapterMutation(
     | 'setDeletingSubChapterId'
     | 'setSubChapterError'
     | 'setSubChapterMessage'
+    | 'subChapterForm'
     | 't'
   >,
 ) {
@@ -156,7 +158,10 @@ export async function deleteSubChapterMutation(
       }),
     );
 
-    if (editingSubChapterId === subChapterId) {
+    if (
+      editingSubChapterId === subChapterId ||
+      (!editingSubChapterId && subChapterForm.chapterId === chapterId)
+    ) {
       resetSubChapterForm(chapterId, freshCourse.chapters);
     }
   } catch (error) {

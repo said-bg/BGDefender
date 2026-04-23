@@ -1,7 +1,9 @@
 import type { Chapter, Course, SubChapter } from '@/services/course';
 import {
   buildChapterPayload,
+  buildDefaultChapterFormState,
   buildDefaultSubChapterFormState,
+  getNextSiblingOrderIndex,
   buildSubChapterPayload,
   normalizeStructureCourse,
   validateChapterForm,
@@ -182,6 +184,23 @@ describe('structure.helpers', () => {
     });
   });
 
+  // Uses the current sibling count, not a stale or sparse orderIndex, for the next append position.
+  it('builds default chapter order from the current normalized sibling count', () => {
+    expect(
+      getNextSiblingOrderIndex([
+        { orderIndex: 1 },
+        { orderIndex: 4 },
+      ]),
+    ).toBe('3');
+
+    expect(
+      buildDefaultChapterFormState([
+        createChapter({ id: 'chapter-1', orderIndex: 1 }),
+        createChapter({ id: 'chapter-2', orderIndex: 4 }),
+      ]),
+    ).toEqual({ orderIndex: '3' });
+  });
+
   // Keeps the default order safe when an API chapter is missing its subchapter list.
   it('builds default subchapter form state from the parent chapter', () => {
     expect(
@@ -191,6 +210,20 @@ describe('structure.helpers', () => {
     ).toEqual({
       chapterId: 'chapter-1',
       orderIndex: '1',
+    });
+
+    expect(
+      buildDefaultSubChapterFormState(
+        createChapter({
+          subChapters: [
+            createSubChapter({ id: 'sub-1', orderIndex: 1 }),
+            createSubChapter({ id: 'sub-2', orderIndex: 9 }),
+          ],
+        }),
+      ),
+    ).toEqual({
+      chapterId: 'chapter-1',
+      orderIndex: '3',
     });
   });
 });

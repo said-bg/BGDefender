@@ -1,0 +1,130 @@
+.fieldHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.modeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem;
+  border: 1px solid var(--color-border-editor);
+  border-radius: 0.82rem;
+  background: var(--color-surface);
+  width: fit-content;
+}
+
+.uploadBox {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.hiddenFileInput {
+  display: none;
+}
+
+.uploadLabel {
+  display: grid;
+  gap: 0.35rem;
+  padding: 16px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 0.9rem;
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.uploadLabel:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-surface);
+}
+
+.uploadLabelText {
+  color: var(--color-text-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.uploadHelper {
+  color: var(--color-text-subtle);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.inlineLink {
+  color: var(--color-brand);
+  font-size: 0.84rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.inlineLink:hover {
+  color: var(--color-brand-active);
+}
+
+.authorGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.authorChip {
+  min-width: 180px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 0.9rem;
+  background: var(--color-surface);
+  display: grid;
+  gap: 4px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.authorChip:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-surface);
+}
+
+.authorChipSelected {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  box-shadow: var(--shadow-brand-soft);
+}
+
+.authorName {
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.authorRole {
+  color: var(--color-text-subtle);
+  font-size: 0.82rem;
+}
+
+.selectedAuthors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.selectedAuthorToken {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.72rem;
+  padding: 0 0.64rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-muted);
+  color: var(--color-brand-text);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .fieldHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

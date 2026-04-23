@@ -1,0 +1,127 @@
+.filters {
+  margin-bottom: 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.78rem 0.95rem;
+  border: 1px solid var(--color-border-field);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  color: var(--color-text-strong);
+  font: inherit;
+}
+
+.collectionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.collectionList::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.collectionList::-webkit-scrollbar-thumb {
+  border-radius: var(--radius-pill);
+  background: var(--color-border-strong);
+}
+
+.collectionList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.collectionCard {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  height: fit-content;
+}
+
+.collectionCopy {
+  min-width: 0;
+}
+
+.collectionTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.collectionMeta {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-subtle);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.collectionActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.responsiveButton {
+  width: auto;
+}
+
+.badgeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0.28rem 0.72rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.badgePublished {
+  background: var(--color-success-soft);
+  color: var(--color-success-resource);
+}
+
+.badgeHidden {
+  background: var(--color-neutral-badge-bg);
+  color: var(--color-text-soft);
+}
+
+@media (max-width: 640px) {
+  .collectionCard {
+    flex-direction: column;
+  }
+
+  .collectionActions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .responsiveButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .collectionList {
+    overflow: visible;
+    padding-right: 0;
+  }
+}

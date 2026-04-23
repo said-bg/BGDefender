@@ -1,0 +1,280 @@
+.assessmentPanel {
+  display: grid;
+  gap: 0.85rem;
+  padding: 16px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+
+.assessmentCard {
+  padding: 0.95rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.assessmentSelectableCard {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.assessmentSelectableCard:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-surface);
+}
+
+.assessmentSelectableCardActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  box-shadow: var(--shadow-brand-soft);
+}
+
+.assessmentEditorColumn,
+.questionList {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.assessmentEditorColumn {
+  gap: 0.9rem;
+}
+
+.questionList {
+  gap: 0.8rem;
+}
+
+.questionCard,
+.questionGrid,
+.fieldGroup,
+.fieldGroupCompact {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.questionCard {
+  padding: 14px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.quizHeaderGrid,
+.questionGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.fieldLabel {
+  color: var(--color-text-primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  min-height: 2.45rem;
+  padding: 0.58rem 0.8rem;
+  border: 1px solid var(--color-border-field);
+  border-radius: 0.8rem;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font: inherit;
+}
+
+.textarea {
+  min-height: 6.6rem;
+  resize: vertical;
+}
+
+.checkboxRow,
+.correctToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--color-text-body);
+  font-size: 0.84rem;
+}
+
+.quizStatsRow,
+.quizSettingsRow,
+.optionsHeader,
+.questionCardHeader,
+.optionRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.questionsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.15rem;
+}
+
+.questionActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.2rem;
+}
+
+.optionsList {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.optionRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 0.7rem;
+  align-items: center;
+}
+
+.quizAnalyticsSummaryBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--color-border-soft);
+  border-radius: 0.95rem;
+  background: linear-gradient(180deg, var(--color-brand-surface) 0%, var(--color-surface) 100%);
+}
+
+.quizAnalyticsSummaryCopy {
+  display: grid;
+  gap: 0.24rem;
+}
+
+.quizAnalyticsSummaryTitle,
+.quizAnalyticsSummaryText {
+  margin: 0;
+}
+
+.quizAnalyticsSummaryTitle {
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.quizAnalyticsSummaryText {
+  color: var(--color-text-soft);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.quizAnalyticsSummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.quizAnalyticsMetric {
+  composes: assessmentCard;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.quizAnalyticsLearnerCard {
+  composes: assessmentCard;
+}
+
+.quizAnalyticsMetricLabel,
+.quizAnalyticsLearnerEmail {
+  color: var(--color-text-subtle);
+  font-size: 0.82rem;
+}
+
+.quizAnalyticsMetricValue,
+.quizAnalyticsLearnerName {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.quizAnalyticsMetaRow,
+.quizAnalyticsLearnerHeader,
+.quizAnalyticsLearnerStats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quizAnalyticsMetaRow,
+.quizAnalyticsLearnerStats {
+  color: var(--color-text-body);
+  font-size: 0.84rem;
+}
+
+.quizAnalyticsLearnerList {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.quizAnalyticsLearnerHeader {
+  justify-content: space-between;
+}
+
+.assessmentStatusBadge,
+.quizAnalyticsStatusPassed,
+.quizAnalyticsStatusPending {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.85rem;
+  padding: 0.18rem 0.68rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.quizAnalyticsStatusPassed {
+  background: var(--color-success-badge-bg);
+  color: var(--color-success-badge-text);
+}
+
+.quizAnalyticsStatusPending {
+  background: var(--color-warning-badge-soft-bg);
+  color: var(--color-warning-text-strong);
+}
+
+@media (max-width: 980px) {
+  .quizAnalyticsSummaryGrid,
+  .quizHeaderGrid,
+  .questionGrid,
+  .optionRow {
+    grid-template-columns: 1fr;
+  }
+
+  .quizAnalyticsSummaryBar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .questionActions {
+    justify-content: stretch;
+  }
+
+  .questionActions > * {
+    width: 100%;
+  }
+}

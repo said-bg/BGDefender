@@ -2,9 +2,9 @@
   display: grid;
   gap: 1rem;
   padding: 1.15rem;
-  border: 1px solid #e6ebf2;
+  border: 1px solid var(--color-border-soft);
   border-radius: 1rem;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .quizHeader {
@@ -28,20 +28,20 @@
 .metaCard {
   padding: 0.8rem 0.9rem;
   border-radius: 0.9rem;
-  background: #fff8eb;
-  color: #111827;
+  background: var(--color-brand-soft);
+  color: var(--color-text-primary);
 }
 
 .attemptSummaryCard {
   padding: 1rem;
-  border: 1px solid #dcefe3;
+  border: 1px solid var(--color-success-border-soft);
   border-radius: 0.95rem;
-  background: #f6fffa;
+  background: var(--color-success-surface-subtle);
 }
 
 .metaLabel {
   display: block;
-  color: #526581;
+  color: var(--color-text-soft);
   font-size: 0.78rem;
   font-weight: 600;
 }
@@ -55,14 +55,14 @@
 
 .questionCard {
   padding: 1rem;
-  border: 1px solid #e6ebf2;
+  border: 1px solid var(--color-border-soft);
   border-radius: 0.95rem;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .questionPrompt {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.45;
@@ -73,30 +73,30 @@
   align-items: flex-start;
   gap: 0.7rem;
   padding: 0.8rem 0.9rem;
-  border: 1px solid #dce3ee;
+  border: 1px solid var(--color-border-editor);
   border-radius: 0.9rem;
-  background: #ffffff;
+  background: var(--color-surface);
   cursor: pointer;
 }
 
 .optionLabel:hover {
-  border-color: #ffa600;
-  background: #fff8eb;
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
 }
 
 .optionLabelCorrect {
-  border-color: #16a34a;
-  background: #effdf4;
+  border-color: var(--color-success-dot);
+  background: var(--color-success-surface-soft);
 }
 
 .optionLabelIncorrect {
-  border-color: #ef4444;
-  background: #fff5f5;
+  border-color: var(--color-danger-strong);
+  background: var(--color-danger-bg-muted);
 }
 
 .questionExplanation {
   margin: 0;
-  color: #526581;
+  color: var(--color-text-soft);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -107,24 +107,24 @@
   width: fit-content;
   min-height: 1.95rem;
   padding: 0.22rem 0.75rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 0.8rem;
   font-weight: 700;
 }
 
 .statusPassed {
-  background: #e8fff3;
-  color: #047857;
+  background: var(--color-success-badge-bg);
+  color: var(--color-success-badge-text);
 }
 
 .statusFailed {
-  background: #fff5f5;
-  color: #b91c1c;
+  background: var(--color-danger-bg-muted);
+  color: var(--color-danger);
 }
 
 .statusPending {
-  background: #eef4ff;
-  color: #1d4ed8;
+  background: var(--color-info-bg-soft);
+  color: var(--color-info-text);
 }
 
 .quizActions {
@@ -151,16 +151,16 @@
 }
 
 .primaryAction {
-  border: 1px solid #ffa600;
-  background: #ffa600;
-  color: #ffffff;
+  border: 1px solid var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
   cursor: pointer;
 }
 
 .secondaryAction {
-  border: 1px solid #ffa600;
-  background: #ffffff;
-  color: #ffa600;
+  border: 1px solid var(--color-brand);
+  background: var(--color-surface);
+  color: var(--color-brand);
   cursor: pointer;
 }
 
@@ -173,16 +173,16 @@
 }
 
 .helperText {
-  color: #526581;
+  color: var(--color-text-soft);
 }
 
 .errorText {
-  color: #b91c1c;
+  color: var(--color-danger);
   font-weight: 600;
 }
 
 .successText {
-  color: #047857;
+  color: var(--color-success-badge-text);
   font-weight: 600;
 }
 

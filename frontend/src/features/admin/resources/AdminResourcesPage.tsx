@@ -1,5 +1,6 @@
 'use client';
 
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { ResourceSource, ResourceType, UserRole } from '@/types/api';
@@ -16,6 +17,8 @@ export default function AdminResourcesPage() {
 }
 
 function AdminResourcesPageContent() {
+  const formCardRef = useRef<HTMLElement | null>(null);
+  const [matchedPanelHeight, setMatchedPanelHeight] = useState<number | null>(null);
   const {
     deletingId,
     error,
@@ -38,6 +41,48 @@ function AdminResourcesPageContent() {
     uploadError,
     users,
   } = useAdminResources();
+
+  useEffect(() => {
+    const formCard = formCardRef.current;
+
+    if (!formCard || typeof window === 'undefined') {
+      return undefined;
+    }
+
+    const mobileQuery = window.matchMedia('(max-width: 980px)');
+
+    const updatePanelHeight = () => {
+      if (mobileQuery.matches) {
+        setMatchedPanelHeight(null);
+        return;
+      }
+
+      setMatchedPanelHeight(formCard.offsetHeight);
+    };
+
+    updatePanelHeight();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updatePanelHeight();
+    });
+
+    resizeObserver.observe(formCard);
+    window.addEventListener('resize', updatePanelHeight);
+
+    const handleQueryChange = () => updatePanelHeight();
+    mobileQuery.addEventListener('change', handleQueryChange);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updatePanelHeight);
+      mobileQuery.removeEventListener('change', handleQueryChange);
+    };
+  }, []);
+
+  const listCardStyle =
+    matchedPanelHeight !== null
+      ? ({ '--resource-panel-height': `${matchedPanelHeight}px` } as CSSProperties)
+      : undefined;
 
   return (
     <div className={styles.page}>
@@ -89,7 +134,7 @@ function AdminResourcesPageContent() {
       </section>
 
       <section className={styles.layout}>
-        <section className={styles.formCard}>
+        <section ref={formCardRef} className={styles.formCard}>
           <div className={styles.cardHeader}>
             <h2 className={styles.sectionTitle}>
               {t('resources.formTitle', { defaultValue: 'Send a resource' })}
@@ -253,7 +298,7 @@ function AdminResourcesPageContent() {
           </div>
         </section>
 
-        <section className={styles.listCard}>
+        <section className={styles.listCard} style={listCardStyle}>
           <div className={styles.cardHeader}>
             <h2 className={styles.sectionTitle}>
               {t('resources.listTitle', { defaultValue: 'Sent resources' })}

@@ -1,0 +1,21 @@
+.constrained {
+  max-width: 860px;
+}
+
+.dividerSection {
+  max-width: 860px;
+  border-top: 1px solid var(--color-border);
+}
+
+.headingStrong {
+  color: var(--color-text-primary);
+  font-weight: 800;
+}
+
+.bodyMuted {
+  color: var(--color-text-muted);
+}
+
+.textSubtle {
+  color: var(--color-text-subtle);
+}

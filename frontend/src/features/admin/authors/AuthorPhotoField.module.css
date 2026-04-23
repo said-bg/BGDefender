@@ -3,9 +3,9 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.28rem;
-  border: 1px solid #dbe4f0;
+  border: 1px solid var(--color-border-editor);
   border-radius: 0.82rem;
-  background: #ffffff;
+  background: var(--color-surface);
   width: fit-content;
 }
 
@@ -15,7 +15,7 @@
   border: none;
   border-radius: 0.64rem;
   background: transparent;
-  color: #526581;
+  color: var(--color-text-soft);
   font: inherit;
   font-size: 0.84rem;
   font-weight: 600;
@@ -23,18 +23,18 @@
 }
 
 .modeButtonActive {
-  background: #fff4db;
-  color: #cc7a00;
+  background: var(--color-brand-muted);
+  color: var(--color-brand-text);
 }
 
 .modeButton:hover {
-  background: #fff8eb;
-  color: #d98200;
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .modeButtonActive:hover {
-  background: #fff4db;
-  color: #cc7a00;
+  background: var(--color-brand-muted);
+  color: var(--color-brand-text);
 }
 
 .uploadBox {
@@ -50,25 +50,25 @@
   display: grid;
   gap: 0.35rem;
   padding: 16px;
-  border: 1px dashed #d0d5dd;
+  border: 1px dashed var(--color-border-strong);
   border-radius: 0.9rem;
-  background: #ffffff;
+  background: var(--color-surface);
   cursor: pointer;
 }
 
 .uploadLabel:hover {
-  border-color: #ffa600;
-  background: #fffdfa;
+  border-color: var(--color-brand);
+  background: var(--color-brand-surface);
 }
 
 .uploadLabelText {
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.88rem;
   font-weight: 600;
 }
 
 .uploadHelper {
-  color: #64748b;
+  color: var(--color-text-subtle);
   font-size: 0.84rem;
   line-height: 1.5;
 }
@@ -78,9 +78,9 @@
   align-items: center;
   gap: 14px;
   padding: 12px;
-  border: 1px solid #e6ebf2;
+  border: 1px solid var(--color-border-soft);
   border-radius: 0.9rem;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .photoPreviewImage {
@@ -88,8 +88,8 @@
   height: 64px;
   border-radius: 0.82rem;
   object-fit: cover;
-  border: 1px solid #dbe4f0;
-  background: #ffffff;
+  border: 1px solid var(--color-border-editor);
+  background: var(--color-surface);
 }
 
 .photoPreviewCopy {
@@ -98,13 +98,13 @@
 }
 
 .photoPreviewTitle {
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.88rem;
   font-weight: 600;
 }
 
 .photoPreviewText {
-  color: #64748b;
+  color: var(--color-text-subtle);
   font-size: 0.84rem;
   line-height: 1.45;
 }

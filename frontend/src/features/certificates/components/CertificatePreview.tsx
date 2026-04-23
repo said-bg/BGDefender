@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { CertificateStatus, type CertificateRecord } from '@/types/api';
-import styles from '../CertificatesPage.module.css';
+import styles from './CertificatePreview.module.css';
 
 type CertificatePreviewProps = {
   hasIncompleteProfile: boolean;

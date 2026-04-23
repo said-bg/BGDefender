@@ -1,223 +1,75 @@
 .formCard {
-  border: 1px solid #e6ebf2;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
-  padding: 22px 24px;
+  composes: formCard from '../shared/AdminCourseFormShared.module.css';
 }
 
 .cardHeader {
-  display: grid;
-  gap: 0.35rem;
-  margin-bottom: 1rem;
+  composes: cardHeader from '../shared/AdminCourseFormShared.module.css';
 }
 
 .sectionTitle {
-  margin: 0;
-  color: #111827;
-  font-size: 1.12rem;
-  font-weight: 600;
+  composes: sectionTitle from '../shared/AdminCourseFormShared.module.css';
 }
 
 .sectionDescription {
-  margin: 0;
-  color: #64748b;
-  font-size: 0.9rem;
-  line-height: 1.55;
+  composes: sectionDescription from '../shared/AdminCourseFormShared.module.css';
 }
 
 .form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.95rem 1rem;
+  composes: form from '../shared/AdminCourseFormShared.module.css';
 }
 
-.field,
-.fieldWide {
-  display: grid;
-  gap: 0.45rem;
+.field {
+  composes: field from '../shared/AdminCourseFormShared.module.css';
 }
 
 .fieldWide {
-  grid-column: 1 / -1;
+  composes: fieldWide from '../shared/AdminCourseFormShared.module.css';
 }
 
 .fieldGroup {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.95rem 1rem;
+  composes: fieldGroup from '../shared/AdminCourseFormShared.module.css';
 }
 
-.field span,
 .fieldLabel {
-  color: #22304a;
-  font-size: 0.86rem;
-  font-weight: 600;
-}
-
-.field input,
-.field textarea,
-.fieldWide textarea,
-.field select {
-  width: 100%;
-  min-height: 2.8rem;
-  padding: 0.72rem 0.95rem;
-  border: 1px solid #d0d5dd;
-  border-radius: 0.82rem;
-  background: #ffffff;
-  color: #111827;
-  font: inherit;
-  transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    background-color 0.18s ease;
-}
-
-.field textarea,
-.fieldWide textarea {
-  min-height: 180px;
-  border-width: 1px;
-  border-color: #d0d5dd;
-  border-radius: 0.9rem;
-  background: #ffffff;
-  box-shadow: none;
-  resize: vertical;
-}
-
-.field input:focus,
-.field textarea:focus,
-.fieldWide textarea:focus,
-.field select:focus {
-  outline: none;
-  border-color: #ffa600;
-  box-shadow: 0 0 0 4px rgba(255, 166, 0, 0.12);
-}
-
-.field input::placeholder,
-.field select::placeholder,
-.field textarea::placeholder,
-.fieldWide textarea::placeholder {
-  color: #98a2b3;
+  composes: fieldLabel from '../shared/AdminCourseFormShared.module.css';
 }
 
 .textareaField {
-  width: 100%;
-  min-height: 180px;
-  padding: 0.82rem 0.95rem;
-  border: 1px solid #d0d5dd;
-  border-radius: 0.9rem;
-  background: #ffffff;
-  color: #111827;
-  font: inherit;
-  box-shadow: none;
-  resize: vertical;
-  appearance: none;
+  composes: textareaField from '../shared/AdminCourseFormShared.module.css';
 }
 
-.textareaField:focus {
-  outline: none;
-  border-color: #ffa600;
-  box-shadow: 0 0 0 4px rgba(255, 166, 0, 0.12);
+.helperText {
+  composes: helperText from '../shared/AdminCourseFormShared.module.css';
 }
 
-.textareaField::placeholder {
-  color: #98a2b3;
-}
-
-.helperText,
 .helperMessage {
-  margin: 0;
-  color: #64748b;
-  font-size: 0.84rem;
-  line-height: 1.5;
-}
-
-.successMessage,
-.errorMessage {
-  grid-column: 1 / -1;
-  margin: 0;
-  font-weight: 600;
+  composes: helperMessage from '../shared/AdminCourseFormShared.module.css';
 }
 
 .successMessage {
-  color: #15803d;
+  composes: successMessage from '../shared/AdminCourseFormShared.module.css';
 }
 
 .errorMessage {
-  color: #b91c1c;
+  composes: errorMessage from '../shared/AdminCourseFormShared.module.css';
 }
 
 .actions {
-  grid-column: 1 / -1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.7rem;
-  margin-top: 0.1rem;
-}
-
-.primaryAction,
-.secondaryAction {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 2.26rem;
-  padding: 0.4rem 0.82rem;
-  border-radius: 0.72rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  text-decoration: none;
+  composes: actions from '../shared/AdminCourseFormShared.module.css';
 }
 
 .primaryAction {
-  border: 1px solid #ffa600;
-  background: #ffa600;
-  color: #ffffff;
-  cursor: pointer;
-}
-
-.primaryAction:hover {
-  background: #f29d00;
-  border-color: #f29d00;
-}
-
-.primaryAction:disabled {
-  cursor: not-allowed;
-  opacity: 0.65;
+  composes: primaryAction from '../shared/AdminCourseFormShared.module.css';
 }
 
 .secondaryAction {
-  border: 1px solid #ffa600;
-  background: #ffffff;
-  color: #ffa600;
+  composes: secondaryAction from '../shared/AdminCourseFormShared.module.css';
 }
 
-.secondaryAction:hover {
-  border-color: #ffa600;
-  background: #fff8eb;
-  color: #d98200;
+.modeButton {
+  composes: modeButton from '../shared/AdminCourseFormShared.module.css';
 }
 
-@media (max-width: 900px) {
-  .form,
-  .fieldGroup {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .formCard {
-    padding: 18px;
-  }
-
-  .actions {
-    flex-direction: column-reverse;
-    align-items: stretch;
-  }
-
-  .primaryAction,
-  .secondaryAction {
-    width: 100%;
-  }
+.modeButtonActive {
+  composes: modeButtonActive from '../shared/AdminCourseFormShared.module.css';
 }

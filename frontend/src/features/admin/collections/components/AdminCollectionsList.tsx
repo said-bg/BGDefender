@@ -1,7 +1,8 @@
 'use client';
 
 import type { CourseCollection } from '@/services/course';
-import styles from '../AdminCollectionsPage.module.css';
+import sharedStyles from './AdminCollectionsShared.module.css';
+import styles from './AdminCollectionsList.module.css';
 
 type CollectionsTranslate = (
   key: string,
@@ -44,12 +45,12 @@ export default function AdminCollectionsList({
       : collection.descriptionEn || collection.descriptionFi;
 
   return (
-    <section className={styles.listCard}>
-      <div className={styles.cardHeader}>
-        <h2 className={styles.sectionTitle}>
+    <section className={`${sharedStyles.card} ${sharedStyles.panelCard}`}>
+      <div className={sharedStyles.cardHeader}>
+        <h2 className={sharedStyles.sectionTitle}>
           {t('collections.listTitle')}
         </h2>
-        <p className={styles.sectionDescription}>
+        <p className={sharedStyles.sectionDescription}>
           {t('collections.listDescription')}
         </p>
       </div>
@@ -64,15 +65,15 @@ export default function AdminCollectionsList({
       </div>
 
       {loading ? (
-        <p className={styles.statusMessage}>
+        <p className={sharedStyles.statusMessage}>
           {t('loading')}
         </p>
       ) : preparedCollections.length === 0 ? (
-        <section className={styles.emptyState}>
-          <h3 className={styles.emptyTitle}>
+        <section className={sharedStyles.emptyState}>
+          <h3 className={sharedStyles.emptyTitle}>
             {t('collections.emptyTitle')}
           </h3>
-          <p className={styles.emptyDescription}>
+          <p className={sharedStyles.emptyDescription}>
             {t('collections.emptyDescription')}
           </p>
         </section>
@@ -109,7 +110,7 @@ export default function AdminCollectionsList({
               <div className={styles.collectionActions}>
                 <button
                   type="button"
-                  className={styles.actionButton}
+                  className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
                   onClick={() => handleMoveCourse(collection.id, 'up')}
                   disabled={preparedCollections.indexOf(collection) === 0}
                   title={t('collections.moveUp')}
@@ -118,7 +119,7 @@ export default function AdminCollectionsList({
                 </button>
                 <button
                   type="button"
-                  className={styles.actionButton}
+                  className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
                   onClick={() => handleMoveCourse(collection.id, 'down')}
                   disabled={preparedCollections.indexOf(collection) === preparedCollections.length - 1}
                   title={t('collections.moveDown')}
@@ -127,14 +128,14 @@ export default function AdminCollectionsList({
                 </button>
                 <button
                   type="button"
-                  className={styles.actionButton}
+                  className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
                   onClick={() => startEdit(collection)}
                 >
                   {t('collections.editAction')}
                 </button>
                 <button
                   type="button"
-                  className={styles.dangerButton}
+                  className={`${sharedStyles.pillButton} ${sharedStyles.dangerButton} ${styles.responsiveButton}`}
                   onClick={() => void handleDelete(collection)}
                   disabled={deletingId === collection.id}
                 >

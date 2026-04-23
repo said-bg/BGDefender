@@ -1,8 +1,6 @@
 .section {
   --course-card-width: clamp(320px, 21vw, 356px);
-  width: var(--page-shell-width);
-  margin: 0 auto;
-  padding: 0.5rem 0 1rem;
+  composes: section from './HomeRailShared.module.css';
 }
 
 .railSection {
@@ -10,34 +8,20 @@
 }
 
 .sectionHeader {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.6rem;
+  composes: sectionHeader from './HomeRailShared.module.css';
 }
 
 .sectionIntro {
+  composes: sectionIntro from './HomeRailShared.module.css';
   max-width: 42rem;
 }
 
 .sectionTitle {
-  margin: 0;
-  color: #111827;
-  font-size: clamp(1.36rem, 1.9vw, 1.72rem);
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-weight: 600;
-  line-height: 1.18;
-  letter-spacing: -0.02em;
+  composes: sectionTitle from './HomeRailShared.module.css';
 }
 
 .sectionDescription {
-  margin: 0.35rem 0 0;
-  color: #667085;
-  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  font-size: 0.92rem;
-  font-weight: 400;
-  line-height: 1.55;
+  composes: sectionDescription from './HomeRailShared.module.css';
 }
 
 .sectionLink {
@@ -46,160 +30,89 @@
   justify-content: center;
   min-height: 2.28rem;
   padding: 0.42rem 0.86rem;
-  border: 1px solid #ffa600;
-  border-radius: 0.72rem;
-  background: #ffffff;
-  color: #ffa600;
+  border: 1px solid var(--color-brand);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-brand);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.1;
   text-decoration: none;
   transition:
-    color 0.18s ease,
-    border-color 0.18s ease,
-    background-color 0.18s ease;
+    color var(--transition-fast),
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
 }
 
 .sectionLink:hover {
-  border-color: #ffa600;
-  background: #fff8eb;
-  color: #d98200;
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .grid {
-  display: grid;
+  composes: grid from './HomeRailShared.module.css';
   grid-template-columns: repeat(
     auto-fit,
     minmax(min(100%, var(--course-card-width)), var(--course-card-width))
   );
-  justify-content: start;
   gap: 1rem;
 }
 
 .emptyState {
-  padding: 1.1rem 1rem;
-  border: 1px solid rgba(255, 166, 0, 0.12);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
-  text-align: center;
+  composes: emptyState from './HomeRailShared.module.css';
 }
 
 .railShell {
-  position: relative;
-  padding: 0 3rem 0 0;
+  composes: railShell from './HomeRailShared.module.css';
 }
 
 .railFrame {
-  position: relative;
-  overflow: hidden;
-  border-radius: 24px;
+  composes: railFrame from './HomeRailShared.module.css';
 }
 
 .railViewport {
-  display: grid;
+  composes: railViewport from './HomeRailShared.module.css';
   grid-auto-columns: var(--course-card-width);
-  grid-auto-flow: column;
   gap: 1rem;
-  overflow-x: auto;
-  padding: 0.2rem 0.2rem 0.9rem 0.1rem;
-  scroll-behavior: smooth;
-  scroll-padding-left: 0.1rem;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-}
-
-.railViewport::-webkit-scrollbar {
-  display: none;
 }
 
 .railCard {
-  scroll-snap-align: start;
+  composes: railCard from './HomeRailShared.module.css';
 }
 
 .railEdge {
-  display: none;
+  composes: railEdge from './HomeRailShared.module.css';
 }
 
 .railEdgeLeft {
-  left: 0;
+  composes: railEdgeLeft from './HomeRailShared.module.css';
 }
 
 .railEdgeRight {
-  right: 0;
+  composes: railEdgeRight from './HomeRailShared.module.css';
 }
 
 .railNav {
-  position: absolute;
-  top: 50%;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.85rem;
-  height: 2.85rem;
-  border: 1px solid rgba(255, 166, 0, 0.14);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.97);
-  color: #b96d00;
-  font-size: 1.7rem;
-  line-height: 1;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
-  transform: translateY(-50%);
-  transition:
-    transform 0.18s ease,
-    opacity 0.18s ease,
-    background-color 0.18s ease,
-    border-color 0.18s ease;
-  backdrop-filter: blur(8px);
-}
-
-.railNav:hover:not(:disabled) {
-  border-color: rgba(255, 166, 0, 0.38);
-  background: #fffaf0;
-  transform: translateY(-50%) scale(1.03);
+  composes: railNav from './HomeRailShared.module.css';
 }
 
 .railNavLeft {
-  left: -0.2rem;
+  composes: railNavLeft from './HomeRailShared.module.css';
 }
 
 .railNavRight {
-  right: 0.1rem;
+  composes: railNavRight from './HomeRailShared.module.css';
 }
 
 @media (max-width: 960px) {
-  .railShell {
-    padding: 0;
-  }
-
   .railViewport {
     grid-auto-columns: minmax(314px, 80vw);
-    padding-bottom: 0.6rem;
-  }
-
-  .railNav,
-  .railEdge {
-    display: none;
   }
 }
 
 @media (max-width: 720px) {
-  .section {
-    width: var(--page-shell-width-mobile);
-    padding-bottom: 2.1rem;
-  }
-
-  .sectionHeader {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
   .railViewport {
     grid-auto-columns: minmax(280px, 88vw);
   }

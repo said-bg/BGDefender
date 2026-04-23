@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { Chapter } from '@/services/course';
 import formStyles from '@/features/admin/courses/edit-course/shared/EditCourseForm.module.css';
 import sharedStyles from '@/features/admin/courses/edit-course/shared/EditCoursePage.module.css';
+import { buildDefaultSubChapterFormState } from '../../lib/structure.helpers';
 import { SubChapterFormState, TranslationFn } from '../../types';
 
 type SubChapterParentFieldProps = {
@@ -22,7 +23,7 @@ const buildNextOrderIndex = (
 ) =>
   editingSubChapterId && previous.chapterId === nextChapterId
     ? previous.orderIndex
-    : String((nextChapter?.subChapters?.length ?? 0) + 1);
+    : buildDefaultSubChapterFormState(nextChapter ?? null).orderIndex;
 
 export default function SubChapterParentField({
   availableParentChapter,

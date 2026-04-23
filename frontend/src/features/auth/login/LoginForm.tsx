@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import sharedStyles from '../AuthFormShared.module.css';
 import styles from './Login.module.css';
 import { useLoginForm } from './useLoginForm';
 
@@ -9,18 +10,20 @@ export function LoginForm() {
     useLoginForm();
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>{t('login.title')}</h1>
-          <p className={styles.subtitle}>{t('login.subtitle')}</p>
+    <div className={sharedStyles.container}>
+      <div className={sharedStyles.card}>
+        <div className={sharedStyles.header}>
+          <h1 className={sharedStyles.title}>{t('login.title')}</h1>
+          <p className={sharedStyles.subtitle}>{t('login.subtitle')}</p>
         </div>
 
-        {displayedFormError && <div className={styles.errorMessage}>{displayedFormError}</div>}
+        {displayedFormError && (
+          <div className={sharedStyles.errorMessage}>{displayedFormError}</div>
+        )}
 
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.formGroup}>
-            <label htmlFor="email" className={styles.label}>
+        <form className={sharedStyles.form} onSubmit={handleSubmit}>
+          <div className={sharedStyles.formGroup}>
+            <label htmlFor="email" className={sharedStyles.label}>
               {t('login.email')}
             </label>
             <input
@@ -28,17 +31,17 @@ export function LoginForm() {
               type="email"
               name="email"
               autoComplete="email"
-              className={styles.input}
+              className={sharedStyles.input}
               placeholder={t('login.emailPlaceholder')}
               value={form.email}
               onChange={handleChange}
               disabled={isLoading}
             />
-            {errors.email && <span className={styles.error}>{errors.email}</span>}
+            {errors.email && <span className={sharedStyles.fieldError}>{errors.email}</span>}
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="password" className={styles.label}>
+          <div className={sharedStyles.formGroup}>
+            <label htmlFor="password" className={sharedStyles.label}>
               {t('login.password')}
             </label>
             <input
@@ -46,19 +49,21 @@ export function LoginForm() {
               type="password"
               name="password"
               autoComplete="current-password"
-              className={styles.input}
+              className={sharedStyles.input}
               placeholder={t('login.passwordPlaceholder')}
               value={form.password}
               onChange={handleChange}
               disabled={isLoading}
             />
-            {errors.password && <span className={styles.error}>{errors.password}</span>}
+            {errors.password && (
+              <span className={sharedStyles.fieldError}>{errors.password}</span>
+            )}
           </div>
 
-          <button type="submit" className={styles.button} disabled={isLoading}>
+          <button type="submit" className={sharedStyles.button} disabled={isLoading}>
             {isLoading ? (
-              <span className={styles.buttonLoading}>
-                <span className={styles.spinner}></span>
+              <span className={sharedStyles.buttonLoading}>
+                <span className={sharedStyles.spinner}></span>
                 {t('login.signingIn')}
               </span>
             ) : (
@@ -67,15 +72,15 @@ export function LoginForm() {
           </button>
         </form>
 
-        <div className={styles.footer}>
+        <div className={sharedStyles.footer}>
           <div className={styles.footerLinks}>
-            <Link href="/forgot-password" className={styles.footerLink}>
+            <Link href="/forgot-password" className={sharedStyles.footerLink}>
               {t('login.forgotPassword')}
             </Link>
 
             <div className={styles.footerLinksRow}>
               <span>{t('login.noAccount')}</span>
-              <Link href="/register" className={styles.footerLink}>
+              <Link href="/register" className={sharedStyles.footerLink}>
                 {t('login.signup')}
               </Link>
             </div>

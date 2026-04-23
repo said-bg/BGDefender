@@ -1,5 +1,6 @@
 'use client';
 
+import sharedStyles from '../AuthFormShared.module.css';
 import ResetPasswordRequirements from './ResetPasswordRequirements';
 import styles from './ResetPassword.module.css';
 import { useResetPasswordForm } from './useResetPasswordForm';
@@ -12,24 +13,26 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <h1 className={styles.heading}>{reset.t('resetPassword.title')}</h1>
-        <p className={styles.subtext}>{reset.t('resetPassword.subtitle')}</p>
+    <div className={sharedStyles.container}>
+      <div className={sharedStyles.card}>
+        <div className={sharedStyles.header}>
+          <h1 className={sharedStyles.title}>{reset.t('resetPassword.title')}</h1>
+          <p className={sharedStyles.subtitle}>{reset.t('resetPassword.subtitle')}</p>
+        </div>
 
         {reset.formError ? (
-          <div className={styles.errorMessage}>{reset.formError}</div>
+          <div className={sharedStyles.errorMessage}>{reset.formError}</div>
         ) : null}
 
-        <form onSubmit={reset.handleSubmit} className={styles.form}>
-          <div className={styles.formGroup}>
-            <label htmlFor="newPassword" className={styles.label}>
+        <form onSubmit={reset.handleSubmit} className={sharedStyles.form}>
+          <div className={sharedStyles.formGroup}>
+            <label htmlFor="newPassword" className={sharedStyles.label}>
               {reset.t('resetPassword.newPassword')}
             </label>
             <input
               id="newPassword"
               type="password"
-              className={styles.input}
+              className={sharedStyles.input}
               value={reset.newPassword}
               onChange={reset.handlePasswordChange}
               disabled={reset.loading}
@@ -43,14 +46,14 @@ export function ResetPasswordForm() {
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="confirmPassword" className={styles.label}>
+          <div className={sharedStyles.formGroup}>
+            <label htmlFor="confirmPassword" className={sharedStyles.label}>
               {reset.t('resetPassword.confirmPassword')}
             </label>
             <input
               id="confirmPassword"
               type="password"
-              className={styles.input}
+              className={sharedStyles.input}
               value={reset.confirmPassword}
               onChange={reset.handleConfirmPasswordChange}
               disabled={reset.loading}
@@ -58,7 +61,9 @@ export function ResetPasswordForm() {
               autoComplete="new-password"
             />
             {reset.fieldErrors.confirmPassword ? (
-              <div className={styles.fieldError}>{reset.fieldErrors.confirmPassword}</div>
+              <div className={sharedStyles.fieldError}>
+                {reset.fieldErrors.confirmPassword}
+              </div>
             ) : null}
           </div>
 
@@ -67,7 +72,7 @@ export function ResetPasswordForm() {
             className={styles.button}
             disabled={reset.loading || !reset.isFormValid}
           >
-            {reset.loading ? <span className={styles.spinner} /> : null}
+            {reset.loading ? <span className={sharedStyles.spinner} /> : null}
             {reset.loading
               ? reset.t('resetPassword.resetting')
               : reset.t('resetPassword.submit')}

@@ -448,7 +448,9 @@ describe('ChapterTrainingQuiz', () => {
     expect(screen.queryByText('Because A is correct')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Submit quiz' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Clear answers' })).toBeInTheDocument();
-    expect(scrollIntoViewMock).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(scrollIntoViewMock).toHaveBeenCalled();
+    });
   });
 });
 

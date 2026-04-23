@@ -1,7 +1,7 @@
 .helperText,
 .helperMessage {
   margin: 0;
-  color: #64748b;
+  color: var(--color-text-subtle);
   font-size: 0.84rem;
   line-height: 1.5;
 }
@@ -14,11 +14,11 @@
 }
 
 .successMessage {
-  color: #15803d;
+  color: var(--color-success-field);
 }
 
 .errorMessage {
-  color: #b91c1c;
+  color: var(--color-danger);
 }
 
 .actions {
@@ -37,22 +37,22 @@
   justify-content: center;
   min-height: 2.26rem;
   padding: 0.4rem 0.82rem;
-  border-radius: 0.72rem;
+  border-radius: var(--radius-md);
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
 }
 
 .primaryAction {
-  border: 1px solid #ffa600;
-  background: #ffa600;
-  color: #ffffff;
+  border: 1px solid var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
   cursor: pointer;
 }
 
 .primaryAction:hover {
-  background: #f29d00;
-  border-color: #f29d00;
+  background: var(--color-brand-hover);
+  border-color: var(--color-brand-hover);
 }
 
 .primaryAction:disabled {
@@ -61,15 +61,15 @@
 }
 
 .secondaryAction {
-  border: 1px solid #ffa600;
-  background: #ffffff;
-  color: #ffa600;
+  border: 1px solid var(--color-brand);
+  background: var(--color-surface);
+  color: var(--color-brand);
 }
 
 .secondaryAction:hover {
-  border-color: #ffa600;
-  background: #fff8eb;
-  color: #d98200;
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .inlineAction,
@@ -86,25 +86,25 @@
 }
 
 .inlineAction {
-  border: 1px solid #ffa600;
-  background: #ffffff;
-  color: #ffa600;
+  border: 1px solid var(--color-brand);
+  background: var(--color-surface);
+  color: var(--color-brand);
 }
 
 .inlineAction:hover {
-  border-color: #ffa600;
-  background: #fff8eb;
-  color: #d98200;
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .inlineDanger {
-  border: 1px solid #fecaca;
-  background: #fff5f5;
-  color: #b91c1c;
+  border: 1px solid var(--color-danger-border);
+  background: var(--color-danger-bg-muted);
+  color: var(--color-danger);
 }
 
 .inlineDanger:hover {
-  border-color: #fca5a5;
+  border-color: var(--color-danger-border-hover);
 }
 
 .inlineAction:disabled,
@@ -115,23 +115,23 @@
 
 .emptyState {
   padding: 18px;
-  border: 1px dashed #d0d5dd;
+  border: 1px dashed var(--color-border-strong);
   border-radius: 0.9rem;
-  background: #ffffff;
+  background: var(--color-surface);
   display: grid;
   gap: 0.45rem;
 }
 
 .emptyTitle {
   margin: 0;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.98rem;
   font-weight: 600;
 }
 
 .emptyDescription {
   margin: 0;
-  color: #526581;
+  color: var(--color-text-soft);
   font-size: 0.88rem;
   line-height: 1.55;
 }

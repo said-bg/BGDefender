@@ -1,64 +1,25 @@
 .languageSwitcher {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  flex: 0 0 auto;
+  composes: overlayRoot from './NavbarShared.module.css';
 }
 
 .switcherTrigger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.15rem;
-  height: 2.15rem;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: #ffa600;
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
+  composes: iconTrigger from './NavbarShared.module.css';
+  color: var(--color-brand);
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
-  line-height: 0;
-  flex: 0 0 auto;
-  transition:
-    color 0.18s ease,
-    background-color 0.18s ease;
-}
-
-.switcherTrigger:hover {
-  background: #fff8eb;
-  color: #ffa600;
 }
 
 .globeIcon {
-  width: 1.68rem;
-  height: 1.68rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #44516A;
-}
-
-  
-
-.globeIcon svg {
-  width: 100%;
-  height: 100%;
+  composes: iconGlyph from './NavbarShared.module.css';
 }
 
 .languageMenu {
+  composes: dropdownSurface from './NavbarShared.module.css';
   position: absolute;
   top: calc(100% + 0.55rem);
   right: 0;
   z-index: 25;
   width: 11rem;
   padding: 0.4rem;
-  border: 1px solid #e4e7ec;
-  border-radius: 1rem;
-  background: #ffffff;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.12);
 }
 
 .menuItem {
@@ -69,31 +30,31 @@
   min-height: 2.5rem;
   padding: 0.58rem 0.75rem;
   border: 0;
-  border-radius: 0.8rem;
+  border-radius: var(--radius-lg);
   background: transparent;
-  color: #111827;
+  color: var(--color-text-primary);
   cursor: pointer;
   font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
   font-size: 0.92rem;
   font-weight: 500;
   text-align: left;
   transition:
-    background-color 0.18s ease,
-    color 0.18s ease;
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .menuItem:hover {
-  background: #fff8eb;
-  color: #d98200;
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .menuItemActive {
-  background: #fff4db;
-  color: #ffa600;
+  background: var(--color-brand-muted);
+  color: var(--color-brand);
 }
 
 .menuCheck {
-  color: #ffa600;
+  color: var(--color-brand);
   font-size: 0.98rem;
   font-weight: 700;
 }

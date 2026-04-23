@@ -1,0 +1,17 @@
+.readerCopy {
+  max-width: 860px;
+  color: var(--color-text-body);
+  font-size: 1.08rem;
+  line-height: 1.95;
+}
+
+.readerLink {
+  color: var(--color-text-reader-link);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.readerLink:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}

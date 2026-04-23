@@ -1,0 +1,68 @@
+.panelCard {
+  border: 1px solid var(--color-border-resource);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-resource-card);
+  padding: 1.25rem 1.2rem;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.22rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.sectionDescription {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.91rem;
+  line-height: 1.6;
+}
+
+.helperText,
+.errorText {
+  margin: 1rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.helperText {
+  color: var(--color-text-muted);
+}
+
+.errorText {
+  color: var(--color-danger-resource);
+  font-weight: 600;
+}
+
+.emptyState {
+  margin-top: 1rem;
+  padding: 1.55rem 1.35rem;
+  border: 1px solid var(--color-border-resource);
+  border-radius: var(--radius-card-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-resource-card);
+  text-align: center;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 1.22rem;
+  font-weight: 700;
+}
+
+.emptyDescription {
+  max-width: 560px;
+  margin: 0.7rem auto 0;
+  color: var(--color-text-muted);
+  line-height: 1.72;
+}
+
+@media (max-width: 720px) {
+  .panelCard {
+    padding: 1.1rem;
+  }
+}

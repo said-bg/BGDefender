@@ -161,7 +161,7 @@ export async function deleteChapterMutation(
       }),
     );
 
-    if (editingChapterId === chapterId) {
+    if (!editingChapterId || editingChapterId === chapterId) {
       resetChapterForm(freshCourse);
     }
 

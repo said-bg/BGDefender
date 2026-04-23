@@ -1,14 +1,13 @@
 .authorsSection {
+  composes: dividerSection from './CourseContentSectionShared.module.css';
   margin: 0 0 2.4rem;
   padding: 1.4rem 0 0;
-  border-top: 1px solid #e5e7eb;
 }
 
 .sectionTitle {
+  composes: headingStrong from './CourseContentSectionShared.module.css';
   margin: 0 0 1rem;
-  color: #111827;
   font-size: 1.08rem;
-  font-weight: 800;
 }
 
 .authorGrid {
@@ -22,7 +21,7 @@
   align-items: center;
   gap: 0.9rem;
   padding: 0.9rem 0;
-  border-bottom: 1px solid #eceff4;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .authorAvatar,
@@ -30,14 +29,14 @@
   width: 3.1rem;
   height: 3.1rem;
   flex-shrink: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 }
 
 .authorAvatar {
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #ffa600, #ffbf47);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--color-brand), var(--color-brand-gradient-end));
+  color: var(--color-text-inverse);
   font-size: 1.1rem;
   font-weight: 800;
 }
@@ -47,12 +46,12 @@
 }
 
 .authorName {
-  color: #111827;
+  composes: headingStrong from './CourseContentSectionShared.module.css';
   font-weight: 700;
 }
 
 .authorRole {
+  composes: textSubtle from './CourseContentSectionShared.module.css';
   margin-top: 0.18rem;
-  color: #6b7280;
   font-size: 0.94rem;
 }

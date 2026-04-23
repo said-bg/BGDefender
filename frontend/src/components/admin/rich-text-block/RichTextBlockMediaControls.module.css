@@ -2,9 +2,9 @@
   display: grid;
   gap: 10px;
   padding: 12px 14px;
-  border: 1px solid #dbe4f0;
+  border: 1px solid var(--color-border-editor);
   border-radius: 16px;
-  background: #f8fafc;
+  background: var(--color-surface-subtle);
 }
 
 .mediaControlsHeader {
@@ -12,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .mediaControlsHeader strong {
@@ -20,13 +20,13 @@
 }
 
 .mediaControlsHeader span {
-  color: #526581;
+  color: var(--color-text-soft);
   font-size: 0.9rem;
   font-weight: 700;
 }
 
 .mediaHint {
-  color: #526581;
+  color: var(--color-text-soft);
   font-size: 0.82rem;
   font-weight: 600;
 }
@@ -41,7 +41,7 @@
 .mediaField {
   display: grid;
   gap: 6px;
-  color: #111827;
+  color: var(--color-text-primary);
   font-size: 0.85rem;
   font-weight: 700;
 }
@@ -50,16 +50,16 @@
   width: 88px;
   min-height: 38px;
   padding: 0 10px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--color-border-muted);
   border-radius: 12px;
-  background: #ffffff;
-  color: #111827;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font: inherit;
 }
 
 .mediaSlider {
   flex: 1 1 260px;
-  accent-color: #ffa600;
+  accent-color: var(--color-brand);
   cursor: pointer;
 }
 
@@ -73,10 +73,10 @@
   min-height: 36px;
   min-width: 64px;
   padding: 0 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #111827;
+  border: 1px solid var(--color-border-muted);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
   font: inherit;
   font-size: 0.85rem;
   font-weight: 800;
@@ -84,22 +84,22 @@
 }
 
 .mediaAlignButton:hover {
-  border-color: #111827;
+  border-color: var(--color-text-primary);
 }
 
 .mediaAlignButton[data-active='true'] {
-  border-color: #111827;
-  background: #111827;
-  color: #ffffff;
+  border-color: var(--color-text-primary);
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
 }
 
 .mediaRemoveButton {
   min-height: 36px;
   padding: 0 12px;
-  border: 1px solid #ef4444;
-  border-radius: 999px;
-  background: #ffffff;
-  color: #b91c1c;
+  border: 1px solid var(--color-danger-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-danger);
   font: inherit;
   font-size: 0.85rem;
   font-weight: 800;
@@ -107,5 +107,5 @@
 }
 
 .mediaRemoveButton:hover {
-  background: #fef2f2;
+  background: var(--color-danger-soft);
 }

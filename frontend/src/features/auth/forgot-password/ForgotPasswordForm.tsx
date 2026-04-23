@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import sharedStyles from '../AuthFormShared.module.css';
 import styles from './ForgotPassword.module.css';
 import { useForgotPasswordForm } from './useForgotPasswordForm';
 
@@ -9,11 +10,11 @@ export function ForgotPasswordForm() {
     useForgotPasswordForm();
 
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <h1 className={styles.title}>{t('forgotPassword.title')}</h1>
-          <p className={styles.subtitle}>{t('forgotPassword.subtitle')}</p>
+    <div className={sharedStyles.container}>
+      <div className={sharedStyles.card}>
+        <div className={sharedStyles.header}>
+          <h1 className={sharedStyles.title}>{t('forgotPassword.title')}</h1>
+          <p className={sharedStyles.subtitle}>{t('forgotPassword.subtitle')}</p>
         </div>
 
         {success && (
@@ -21,15 +22,15 @@ export function ForgotPasswordForm() {
         )}
 
         {errors.form && !success && (
-          <div className={styles.errorMessage}>{errors.form}</div>
+          <div className={sharedStyles.errorMessage}>{errors.form}</div>
         )}
 
         {!success && <div className={styles.infoMessage}>{t('forgotPassword.infoMessage')}</div>}
 
         {!success ? (
-          <form className={styles.form} onSubmit={handleSubmit}>
-            <div className={styles.formGroup}>
-              <label htmlFor="email" className={styles.label}>
+          <form className={sharedStyles.form} onSubmit={handleSubmit}>
+            <div className={sharedStyles.formGroup}>
+              <label htmlFor="email" className={sharedStyles.label}>
                 {t('forgotPassword.email')}
               </label>
               <input
@@ -37,19 +38,21 @@ export function ForgotPasswordForm() {
                 type="email"
                 name="email"
                 autoComplete="email"
-                className={styles.input}
+                className={sharedStyles.input}
                 placeholder={t('forgotPassword.emailPlaceholder')}
                 value={form.email}
                 onChange={handleChange}
                 disabled={isLoading}
               />
-              {errors.email && <span className={styles.error}>{errors.email}</span>}
+              {errors.email && (
+                <span className={sharedStyles.fieldError}>{errors.email}</span>
+              )}
             </div>
 
-            <button type="submit" className={styles.button} disabled={isLoading}>
+            <button type="submit" className={sharedStyles.button} disabled={isLoading}>
               {isLoading ? (
-                <span className={styles.buttonLoading}>
-                  <span className={styles.spinner}></span>
+                <span className={sharedStyles.buttonLoading}>
+                  <span className={sharedStyles.spinner}></span>
                   {t('forgotPassword.sending')}
                 </span>
               ) : (
@@ -59,8 +62,8 @@ export function ForgotPasswordForm() {
           </form>
         ) : null}
 
-        <div className={styles.footer}>
-          <Link href="/login" className={styles.footerLink}>
+        <div className={sharedStyles.footer}>
+          <Link href="/login" className={sharedStyles.footerLink}>
             {t('forgotPassword.backToLogin')}
           </Link>
         </div>

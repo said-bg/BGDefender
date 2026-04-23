@@ -3,10 +3,10 @@
   flex-wrap: wrap;
   gap: 10px;
   padding: 10px 12px;
-  border: 1px solid #d7dfeb;
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--color-border-control);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-resource-card);
 }
 
 .toolbarGroup {
@@ -14,7 +14,7 @@
   flex-wrap: wrap;
   gap: 4px;
   padding-right: 10px;
-  border-right: 1px solid #e2e8f0;
+  border-right: 1px solid var(--color-border);
 }
 
 .toolbarGroup:last-child {
@@ -29,7 +29,7 @@
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: #111827;
+  color: var(--color-text-primary);
   font: inherit;
   font-size: 0.9rem;
   font-weight: 700;
@@ -47,7 +47,7 @@
 
 .toolbarButton:hover,
 .toolbarSelect:hover {
-  background: #f5f7fb;
+  background: var(--color-surface-hover);
 }
 
 .toolbarSelect {

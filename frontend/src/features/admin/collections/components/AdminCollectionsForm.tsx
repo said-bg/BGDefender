@@ -1,7 +1,8 @@
 'use client';
 
 import type { Course } from '@/services/course';
-import styles from '../AdminCollectionsPage.module.css';
+import sharedStyles from './AdminCollectionsShared.module.css';
+import styles from './AdminCollectionsForm.module.css';
 
 type CollectionsTranslate = (
   key: string,
@@ -76,14 +77,14 @@ export default function AdminCollectionsForm({
   const publishedLabel = t('collections.published');
 
   return (
-    <section className={styles.formCard}>
-      <div className={styles.cardHeader}>
-        <h2 className={styles.sectionTitle}>
+    <section className={sharedStyles.card}>
+      <div className={sharedStyles.cardHeader}>
+        <h2 className={sharedStyles.sectionTitle}>
           {editingCollectionId
             ? t('collections.editTitle')
             : t('collections.createTitle')}
         </h2>
-        <p className={styles.sectionDescription}>
+        <p className={sharedStyles.sectionDescription}>
           {t('collections.formDescription')}
         </p>
       </div>
@@ -166,17 +167,21 @@ export default function AdminCollectionsForm({
               </label>
 
               {uploadedFilename ? (
-                <p className={styles.statusMessage}>
+                <p className={sharedStyles.statusMessage}>
                   {t('collections.coverUploadSuccess')}{' '}
                   {uploadedFilename}
                 </p>
               ) : null}
 
-              {form.coverImage ? <p className={styles.statusMessage}>{form.coverImage}</p> : null}
+              {form.coverImage ? (
+                <p className={sharedStyles.statusMessage}>{form.coverImage}</p>
+              ) : null}
             </div>
           )}
 
-          {coverUploadError ? <p className={styles.errorMessage}>{coverUploadError}</p> : null}
+          {coverUploadError ? (
+            <p className={sharedStyles.errorMessage}>{coverUploadError}</p>
+          ) : null}
         </div>
 
         <div className={`${styles.fieldGroup} ${styles.fieldGroupFull}`}>
@@ -273,11 +278,11 @@ export default function AdminCollectionsForm({
               </p>
 
               {selectedCourses.length === 0 ? (
-                <div className={styles.emptyState}>
-                  <h4 className={styles.emptyTitle}>
+                <div className={sharedStyles.emptyState}>
+                  <h4 className={sharedStyles.emptyTitle}>
                     {t('collections.noSelectedCourses')}
                   </h4>
-                  <p className={styles.emptyDescription}>
+                  <p className={sharedStyles.emptyDescription}>
                     {t('collections.noSelectedCoursesHint')}
                   </p>
                 </div>
@@ -296,7 +301,7 @@ export default function AdminCollectionsForm({
                       <div className={styles.selectedCourseActions}>
                         <button
                           type="button"
-                          className={styles.ghostButton}
+                          className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
                           onClick={() => handleMoveCourse(course.id, 'up')}
                           disabled={index === 0}
                         >
@@ -304,7 +309,7 @@ export default function AdminCollectionsForm({
                         </button>
                         <button
                           type="button"
-                          className={styles.ghostButton}
+                          className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
                           onClick={() => handleMoveCourse(course.id, 'down')}
                           disabled={index === selectedCourses.length - 1}
                         >
@@ -312,7 +317,7 @@ export default function AdminCollectionsForm({
                         </button>
                         <button
                           type="button"
-                          className={styles.dangerButton}
+                          className={`${sharedStyles.pillButton} ${sharedStyles.dangerButton} ${styles.responsiveButton}`}
                           onClick={() => handleToggleCourse(course.id)}
                         >
                           {t('collections.removeCourse')}
@@ -329,7 +334,7 @@ export default function AdminCollectionsForm({
         <div className={styles.actionsRow}>
           <button
             type="button"
-            className={styles.primaryAction}
+            className={`${sharedStyles.pillButton} ${sharedStyles.primaryButton} ${styles.responsiveButton}`}
             onClick={() => void handleSubmit()}
             disabled={submitting}
           >
@@ -341,7 +346,7 @@ export default function AdminCollectionsForm({
           </button>
           <button
             type="button"
-            className={styles.secondaryAction}
+            className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
             onClick={resetForm}
           >
             {editingCollectionId

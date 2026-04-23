@@ -10,7 +10,6 @@ import {
 import formStyles from '@/features/admin/courses/edit-course/shared/EditCourseForm.module.css';
 import sharedStyles from '@/features/admin/courses/edit-course/shared/EditCoursePage.module.css';
 import shellStyles from '@/features/admin/courses/edit-course/shared/EditCourseShell.module.css';
-import quizStyles from '@/features/admin/courses/edit-course/quiz/QuizPage.module.css';
 import QuizAnalyticsPanel from '@/features/admin/courses/edit-course/quiz/components/QuizAnalyticsPanel';
 import QuizAnalyticsSummaryBar from '@/features/admin/courses/edit-course/quiz/components/QuizAnalyticsSummaryBar';
 import FinalTestEditorForm from './components/FinalTestEditorForm';
@@ -21,7 +20,6 @@ const styles = {
   ...formStyles,
   ...sharedStyles,
   ...shellStyles,
-  ...quizStyles,
   ...featureStyles,
 };
 
@@ -72,7 +70,6 @@ function FinalTestPageContent() {
           'Create one optional scored final test for the full course. Learners unlock it only after finishing the course path.',
       })}
       courseTitle={finalTestPage.localizedCourseTitle}
-      wide
     >
       <section className={styles.formCard}>
         <div className={styles.cardHeader}>
