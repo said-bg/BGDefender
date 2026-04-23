@@ -28,8 +28,19 @@ export default function HomeCollectionsSection({
 
   const renderCollectionCard = (collection: HomeCourseCollection, index: number) => {
     const collectionTitle = getCollectionTitle(collection);
-    const stackDepth = Math.min(Math.max(collection.courses.length - 1, 0), 2);
-    const stackCourses = collection.courses.slice(0, 2);
+    const primaryCourse = collection.courses[0] ?? null;
+    const usesCollectionCover = Boolean(collection.coverImage);
+    const mainCoverSrc = collection.coverImage || primaryCourse?.coverImage || null;
+    const mainCoverTitle = usesCollectionCover
+      ? collectionTitle
+      : primaryCourse?.titleEn || primaryCourse?.titleFi || collectionTitle;
+    const mainCoverSeedKey = usesCollectionCover
+      ? collection.id
+      : primaryCourse?.id || collection.id;
+    const stackCourses = usesCollectionCover
+      ? collection.courses.slice(0, 2)
+      : collection.courses.slice(1, 3);
+    const stackDepth = Math.min(stackCourses.length, 2);
 
     return (
       <article key={collection.id} className={styles.card}>
@@ -73,9 +84,9 @@ export default function HomeCollectionsSection({
 
           <div className={styles.cardHero}>
             <CourseCover
-              src={collection.coverImage}
-              title={collectionTitle}
-              seedKey={collection.id}
+              src={mainCoverSrc}
+              title={mainCoverTitle}
+              seedKey={mainCoverSeedKey}
               sizes="(max-width: 768px) 90vw, 360px"
               imageClassName={styles.cardImage}
               fallbackClassName={styles.cardImagePlaceholder}

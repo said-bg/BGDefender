@@ -39,6 +39,14 @@ const createInitialFormState = (orderIndex = '1'): CollectionFormState => ({
 
 type CollectionImageMode = 'url' | 'upload';
 
+const scrollToPageTop = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 export default function useAdminCollections() {
   const { t, i18n } = useTranslation('admin');
   const [collections, setCollections] = useState<CourseCollection[]>([]);
@@ -56,6 +64,23 @@ export default function useAdminCollections() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const clearFeedback = () => {
+    setMessage(null);
+    setError(null);
+  };
+
+  const showSuccess = (feedback: string) => {
+    setError(null);
+    setMessage(feedback);
+    scrollToPageTop();
+  };
+
+  const showError = (feedback: string) => {
+    setMessage(null);
+    setError(feedback);
+    scrollToPageTop();
+  };
+
   const resetFormWithCollections = useCallback((collectionRows: CourseCollection[]) => {
     setEditingCollectionId(null);
     setForm(createInitialFormState(getNextCollectionOrderIndex(collectionRows)));
@@ -63,6 +88,29 @@ export default function useAdminCollections() {
     setCoverUploadError(null);
     setUploadedFilename(null);
   }, []);
+
+  const syncFormOrderWithCollections = (collectionRows: CourseCollection[]) => {
+    if (!editingCollectionId) {
+      setForm((current) => ({
+        ...current,
+        orderIndex: getNextCollectionOrderIndex(collectionRows),
+      }));
+      return;
+    }
+
+    const editedCollection = collectionRows.find(
+      (collection) => collection.id === editingCollectionId,
+    );
+
+    if (!editedCollection) {
+      return;
+    }
+
+    setForm((current) => ({
+      ...current,
+      orderIndex: String(editedCollection.orderIndex),
+    }));
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -134,6 +182,7 @@ export default function useAdminCollections() {
   }, [collections]);
 
   const resetForm = () => {
+    clearFeedback();
     resetFormWithCollections(collections);
   };
 
@@ -141,10 +190,12 @@ export default function useAdminCollections() {
     key: K,
     value: CollectionFormState[K],
   ) => {
+    clearFeedback();
     setForm((current) => ({ ...current, [key]: value }));
   };
 
   const handleToggleCourse = (courseId: string) => {
+    clearFeedback();
     setForm((current) => ({
       ...current,
       courseIds: toggleCollectionCourse(current.courseIds, courseId),
@@ -152,6 +203,7 @@ export default function useAdminCollections() {
   };
 
   const handleMoveCourse = (courseId: string, direction: 'up' | 'down') => {
+    clearFeedback();
     setForm((current) => ({
       ...current,
       courseIds: moveCollectionCourse(current.courseIds, courseId, direction),
@@ -189,6 +241,7 @@ export default function useAdminCollections() {
   });
 
   const handleImageModeChange = (mode: CollectionImageMode) => {
+    clearFeedback();
     setImageMode(mode);
     setCoverUploadError(null);
   };
@@ -214,14 +267,14 @@ export default function useAdminCollections() {
   };
 
   const handleSubmit = async () => {
+    clearFeedback();
+
     if (!form.titleEn.trim() || !form.titleFi.trim()) {
-      setError(t('collections.titleRequired'));
+      showError(t('collections.titleRequired'));
       return;
     }
 
     setSubmitting(true);
-    setError(null);
-    setMessage(null);
 
     try {
       const payload = buildPayload();
@@ -235,7 +288,7 @@ export default function useAdminCollections() {
       );
       setCollections(freshCollections);
 
-      setMessage(
+      showSuccess(
         editingCollectionId
           ? t('collections.updated')
           : t('collections.created'),
@@ -243,7 +296,7 @@ export default function useAdminCollections() {
       resetFormWithCollections(freshCollections);
     } catch (submitError) {
       console.error('Failed to save collection:', submitError);
-      setError(
+      showError(
         editingCollectionId
           ? t('collections.updateFailed')
           : t('collections.createFailed'),
@@ -255,8 +308,7 @@ export default function useAdminCollections() {
 
   const handleDelete = async (collection: CourseCollection) => {
     setDeletingId(collection.id);
-    setError(null);
-    setMessage(null);
+    clearFeedback();
 
     try {
       await collectionService.deleteCollection(collection.id);
@@ -264,10 +316,12 @@ export default function useAdminCollections() {
         await collectionService.getAdminCollections(),
       );
       setCollections(freshCollections);
-      setMessage(t('collections.deleted'));
+      showSuccess(t('collections.deleted'));
 
       if (editingCollectionId === collection.id) {
         resetFormWithCollections(freshCollections);
+      } else {
+        syncFormOrderWithCollections(freshCollections);
       }
     } catch (deleteError) {
       console.error('Failed to delete collection:', deleteError);
@@ -295,8 +349,7 @@ export default function useAdminCollections() {
       return;
     }
 
-    setError(null);
-    setMessage(null);
+    clearFeedback();
 
     try {
       await collectionService.updateCollection(collectionId, {
@@ -306,13 +359,10 @@ export default function useAdminCollections() {
         await collectionService.getAdminCollections(),
       );
       setCollections(freshCollections);
-
-      if (!editingCollectionId) {
-        resetFormWithCollections(freshCollections);
-      }
+      syncFormOrderWithCollections(freshCollections);
     } catch (moveError) {
       console.error('Failed to reorder collection:', moveError);
-      setError(t('collections.updateFailed'));
+      showError(t('collections.updateFailed'));
     }
   };
 
