@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import collectionService from '@/services/collections';
 import courseService, {
@@ -9,7 +9,9 @@ import courseService, {
   CreateCourseCollectionRequest,
 } from '@/services/course';
 import {
+  getNextCollectionOrderIndex,
   moveCollectionCourse,
+  sortCollectionsByOrderIndex,
   toggleCollectionCourse,
 } from './collections.utils';
 
@@ -24,13 +26,13 @@ type CollectionFormState = {
   courseIds: string[];
 };
 
-const createInitialFormState = (): CollectionFormState => ({
+const createInitialFormState = (orderIndex = '1'): CollectionFormState => ({
   titleEn: '',
   titleFi: '',
   descriptionEn: '',
   descriptionFi: '',
   coverImage: '',
-  orderIndex: '1',
+  orderIndex,
   isPublished: true,
   courseIds: [],
 });
@@ -54,6 +56,14 @@ export default function useAdminCollections() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const resetFormWithCollections = useCallback((collectionRows: CourseCollection[]) => {
+    setEditingCollectionId(null);
+    setForm(createInitialFormState(getNextCollectionOrderIndex(collectionRows)));
+    setImageMode('url');
+    setCoverUploadError(null);
+    setUploadedFilename(null);
+  }, []);
+
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
@@ -65,7 +75,9 @@ export default function useAdminCollections() {
           courseService.getAdminCourses(100, 0),
         ]);
 
-        setCollections(collectionRows);
+        const orderedCollections = sortCollectionsByOrderIndex(collectionRows);
+        setCollections(orderedCollections);
+        resetFormWithCollections(orderedCollections);
         setAvailableCourses(
           courseRows.data.filter((course) => course.status === 'published'),
         );
@@ -78,7 +90,7 @@ export default function useAdminCollections() {
     };
 
     void loadData();
-  }, [t]);
+  }, [resetFormWithCollections, t]);
 
   const preparedCollections = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -122,11 +134,7 @@ export default function useAdminCollections() {
   }, [collections]);
 
   const resetForm = () => {
-    setEditingCollectionId(null);
-    setForm(createInitialFormState());
-    setImageMode('url');
-    setCoverUploadError(null);
-    setUploadedFilename(null);
+    resetFormWithCollections(collections);
   };
 
   const updateForm = <K extends keyof CollectionFormState>(
@@ -217,23 +225,22 @@ export default function useAdminCollections() {
 
     try {
       const payload = buildPayload();
-      const saved = editingCollectionId
-        ? await collectionService.updateCollection(editingCollectionId, payload)
-        : await collectionService.createCollection(payload);
-
-      setCollections((current) => {
-        const withoutEdited = current.filter((collection) => collection.id !== saved.id);
-        return [...withoutEdited, saved].sort(
-          (left, right) => left.orderIndex - right.orderIndex,
-        );
-      });
+      if (editingCollectionId) {
+        await collectionService.updateCollection(editingCollectionId, payload);
+      } else {
+        await collectionService.createCollection(payload);
+      }
+      const freshCollections = sortCollectionsByOrderIndex(
+        await collectionService.getAdminCollections(),
+      );
+      setCollections(freshCollections);
 
       setMessage(
         editingCollectionId
           ? t('collections.updated')
           : t('collections.created'),
       );
-      resetForm();
+      resetFormWithCollections(freshCollections);
     } catch (submitError) {
       console.error('Failed to save collection:', submitError);
       setError(
@@ -253,17 +260,59 @@ export default function useAdminCollections() {
 
     try {
       await collectionService.deleteCollection(collection.id);
-      setCollections((current) => current.filter((item) => item.id !== collection.id));
+      const freshCollections = sortCollectionsByOrderIndex(
+        await collectionService.getAdminCollections(),
+      );
+      setCollections(freshCollections);
       setMessage(t('collections.deleted'));
 
       if (editingCollectionId === collection.id) {
-        resetForm();
+        resetFormWithCollections(freshCollections);
       }
     } catch (deleteError) {
       console.error('Failed to delete collection:', deleteError);
       setError(t('collections.deleteFailed'));
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleMoveCollection = async (
+    collectionId: string,
+    direction: 'up' | 'down',
+  ) => {
+    const orderedCollections = sortCollectionsByOrderIndex(collections);
+    const currentIndex = orderedCollections.findIndex(
+      (collection) => collection.id === collectionId,
+    );
+
+    if (currentIndex === -1) {
+      return;
+    }
+
+    const nextIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    if (nextIndex < 0 || nextIndex >= orderedCollections.length) {
+      return;
+    }
+
+    setError(null);
+    setMessage(null);
+
+    try {
+      await collectionService.updateCollection(collectionId, {
+        orderIndex: nextIndex + 1,
+      });
+      const freshCollections = sortCollectionsByOrderIndex(
+        await collectionService.getAdminCollections(),
+      );
+      setCollections(freshCollections);
+
+      if (!editingCollectionId) {
+        resetFormWithCollections(freshCollections);
+      }
+    } catch (moveError) {
+      console.error('Failed to reorder collection:', moveError);
+      setError(t('collections.updateFailed'));
     }
   };
 
@@ -277,6 +326,7 @@ export default function useAdminCollections() {
     handleDelete,
     handleCoverUpload,
     handleImageModeChange,
+    handleMoveCollection,
     handleMoveCourse,
     handleSubmit,
     handleToggleCourse,

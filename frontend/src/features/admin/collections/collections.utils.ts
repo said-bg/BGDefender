@@ -1,3 +1,11 @@
+export const getNextCollectionOrderIndex = (
+  collections: Array<{ orderIndex: number }> = [],
+) => String(collections.length + 1);
+
+export const sortCollectionsByOrderIndex = <T extends { orderIndex: number }>(
+  collections: T[],
+) => [...collections].sort((left, right) => left.orderIndex - right.orderIndex);
+
 export const toggleCollectionCourse = (
   courseIds: string[],
   courseId: string,

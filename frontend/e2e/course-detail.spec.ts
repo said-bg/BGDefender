@@ -37,7 +37,7 @@ test.describe('Course detail - E2E tests', () => {
     ).toBeVisible();
     await expect(
       page.getByRole('main').getByRole('link', { name: 'login', exact: true }),
-    ).toHaveAttribute('href', '/login');
+    ).toHaveAttribute('href', `/login?redirect=%2Fcourses%2F${course.id}`);
   });
 
   test('free user can access free course content and navigate with next', async ({ page }) => {

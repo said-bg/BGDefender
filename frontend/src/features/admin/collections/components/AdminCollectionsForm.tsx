@@ -301,7 +301,7 @@ export default function AdminCollectionsForm({
                       <div className={styles.selectedCourseActions}>
                         <button
                           type="button"
-                          className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
+                          className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.selectedCourseActionButton}`}
                           onClick={() => handleMoveCourse(course.id, 'up')}
                           disabled={index === 0}
                         >
@@ -309,7 +309,7 @@ export default function AdminCollectionsForm({
                         </button>
                         <button
                           type="button"
-                          className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
+                          className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.selectedCourseActionButton}`}
                           onClick={() => handleMoveCourse(course.id, 'down')}
                           disabled={index === selectedCourses.length - 1}
                         >
@@ -317,7 +317,7 @@ export default function AdminCollectionsForm({
                         </button>
                         <button
                           type="button"
-                          className={`${sharedStyles.pillButton} ${sharedStyles.dangerButton} ${styles.responsiveButton}`}
+                          className={`${sharedStyles.pillButton} ${sharedStyles.dangerButton} ${styles.selectedCourseRemoveButton}`}
                           onClick={() => handleToggleCourse(course.id)}
                         >
                           {t('collections.removeCourse')}

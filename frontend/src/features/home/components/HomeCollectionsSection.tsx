@@ -11,7 +11,6 @@ type HomeCollectionsSectionProps = {
   description: string;
   emptyLabel: string;
   title: string;
-  getCollectionDescription: (collection: HomeCourseCollection) => string;
   getCollectionTitle: (collection: HomeCourseCollection) => string;
   t: (key: string, options?: Record<string, unknown>) => string;
 };
@@ -21,7 +20,6 @@ export default function HomeCollectionsSection({
   description,
   emptyLabel,
   title,
-  getCollectionDescription,
   getCollectionTitle,
   t,
 }: HomeCollectionsSectionProps) {
@@ -30,11 +28,6 @@ export default function HomeCollectionsSection({
 
   const renderCollectionCard = (collection: HomeCourseCollection, index: number) => {
     const collectionTitle = getCollectionTitle(collection);
-    const collectionDescription =
-      getCollectionDescription(collection) ||
-      t('page.collectionCardFallbackDescription', {
-        count: collection.courses.length,
-      });
     const stackDepth = Math.min(Math.max(collection.courses.length - 1, 0), 2);
     const stackCourses = collection.courses.slice(0, 2);
 
@@ -96,26 +89,16 @@ export default function HomeCollectionsSection({
               </span>
               <h3 className={styles.heroTitle}>{collectionTitle}</h3>
               <div className={styles.heroFooter}>
-                <div className={styles.heroMetaGroup}>
-                  <p className={styles.heroMeta}>
-                    {t('page.collectionCourseCount', {
-                      count: collection.courses.length,
-                    })}
-                  </p>
-                  <p className={styles.heroHint}>
-                    {t('page.collectionPathLabel')}
-                  </p>
-                </div>
-                <span className={styles.openButton}>
-                  {t('page.openCollection')}
-                </span>
+                <p className={styles.heroMeta}>
+                  {t('page.collectionCourseCount', {
+                    count: collection.courses.length,
+                  })}
+                </p>
               </div>
             </div>
           </div>
 
           <div className={styles.cardBody}>
-            <p className={styles.cardDescription}>{collectionDescription}</p>
-
             {collection.courses.length === 0 ? (
               <p className={styles.previewEmpty}>{emptyLabel}</p>
             ) : null}

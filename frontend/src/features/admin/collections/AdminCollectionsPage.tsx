@@ -31,6 +31,7 @@ function AdminCollectionsPageContent() {
     handleCoverUpload,
     handleDelete,
     handleImageModeChange,
+    handleMoveCollection,
     handleMoveCourse,
     handleSubmit,
     handleToggleCourse,
@@ -130,7 +131,7 @@ function AdminCollectionsPageContent() {
           <AdminCollectionsList
             deletingId={deletingId}
             handleDelete={handleDelete}
-            handleMoveCourse={handleMoveCourse}
+            handleMoveCollection={handleMoveCollection}
             language={language}
             loading={loading}
             preparedCollections={preparedCollections}

@@ -306,7 +306,7 @@ export interface CreateCourseCollectionRequest {
   courseIds?: string[];
 }
 
-export type UpdateCourseCollectionRequest = CreateCourseCollectionRequest;
+export type UpdateCourseCollectionRequest = Partial<CreateCourseCollectionRequest>;
 
 export interface UploadCollectionCoverResponse {
   statusCode: number;

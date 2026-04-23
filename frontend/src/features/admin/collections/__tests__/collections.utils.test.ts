@@ -1,5 +1,7 @@
 import {
+  getNextCollectionOrderIndex,
   moveCollectionCourse,
+  sortCollectionsByOrderIndex,
   toggleCollectionCourse,
 } from '../collections.utils';
 
@@ -20,5 +22,24 @@ describe('collections.utils', () => {
       'c',
       'b',
     ]);
+  });
+
+  it('builds the next collection order from the current collection count', () => {
+    expect(getNextCollectionOrderIndex([])).toBe('1');
+    expect(
+      getNextCollectionOrderIndex([
+        { orderIndex: 1 },
+        { orderIndex: 8 },
+      ]),
+    ).toBe('3');
+  });
+
+  it('sorts collections by display order', () => {
+    expect(
+      sortCollectionsByOrderIndex([
+        { id: 'third', orderIndex: 3 },
+        { id: 'first', orderIndex: 1 },
+      ]).map((collection) => collection.id),
+    ).toEqual(['first', 'third']);
   });
 });

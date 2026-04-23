@@ -6,6 +6,13 @@ import { CourseCollectionItem } from '../../entities/course-collection-item.enti
 import { Course, CourseStatus } from '../../entities/course.entity';
 import { CreateCourseCollectionDto } from '../dto/create-course-collection.dto';
 import { UpdateCourseCollectionDto } from '../dto/update-course-collection.dto';
+import {
+  clampOrderIndex,
+  normalizeOrderIndexes,
+  shiftAfterDelete,
+  shiftForInsert,
+  shiftForMove,
+} from '../../courses/services/order-index.utils';
 
 type CollectionView = {
   id: string;
@@ -77,6 +84,18 @@ export class CollectionsService {
 
   async create(dto: CreateCourseCollectionDto): Promise<CollectionView> {
     const courses = await this.resolveCourses(dto.courseIds ?? []);
+    const siblings = await this.loadOrderedCollectionSiblings();
+    await this.normalizeCollectionSiblings(siblings);
+
+    const orderIndex = clampOrderIndex(
+      dto.orderIndex ?? siblings.length + 1,
+      siblings.length + 1,
+    );
+    const shiftedCollections = shiftForInsert(siblings, orderIndex);
+
+    if (shiftedCollections.length > 0) {
+      await this.collectionRepository.save(shiftedCollections);
+    }
 
     const collection = this.collectionRepository.create({
       titleEn: dto.titleEn.trim(),
@@ -84,7 +103,7 @@ export class CollectionsService {
       descriptionEn: dto.descriptionEn?.trim() || null,
       descriptionFi: dto.descriptionFi?.trim() || null,
       coverImage: dto.coverImage?.trim() || null,
-      orderIndex: dto.orderIndex ?? 1,
+      orderIndex,
       isPublished: dto.isPublished ?? true,
       items: (dto.courseIds ?? []).map((courseId, index) =>
         this.collectionItemRepository.create({
@@ -108,6 +127,8 @@ export class CollectionsService {
     dto: UpdateCourseCollectionDto,
   ): Promise<CollectionView> {
     const collection = await this.findCollectionOrThrow(id);
+    const siblings = await this.loadOrderedCollectionSiblings();
+    await this.normalizeCollectionSiblings(siblings);
 
     if (dto.titleEn !== undefined) {
       collection.titleEn = dto.titleEn.trim();
@@ -130,7 +151,21 @@ export class CollectionsService {
     }
 
     if (dto.orderIndex !== undefined) {
-      collection.orderIndex = dto.orderIndex;
+      const normalizedCollection = siblings.find((sibling) => sibling.id === collection.id);
+      const previousOrderIndex = normalizedCollection?.orderIndex ?? collection.orderIndex;
+      const nextOrderIndex = clampOrderIndex(dto.orderIndex, siblings.length);
+      const shiftedCollections = shiftForMove(
+        siblings,
+        collection.id,
+        previousOrderIndex,
+        nextOrderIndex,
+      );
+
+      if (shiftedCollections.length > 0) {
+        await this.collectionRepository.save(shiftedCollections);
+      }
+
+      collection.orderIndex = nextOrderIndex;
     }
 
     if (dto.isPublished !== undefined) {
@@ -157,7 +192,41 @@ export class CollectionsService {
 
   async delete(id: string): Promise<void> {
     const collection = await this.findCollectionOrThrow(id);
+    const siblings = await this.loadOrderedCollectionSiblings();
+    await this.normalizeCollectionSiblings(siblings);
+    const normalizedCollection = siblings.find((sibling) => sibling.id === collection.id);
+    const removedOrderIndex = normalizedCollection?.orderIndex ?? collection.orderIndex;
+
     await this.collectionRepository.remove(collection);
+
+    const shiftedCollections = shiftAfterDelete(
+      siblings,
+      collection.id,
+      removedOrderIndex,
+    );
+
+    if (shiftedCollections.length > 0) {
+      await this.collectionRepository.save(shiftedCollections);
+    }
+  }
+
+  private async loadOrderedCollectionSiblings(): Promise<CourseCollection[]> {
+    return this.collectionRepository.find({
+      order: {
+        orderIndex: 'ASC',
+        createdAt: 'ASC',
+      },
+    });
+  }
+
+  private async normalizeCollectionSiblings(
+    collections: CourseCollection[],
+  ): Promise<void> {
+    const normalizedCollections = normalizeOrderIndexes(collections);
+
+    if (normalizedCollections.length > 0) {
+      await this.collectionRepository.save(normalizedCollections);
+    }
   }
 
   private async resolveCourses(courseIds: string[]): Promise<Course[]> {

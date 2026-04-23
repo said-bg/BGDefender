@@ -165,6 +165,7 @@ describe('CollectionsService', () => {
     collectionRepository.save.mockImplementation((value: CourseCollection) =>
       Promise.resolve(value),
     );
+    collectionRepository.find.mockResolvedValue([]);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -328,6 +329,10 @@ describe('CollectionsService', () => {
         createCourse({ id: 'course-1' }),
         createCourse({ id: 'course-2', titleEn: 'Network Security' }),
       ];
+      collectionRepository.find.mockResolvedValue([
+        createCollection({ id: 'collection-existing-1', orderIndex: 1 }),
+        createCollection({ id: 'collection-existing-2', orderIndex: 2 }),
+      ]);
 
       courseRepository.findByIds.mockResolvedValue(courses);
       collectionRepository.findOne.mockResolvedValue(
@@ -416,6 +421,32 @@ describe('CollectionsService', () => {
       expect(result.courses).toEqual([]);
     });
 
+    it('appends a collection after existing siblings when no order is provided', async () => {
+      collectionRepository.find.mockResolvedValue([
+        createCollection({ id: 'collection-existing-1', orderIndex: 1 }),
+        createCollection({ id: 'collection-existing-2', orderIndex: 2 }),
+      ]);
+      collectionRepository.findOne.mockResolvedValue(
+        createCollection({
+          id: 'collection-new',
+          titleEn: 'Appended',
+          titleFi: 'Appended',
+          orderIndex: 3,
+          items: [],
+        }),
+      );
+
+      const result = await service.create({
+        titleEn: 'Appended',
+        titleFi: 'Appended',
+      });
+
+      expect(collectionRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({ orderIndex: 3 }),
+      );
+      expect(result.orderIndex).toBe(3);
+    });
+
     it('throws when one or more collection course ids cannot be resolved', async () => {
       courseRepository.findByIds.mockResolvedValue([
         createCourse({ id: 'course-1' }),
@@ -457,6 +488,13 @@ describe('CollectionsService', () => {
         isPublished: false,
         courseIds: ['course-2', 'course-3'],
       };
+      collectionRepository.find.mockResolvedValue([
+        createCollection({ id: 'collection-1', orderIndex: 1 }),
+        createCollection({ id: 'collection-2', orderIndex: 2 }),
+        createCollection({ id: 'collection-3', orderIndex: 3 }),
+        createCollection({ id: 'collection-4', orderIndex: 4 }),
+        createCollection({ id: 'collection-5', orderIndex: 5 }),
+      ]);
 
       collectionRepository.findOne
         .mockResolvedValueOnce(existingCollection)
@@ -630,6 +668,34 @@ describe('CollectionsService', () => {
       await service.delete('collection-1');
 
       expect(collectionRepository.remove).toHaveBeenCalledWith(collection);
+    });
+
+    it('closes order gaps after deleting a collection', async () => {
+      const firstCollection = createCollection({
+        id: 'collection-1',
+        orderIndex: 1,
+      });
+      const secondCollection = createCollection({
+        id: 'collection-2',
+        orderIndex: 2,
+      });
+      const thirdCollection = createCollection({
+        id: 'collection-3',
+        orderIndex: 3,
+      });
+
+      collectionRepository.findOne.mockResolvedValue(secondCollection);
+      collectionRepository.find.mockResolvedValue([
+        firstCollection,
+        secondCollection,
+        thirdCollection,
+      ]);
+      collectionRepository.remove.mockResolvedValue(secondCollection);
+
+      await service.delete('collection-2');
+
+      expect(thirdCollection.orderIndex).toBe(2);
+      expect(collectionRepository.save).toHaveBeenCalledWith([thirdCollection]);
     });
 
     it('throws when deleting a missing collection', async () => {

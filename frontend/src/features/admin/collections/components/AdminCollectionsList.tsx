@@ -12,7 +12,7 @@ type CollectionsTranslate = (
 type AdminCollectionsListProps = {
   deletingId: string | null;
   handleDelete: (collection: CourseCollection) => Promise<void>;
-  handleMoveCourse: (collectionId: string, direction: 'up' | 'down') => void;
+  handleMoveCollection: (collectionId: string, direction: 'up' | 'down') => void;
   language: string;
   loading: boolean;
   preparedCollections: CourseCollection[];
@@ -25,7 +25,7 @@ type AdminCollectionsListProps = {
 export default function AdminCollectionsList({
   deletingId,
   handleDelete,
-  handleMoveCourse,
+  handleMoveCollection,
   language,
   loading,
   preparedCollections,
@@ -111,20 +111,20 @@ export default function AdminCollectionsList({
                 <button
                   type="button"
                   className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
-                  onClick={() => handleMoveCourse(collection.id, 'up')}
+                  onClick={() => handleMoveCollection(collection.id, 'up')}
                   disabled={preparedCollections.indexOf(collection) === 0}
                   title={t('collections.moveUp')}
                 >
-                  Move up
+                  {t('collections.moveUp')}
                 </button>
                 <button
                   type="button"
                   className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
-                  onClick={() => handleMoveCourse(collection.id, 'down')}
+                  onClick={() => handleMoveCollection(collection.id, 'down')}
                   disabled={preparedCollections.indexOf(collection) === preparedCollections.length - 1}
                   title={t('collections.moveDown')}
                 >
-                  Move down
+                  {t('collections.moveDown')}
                 </button>
                 <button
                   type="button"

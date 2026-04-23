@@ -11,7 +11,6 @@ export default function HomePage() {
   const { t } = useTranslation('courses');
   const {
     courses,
-    getCollectionDescription,
     getCollectionTitle,
     getCardDescription,
     getTitle,
@@ -128,7 +127,6 @@ export default function HomePage() {
           title={t('page.collections')}
           description={t('page.collectionsDescription')}
           emptyLabel={t('page.noCoursesAvailable')}
-          getCollectionDescription={getCollectionDescription}
           getCollectionTitle={getCollectionTitle}
           t={t}
         />

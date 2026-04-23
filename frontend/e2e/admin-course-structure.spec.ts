@@ -39,23 +39,29 @@ test.describe('Admin course structure', () => {
 
   test('creates a chapter from the structure editor', async ({ page }) => {
     let createdPayload: Record<string, unknown> | null = null;
+    let course = buildCourse();
 
     await page.route(COURSE_ROUTE, async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(buildCourse()),
+        body: JSON.stringify(course),
       });
     });
 
     await page.route(CHAPTERS_ROUTE, async (route) => {
       createdPayload = route.request().postDataJSON();
+      const createdChapter = {
+        ...chapter,
+        subChapters: [],
+      };
+      course = buildCourse({ chapters: [createdChapter] });
 
       await route.fulfill({
         status: 201,
         contentType: 'application/json',
         body: JSON.stringify({
-          ...chapter,
+          ...createdChapter,
           subChapters: undefined,
         }),
       });
@@ -97,30 +103,40 @@ test.describe('Admin course structure', () => {
 
   test('creates a subchapter from the structure editor', async ({ page }) => {
     let createdPayload: Record<string, unknown> | null = null;
+    let course = buildCourse({ chapters: [chapter] });
 
     await page.route(COURSE_ROUTE, async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(buildCourse({ chapters: [chapter] })),
+        body: JSON.stringify(course),
       });
     });
 
     await page.route(SUB_CHAPTERS_ROUTE, async (route) => {
       createdPayload = route.request().postDataJSON();
+      const createdSubChapter = {
+        id: 'sub-1',
+        titleEn: 'Risk Signals',
+        titleFi: 'Riskisignaalit',
+        descriptionEn: 'Risk signals description',
+        descriptionFi: 'Riskisignaalien kuvaus',
+        orderIndex: 1,
+        pedagogicalContents: [],
+      };
+      course = buildCourse({
+        chapters: [
+          {
+            ...chapter,
+            subChapters: [createdSubChapter],
+          },
+        ],
+      });
 
       await route.fulfill({
         status: 201,
         contentType: 'application/json',
-        body: JSON.stringify({
-          id: 'sub-1',
-          titleEn: 'Risk Signals',
-          titleFi: 'Riskisignaalit',
-          descriptionEn: 'Risk signals description',
-          descriptionFi: 'Riskisignaalien kuvaus',
-          orderIndex: 1,
-          pedagogicalContents: [],
-        }),
+        body: JSON.stringify(createdSubChapter),
       });
     });
 
