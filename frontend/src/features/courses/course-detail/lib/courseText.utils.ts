@@ -9,6 +9,42 @@ export const getPreviewText = (text: string, length = 96) => {
   return `${text.slice(0, length).trim()}...`;
 };
 
+const isLikelyHeadingParagraph = (value: string) => {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return false;
+  }
+
+  const wordCount = trimmedValue.split(/\s+/).filter(Boolean).length;
+  const hasSentencePunctuation = /[.!?;:]/.test(trimmedValue);
+
+  return wordCount <= 6 && !hasSentencePunctuation;
+};
+
+export const getPreviewParagraph = (paragraphs: string[]) => {
+  const previewLines = paragraphs
+    .flatMap((paragraph) => paragraph.split(/\r?\n+/))
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  if (previewLines.length === 0) {
+    return '';
+  }
+
+  const firstMeaningfulParagraph = previewLines[0];
+
+  if (!isLikelyHeadingParagraph(firstMeaningfulParagraph)) {
+    return firstMeaningfulParagraph;
+  }
+
+  const firstBodyParagraph = previewLines.find(
+    (paragraph) => !isLikelyHeadingParagraph(paragraph),
+  );
+
+  return firstBodyParagraph || firstMeaningfulParagraph;
+};
+
 const decodeHtmlEntities = (value: string) =>
   value
     .replace(/&nbsp;/gi, ' ')

@@ -428,4 +428,33 @@
   .listCard {
     padding: 18px;
   }
+
+  .filters,
+  .actionsRow,
+  .resourceActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .searchInput {
+    min-width: 0;
+  }
+
+  .modeGroup {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .modeButton,
+  .primaryAction,
+  .inlineLink,
+  .inlineDanger,
+  .uploadLabel {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .resourceCard {
+    padding: 0.9rem;
+  }
 }

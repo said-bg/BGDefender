@@ -126,3 +126,13 @@
     align-items: flex-start;
   }
 }
+
+@media (max-width: 640px) {
+  .editorTopActions {
+    display: grid;
+  }
+
+  .contentBlocksCompact {
+    grid-template-columns: 1fr;
+  }
+}

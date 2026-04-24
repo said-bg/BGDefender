@@ -115,14 +115,11 @@ const getQuizAnalyticsForAdmin = async (
   target:
     | { scope: QuizScope.CHAPTER_TRAINING; chapterId: string }
     | { scope: QuizScope.COURSE_FINAL; courseId: string },
-): Promise<
-  | {
-      quizId: string;
-      summary: AdminQuizAnalyticsView['summary'];
-      learners: AdminQuizAnalyticsView['learners'];
-    }
-  | null
-> => {
+): Promise<{
+  quizId: string;
+  summary: AdminQuizAnalyticsView['summary'];
+  learners: AdminQuizAnalyticsView['learners'];
+} | null> => {
   const quiz = await deps.quizRepository.findOne({
     where:
       target.scope === QuizScope.CHAPTER_TRAINING
@@ -137,7 +134,10 @@ const getQuizAnalyticsForAdmin = async (
     order: { submittedAt: 'DESC' },
   });
 
-  const learnerMap = new Map<number, AdminQuizAnalyticsView['learners'][number]>();
+  const learnerMap = new Map<
+    number,
+    AdminQuizAnalyticsView['learners'][number]
+  >();
 
   for (const attempt of attempts) {
     const existingLearner = learnerMap.get(attempt.userId);
@@ -158,7 +158,10 @@ const getQuizAnalyticsForAdmin = async (
     }
 
     existingLearner.attemptCount += 1;
-    existingLearner.bestScore = Math.max(existingLearner.bestScore, attempt.score);
+    existingLearner.bestScore = Math.max(
+      existingLearner.bestScore,
+      attempt.score,
+    );
     existingLearner.hasPassed = existingLearner.hasPassed || attempt.passed;
 
     if (attempt.submittedAt > existingLearner.latestAttemptAt) {

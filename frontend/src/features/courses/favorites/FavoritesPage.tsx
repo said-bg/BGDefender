@@ -66,6 +66,7 @@ function FavoritesPageContent() {
                 priority={index === 0}
                 progressLabel={t('page.progress')}
                 removeLabel={t('favorites.remove')}
+                resumeOnOpen={course.progressPercentage > 0}
                 title={getCourseTitle(course)}
               />
             ))}

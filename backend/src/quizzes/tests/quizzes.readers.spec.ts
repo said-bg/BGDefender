@@ -252,7 +252,8 @@ describe('quizzes.readers', () => {
   });
 
   it('returns chapter quiz analytics grouped by learner for admins', async () => {
-    const { deps, quizRepository, quizAttemptRepository } = createDependencies();
+    const { deps, quizRepository, quizAttemptRepository } =
+      createDependencies();
     quizRepository.findOne.mockResolvedValue(createQuizTree());
     quizAttemptRepository.find.mockResolvedValue([
       Object.assign(createAttempt(80, true), {
@@ -334,7 +335,8 @@ describe('quizzes.readers', () => {
   });
 
   it('returns final test analytics grouped by learner for admins', async () => {
-    const { deps, quizRepository, quizAttemptRepository } = createDependencies();
+    const { deps, quizRepository, quizAttemptRepository } =
+      createDependencies();
     quizRepository.findOne.mockResolvedValue(createFinalTestTree());
     quizAttemptRepository.find.mockResolvedValue([
       Object.assign(createAttempt(90, true), {

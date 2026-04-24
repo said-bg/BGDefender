@@ -422,3 +422,42 @@
     justify-self: start;
   }
 }
+
+@media (max-width: 640px) {
+  .structureTreeGroup,
+  .structureChapterCard,
+  .structureSubChapterCard {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .structureSubChapterList {
+    margin-left: 0;
+    padding-left: 0.9rem;
+  }
+
+  .structureNodeHeader {
+    flex-wrap: wrap;
+  }
+
+  .structureChapterActions,
+  .structureCompactActions,
+  .structureSubChapterActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .compactAction,
+  .compactDanger,
+  .compactIconButton {
+    width: 100%;
+  }
+
+  .orderEditor {
+    grid-template-columns: 1fr;
+  }
+
+  .orderStepper {
+    justify-content: flex-start;
+  }
+}

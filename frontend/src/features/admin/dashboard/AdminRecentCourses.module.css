@@ -146,3 +146,24 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 640px) {
+  .section {
+    padding: 18px;
+  }
+
+  .courseRow {
+    gap: 0.9rem;
+    padding: 14px;
+  }
+
+  .courseMain {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .courseMetaRow,
+  .courseMetaGroup {
+    gap: 0.45rem 0.75rem;
+  }
+}

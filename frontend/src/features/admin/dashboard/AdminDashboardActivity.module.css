@@ -115,3 +115,21 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 640px) {
+  .activity {
+    padding: 0.9rem;
+  }
+
+  .toggleButton {
+    width: 100%;
+  }
+
+  .item {
+    padding: 0.75rem;
+  }
+
+  .itemCounts {
+    gap: 0.35rem 0.8rem;
+  }
+}

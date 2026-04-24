@@ -7,7 +7,6 @@ type CourseDetailHeroProps = {
   course: Course;
   courseTitle: string;
   durationLabel: string | null;
-  heroSummary: string;
   isAuthenticated: boolean;
   isFavorite: (courseId: string) => boolean;
   isPending: (courseId: string) => boolean;
@@ -27,7 +26,6 @@ export default function CourseDetailHero({
   favoriteRemoveLabel,
   favoriteVisibleLabel,
   freeCourseLabel,
-  heroSummary,
   isAuthenticated,
   isFavorite,
   isPending,
@@ -67,7 +65,6 @@ export default function CourseDetailHero({
           )}
         </div>
         <h1 className={styles.heroTitle}>{courseTitle}</h1>
-        <p className={styles.heroSummary}>{heroSummary}</p>
         {durationLabel ? (
           <div className={styles.heroMeta}>
             <span className={styles.heroMetaItem}>{durationLabel}</span>

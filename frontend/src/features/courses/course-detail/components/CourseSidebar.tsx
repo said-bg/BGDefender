@@ -9,6 +9,8 @@ import {
   getCourseProgressPercentage,
   getChapterParagraphs,
   getLocalizedText,
+  getOverviewParagraphs,
+  getPreviewParagraph,
   getPreviewText,
   getSubChapterParagraphs,
 } from '../courseDetail.utils';
@@ -23,7 +25,6 @@ type CourseSidebarProps = {
   expandedChapters: Set<string>;
   courseProgressLabel: string;
   overviewLabel: string;
-  heroSummary: string;
   quizLabel: string;
   quizDescription: string;
   finalTestLabel: string;
@@ -44,7 +45,6 @@ export function CourseSidebar({
   expandedChapters,
   courseProgressLabel,
   overviewLabel,
-  heroSummary,
   quizLabel,
   quizDescription,
   finalTestLabel,
@@ -56,6 +56,10 @@ export function CourseSidebar({
   onOpenSubChapter,
 }: CourseSidebarProps) {
   const courseProgress = getCourseProgressPercentage(course, selectedView);
+  const overviewPreview = getPreviewText(
+    getPreviewParagraph(getOverviewParagraphs(activeLanguage, course)),
+    88,
+  );
 
   return (
     <aside
@@ -73,9 +77,9 @@ export function CourseSidebar({
       >
         <div>
           <div className={styles.overviewTitle}>{overviewLabel}</div>
-          <p className={styles.overviewText}>
-            {getPreviewText(heroSummary, 120)}
-          </p>
+          {overviewPreview ? (
+            <p className={styles.overviewText}>{overviewPreview}</p>
+          ) : null}
           <progress
             className={styles.overviewProgress}
             max={100}
@@ -87,13 +91,14 @@ export function CourseSidebar({
 
       <div className={styles.chapterList}>
         {course.chapters.map((chapter, index) => {
+          const chapterParagraphs = getChapterParagraphs(activeLanguage, chapter);
           const chapterTitle = getLocalizedText(
             activeLanguage,
             chapter.titleEn,
             chapter.titleFi,
           );
           const chapterPreview = getPreviewText(
-            getChapterParagraphs(activeLanguage, chapter)[0] ||
+            getPreviewParagraph(chapterParagraphs) ||
               getLocalizedText(
                 activeLanguage,
                 chapter.descriptionEn,
@@ -127,7 +132,9 @@ export function CourseSidebar({
                   </span>
                   <div className={styles.chapterCopy}>
                     <div className={styles.chapterTitle}>{chapterTitle}</div>
-                    <div className={styles.chapterTeaser}>{chapterPreview}</div>
+                    {chapterPreview ? (
+                      <div className={styles.chapterTeaser}>{chapterPreview}</div>
+                    ) : null}
                     <progress
                       className={styles.chapterProgress}
                       max={100}
@@ -144,6 +151,10 @@ export function CourseSidebar({
               {isExpanded && (
                 <div className={styles.subChapterList}>
                   {chapter.subChapters.map((subChapter) => {
+                    const subChapterParagraphs = getSubChapterParagraphs(
+                      activeLanguage,
+                      subChapter,
+                    );
                     const isSubChapterActive =
                       selectedView.type === 'subchapter' &&
                       selectedView.subChapterId === subChapter.id;
@@ -171,10 +182,7 @@ export function CourseSidebar({
                           </strong>
                           <small>
                             {getPreviewText(
-                              getSubChapterParagraphs(
-                                activeLanguage,
-                                subChapter,
-                              )[0] ||
+                              getPreviewParagraph(subChapterParagraphs) ||
                                 getLocalizedText(
                                   activeLanguage,
                                   subChapter.descriptionEn,
@@ -232,4 +240,3 @@ export function CourseSidebar({
 }
 
 export default CourseSidebar;
-

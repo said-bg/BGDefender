@@ -28,6 +28,7 @@ describe('ResourcesController', () => {
     listMyResources: jest.fn(),
     createMyResource: jest.fn(),
     deleteMyResource: jest.fn(),
+    getResourceDownload: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -125,6 +126,39 @@ describe('ResourcesController', () => {
       'resource-1',
       currentUser.id,
       'fi',
+    );
+  });
+
+  it('downloads a resource through the authenticated service path', async () => {
+    const response = {
+      setHeader: jest.fn(),
+      download: jest.fn(),
+    };
+    resourcesService.getResourceDownload.mockResolvedValue({
+      filePath: 'C:\\workspace\\uploads\\resources\\guide.pdf',
+      filename: 'guide.pdf',
+      mimeType: 'application/pdf',
+    });
+
+    await controller.downloadResource(
+      'resource-1',
+      currentUser,
+      'fi-FI',
+      response as never,
+    );
+
+    expect(resourcesService.getResourceDownload).toHaveBeenCalledWith(
+      'resource-1',
+      currentUser,
+      'fi',
+    );
+    expect(response.setHeader).toHaveBeenCalledWith(
+      'Content-Type',
+      'application/pdf',
+    );
+    expect(response.download).toHaveBeenCalledWith(
+      'C:\\workspace\\uploads\\resources\\guide.pdf',
+      'guide.pdf',
     );
   });
 

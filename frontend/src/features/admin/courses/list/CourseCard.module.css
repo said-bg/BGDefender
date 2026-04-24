@@ -179,3 +179,30 @@
     align-items: flex-start;
   }
 }
+
+@media (max-width: 640px) {
+  .courseCard {
+    padding: 16px;
+    gap: 0.8rem;
+  }
+
+  .courseIdentity {
+    gap: 10px;
+  }
+
+  .courseStats {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .courseActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .editLink,
+  .inlineAction,
+  .inlineDanger {
+    width: 100%;
+  }
+}

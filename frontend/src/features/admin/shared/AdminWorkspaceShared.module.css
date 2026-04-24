@@ -185,9 +185,31 @@
 @media (max-width: 640px) {
   .page {
     width: calc(100% - 1rem);
+    padding-bottom: 48px;
   }
 
   .summary {
     grid-template-columns: 1fr;
+  }
+
+  .hero {
+    gap: 0.8rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .searchInput,
+  .filterSelect,
+  .selectInput {
+    width: 100%;
+    min-width: 0;
   }
 }

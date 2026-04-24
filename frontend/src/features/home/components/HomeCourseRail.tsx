@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import useHomeCourseRailScroll from '../hooks/useHomeCourseRailScroll';
 import type { HomeCourse } from '../lib/home.types';
@@ -33,6 +34,27 @@ export default function HomeCourseRail({
 }: HomeCourseRailProps) {
   const { canScrollLeft, canScrollRight, scrollByViewport, viewportRef } =
     useHomeCourseRailScroll(courses.length);
+  const [isCompactViewport, setIsCompactViewport] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 960px)');
+
+    const syncViewport = (matches: boolean) => {
+      setIsCompactViewport(matches);
+    };
+
+    syncViewport(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      syncViewport(event.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  const shouldUseRail = courses.length > 3 || (isCompactViewport && courses.length > 1);
 
   return (
     <section id={id} className={`${styles.section} ${styles.railSection}`}>
@@ -50,7 +72,7 @@ export default function HomeCourseRail({
 
       {courses.length === 0 ? (
         <p className={styles.emptyState}>{emptyLabel}</p>
-      ) : courses.length <= 3 ? (
+      ) : !shouldUseRail ? (
         <div className={styles.grid}>
           {courses.map((course, index) => (
             <HomeCourseCard

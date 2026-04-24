@@ -63,8 +63,6 @@ export class AuthorController {
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
-      // Multer's diskStorage callback types do not flow cleanly through Nest's interceptor config.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       storage: diskStorage({
         destination: (
           _request: UploadRequest,

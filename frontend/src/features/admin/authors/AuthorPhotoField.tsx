@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import formStyles from './AuthorForm.module.css';
 import photoStyles from './AuthorPhotoField.module.css';
 import pageStyles from '@/features/admin/authors/AdminAuthorsPage.module.css';
@@ -108,14 +109,13 @@ export default function AuthorPhotoField({
 
       {photo ? (
         <div className={photoStyles.photoPreview}>
-          {/* This preview must support arbitrary external URLs entered by admins. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={photo}
             alt={formName || t('authors.photoPreviewAlt', { defaultValue: 'Author preview' })}
             className={photoStyles.photoPreviewImage}
             width={64}
             height={64}
+            unoptimized
             loading="lazy"
           />
           <div className={photoStyles.photoPreviewCopy}>

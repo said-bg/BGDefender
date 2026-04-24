@@ -73,8 +73,6 @@ export class CollectionsController {
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
-      // Multer callback typings do not flow neatly through Nest's interceptor config here.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       storage: diskStorage({
         destination: (
           _request: UploadRequest,

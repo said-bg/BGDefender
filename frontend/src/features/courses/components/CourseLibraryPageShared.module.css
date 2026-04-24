@@ -118,4 +118,30 @@
     width: calc(100% - 1rem);
     padding-top: 2rem;
   }
+
+  .pageHeader {
+    margin-bottom: 1rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .subtitle,
+  .courseCount {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .emptyState {
+    padding: 1.3rem 1rem;
+  }
+
+  .emptyTitle {
+    font-size: 1.18rem;
+  }
+
+  .grid {
+    gap: 1rem;
+  }
 }

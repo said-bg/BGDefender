@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import type { Request, Response } from 'express';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
@@ -39,6 +40,10 @@ async function bootstrap() {
   app.enableCors({
     origin: corsOrigins.length > 0 ? corsOrigins : false,
     credentials: true,
+  });
+
+  app.use('/uploads/resources', (_request: Request, response: Response) => {
+    response.sendStatus(404);
   });
 
   app.useStaticAssets(join(process.cwd(), 'uploads'), {

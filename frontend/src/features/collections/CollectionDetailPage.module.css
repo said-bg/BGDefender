@@ -57,8 +57,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(286px, 320px));
-  justify-content: start;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 0.95rem;
 }
 
@@ -92,6 +91,18 @@
   .shell {
     width: var(--page-shell-width-mobile);
     padding-bottom: 2.4rem;
+  }
+
+  .header {
+    margin-bottom: 0.9rem;
+  }
+
+  .title {
+    font-size: 1.9rem;
+  }
+
+  .description {
+    font-size: 0.92rem;
   }
 
   .grid {

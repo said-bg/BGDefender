@@ -282,7 +282,10 @@ describe('SubChapterService', () => {
     createdSubChapter.orderIndex = 2;
 
     chapterRepository.findOne.mockResolvedValue(createChapterEntity());
-    subChapterRepository.find.mockResolvedValue([firstSubChapter, secondSubChapter]);
+    subChapterRepository.find.mockResolvedValue([
+      firstSubChapter,
+      secondSubChapter,
+    ]);
     subChapterRepository.create.mockReturnValue(createdSubChapter);
     subChapterRepository.save
       .mockResolvedValueOnce([firstSubChapter, secondSubChapter])
@@ -310,7 +313,10 @@ describe('SubChapterService', () => {
     createdSubChapter.orderIndex = 1;
 
     chapterRepository.findOne.mockResolvedValue(createChapterEntity());
-    subChapterRepository.find.mockResolvedValue([firstSubChapter, secondSubChapter]);
+    subChapterRepository.find.mockResolvedValue([
+      firstSubChapter,
+      secondSubChapter,
+    ]);
     subChapterRepository.create.mockReturnValue(createdSubChapter);
     subChapterRepository.save
       .mockResolvedValueOnce([secondSubChapter])

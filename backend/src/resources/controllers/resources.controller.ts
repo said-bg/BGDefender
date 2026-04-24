@@ -10,6 +10,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -19,6 +20,7 @@ import { diskStorage } from 'multer';
 import { mkdirSync } from 'fs';
 import { extname, join } from 'path';
 import type { Request } from 'express';
+import type { Response } from 'express';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
@@ -121,11 +123,26 @@ export class ResourcesController {
     );
   }
 
+  @Get(':id/download')
+  async downloadResource(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: SafeUser,
+    @Headers('accept-language') acceptLanguage: string | undefined,
+    @Res() response: Response,
+  ) {
+    const download = await this.resourcesService.getResourceDownload(
+      id,
+      currentUser,
+      resolveLanguage(acceptLanguage),
+    );
+
+    response.setHeader('Content-Type', download.mimeType);
+    return response.download(download.filePath, download.filename);
+  }
+
   @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
-      // Multer's diskStorage callback types do not flow cleanly through Nest's interceptor config.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
       storage: diskStorage({
         destination: (
           _request: UploadRequest,

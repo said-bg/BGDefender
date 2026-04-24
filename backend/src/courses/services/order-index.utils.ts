@@ -27,10 +27,12 @@ export const shiftForInsert = <T extends OrderedEntity>(
   items: T[],
   insertedOrder: number,
 ) =>
-  items.filter((item) => item.orderIndex >= insertedOrder).map((item) => {
-    item.orderIndex += 1;
-    return item;
-  });
+  items
+    .filter((item) => item.orderIndex >= insertedOrder)
+    .map((item) => {
+      item.orderIndex += 1;
+      return item;
+    });
 
 export const shiftForMove = <T extends OrderedEntity>(
   items: T[],

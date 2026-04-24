@@ -531,6 +531,7 @@
     "targetUserLabel": "Käyttäjä",
     "createdLabel": "Luotu",
     "openFile": "Avaa asiakirja",
+    "openFailed": "Asiakirjan avaaminen epÃ¤onnistui.",
     "openLink": "Avaa linkki",
     "delete": "Poista",
     "deleting": "Poistetaan...",

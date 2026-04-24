@@ -35,6 +35,7 @@
   "sourceUser": "Oma lataus",
   "createdLabel": "Luotu",
   "openFile": "Avaa asiakirja",
+  "openFailed": "Asiakirjan avaaminen epÃ¤onnistui.",
   "openLink": "Avaa linkki",
   "delete": "Poista",
   "deleting": "Poistetaan...",

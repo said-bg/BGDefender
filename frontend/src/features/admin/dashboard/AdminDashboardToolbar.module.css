@@ -29,3 +29,14 @@
   background: var(--color-brand-soft);
   color: var(--color-brand-active);
 }
+
+@media (max-width: 640px) {
+  .toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .secondaryAction {
+    width: 100%;
+  }
+}

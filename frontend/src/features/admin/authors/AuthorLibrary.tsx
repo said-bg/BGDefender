@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { Author } from '@/services/course';
 import {
@@ -103,14 +104,13 @@ export default function AuthorLibrary({
                     <div className={libraryStyles.authorIdentity}>
                       {author.photo ? (
                         <>
-                          {/* These previews support arbitrary external URLs and local uploads. */}
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
+                          <Image
                             src={author.photo}
                             alt={author.name}
                             className={libraryStyles.authorAvatar}
                             width={56}
                             height={56}
+                            unoptimized
                             loading="lazy"
                           />
                         </>

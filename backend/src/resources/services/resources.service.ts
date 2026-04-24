@@ -1,17 +1,21 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
+import { basename, join } from 'path';
+import { existsSync } from 'fs';
 import type { AppLanguage } from '../../config/request-language';
 import {
   Resource,
   ResourceSource,
   ResourceType,
 } from '../../entities/resource.entity';
-import { User } from '../../entities/user.entity';
+import { User, UserRole } from '../../entities/user.entity';
+import type { SafeUser } from '../../auth/types/safe-user.type';
 import { CreateAdminResourceDto } from '../dto/create-admin-resource.dto';
 import { CreateMyResourceDto } from '../dto/create-my-resource.dto';
 import { ListResourcesDto } from '../dto/list-resources.dto';
@@ -39,6 +43,12 @@ type ResourceView = {
   updatedAt: Date;
 };
 
+type ResourceDownload = {
+  filePath: string;
+  filename: string;
+  mimeType: string;
+};
+
 @Injectable()
 export class ResourcesService {
   constructor(
@@ -55,6 +65,9 @@ export class ResourcesService {
     const queryBuilder = this.resourceRepository
       .createQueryBuilder('resource')
       .leftJoinAndSelect('resource.assignedUser', 'assignedUser')
+      .andWhere('resource.source = :adminSource', {
+        adminSource: ResourceSource.ADMIN,
+      })
       .orderBy('resource.createdAt', 'DESC');
 
     if (query.search) {
@@ -82,12 +95,6 @@ export class ResourcesService {
 
     if (query.type) {
       queryBuilder.andWhere('resource.type = :type', { type: query.type });
-    }
-
-    if (query.source) {
-      queryBuilder.andWhere('resource.source = :source', {
-        source: query.source,
-      });
     }
 
     const [resources, count] = await queryBuilder
@@ -236,6 +243,69 @@ export class ResourcesService {
     }
 
     await this.resourceRepository.remove(resource);
+  }
+
+  async getResourceDownload(
+    resourceId: string,
+    currentUser: Pick<SafeUser, 'id' | 'role'>,
+    language: AppLanguage = 'en',
+  ): Promise<ResourceDownload> {
+    const resource = await this.resourceRepository.findOne({
+      where: { id: resourceId },
+    });
+
+    if (!resource) {
+      throw new NotFoundException(
+        language === 'fi' ? 'Resurssia ei loytynyt' : 'Resource not found',
+      );
+    }
+
+    const canDownload =
+      resource.assignedUserId === currentUser.id ||
+      (currentUser.role === UserRole.ADMIN &&
+        resource.source === ResourceSource.ADMIN);
+
+    if (!canDownload) {
+      throw new ForbiddenException(
+        language === 'fi'
+          ? 'Sinulla ei ole oikeutta avata tata resurssia'
+          : 'You do not have permission to open this resource',
+      );
+    }
+
+    if (resource.type !== ResourceType.FILE || !resource.filename) {
+      throw new BadRequestException(
+        language === 'fi'
+          ? 'Talla resurssilla ei ole ladattavaa tiedostoa'
+          : 'This resource does not have a downloadable file',
+      );
+    }
+
+    const safeFilename = basename(resource.filename);
+
+    if (safeFilename !== resource.filename) {
+      throw new BadRequestException(
+        language === 'fi'
+          ? 'Resurssin tiedostonimi on virheellinen'
+          : 'Invalid resource filename',
+      );
+    }
+
+    const filePath = join(process.cwd(), 'uploads', 'resources', safeFilename);
+
+    if (!existsSync(filePath)) {
+      throw new NotFoundException(
+        language === 'fi'
+          ? 'Resurssitiedostoa ei loytynyt'
+          : 'Resource file not found',
+      );
+    }
+
+    return {
+      filePath,
+      filename: safeFilename,
+      mimeType: resource.mimeType ?? 'application/octet-stream',
+    };
   }
 
   private validateResourcePayload(

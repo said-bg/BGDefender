@@ -46,6 +46,7 @@ jest.mock('react-i18next', () => ({
         'detail.premiumRequiredTitle': 'Premium access required',
         'detail.previous': 'Previous',
         'detail.next': 'Next',
+        'detail.backToOverview': 'Back to overview',
       })[key] ?? key,
   }),
   Trans: ({
@@ -111,22 +112,15 @@ const nextItem: NavigationItem = {
 
 describe('CourseContent', () => {
   const scrollToMock = jest.fn();
-  const scrollIntoViewMock = jest.fn();
-
   beforeAll(() => {
     Object.defineProperty(window, 'scrollTo', {
       value: scrollToMock,
-      writable: true,
-    });
-    Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
-      value: scrollIntoViewMock,
       writable: true,
     });
   });
 
   beforeEach(() => {
     scrollToMock.mockClear();
-    scrollIntoViewMock.mockClear();
   });
 
   // Verifies the readable state: authors, fallback author role, and visible paragraphs.
@@ -250,14 +244,6 @@ describe('CourseContent', () => {
 
     expect(onNavigateToView).toHaveBeenNthCalledWith(1, previousItem.view);
     expect(onNavigateToView).toHaveBeenNthCalledWith(2, nextItem.view);
-    expect(scrollIntoViewMock).toHaveBeenNthCalledWith(1, {
-      behavior: 'smooth',
-      block: 'start',
-    });
-    expect(scrollIntoViewMock).toHaveBeenNthCalledWith(2, {
-      behavior: 'smooth',
-      block: 'start',
-    });
     expect(scrollToMock).not.toHaveBeenCalled();
   });
 
@@ -532,6 +518,41 @@ describe('CourseContent', () => {
       'Small styled text',
     );
     expect(container.querySelector('hr')).toBeTruthy();
+  });
+
+  it('uses a discreet back to overview action for already completed courses', () => {
+    const onNavigateToView = jest.fn();
+
+    render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={{
+          kind: 'subchapter',
+          title: 'Last lesson',
+          description: 'Last lesson description',
+          paragraphs: ['Summary'],
+          parentTitle: 'Chapter 1',
+        }}
+        accessState="granted"
+        canAccessAssessments={false}
+        canReadContent
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        isAuthenticated
+        isCourseCompleted
+        previousItem={previousItem}
+        nextItem={null}
+        onNavigateToView={onNavigateToView}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Back to overview' }));
+
+    expect(onNavigateToView).toHaveBeenCalledWith({ type: 'overview' });
+    expect(
+      screen.queryByText('Nice work, you reached the end of this course path'),
+    ).not.toBeInTheDocument();
   });
 });
 

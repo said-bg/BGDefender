@@ -74,7 +74,15 @@
 }
 
 @media (max-width: 640px) {
+  .hero {
+    margin-bottom: 0.85rem;
+  }
+
+  .heroActions {
+    width: 100%;
+  }
+
   .primaryAction {
-    width: auto;
+    width: 100%;
   }
 }

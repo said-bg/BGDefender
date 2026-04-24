@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import courseService, { Course } from '@/services/course';
 import { useAuth, useFavoriteCourses } from '@/hooks';
@@ -20,6 +20,7 @@ import useCourseProgressSync from './useCourseProgressSync';
 
 export function useCourseDetailPage() {
   const params = useParams<{ courseId: string }>();
+  const searchParams = useSearchParams();
   const { i18n, t } = useTranslation('courses');
   const { user, isAuthenticated, isInitialized } = useAuth();
   const { isFavorite, isPending, toggleFavorite } = useFavoriteCourses();
@@ -29,15 +30,21 @@ export function useCourseDetailPage() {
   const [errorKey, setErrorKey] = useState<CourseDetailErrorKey>(null);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
   const [selectedView, setSelectedView] = useState<ViewState>({ type: 'overview' });
+  const [viewportMode, setViewportMode] = useState<'entry' | 'content'>('entry');
 
   const courseId = Array.isArray(params?.courseId)
     ? params.courseId[0]
     : params?.courseId;
   const activeLanguage: ActiveLanguage = i18n.language === 'fi' ? 'fi' : 'en';
   const courseAuthorFallback = t('detail.courseAuthor');
+  const shouldResumeProgress = searchParams?.get('resume') === '1';
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [courseId]);
+
+  useEffect(() => {
+    setViewportMode('entry');
   }, [courseId]);
 
   useEffect(() => {
@@ -57,6 +64,7 @@ export function useCourseDetailPage() {
         setCourse(result);
         setSelectedView({ type: 'overview' });
         setExpandedChapters(new Set());
+        setViewportMode('entry');
       } catch (loadError) {
         console.error('Failed to load course detail:', loadError);
         setErrorKey('unableToLoad');
@@ -146,6 +154,8 @@ export function useCourseDetailPage() {
       : null;
 
   const navigateToView = (view: ViewState) => {
+    setViewportMode('content');
+
     if (view.type === 'overview' || view.type === 'final-test') {
       setSelectedView(view);
       return;
@@ -156,6 +166,7 @@ export function useCourseDetailPage() {
   };
 
   const toggleChapter = (chapterId: string) => {
+    setViewportMode('content');
     setExpandedChapters((previous) => {
       const next = new Set(previous);
 
@@ -172,20 +183,23 @@ export function useCourseDetailPage() {
   };
 
   const openSubChapter = (chapterId: string, subChapterId: string) => {
+    setViewportMode('content');
     setExpandedChapters((previous) => new Set(previous).add(chapterId));
     setSelectedView({ type: 'subchapter', chapterId, subChapterId });
   };
 
   const openQuiz = (chapterId: string) => {
+    setViewportMode('content');
     setExpandedChapters((previous) => new Set(previous).add(chapterId));
     setSelectedView({ type: 'quiz', chapterId });
   };
 
   const openFinalTest = () => {
+    setViewportMode('content');
     setSelectedView({ type: 'final-test' });
   };
 
-  useCourseProgressSync({
+  const { isCourseCompleted } = useCourseProgressSync({
     canReadContent,
     course,
     courseId,
@@ -195,6 +209,8 @@ export function useCourseDetailPage() {
     selectedView,
     setExpandedChapters,
     setSelectedView,
+    setViewportMode,
+    shouldRestoreProgress: shouldResumeProgress,
     user,
   });
 
@@ -218,6 +234,7 @@ export function useCourseDetailPage() {
     expandedChapters,
     heroSummary,
     isAuthenticated,
+    isCourseCompleted,
     isFavorite,
     isPending,
     loading,
@@ -226,11 +243,13 @@ export function useCourseDetailPage() {
     openQuiz,
     openSubChapter,
     previousItem,
+    shouldResumeProgress,
     selectedContent,
     selectedView,
     t,
     toggleChapter,
     toggleFavorite,
     navigateToView,
+    viewportMode,
   };
 }

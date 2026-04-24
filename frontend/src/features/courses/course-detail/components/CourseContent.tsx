@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Course } from '@/services/course';
 import styles from './CourseContent.module.css';
@@ -29,6 +29,7 @@ type CourseContentProps = {
   courseAuthorFallback: string;
   headerAction?: ReactNode;
   isAuthenticated: boolean;
+  isCourseCompleted?: boolean;
   isFocusMode?: boolean;
   nextItem: NavigationItem | null;
   onNavigateToView: (view: ViewState) => void;
@@ -47,13 +48,13 @@ export function CourseContent({
   courseAuthorFallback,
   headerAction,
   isAuthenticated,
+  isCourseCompleted = false,
   isFocusMode = false,
   previousItem,
   nextItem,
   onNavigateToView,
 }: CourseContentProps) {
   const { t } = useTranslation('courses');
-  const hasScrolledOnMountRef = useRef(false);
   const accessDescription =
     accessState === 'checking'
       ? t('detail.checkingAccess')
@@ -62,32 +63,12 @@ export function CourseContent({
       : t('detail.premiumRequiredDescription');
   const publishedFinalTest = course.finalTests?.find((finalTest) => finalTest.isPublished) ?? null;
 
-  useEffect(() => {
-    if (!hasScrolledOnMountRef.current) {
-      hasScrolledOnMountRef.current = true;
-      return;
-    }
-
-    const frameId = window.requestAnimationFrame(() => {
-      const contentPanel = document.querySelector<HTMLElement>('[data-course-content-panel]');
-
-      if (contentPanel) {
-        contentPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
-
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-    });
-
-    return () => window.cancelAnimationFrame(frameId);
-  }, [selectedContent.kind, selectedContent.title]);
-
   return (
     <main
       className={`${styles.contentPanel} ${isFocusMode ? styles.contentPanelFocus : ''}`}
       data-course-content-panel
     >
-      <div className={styles.contentHeader}>
+      <div className={styles.contentHeader} data-course-content-header>
         {headerAction ? <div className={styles.contentHeaderAction}>{headerAction}</div> : null}
         <div>
           <p className={styles.contentEyebrow}>
@@ -145,6 +126,7 @@ export function CourseContent({
 
       <CourseContentNavigation
         accessState={accessState}
+        isCourseCompleted={isCourseCompleted}
         currentKind={selectedContent.kind}
         hasFinalTest={Boolean(publishedFinalTest)}
         isAuthenticated={isAuthenticated}

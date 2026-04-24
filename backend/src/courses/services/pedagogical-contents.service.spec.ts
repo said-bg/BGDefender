@@ -296,7 +296,10 @@ describe('PedagogicalContentService', () => {
     createdContent.orderIndex = 2;
 
     subChapterRepository.findOne.mockResolvedValue(createSubChapterEntity());
-    pedagogicalContentRepository.find.mockResolvedValue([firstContent, secondContent]);
+    pedagogicalContentRepository.find.mockResolvedValue([
+      firstContent,
+      secondContent,
+    ]);
     pedagogicalContentRepository.create.mockReturnValue(createdContent);
     pedagogicalContentRepository.save
       .mockResolvedValueOnce([firstContent, secondContent])
@@ -325,7 +328,10 @@ describe('PedagogicalContentService', () => {
     createdContent.orderIndex = 1;
 
     subChapterRepository.findOne.mockResolvedValue(createSubChapterEntity());
-    pedagogicalContentRepository.find.mockResolvedValue([firstContent, secondContent]);
+    pedagogicalContentRepository.find.mockResolvedValue([
+      firstContent,
+      secondContent,
+    ]);
     pedagogicalContentRepository.create.mockReturnValue(createdContent);
     pedagogicalContentRepository.save
       .mockResolvedValueOnce([secondContent])
@@ -369,7 +375,9 @@ describe('PedagogicalContentService', () => {
 
     expect(firstContent.orderIndex).toBe(2);
     expect(secondContent.orderIndex).toBe(3);
-    expect(result).toEqual(expect.objectContaining({ id: 'content-3', orderIndex: 1 }));
+    expect(result).toEqual(
+      expect.objectContaining({ id: 'content-3', orderIndex: 1 }),
+    );
   });
 
   it('closes order gaps after deleting a content block', async () => {
@@ -393,6 +401,8 @@ describe('PedagogicalContentService', () => {
     await service.delete('content-2');
 
     expect(thirdContent.orderIndex).toBe(2);
-    expect(pedagogicalContentRepository.save).toHaveBeenCalledWith([thirdContent]);
+    expect(pedagogicalContentRepository.save).toHaveBeenCalledWith([
+      thirdContent,
+    ]);
   });
 });

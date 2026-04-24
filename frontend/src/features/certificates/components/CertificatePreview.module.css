@@ -227,12 +227,21 @@
 }
 
 @media (max-width: 720px) {
+  .previewCard {
+    padding: 1rem;
+  }
+
+  .profileAction {
+    width: 100%;
+  }
+
   .certificateFrame {
     padding: 1.4rem 1.1rem 1.2rem;
   }
 
   .certificateHeader {
     align-items: center;
+    flex-direction: column;
   }
 
   .institutionName {

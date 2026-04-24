@@ -177,6 +177,14 @@
 }
 
 @media (max-width: 640px) {
+  .authorCard {
+    padding: 14px;
+  }
+
+  .authorIdentity {
+    gap: 10px;
+  }
+
   .inlineAction,
   .inlineDanger {
     width: 100%;

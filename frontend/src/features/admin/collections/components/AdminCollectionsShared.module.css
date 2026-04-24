@@ -98,3 +98,28 @@
   background: var(--color-brand);
   color: var(--color-text-inverse);
 }
+
+@media (max-width: 640px) {
+  .card {
+    padding: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.05rem;
+  }
+
+  .sectionDescription,
+  .statusMessage,
+  .errorMessage,
+  .emptyDescription {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .pillButton,
+  .neutralButton,
+  .dangerButton,
+  .primaryButton {
+    width: 100%;
+  }
+}

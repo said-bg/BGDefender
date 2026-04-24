@@ -306,3 +306,44 @@
     display: none;
   }
 }
+
+@media (max-width: 640px) {
+  .statusMessage,
+  .errorMessage,
+  .successMessage {
+    padding: 0.85rem 0.9rem;
+    font-size: 0.92rem;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 0.9rem;
+  }
+
+  .identity {
+    gap: 0.7rem;
+  }
+
+  .meta {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .badge {
+    width: fit-content;
+    min-width: 0;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .actionButton {
+    width: 100%;
+  }
+}

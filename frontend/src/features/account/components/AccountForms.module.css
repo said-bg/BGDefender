@@ -165,7 +165,15 @@
 }
 
 @media (max-width: 640px) {
+  .formCard {
+    padding: 1.1rem 1rem;
+  }
+
   .form {
     grid-template-columns: 1fr;
+  }
+
+  .primaryButton {
+    width: 100%;
   }
 }

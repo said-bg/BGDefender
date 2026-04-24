@@ -143,6 +143,10 @@
 }
 
 @media (max-width: 640px) {
+  .form {
+    gap: 0.85rem;
+  }
+
   .primaryAction,
   .secondaryAction {
     width: 100%;

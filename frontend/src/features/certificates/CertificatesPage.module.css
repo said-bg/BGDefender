@@ -88,4 +88,26 @@
     width: calc(100% - 1rem);
     padding-top: 2rem;
   }
+
+  .pageHeader {
+    margin-bottom: 1rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .summary {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .summaryCard {
+    padding: 0.9rem;
+  }
 }

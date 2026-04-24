@@ -4,6 +4,7 @@ import {
   formatCourseDuration,
   getChapterProgressPercentage,
   getCourseProgressPercentage,
+  getPreviewParagraph,
   getProgressPayloadFromView,
   isCourseProgressSynced,
   preserveCompletedProgress,
@@ -121,6 +122,16 @@ describe('course-detail.utils', () => {
     expect(getPreviewText('This sentence is definitely too long', 10)).toBe(
       'This sente...',
     );
+  });
+
+  it('prefers a body paragraph over a heading-like paragraph for previews', () => {
+    expect(getPreviewParagraph(['Introduction', 'This is the real preview text.'])).toBe(
+      'This is the real preview text.',
+    );
+    expect(
+      getPreviewParagraph(['Introduction\nThis is the real preview text.']),
+    ).toBe('This is the real preview text.');
+    expect(getPreviewParagraph(['What is phishing?'])).toBe('What is phishing?');
   });
 
   // Verifies that raw text is split into clean paragraphs and empty blocks are ignored.

@@ -92,3 +92,13 @@
   background: var(--color-brand-soft);
   color: var(--color-warning-text-strong);
 }
+
+@media (max-width: 720px) {
+  .listCard {
+    padding: 1rem;
+  }
+
+  .certificateCard {
+    padding: 0.95rem;
+  }
+}

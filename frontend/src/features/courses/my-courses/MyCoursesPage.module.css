@@ -85,3 +85,15 @@
 .grid {
   composes: grid from '../components/CourseLibraryPageShared.module.css';
 }
+
+@media (max-width: 720px) {
+  .filterBar {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-bottom: 1rem;
+  }
+
+  .filterButton {
+    width: 100%;
+  }
+}

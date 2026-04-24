@@ -121,4 +121,19 @@
   .listCard {
     padding: 18px;
   }
+
+  .sectionTitle {
+    font-size: 1.05rem;
+  }
+
+  .sectionDescription,
+  .helperMessage,
+  .emptyDescription {
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .emptyState {
+    padding: 18px;
+  }
 }

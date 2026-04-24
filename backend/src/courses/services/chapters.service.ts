@@ -118,7 +118,10 @@ export class ChapterService {
 
     let nextOrderIndex = chapter.orderIndex;
     if (updateChapterDto.orderIndex !== undefined) {
-      nextOrderIndex = clampOrderIndex(updateChapterDto.orderIndex, siblings.length);
+      nextOrderIndex = clampOrderIndex(
+        updateChapterDto.orderIndex,
+        siblings.length,
+      );
       const shiftedChapters = shiftForMove(
         siblings,
         chapter.id,

@@ -1,7 +1,13 @@
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Brackets, Repository } from 'typeorm';
+import * as fs from 'fs';
+import { dirname, join } from 'path';
 import { NotificationsService } from '../../notifications/services/notifications.service';
 import {
   Resource,
@@ -77,6 +83,15 @@ const createMockResource = (
     updatedAt: new Date('2026-01-04T00:00:00.000Z'),
     ...overrides,
   }) as Resource;
+
+const createResourceFixtureFile = (filename: string): (() => void) => {
+  const filePath = join(process.cwd(), 'uploads', 'resources', filename);
+
+  fs.mkdirSync(dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, 'test resource file');
+
+  return () => fs.rmSync(filePath, { force: true });
+};
 
 const createMockQueryBuilder = (): MockQueryBuilder => {
   const queryBuilder: MockQueryBuilder = {
@@ -179,22 +194,22 @@ describe('ResourcesService', () => {
       );
       expect(queryBuilder.andWhere).toHaveBeenNthCalledWith(
         1,
-        expect.any(Brackets),
+        'resource.source = :adminSource',
+        { adminSource: ResourceSource.ADMIN },
       );
       expect(queryBuilder.andWhere).toHaveBeenNthCalledWith(
         2,
+        expect.any(Brackets),
+      );
+      expect(queryBuilder.andWhere).toHaveBeenNthCalledWith(
+        3,
         'resource.assignedUserId = :assignedUserId',
         { assignedUserId: 7 },
       );
       expect(queryBuilder.andWhere).toHaveBeenNthCalledWith(
-        3,
+        4,
         'resource.type = :type',
         { type: ResourceType.FILE },
-      );
-      expect(queryBuilder.andWhere).toHaveBeenNthCalledWith(
-        4,
-        'resource.source = :source',
-        { source: ResourceSource.ADMIN },
       );
       expect(queryBuilder.take).toHaveBeenCalledWith(25);
       expect(queryBuilder.skip).toHaveBeenCalledWith(5);
@@ -218,7 +233,10 @@ describe('ResourcesService', () => {
         offset: 0,
       });
 
-      expect(queryBuilder.andWhere).not.toHaveBeenCalled();
+      expect(queryBuilder.andWhere).toHaveBeenCalledWith(
+        'resource.source = :adminSource',
+        { adminSource: ResourceSource.ADMIN },
+      );
       expect(queryBuilder.take).toHaveBeenCalledWith(25);
       expect(queryBuilder.skip).toHaveBeenCalledWith(0);
       expect(result).toEqual({ data: [], count: 0 });
@@ -564,6 +582,103 @@ describe('ResourcesService', () => {
       await expect(
         service.deleteMyResource('missing-resource', 7, 'fi'),
       ).rejects.toThrow('Resurssia ei loytynyt');
+    });
+  });
+
+  describe('getResourceDownload', () => {
+    it('allows the assigned user to download their private upload', async () => {
+      const cleanupFixture = createResourceFixtureFile('personal-notes.pdf');
+      resourceRepository.findOne.mockResolvedValue(
+        createMockResource({
+          assignedUserId: 7,
+          createdByUserId: 7,
+          source: ResourceSource.USER,
+          filename: 'personal-notes.pdf',
+          mimeType: 'application/pdf',
+        }),
+      );
+
+      const result = await service.getResourceDownload('resource-1', {
+        id: 7,
+        role: UserRole.USER,
+      });
+
+      expect(resourceRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 'resource-1' },
+      });
+      expect(result).toEqual(
+        expect.objectContaining({
+          filename: 'personal-notes.pdf',
+          mimeType: 'application/pdf',
+        }),
+      );
+
+      cleanupFixture();
+    });
+
+    it('allows admins to download resources sent from the admin space', async () => {
+      const cleanupFixture = createResourceFixtureFile('admin-guide.pdf');
+      resourceRepository.findOne.mockResolvedValue(
+        createMockResource({
+          assignedUserId: 7,
+          createdByUserId: 1,
+          source: ResourceSource.ADMIN,
+          filename: 'admin-guide.pdf',
+        }),
+      );
+
+      await expect(
+        service.getResourceDownload('resource-1', {
+          id: 1,
+          role: UserRole.ADMIN,
+        }),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          filename: 'admin-guide.pdf',
+        }),
+      );
+
+      cleanupFixture();
+    });
+
+    it('rejects admins trying to download a user private upload', async () => {
+      resourceRepository.findOne.mockResolvedValue(
+        createMockResource({
+          assignedUserId: 7,
+          createdByUserId: 7,
+          source: ResourceSource.USER,
+        }),
+      );
+
+      await expect(
+        service.getResourceDownload('resource-1', {
+          id: 1,
+          role: UserRole.ADMIN,
+        }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('rejects missing files before returning a download path', async () => {
+      const missingFilePath = join(
+        process.cwd(),
+        'uploads',
+        'resources',
+        'missing-resource-test-file.pdf',
+      );
+
+      fs.rmSync(missingFilePath, { force: true });
+      resourceRepository.findOne.mockResolvedValue(
+        createMockResource({
+          filename: 'missing-resource-test-file.pdf',
+        }),
+      );
+
+      await expect(
+        service.getResourceDownload('resource-1', {
+          id: 7,
+          role: UserRole.USER,
+        }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

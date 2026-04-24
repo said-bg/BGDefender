@@ -27,6 +27,11 @@ export default function useAdminUsers() {
   const [planFilter, setPlanFilter] = useState<'all' | UserPlan>('all');
   const [roleFilter, setRoleFilter] = useState<'all' | UserRole>('all');
 
+  const clearFeedback = () => {
+    setError(null);
+    setMessage(null);
+  };
+
   useEffect(() => {
     const loadUsers = async () => {
       try {
@@ -135,6 +140,21 @@ export default function useAdminUsers() {
     });
   };
 
+  const updateSearch = (value: string) => {
+    clearFeedback();
+    setSearch(value);
+  };
+
+  const updatePlanFilter = (value: 'all' | UserPlan) => {
+    clearFeedback();
+    setPlanFilter(value);
+  };
+
+  const updateRoleFilter = (value: 'all' | UserRole) => {
+    clearFeedback();
+    setRoleFilter(value);
+  };
+
   const preparedUsers = useMemo(
     () =>
       users.map((user) => ({
@@ -174,9 +194,9 @@ export default function useAdminUsers() {
     preparedUsers,
     roleFilter,
     search,
-    setPlanFilter,
-    setRoleFilter,
-    setSearch,
+    setPlanFilter: updatePlanFilter,
+    setRoleFilter: updateRoleFilter,
+    setSearch: updateSearch,
     summary,
     t,
   };

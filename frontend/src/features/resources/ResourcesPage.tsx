@@ -12,11 +12,13 @@ function ResourcesPageContent() {
     filteredResources,
     form,
     handleDelete,
+    handleOpenFile,
     handleSubmit,
     handleUpload,
     isUploading,
     loading,
     message,
+    openingId,
     search,
     setSearch,
     setTypeFilter,
@@ -297,14 +299,14 @@ function ResourcesPageContent() {
 
                     <div className={styles.resourceActions}>
                       {resource.type === ResourceType.FILE && resource.fileUrl ? (
-                        <a
-                          href={resource.fileUrl}
-                          target="_blank"
-                          rel="noreferrer"
+                        <button
+                          type="button"
                           className={styles.inlineLink}
+                          onClick={() => void handleOpenFile(resource)}
+                          disabled={openingId === resource.id}
                         >
                           {t('openFile')}
-                        </a>
+                        </button>
                       ) : null}
                       {resource.type === ResourceType.LINK && resource.linkUrl ? (
                         <a

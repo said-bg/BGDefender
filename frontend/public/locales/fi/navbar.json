@@ -10,11 +10,16 @@
   "logout": "Kirjaudu ulos",
   "favorites": "Suosikit",
   "profile": "Profiili",
+  "navigation": "Navigointi",
+  "accountSection": "Tili",
+  "mobileMenuTitle": "Valikko",
+  "mobileMenuOpen": "Avaa valikko",
+  "mobileMenuClose": "Sulje valikko",
   "language": {
     "switcherLabel": "Kielivalitsin",
     "triggerEnglish": "Valitse kieli: englanti",
     "triggerFinnish": "Valitse kieli: suomi",
-    "english": "English",
+    "english": "Englanti",
     "finnish": "Suomi"
   },
   "badges": {
@@ -29,6 +34,7 @@
     "title": "Ilmoitukset",
     "markAllRead": "Merkitse kaikki luetuiksi",
     "clearAll": "Tyhjennä kaikki",
+    "close": "Sulje",
     "loading": "Ladataan ilmoituksia...",
     "empty": "Ilmoituksia ei vielä ole. Uudet kurssi- ja oppimispäivitykset näkyvät täällä.",
     "coursePublishedTitle": "Uusi kurssi julkaistu",

@@ -97,6 +97,7 @@ function MyCoursesPageContent() {
                 itemsLabel={t('page.items')}
                 priority={index === 0}
                 progressLabel={t('page.progress')}
+                resumeOnOpen
                 title={getCourseTitle(course)}
               />
             ))}

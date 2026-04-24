@@ -57,6 +57,27 @@ const resourceService = {
     await apiClient.delete(`/resources/me/${id}`);
   },
 
+  async openResourceFile(resource: Pick<Resource, 'id' | 'filename'>): Promise<void> {
+    const response = await apiClient.get<Blob>(`/resources/${resource.id}/download`, {
+      responseType: 'blob',
+    });
+    const objectUrl = window.URL.createObjectURL(response.data);
+    const anchor = document.createElement('a');
+
+    anchor.href = objectUrl;
+    anchor.target = '_blank';
+    anchor.rel = 'noreferrer';
+
+    if (resource.filename) {
+      anchor.download = resource.filename;
+    }
+
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => window.URL.revokeObjectURL(objectUrl), 60_000);
+  },
+
   async uploadResource(file: File): Promise<UploadResourceResponse> {
     const formData = new FormData();
     formData.append('file', file);

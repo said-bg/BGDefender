@@ -149,4 +149,32 @@
     width: min(100%, calc(100% - 1rem));
     padding-top: 2rem;
   }
+
+  .hero {
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .heroIdentity {
+    align-items: flex-start;
+  }
+
+  .avatar {
+    width: 3.2rem;
+    height: 3.2rem;
+    font-size: 1rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.88rem;
+  }
+
+  .formsColumn,
+  .layout {
+    gap: 1rem;
+  }
 }

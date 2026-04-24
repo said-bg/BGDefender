@@ -10,12 +10,17 @@
     "logout":  "Logout",
     "favorites":  "Favorites",
     "profile":  "Profile",
+    "navigation": "Navigation",
+    "accountSection": "Account",
+    "mobileMenuTitle": "Menu",
+    "mobileMenuOpen": "Open menu",
+    "mobileMenuClose": "Close menu",
     "language":  {
                      "switcherLabel":  "Language switcher",
                      "triggerEnglish":  "Select language: English",
                      "triggerFinnish":  "Select language: Finnish",
                      "english":  "English",
-                     "finnish":  "Suomi"
+                     "finnish":  "Finnish"
                  },
     "badges":  {
                    "free":  "Free",
@@ -29,6 +34,7 @@
                      "title": "Notifications",
                      "markAllRead": "Mark all as read",
                      "clearAll": "Clear all",
+                     "close": "Close",
                      "loading": "Loading notifications...",
                      "empty": "No notifications yet. New course updates and learner alerts will appear here.",
                      "coursePublishedTitle": "New course published",

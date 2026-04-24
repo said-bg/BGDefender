@@ -151,8 +151,11 @@ export class CollectionsService {
     }
 
     if (dto.orderIndex !== undefined) {
-      const normalizedCollection = siblings.find((sibling) => sibling.id === collection.id);
-      const previousOrderIndex = normalizedCollection?.orderIndex ?? collection.orderIndex;
+      const normalizedCollection = siblings.find(
+        (sibling) => sibling.id === collection.id,
+      );
+      const previousOrderIndex =
+        normalizedCollection?.orderIndex ?? collection.orderIndex;
       const nextOrderIndex = clampOrderIndex(dto.orderIndex, siblings.length);
       const shiftedCollections = shiftForMove(
         siblings,
@@ -194,8 +197,11 @@ export class CollectionsService {
     const collection = await this.findCollectionOrThrow(id);
     const siblings = await this.loadOrderedCollectionSiblings();
     await this.normalizeCollectionSiblings(siblings);
-    const normalizedCollection = siblings.find((sibling) => sibling.id === collection.id);
-    const removedOrderIndex = normalizedCollection?.orderIndex ?? collection.orderIndex;
+    const normalizedCollection = siblings.find(
+      (sibling) => sibling.id === collection.id,
+    );
+    const removedOrderIndex =
+      normalizedCollection?.orderIndex ?? collection.orderIndex;
 
     await this.collectionRepository.remove(collection);
 

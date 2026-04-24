@@ -117,52 +117,62 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
             <p className={styles.menuTitle}>
               {t('notifications.title')}
             </p>
-            <button
-              type="button"
-              className={styles.markAllButton}
-              disabled={!hasUnreadNotifications || isMarkingAll}
-              onClick={async () => {
-                setIsMarkingAll(true);
+            <div className={styles.menuActions}>
+              <button
+                type="button"
+                className={styles.markAllButton}
+                disabled={!hasUnreadNotifications || isMarkingAll}
+                onClick={async () => {
+                  setIsMarkingAll(true);
 
-                try {
-                  await notificationService.markAllAsRead();
-                  setNotifications((current) =>
-                    current.map((notification) => ({
-                      ...notification,
-                      isRead: true,
-                      readAt: notification.readAt ?? new Date().toISOString(),
-                    })),
-                  );
-                  setUnreadCount(0);
-                } catch (error) {
-                  console.error('Failed to mark all notifications as read:', error);
-                } finally {
-                  setIsMarkingAll(false);
-                }
-              }}
-            >
-              {t('notifications.markAllRead')}
-            </button>
-            <button
-              type="button"
-              className={styles.clearAllButton}
-              disabled={notifications.length === 0 || isClearingAll}
-              onClick={async () => {
-                setIsClearingAll(true);
+                  try {
+                    await notificationService.markAllAsRead();
+                    setNotifications((current) =>
+                      current.map((notification) => ({
+                        ...notification,
+                        isRead: true,
+                        readAt: notification.readAt ?? new Date().toISOString(),
+                      })),
+                    );
+                    setUnreadCount(0);
+                  } catch (error) {
+                    console.error('Failed to mark all notifications as read:', error);
+                  } finally {
+                    setIsMarkingAll(false);
+                  }
+                }}
+              >
+                {t('notifications.markAllRead')}
+              </button>
+              <button
+                type="button"
+                className={styles.clearAllButton}
+                disabled={notifications.length === 0 || isClearingAll}
+                onClick={async () => {
+                  setIsClearingAll(true);
 
-                try {
-                  await notificationService.clearAll();
-                  setNotifications([]);
-                  setUnreadCount(0);
-                } catch (error) {
-                  console.error('Failed to clear notifications:', error);
-                } finally {
-                  setIsClearingAll(false);
-                }
-              }}
-            >
-              {t('notifications.clearAll')}
-            </button>
+                  try {
+                    await notificationService.clearAll();
+                    setNotifications([]);
+                    setUnreadCount(0);
+                  } catch (error) {
+                    console.error('Failed to clear notifications:', error);
+                  } finally {
+                    setIsClearingAll(false);
+                  }
+                }}
+              >
+                {t('notifications.clearAll')}
+              </button>
+              <button
+                type="button"
+                className={styles.closeButton}
+                onClick={() => setIsOpen(false)}
+                aria-label={t('notifications.close')}
+              >
+                {t('notifications.close')}
+              </button>
+            </div>
           </div>
 
           <div className={styles.menuBody}>

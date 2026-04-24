@@ -43,11 +43,18 @@ export default function useAdminResources() {
   const [message, setMessage] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [openingId, setOpeningId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | ResourceType>('all');
   const [form, setForm] = useState<ResourceForm>(INITIAL_FORM);
+
+  const clearFeedback = () => {
+    setError(null);
+    setMessage(null);
+    setUploadError(null);
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,6 +66,7 @@ export default function useAdminResources() {
           resourceService.getAdminResources({
             limit: 100,
             search: search.trim() || undefined,
+            source: ResourceSource.ADMIN,
             type: typeFilter === 'all' ? undefined : typeFilter,
           }),
           userService.getAdminUsers({ limit: 100 }),
@@ -84,12 +92,18 @@ export default function useAdminResources() {
   }, [search, t, typeFilter]);
 
   const updateForm = <K extends keyof ResourceForm>(key: K, value: ResourceForm[K]) => {
+    clearFeedback();
     setForm((previous) => ({ ...previous, [key]: value }));
   };
 
-  const resetForm = () => {
-    setForm(INITIAL_FORM);
-    setUploadError(null);
+  const updateSearch = (value: string) => {
+    clearFeedback();
+    setSearch(value);
+  };
+
+  const updateTypeFilter = (value: 'all' | ResourceType) => {
+    clearFeedback();
+    setTypeFilter(value);
   };
 
   const handleUpload = async (file: File | undefined) => {
@@ -99,7 +113,7 @@ export default function useAdminResources() {
 
     try {
       setIsUploading(true);
-      setUploadError(null);
+      clearFeedback();
       const uploaded = await resourceService.uploadResource(file);
       setForm((previous) => ({
         ...previous,
@@ -180,7 +194,8 @@ export default function useAdminResources() {
           defaultValue: 'Resource sent successfully.',
         }),
       );
-      resetForm();
+      setForm(INITIAL_FORM);
+      setUploadError(null);
     } catch (submitError) {
       setError(
         getApiErrorMessage(
@@ -221,6 +236,25 @@ export default function useAdminResources() {
     }
   };
 
+  const handleOpenFile = async (resource: Resource) => {
+    try {
+      setOpeningId(resource.id);
+      clearFeedback();
+      await resourceService.openResourceFile(resource);
+    } catch (openError) {
+      setError(
+        getApiErrorMessage(
+          openError,
+          t('resources.openFailed', {
+            defaultValue: 'Failed to open document.',
+          }),
+        ),
+      );
+    } finally {
+      setOpeningId(null);
+    }
+  };
+
   const summary = useMemo(() => {
     const total = resources.length;
     const files = resources.filter((resource) => resource.type === ResourceTypeEnum.FILE).length;
@@ -237,15 +271,17 @@ export default function useAdminResources() {
     error,
     form,
     handleDelete,
+    handleOpenFile,
     handleSubmit,
     handleUpload,
     isUploading,
     loading,
     message,
+    openingId,
     resources,
     search,
-    setSearch,
-    setTypeFilter,
+    setSearch: updateSearch,
+    setTypeFilter: updateTypeFilter,
     submitting,
     summary,
     t,

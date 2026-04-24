@@ -35,6 +35,7 @@
   "sourceUser": "My upload",
   "createdLabel": "Created",
   "openFile": "Open document",
+  "openFailed": "Failed to open document.",
   "openLink": "Open link",
   "delete": "Delete",
   "deleting": "Deleting...",

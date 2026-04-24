@@ -351,7 +351,11 @@ describe('ChapterService', () => {
     thirdChapter.orderIndex = 3;
 
     chapterRepository.findOne.mockResolvedValue(thirdChapter);
-    chapterRepository.find.mockResolvedValue([firstChapter, secondChapter, thirdChapter]);
+    chapterRepository.find.mockResolvedValue([
+      firstChapter,
+      secondChapter,
+      thirdChapter,
+    ]);
     chapterRepository.save.mockImplementation((chapter: Chapter | Chapter[]) =>
       Promise.resolve(chapter),
     );
@@ -360,7 +364,9 @@ describe('ChapterService', () => {
 
     expect(firstChapter.orderIndex).toBe(2);
     expect(secondChapter.orderIndex).toBe(3);
-    expect(result).toEqual(expect.objectContaining({ id: 'chapter-3', orderIndex: 1 }));
+    expect(result).toEqual(
+      expect.objectContaining({ id: 'chapter-3', orderIndex: 1 }),
+    );
   });
 
   it('closes order gaps after deleting a chapter', async () => {
@@ -373,7 +379,11 @@ describe('ChapterService', () => {
     thirdChapter.orderIndex = 3;
 
     chapterRepository.findOne.mockResolvedValue(secondChapter);
-    chapterRepository.find.mockResolvedValue([firstChapter, secondChapter, thirdChapter]);
+    chapterRepository.find.mockResolvedValue([
+      firstChapter,
+      secondChapter,
+      thirdChapter,
+    ]);
     chapterRepository.remove.mockResolvedValue(undefined);
     chapterRepository.save.mockResolvedValue([thirdChapter]);
 

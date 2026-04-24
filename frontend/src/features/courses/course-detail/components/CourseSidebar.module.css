@@ -11,7 +11,7 @@
 .overviewCard {
   width: 100%;
   display: block;
-  padding: 1.4rem;
+  padding: 1.05rem 1.1rem 1rem;
   border: 0;
   border-bottom: 1px solid var(--color-border-subtle);
   background: linear-gradient(180deg, var(--color-reader-sidebar-start) 0%, var(--color-reader-sidebar-end) 100%);
@@ -27,16 +27,21 @@
 }
 
 .overviewTitle {
-  margin-bottom: 0.45rem;
-  font-size: 1.55rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.24rem;
   font-weight: 800;
 }
 
 .overviewText {
+  display: -webkit-box;
   margin: 0;
+  overflow: hidden;
   color: var(--color-text-inverse-muted);
-  font-size: 0.97rem;
-  line-height: 1.65;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .overviewProgress,
@@ -49,13 +54,13 @@
 }
 
 .overviewProgress {
-  margin-top: 1rem;
-  height: 0.42rem;
+  margin-top: 0.6rem;
+  height: 0.34rem;
 }
 
 .chapterProgress {
-  margin-top: 0.85rem;
-  height: 0.28rem;
+  margin-top: 0.55rem;
+  height: 0.24rem;
 }
 
 .overviewProgress::-webkit-progress-bar,
@@ -85,8 +90,8 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1.35rem 1.3rem;
+  gap: 0.8rem;
+  padding: 1rem 1.05rem;
   border: 0;
   background: var(--color-surface);
   text-align: left;
@@ -103,7 +108,7 @@
 
 .chapterMeta {
   display: flex;
-  gap: 0.95rem;
+  gap: 0.72rem;
 }
 
 .chapterCopy {
@@ -112,46 +117,52 @@
 }
 
 .chapterIndex {
-  min-width: 2.2rem;
-  height: 2.2rem;
-  border-radius: var(--radius-pill);
+  min-width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 0.68rem;
   display: grid;
   place-items: center;
   background: var(--color-warning-badge-soft-bg);
   color: var(--color-brand);
-  font-size: 0.86rem;
+  font-size: 0.76rem;
   font-weight: 800;
 }
 
 .chapterTitle {
   color: var(--color-text-primary);
-  font-size: 1.18rem;
+  font-size: 1rem;
   font-weight: 800;
+  line-height: 1.32;
 }
 
 .chapterTeaser {
-  margin-top: 0.35rem;
+  display: -webkit-box;
+  margin-top: 0.2rem;
   color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  line-height: 1.55;
+  overflow: hidden;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 
 .chapterChevron {
   color: var(--color-text-secondary);
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 500;
   line-height: 1;
 }
 
 .subChapterList {
   display: grid;
-  gap: 0.65rem;
-  padding: 0 1.1rem 1.15rem 4.45rem;
+  gap: 0.5rem;
+  padding: 0 1rem 0.9rem 3.65rem;
   background: var(--color-surface);
 }
 
 .subChapterButton {
-  padding: 0.15rem 0 0.15rem 1rem;
+  padding: 0.08rem 0 0.08rem 0.8rem;
   border: 0;
   border-left: 2px solid var(--color-border-control);
   border-radius: 0;
@@ -161,7 +172,7 @@
 }
 
 .quizButton {
-  padding: 0.35rem 0 0.15rem 1rem;
+  padding: 0.18rem 0 0.08rem 0.8rem;
   border: 0;
   border-left: 2px dashed var(--color-border-control);
   border-radius: 0;
@@ -171,16 +182,16 @@
 }
 
 .finalTestSection {
-  padding: 1rem 1.1rem 1.2rem;
+  padding: 0.85rem 1rem 1rem;
   border-top: 1px solid var(--color-border-subtle);
   background: var(--color-surface);
 }
 
 .finalTestButton {
   width: 100%;
-  padding: 0.95rem 1rem;
+  padding: 0.8rem 0.9rem;
   border: 1px solid var(--color-border-soft);
-  border-radius: 1rem;
+  border-radius: 0.88rem;
   background: linear-gradient(180deg, var(--color-brand-surface) 0%, var(--color-brand-soft) 100%);
   text-align: left;
   cursor: pointer;
@@ -209,35 +220,47 @@
 
 .subChapterInner strong {
   display: block;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.08rem;
   color: var(--color-text-heading);
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 700;
+  line-height: 1.35;
 }
 
 .subChapterInner small {
-  display: block;
+  display: -webkit-box;
   color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.5;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.42;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 @media (max-width: 980px) {
   .sidebar {
     position: static;
+    max-height: calc(80vh - 4.75rem);
+    overflow-y: auto;
   }
 }
 
 @media (max-width: 720px) {
+  .sidebar {
+    max-height: calc(84vh - 4.2rem);
+    border-radius: 1.2rem;
+  }
+
   .chapterButton {
-    padding: 1.1rem 1rem;
+    padding: 0.92rem 0.9rem;
   }
 
   .subChapterList {
-    padding: 0 1rem 1rem;
+    padding: 0 0.9rem 0.9rem 0.9rem;
   }
 
   .finalTestSection {
-    padding: 1rem;
+    padding: 0.9rem;
   }
 }

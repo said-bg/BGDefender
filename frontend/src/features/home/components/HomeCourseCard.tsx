@@ -22,7 +22,7 @@ export default function HomeCourseCard({
 
   return (
     <article className={styles.card}>
-      <Link href={`/courses/${course.id}`} className={styles.cardLink}>
+      <Link href={`/courses/${course.id}`} scroll className={styles.cardLink}>
         <div className={styles.cardHero}>
           <CourseCover
             src={course.coverImage}

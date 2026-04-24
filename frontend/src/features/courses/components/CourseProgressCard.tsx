@@ -17,6 +17,7 @@ interface CourseProgressCardProps {
   priority?: boolean;
   progressLabel: string;
   removeLabel?: string;
+  resumeOnOpen?: boolean;
   onRemove?: () => void;
   title: string;
 }
@@ -33,9 +34,14 @@ export default function CourseProgressCard({
   priority = false,
   progressLabel,
   removeLabel,
+  resumeOnOpen = false,
   onRemove,
   title,
 }: CourseProgressCardProps) {
+  const targetHref = resumeOnOpen
+    ? `${href}${href.includes('?') ? '&' : '?'}resume=1`
+    : href;
+
   return (
     <article className={styles.card}>
       <div
@@ -82,7 +88,7 @@ export default function CourseProgressCard({
               </button>
             ) : null}
           </div>
-          <Link href={href} className={styles.resumeButton}>
+          <Link href={targetHref} scroll className={styles.resumeButton}>
             {actionLabel}
           </Link>
         </div>

@@ -111,3 +111,35 @@
     margin-left: 0;
   }
 }
+
+@media (max-width: 640px) {
+  .hero {
+    margin-bottom: 0.85rem;
+  }
+
+  .sectionNavRow {
+    gap: 0.75rem;
+  }
+
+  .sectionNav {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    scrollbar-width: none;
+  }
+
+  .sectionNav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sectionNavLink {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .sectionActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+}

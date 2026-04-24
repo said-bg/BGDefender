@@ -24,11 +24,13 @@ function AdminResourcesPageContent() {
     error,
     form,
     handleDelete,
+    handleOpenFile,
     handleSubmit,
     handleUpload,
     isUploading,
     loading,
     message,
+    openingId,
     resources,
     search,
     setSearch,
@@ -411,16 +413,16 @@ function AdminResourcesPageContent() {
 
                   <div className={styles.resourceActions}>
                     {resource.type === ResourceType.FILE && resource.fileUrl ? (
-                      <a
-                        href={resource.fileUrl}
-                        target="_blank"
-                        rel="noreferrer"
+                      <button
+                        type="button"
                         className={styles.inlineLink}
+                        onClick={() => void handleOpenFile(resource)}
+                        disabled={openingId === resource.id}
                       >
                         {t('resources.openFile', {
                           defaultValue: 'Open document',
                         })}
-                      </a>
+                      </button>
                     ) : null}
                     {resource.type === ResourceType.LINK && resource.linkUrl ? (
                       <a

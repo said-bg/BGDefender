@@ -79,6 +79,38 @@ export function useAccountSettings() {
         ? styles.creatorTone
         : styles.userTone;
 
+  const updateProfileForm = (value: ProfileFormState) => {
+    setProfileError(null);
+    setProfileMessage(null);
+    setProfileForm(value);
+  };
+
+  const updateCurrentPassword = (value: string) => {
+    setPasswordError(null);
+    setPasswordMessage(null);
+    setCurrentPassword(value);
+  };
+
+  const updateNewPassword = (value: string) => {
+    setPasswordError(null);
+    setPasswordMessage(null);
+    setNewPassword(value);
+  };
+
+  const updateConfirmPassword = (value: string) => {
+    setPasswordError(null);
+    setPasswordMessage(null);
+    setConfirmPassword(value);
+  };
+
+  const handleSetActiveSection = (section: AccountSection) => {
+    setProfileError(null);
+    setProfileMessage(null);
+    setPasswordError(null);
+    setPasswordMessage(null);
+    setActiveSection(section);
+  };
+
   const handleProfileSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setProfileError(null);
@@ -154,11 +186,11 @@ export function useAccountSettings() {
     profileMessage,
     roleLabel,
     roleToneClass,
-    setActiveSection,
-    setConfirmPassword,
-    setCurrentPassword,
-    setNewPassword,
-    setProfileForm,
+    setActiveSection: handleSetActiveSection,
+    setConfirmPassword: updateConfirmPassword,
+    setCurrentPassword: updateCurrentPassword,
+    setNewPassword: updateNewPassword,
+    setProfileForm: updateProfileForm,
     user,
   };
 }

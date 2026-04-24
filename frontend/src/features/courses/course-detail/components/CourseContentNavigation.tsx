@@ -9,6 +9,7 @@ interface CourseContentNavigationProps {
   currentKind: 'overview' | 'chapter' | 'subchapter' | 'quiz' | 'final-test';
   hasFinalTest: boolean;
   isAuthenticated: boolean;
+  isCourseCompleted: boolean;
   nextItem: NavigationItem | null;
   onNavigateToView: (view: ViewState) => void;
   previousItem: NavigationItem | null;
@@ -20,6 +21,7 @@ export default function CourseContentNavigation({
   currentKind,
   hasFinalTest,
   isAuthenticated,
+  isCourseCompleted,
   nextItem,
   onNavigateToView,
   previousItem,
@@ -39,14 +41,6 @@ export default function CourseContentNavigation({
     }
 
     onNavigateToView(item.view);
-
-    const contentPanel = document.querySelector<HTMLElement>('[data-course-content-panel]');
-    if (contentPanel) {
-      contentPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   const isCourseEnd = !nextItem && currentKind !== 'overview';
@@ -109,13 +103,23 @@ export default function CourseContentNavigation({
                 })}
           </button>
         ) : isCourseEnd ? (
-          <button
-            type="button"
-            className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
-            onClick={() => setIsCompletionOpen(true)}
-          >
-            {t('detail.finishCourse', { defaultValue: 'Finish' })}
-          </button>
+          isCourseCompleted ? (
+            <button
+              type="button"
+              className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
+              onClick={() => onNavigateToView({ type: 'overview' })}
+            >
+              {t('detail.backToOverview', { defaultValue: 'Back to overview' })}
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
+              onClick={() => setIsCompletionOpen(true)}
+            >
+              {t('detail.finishCourse', { defaultValue: 'Finish' })}
+            </button>
+          )
         ) : (
           <button
             type="button"

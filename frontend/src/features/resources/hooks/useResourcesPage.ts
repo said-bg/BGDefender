@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { resourceService } from '@/services';
 import type { Resource } from '@/types/api';
 import { ResourceSource, ResourceType } from '@/types/api';
+import { getApiErrorMessage } from '@/utils/apiError';
 import { getResourcesSummary } from '../lib/resources.utils';
 
 type ResourceFormState = {
@@ -42,6 +43,7 @@ export default function useResourcesPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [openingId, setOpeningId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -49,6 +51,12 @@ export default function useResourcesPage() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | ResourceType>('all');
   const [form, setForm] = useState<ResourceFormState>(defaultFormState);
+
+  const clearFeedback = () => {
+    setError(null);
+    setMessage(null);
+    setUploadError(null);
+  };
 
   const loadResources = useCallback(async () => {
     setLoading(true);
@@ -93,6 +101,7 @@ export default function useResourcesPage() {
     field: K,
     value: ResourceFormState[K],
   ) => {
+    clearFeedback();
     setForm((previous) => {
       const next = { ...previous, [field]: value };
 
@@ -110,9 +119,14 @@ export default function useResourcesPage() {
     });
   };
 
-  const resetForm = () => {
-    setForm(defaultFormState);
-    setUploadError(null);
+  const updateSearch = (value: string) => {
+    clearFeedback();
+    setSearch(value);
+  };
+
+  const updateTypeFilter = (value: 'all' | ResourceType) => {
+    clearFeedback();
+    setTypeFilter(value);
   };
 
   const handleUpload = async (file?: File) => {
@@ -121,8 +135,7 @@ export default function useResourcesPage() {
     }
 
     setIsUploading(true);
-    setUploadError(null);
-    setMessage(null);
+    clearFeedback();
 
     try {
       const uploaded = await resourceService.uploadResource(file);
@@ -184,7 +197,8 @@ export default function useResourcesPage() {
       setMessage(
         t('createSuccess'),
       );
-      resetForm();
+      setForm(defaultFormState);
+      setUploadError(null);
       await loadResources();
     } catch (submitFailure) {
       setError(
@@ -234,6 +248,24 @@ export default function useResourcesPage() {
     }
   };
 
+  const handleOpenFile = async (resource: Resource) => {
+    setOpeningId(resource.id);
+    clearFeedback();
+
+    try {
+      await resourceService.openResourceFile(resource);
+    } catch (openFailure) {
+      setError(
+        getApiErrorMessage(
+          openFailure,
+          t('openFailed', { defaultValue: 'Failed to open document.' }),
+        ),
+      );
+    } finally {
+      setOpeningId(null);
+    }
+  };
+
   return {
     deletingId,
     error,
@@ -245,9 +277,11 @@ export default function useResourcesPage() {
     isUploading,
     loading,
     message,
+    handleOpenFile,
+    openingId,
     search,
-    setSearch,
-    setTypeFilter,
+    setSearch: updateSearch,
+    setTypeFilter: updateTypeFilter,
     submitting,
     summary,
     t,

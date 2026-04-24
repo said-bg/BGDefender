@@ -22,6 +22,8 @@ interface UseCourseProgressSyncOptions {
   selectedView: ViewState;
   setExpandedChapters: Dispatch<SetStateAction<Set<string>>>;
   setSelectedView: Dispatch<SetStateAction<ViewState>>;
+  setViewportMode: Dispatch<SetStateAction<'entry' | 'content'>>;
+  shouldRestoreProgress: boolean;
   user: User | null;
 }
 
@@ -70,6 +72,8 @@ export default function useCourseProgressSync({
   selectedView,
   setExpandedChapters,
   setSelectedView,
+  setViewportMode,
+  shouldRestoreProgress,
   user,
 }: UseCourseProgressSyncOptions) {
   const [savedProgress, setSavedProgress] = useState<Awaited<
@@ -101,7 +105,9 @@ export default function useCourseProgressSync({
     const restoreProgress = async () => {
       try {
         setRestoringProgress(true);
-        const restoredSessionView = readStoredCourseView(courseId, navigationItems);
+        const restoredSessionView = shouldRestoreProgress
+          ? readStoredCourseView(courseId, navigationItems)
+          : null;
 
         if (restoredSessionView) {
           if (
@@ -111,13 +117,17 @@ export default function useCourseProgressSync({
             setExpandedChapters(new Set([restoredSessionView.chapterId]));
           }
 
+          if (restoredSessionView.type !== 'overview') {
+            setViewportMode('content');
+          }
+
           setSelectedView(restoredSessionView);
         }
 
         const progress = await progressService.getMyCourseProgress(courseId);
         setSavedProgress(progress);
 
-        if (!isMounted || !progress || restoredSessionView) {
+        if (!isMounted || !progress || restoredSessionView || !shouldRestoreProgress) {
           return;
         }
 
@@ -125,6 +135,10 @@ export default function useCourseProgressSync({
 
         if (restoredView.type !== 'overview' && restoredView.type !== 'final-test') {
           setExpandedChapters(new Set([restoredView.chapterId]));
+        }
+
+        if (restoredView.type !== 'overview') {
+          setViewportMode('content');
         }
 
         setSelectedView(restoredView);
@@ -151,6 +165,8 @@ export default function useCourseProgressSync({
     navigationItems,
     setExpandedChapters,
     setSelectedView,
+    setViewportMode,
+    shouldRestoreProgress,
     user,
   ]);
 
@@ -198,5 +214,8 @@ export default function useCourseProgressSync({
     user,
   ]);
 
-  return { restoringProgress };
+  return {
+    isCourseCompleted: Boolean(savedProgress?.completed),
+    restoringProgress,
+  };
 }
