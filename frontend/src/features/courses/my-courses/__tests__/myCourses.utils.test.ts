@@ -18,7 +18,7 @@ const createCourse = (
   level: 'free',
   status: 'published',
   estimatedDuration: 90,
-  coverImage: '/assets/images/home-bg.png',
+  coverImage: '/assets/images/BGLOGO.png',
   createdAt: '2026-01-01T00:00:00.000Z',
   updatedAt: '2026-01-01T00:00:00.000Z',
   authors: [],

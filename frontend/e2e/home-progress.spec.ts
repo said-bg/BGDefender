@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { buildApiPattern } from './support/courseFixtures';
 
 const TOKEN_KEY = 'bg_defender_token';
-const LOCAL_COVER_IMAGE = '/assets/images/home-bg.png';
+const LOCAL_COVER_IMAGE = '/assets/images/BGLOGO.png';
 
 const freeUser = {
   id: 10,

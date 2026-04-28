@@ -111,7 +111,7 @@ test.describe('Admin courses', () => {
     await page.getByLabel(/Estimated duration/i).fill('45');
     await page
       .getByPlaceholder('https://example.com/course-cover.jpg')
-      .fill('  /assets/images/home-bg.png  ');
+      .fill('  /assets/images/BGLOGO.png  ');
     await page.getByRole('button', { name: /Alex Johnson/i }).click();
     await page.getByRole('button', { name: /^Create course$/i }).click();
 
@@ -126,7 +126,7 @@ test.describe('Admin courses', () => {
       level: 'premium',
       status: 'published',
       estimatedDuration: 45,
-      coverImage: '/assets/images/home-bg.png',
+      coverImage: '/assets/images/BGLOGO.png',
       authorIds: ['author-1'],
     });
   });

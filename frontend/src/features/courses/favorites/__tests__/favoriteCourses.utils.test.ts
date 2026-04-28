@@ -13,7 +13,7 @@ const createCourse = (id: string, level: 'free' | 'premium' = 'free'): Course =>
     level,
     status: 'published',
     estimatedDuration: 60,
-    coverImage: '/assets/images/home-bg.png',
+    coverImage: '/assets/images/BGLOGO.png',
     authors: [],
     chapters: [
       {

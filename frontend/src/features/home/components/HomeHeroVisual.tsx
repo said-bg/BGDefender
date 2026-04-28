@@ -11,7 +11,7 @@ export default function HomeHeroVisual({ t }: HomeHeroVisualProps) {
       <div className={styles.heroVisualFrame}>
         <div className={styles.heroImageWrap}>
           <Image
-            src="/assets/images/home-bg.png"
+            src="/assets/images/BGLOGO.png"
             alt="BG Defender home hero"
             fill
             priority

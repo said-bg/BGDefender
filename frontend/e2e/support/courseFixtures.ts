@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 
 export const API_BASE = 'http://localhost:3001/api';
 export const TOKEN_KEY = 'bg_defender_token';
-export const LOCAL_COVER_IMAGE = '/assets/images/home-bg.png';
+export const LOCAL_COVER_IMAGE = '/assets/images/BGLOGO.png';
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 export const buildApiPattern = (path: string) =>

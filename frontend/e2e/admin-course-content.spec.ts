@@ -77,7 +77,7 @@ test.describe('Admin course content', () => {
         contentType: 'application/json',
         body: JSON.stringify({
           id: 'content-1',
-          url: null,
+          url: null,    
           ...createdPayload,
         }),
       });
