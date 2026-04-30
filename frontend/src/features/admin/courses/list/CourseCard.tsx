@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
 import { Course } from '@/services/course';
 import { LocalizedAdminCourse } from './courseAdmin.utils';
 import styles from './CourseCard.module.css';
@@ -89,6 +90,15 @@ export default function CourseCard({
       <div className={styles.courseActions}>
         <Link href={`/admin/courses/${course.id}/edit`} className={styles.editLink}>
           {t('editCourse', { defaultValue: 'Edit course' })}
+        </Link>
+
+        <Link
+          href={buildCoursePreviewHref(course.id, {
+            returnTo: '/admin/courses',
+          })}
+          className={styles.inlineActionLink}
+        >
+          {t('courseActions.preview', { defaultValue: 'Preview' })}
         </Link>
 
         {course.status !== 'published' ? (

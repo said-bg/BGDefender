@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { TFunction } from 'i18next';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
 import courseService, {
   type AdminChapterQuiz,
   type AdminQuizAnalytics,
@@ -23,6 +25,9 @@ const sortChapters = (course: Course): Course => ({
 
 export default function useQuizPage(language: string, t: TFunction<'admin', undefined>) {
   const courseId = useEditCourseId();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [course, setCourse] = useState<Course | null>(null);
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [loadingPage, setLoadingPage] = useState(true);
@@ -49,6 +54,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     updateQuestionField,
     updateTopLevelField,
   } = assessment;
+  const requestedChapterId = searchParams?.get('chapter');
 
   useEffect(() => {
     if (!courseId) {
@@ -68,7 +74,16 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
         const response = await courseService.getAdminCourseById(courseId);
         const normalizedCourse = sortChapters(response);
         setCourse(normalizedCourse);
-        setSelectedChapterId((previous) => previous ?? normalizedCourse.chapters[0]?.id ?? null);
+        setSelectedChapterId((previous) => {
+          if (
+            requestedChapterId &&
+            normalizedCourse.chapters.some((chapter) => chapter.id === requestedChapterId)
+          ) {
+            return requestedChapterId;
+          }
+
+          return previous ?? normalizedCourse.chapters[0]?.id ?? null;
+        });
       } catch (error) {
         setLoadError(
           getApiErrorMessage(
@@ -84,7 +99,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     };
 
     void loadCourse();
-  }, [courseId, t]);
+  }, [courseId, requestedChapterId, t]);
 
   const chapters = useMemo(
     () =>
@@ -101,6 +116,48 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
 
     return language === 'fi' ? course.titleFi : course.titleEn;
   }, [course, language]);
+
+  useEffect(() => {
+    if (!pathname || !selectedChapterId) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? '');
+    nextParams.set('chapter', selectedChapterId);
+
+    const nextQuery = nextParams.toString();
+    const currentQuery = searchParams?.toString() ?? '';
+
+    if (nextQuery !== currentQuery) {
+      router.replace(`${pathname}?${nextQuery}`, { scroll: false });
+    }
+  }, [pathname, router, searchParams, selectedChapterId]);
+
+  const returnTo = useMemo(() => {
+    if (!pathname) {
+      return undefined;
+    }
+
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? '');
+    if (selectedChapterId) {
+      nextParams.set('chapter', selectedChapterId);
+    }
+
+    const nextQuery = nextParams.toString();
+    return `${pathname}${nextQuery ? `?${nextQuery}` : ''}`;
+  }, [pathname, searchParams, selectedChapterId]);
+  const previewHref = useMemo(() => {
+    if (!courseId) {
+      return null;
+    }
+
+    return buildCoursePreviewHref(courseId, {
+      returnTo,
+      target: selectedChapterId
+        ? { type: 'quiz', chapterId: selectedChapterId }
+        : { type: 'overview' },
+    });
+  }, [courseId, returnTo, selectedChapterId]);
 
   const syncChapterQuizSummary = useCallback((chapterId: string, quiz: AdminChapterQuiz | null) => {
     setCourse((previous) => {
@@ -328,6 +385,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     quizError,
     quizLoading,
     quizMessage,
+    previewHref,
     resetCurrentForm,
     selectedChapter,
     selectedChapterId,

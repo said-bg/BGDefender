@@ -11,8 +11,10 @@ import {
   ViewState,
   buildNavigationItems,
   formatCourseDuration,
+  getPreviewViewFromSearchParams,
   getLocalizedText,
   getOverviewParagraphs,
+  resolveViewStateForCourse,
   getSelectedContent,
 } from './courseDetail.utils';
 import type { CourseAccessState, CourseDetailErrorKey } from './courseDetail.types';
@@ -40,7 +42,13 @@ export function useCourseDetailPage() {
   const isPreviewModeRequested = searchParams?.get('preview') === '1';
   const isAdminPreview = isPreviewModeRequested && user?.role === UserRole.ADMIN;
   const shouldResumeProgress = searchParams?.get('resume') === '1';
-
+  const requestedPreviewView = useMemo<ViewState>(
+    () =>
+      isAdminPreview
+        ? getPreviewViewFromSearchParams(searchParams)
+        : { type: 'overview' },
+    [isAdminPreview, searchParams],
+  );
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   }, [courseId]);
@@ -71,7 +79,6 @@ export function useCourseDetailPage() {
           : await courseService.getCourseById(courseId);
 
         setCourse(result);
-        setSelectedView({ type: 'overview' });
         setExpandedChapters(new Set());
         setViewportMode('entry');
       } catch (loadError) {
@@ -85,13 +92,35 @@ export function useCourseDetailPage() {
     void loadCourse();
   }, [courseId, isAdminPreview, isInitialized, isPreviewModeRequested]);
 
+  useEffect(() => {
+    if (!course) {
+      return;
+    }
+
+    const initialView = resolveViewStateForCourse(course, requestedPreviewView, {
+      includeUnpublishedAssessments: isAdminPreview,
+    });
+
+    setSelectedView(initialView);
+    setExpandedChapters(
+      initialView.type === 'chapter' ||
+        initialView.type === 'subchapter' ||
+        initialView.type === 'quiz'
+        ? new Set([initialView.chapterId])
+        : new Set(),
+    );
+    setViewportMode(initialView.type === 'overview' ? 'entry' : 'content');
+  }, [course, isAdminPreview, requestedPreviewView]);
+
   const selectedContent = useMemo<SelectedContent | null>(() => {
     if (!course) {
       return null;
     }
 
-    return getSelectedContent(course, selectedView, activeLanguage, t);
-  }, [course, selectedView, activeLanguage, t]);
+    return getSelectedContent(course, selectedView, activeLanguage, t, {
+      includeUnpublishedAssessments: isAdminPreview,
+    });
+  }, [course, selectedView, activeLanguage, isAdminPreview, t]);
 
   const accessState = useMemo<CourseAccessState>(() => {
     if (selectedView.type === 'overview') {
@@ -139,8 +168,10 @@ export function useCourseDetailPage() {
       return [];
     }
 
-    return buildNavigationItems(course);
-  }, [course]);
+    return buildNavigationItems(course, {
+      includeUnpublishedAssessments: isAdminPreview,
+    });
+  }, [course, isAdminPreview]);
 
   const currentViewKey =
     selectedView.type === 'overview'

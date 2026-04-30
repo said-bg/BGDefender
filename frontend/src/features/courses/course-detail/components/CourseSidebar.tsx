@@ -29,6 +29,7 @@ type CourseSidebarProps = {
   quizDescription: string;
   finalTestLabel: string;
   finalTestDescription: string;
+  showUnpublishedAssessments?: boolean;
   onSelectOverview: () => void;
   onOpenFinalTest: () => void;
   onOpenQuiz: (chapterId: string) => void;
@@ -49,13 +50,17 @@ export function CourseSidebar({
   quizDescription,
   finalTestLabel,
   finalTestDescription,
+  showUnpublishedAssessments = false,
   onSelectOverview,
   onOpenFinalTest,
   onOpenQuiz,
   onToggleChapter,
   onOpenSubChapter,
 }: CourseSidebarProps) {
-  const courseProgress = getCourseProgressPercentage(course, selectedView);
+  const assessmentOptions = {
+    includeUnpublishedAssessments: showUnpublishedAssessments,
+  };
+  const courseProgress = getCourseProgressPercentage(course, selectedView, assessmentOptions);
   const overviewPreview = getPreviewText(
     getPreviewParagraph(getOverviewParagraphs(activeLanguage, course)),
     88,
@@ -115,7 +120,11 @@ export function CourseSidebar({
             course,
             chapter.id,
             selectedView,
+            assessmentOptions,
           );
+          const hasVisibleQuiz =
+            Boolean(chapter.trainingQuiz) &&
+            (showUnpublishedAssessments || chapter.trainingQuiz?.isPublished);
 
           return (
             <div key={chapter.id} className={styles.chapterGroup}>
@@ -196,7 +205,7 @@ export function CourseSidebar({
                     );
                   })}
 
-                  {chapter.trainingQuiz?.isPublished ? (
+                  {hasVisibleQuiz ? (
                     <button
                       type="button"
                       className={`${styles.quizButton} ${
@@ -218,7 +227,9 @@ export function CourseSidebar({
           );
         })}
 
-        {course.finalTests?.some((finalTest) => finalTest.isPublished) ? (
+        {course.finalTests?.some(
+          (finalTest) => showUnpublishedAssessments || finalTest.isPublished,
+        ) ? (
           <div className={styles.finalTestSection}>
             <button
               type="button"

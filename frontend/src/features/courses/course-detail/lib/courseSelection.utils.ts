@@ -1,6 +1,11 @@
 import type { Course } from '@/services/course';
 import type { ActiveLanguage, SelectedContent, ViewState } from '../courseDetail.types';
 import {
+  type CourseNavigationOptions,
+  getVisibleFinalTest,
+  hasVisibleTrainingQuiz,
+} from './courseNavigation.utils';
+import {
   getChapterParagraphs,
   getLocalizedText,
   getOverviewParagraphs,
@@ -24,13 +29,14 @@ export const getSelectedContent = (
   selectedView: ViewState,
   language: ActiveLanguage,
   t: (key: string) => string,
+  options: CourseNavigationOptions = {},
 ): SelectedContent => {
   if (selectedView.type === 'overview') {
     return getOverviewSelection(course, language, t);
   }
   
   if (selectedView.type === 'final-test') {
-    const finalTest = course.finalTests?.find((item) => item.isPublished);
+    const finalTest = getVisibleFinalTest(course, options);
 
     if (!finalTest) {
       return getOverviewSelection(course, language, t);
@@ -75,7 +81,7 @@ export const getSelectedContent = (
   if (selectedView.type === 'quiz') {
     const trainingQuiz = chapter.trainingQuiz;
 
-    if (!trainingQuiz?.isPublished) {
+    if (!trainingQuiz || !hasVisibleTrainingQuiz(chapter, options)) {
       return chapterSelection;
     }
 
@@ -117,4 +123,3 @@ export const getSelectedContent = (
     ),
   };
 };
-

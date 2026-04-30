@@ -4,12 +4,15 @@ import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import courseService, {
+  AdminCourseFinalTest,
   LearnerCourseFinalTest,
+  QuizAttemptAnswerReview,
   QuizAttemptSummary,
   QuizQuestion,
 } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import type { ActiveLanguage } from '../courseDetail.utils';
+import { evaluatePreviewAttempt } from '../lib/courseAssessmentPreview.utils';
 import styles from './ChapterTrainingQuiz.module.css';
 
 type CourseFinalTestProps = {
@@ -34,6 +37,40 @@ const scrollFinalTestCardIntoView = (element: HTMLElement | null) => {
   element.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
+const toPreviewFinalTest = (
+  response: AdminCourseFinalTest | LearnerCourseFinalTest | null,
+): LearnerCourseFinalTest | null => {
+  if (!response) {
+    return null;
+  }
+
+  if ('stats' in response) {
+    return {
+      id: response.id,
+      courseId: response.courseId,
+      titleEn: response.titleEn,
+      titleFi: response.titleFi,
+      descriptionEn: response.descriptionEn,
+      descriptionFi: response.descriptionFi,
+      passingScore: response.passingScore,
+      isPublished: response.isPublished,
+      isUnlocked: true,
+      certificate: null,
+      questions: response.questions,
+      latestAttempt: null,
+      bestAttempt: null,
+    };
+  }
+
+  return {
+    ...response,
+    isUnlocked: true,
+    latestAttempt: null,
+    bestAttempt: null,
+    certificate: null,
+  };
+};
+
 export default function CourseFinalTest({
   activeLanguage,
   courseId,
@@ -53,6 +90,7 @@ export default function CourseFinalTest({
   const [bestAttempt, setBestAttempt] = useState<QuizAttemptSummary | null>(null);
   const [isStarted, setIsStarted] = useState(false);
   const [isReviewMode, setIsReviewMode] = useState(false);
+  const [reviewAnswers, setReviewAnswers] = useState<QuizAttemptAnswerReview[]>([]);
 
   const loadFinalTest = useCallback(async () => {
     if (!enabled) {
@@ -67,16 +105,22 @@ export default function CourseFinalTest({
       const response = await courseService.getCourseFinalTest(courseId, {
         preview: previewMode,
       });
-      const learnerFinalTest = response && !('stats' in response) ? response : null;
-      setFinalTest(learnerFinalTest);
-      setLatestAttempt(learnerFinalTest?.latestAttempt ?? null);
-      setBestAttempt(learnerFinalTest?.bestAttempt ?? null);
+      const effectiveFinalTest = previewMode
+        ? toPreviewFinalTest(response)
+        : response && !('stats' in response)
+          ? response
+          : null;
+      setFinalTest(effectiveFinalTest);
+      setLatestAttempt(previewMode ? null : effectiveFinalTest?.latestAttempt ?? null);
+      setBestAttempt(previewMode ? null : effectiveFinalTest?.bestAttempt ?? null);
       setSelectedAnswers({});
+      setReviewAnswers([]);
       setIsStarted(
-        Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt) && !previewMode,
+        previewMode ||
+          Boolean(effectiveFinalTest?.isUnlocked && effectiveFinalTest.latestAttempt),
       );
       setIsReviewMode(
-        Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt) && !previewMode,
+        Boolean(effectiveFinalTest?.isUnlocked && effectiveFinalTest.latestAttempt) && !previewMode,
       );
     } catch (loadError) {
       setError(
@@ -123,6 +167,14 @@ export default function CourseFinalTest({
       Object.values(selectedAnswers).filter((currentAnswer) => currentAnswer.length > 0).length,
     [selectedAnswers],
   );
+  const reviewAnswersByQuestionId = useMemo(
+    () =>
+      new Map(
+        reviewAnswers.map((answer) => [answer.questionId, answer] as const),
+      ),
+    [reviewAnswers],
+  );
+  const isUnlockedForPreview = previewMode || finalTest?.isUnlocked;
 
   const updateAnswer = (question: QuizQuestion, optionId: string, checked: boolean) => {
     setSelectedAnswers((previous) => {
@@ -150,6 +202,10 @@ export default function CourseFinalTest({
     setSelectedAnswers({});
     setSubmitError(null);
     setSubmitMessage(null);
+    setReviewAnswers([]);
+    if (previewMode) {
+      setLatestAttempt(null);
+    }
     setIsStarted(true);
     setIsReviewMode(false);
     window.requestAnimationFrame(() => {
@@ -158,7 +214,41 @@ export default function CourseFinalTest({
   };
 
   const handleSubmit = async () => {
-    if (!finalTest?.isUnlocked || previewMode) {
+    if (!finalTest || (!finalTest.isUnlocked && !previewMode)) {
+      return;
+    }
+
+    if (previewMode) {
+      const previewResult = evaluatePreviewAttempt(
+        finalTest.questions,
+        selectedAnswers,
+        finalTest.passingScore,
+      );
+
+      setLatestAttempt(previewResult.attempt);
+      setBestAttempt((previous) =>
+        !previous || previewResult.attempt.score >= previous.score
+          ? previewResult.attempt
+          : previous,
+      );
+      setReviewAnswers(previewResult.answers);
+      setSubmitError(null);
+      setSubmitMessage(
+        previewResult.attempt.passed
+          ? t('detail.previewFinalTestPassedMessage', {
+              defaultValue:
+                'Preview complete. This final test attempt would pass, and nothing was saved.',
+            })
+          : t('detail.previewFinalTestFailedMessage', {
+              defaultValue:
+                'Preview complete. This final test attempt would not pass, and nothing was saved.',
+            }),
+      );
+      setIsStarted(true);
+      setIsReviewMode(true);
+      window.requestAnimationFrame(() => {
+        scrollFinalTestCardIntoView(finalTestCardRef.current);
+      });
       return;
     }
 
@@ -231,7 +321,7 @@ export default function CourseFinalTest({
           className={`${styles.statusBadge} ${
             latestAttempt?.passed
               ? styles.statusPassed
-              : finalTest.isUnlocked
+              : isUnlockedForPreview
                 ? styles.statusFailed
                 : styles.statusPending
           }`}
@@ -240,7 +330,7 @@ export default function CourseFinalTest({
             ? latestAttempt.passed
               ? t('detail.finalTestPassed', { defaultValue: 'Passed' })
               : t('detail.finalTestNotPassed', { defaultValue: 'Not passed yet' })
-            : finalTest.isUnlocked
+            : isUnlockedForPreview
               ? t('detail.finalTest', { defaultValue: 'Final test' })
               : t('detail.finalTestLocked', {
                   defaultValue: 'Locked until the full course is completed',
@@ -352,7 +442,126 @@ export default function CourseFinalTest({
         </p>
       ) : null}
 
-      {!finalTest.isUnlocked ? (
+      {previewMode && isReviewMode && latestAttempt ? (
+        <>
+          <div className={styles.questionList}>
+            {finalTest.questions.map((question, questionIndex) => (
+              <article key={question.id} className={styles.questionCard}>
+                <p className={styles.questionPrompt}>
+                  {questionIndex + 1}.{' '}
+                  {getLocalizedValue(activeLanguage, question.promptEn, question.promptFi)}
+                </p>
+
+                <div className={styles.questionOptions}>
+                  {question.options.map((option) => {
+                    const reviewAnswer = reviewAnswersByQuestionId.get(question.id);
+                    const selectedOptionIds = reviewAnswer?.selectedOptionIds ?? [];
+                    const correctOptionIds = reviewAnswer?.correctOptionIds ?? [];
+                    const isSelected = selectedOptionIds.includes(option.id);
+                    const isCorrectOption = correctOptionIds.includes(option.id);
+                    const optionClassName = [
+                      styles.optionLabel,
+                      isCorrectOption ? styles.optionLabelCorrect : '',
+                      isSelected && !isCorrectOption ? styles.optionLabelIncorrect : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ');
+
+                    return (
+                      <label key={option.id} className={optionClassName}>
+                        <input
+                          type={question.type === 'single_choice' ? 'radio' : 'checkbox'}
+                          name={question.id}
+                          checked={isSelected}
+                          disabled
+                          readOnly
+                        />
+                        <span>
+                          {getLocalizedValue(activeLanguage, option.labelEn, option.labelFi)}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                <p className={styles.questionExplanation}>
+                  {getLocalizedValue(activeLanguage, question.explanationEn, question.explanationFi)}
+                </p>
+              </article>
+            ))}
+          </div>
+
+          <div className={styles.quizActions}>
+            <button
+              type="button"
+              className={styles.primaryAction}
+              onClick={startRetryAttempt}
+            >
+              {t('detail.finalTestStartRetry', {
+                defaultValue: 'Retry final test',
+              })}
+            </button>
+          </div>
+        </>
+      ) : previewMode ? (
+        <>
+          <div className={styles.questionList}>
+            {finalTest.questions.map((question, questionIndex) => (
+              <article key={question.id} className={styles.questionCard}>
+                <p className={styles.questionPrompt}>
+                  {questionIndex + 1}.{' '}
+                  {getLocalizedValue(activeLanguage, question.promptEn, question.promptFi)}
+                </p>
+
+                <div className={styles.questionOptions}>
+                  {question.options.map((option) => {
+                    const currentAnswers = selectedAnswers[question.id] ?? [];
+                    const isSelected = currentAnswers.includes(option.id);
+
+                    return (
+                      <label key={option.id} className={styles.optionLabel}>
+                        <input
+                          type={question.type === 'single_choice' ? 'radio' : 'checkbox'}
+                          name={question.id}
+                          checked={isSelected}
+                          onChange={(event) =>
+                            updateAnswer(question, option.id, event.target.checked)
+                          }
+                        />
+                        <span>
+                          {getLocalizedValue(activeLanguage, option.labelEn, option.labelFi)}
+                        </span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className={styles.quizActions}>
+            <button
+              type="button"
+              className={styles.primaryAction}
+              disabled={isSubmitting}
+              onClick={() => void handleSubmit()}
+            >
+              {isSubmitting
+                ? t('detail.finalTestSubmitting', {
+                    defaultValue: 'Submitting final test...',
+                  })
+                : t('detail.finalTestSubmit', { defaultValue: 'Submit final test' })}
+            </button>
+            <button
+              type="button"
+              className={styles.secondaryAction}
+              onClick={() => setSelectedAnswers({})}
+            >
+              {t('detail.finalTestRetry', { defaultValue: 'Clear answers' })}
+            </button>
+          </div>
+        </>
+      ) : !finalTest.isUnlocked ? (
         <p className={styles.helperText}>
           {t('detail.finalTestLockedDescription', {
             defaultValue: 'Complete every chapter in this course to unlock the final test.',

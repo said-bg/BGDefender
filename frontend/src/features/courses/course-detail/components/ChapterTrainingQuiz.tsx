@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import courseService, {
+  AdminChapterQuiz,
   LearnerChapterQuiz,
   QuizAttemptAnswerReview,
   QuizAttemptSummary,
@@ -10,6 +11,7 @@ import courseService, {
 } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import type { ActiveLanguage } from '../courseDetail.utils';
+import { evaluatePreviewAttempt } from '../lib/courseAssessmentPreview.utils';
 import styles from './ChapterTrainingQuiz.module.css';
 
 type ChapterTrainingQuizProps = {
@@ -40,6 +42,32 @@ const scrollQuizCardIntoView = (element: HTMLElement | null) => {
   }
 
   element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+const toPreviewQuiz = (
+  response: AdminChapterQuiz | LearnerChapterQuiz | null,
+): LearnerChapterQuiz | null => {
+  if (!response) {
+    return null;
+  }
+
+  if ('stats' in response) {
+    return {
+      id: response.id,
+      chapterId: response.chapterId,
+      titleEn: response.titleEn,
+      titleFi: response.titleFi,
+      descriptionEn: response.descriptionEn,
+      descriptionFi: response.descriptionFi,
+      passingScore: response.passingScore,
+      isPublished: response.isPublished,
+      questions: response.questions,
+      latestAttempt: null,
+      bestAttempt: null,
+    };
+  }
+
+  return response;
 };
 
 export default function ChapterTrainingQuiz({
@@ -95,13 +123,17 @@ export default function ChapterTrainingQuiz({
         const response = await courseService.getChapterQuiz(courseId, chapterId, {
           preview: previewMode,
         });
-        const learnerQuiz = response && !('stats' in response) ? response : null;
-        setQuiz(learnerQuiz);
-        setLatestAttempt(learnerQuiz?.latestAttempt ?? null);
-        setBestAttempt(learnerQuiz?.bestAttempt ?? null);
+        const effectiveQuiz = previewMode
+          ? toPreviewQuiz(response)
+          : response && !('stats' in response)
+            ? response
+            : null;
+        setQuiz(effectiveQuiz);
+        setLatestAttempt(previewMode ? null : effectiveQuiz?.latestAttempt ?? null);
+        setBestAttempt(previewMode ? null : effectiveQuiz?.bestAttempt ?? null);
         setSelectedAnswers({});
         setReviewAnswers([]);
-        setIsQuizActive(!Boolean(learnerQuiz?.latestAttempt));
+        setIsQuizActive(previewMode || !Boolean(effectiveQuiz?.latestAttempt));
         setIsReviewMode(false);
       } catch (loadError) {
         setError(
@@ -156,7 +188,41 @@ export default function ChapterTrainingQuiz({
   };
 
   const handleSubmit = async () => {
-    if (!quiz || previewMode) {
+    if (!quiz) {
+      return;
+    }
+
+    if (previewMode) {
+      const previewResult = evaluatePreviewAttempt(
+        quiz.questions,
+        selectedAnswers,
+        quiz.passingScore,
+      );
+
+      setLatestAttempt(previewResult.attempt);
+      setBestAttempt((previous) =>
+        !previous || previewResult.attempt.score >= previous.score
+          ? previewResult.attempt
+          : previous,
+      );
+      setReviewAnswers(previewResult.answers);
+      setSubmitError(null);
+      setSubmitMessage(
+        previewResult.attempt.passed
+          ? t('detail.previewQuizPassedMessage', {
+              defaultValue:
+                'Preview complete. This attempt would pass for the learner, and nothing was saved.',
+            })
+          : t('detail.previewQuizFailedMessage', {
+              defaultValue:
+                'Preview complete. This attempt would not pass, and nothing was saved.',
+            }),
+      );
+      setIsQuizActive(false);
+      setIsReviewMode(true);
+      window.requestAnimationFrame(() => {
+        scrollQuizCardIntoView(quizCardRef.current);
+      });
       return;
     }
 
@@ -208,6 +274,9 @@ export default function ChapterTrainingQuiz({
     setSubmitError(null);
     setSubmitMessage(null);
     setReviewAnswers([]);
+    if (previewMode) {
+      setLatestAttempt(null);
+    }
     setIsQuizActive(true);
     setIsReviewMode(false);
     window.requestAnimationFrame(() => {
@@ -332,7 +401,7 @@ export default function ChapterTrainingQuiz({
             </button>
           </div>
         </>
-      ) : !previewMode && isReviewMode && latestAttempt && !latestAttempt.passed ? (
+      ) : isReviewMode && latestAttempt ? (
         <>
           <div className={styles.questionList}>
             {quiz.questions.map((question, questionIndex) => (

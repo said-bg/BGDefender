@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
 import courseService, {
   Chapter,
   Course,
@@ -25,6 +27,9 @@ type UseContentStudioParams = {
 };
 
 export function useContentStudio({ courseId, language, t }: UseContentStudioParams) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [course, setCourse] = useState<Course | null>(null);
   const [loadingPage, setLoadingPage] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -36,6 +41,8 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
   const [isSubmittingContent, setIsSubmittingContent] = useState(false);
   const [deletingContentId, setDeletingContentId] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const requestedChapterId = searchParams?.get('chapter');
+  const requestedSubChapterId = searchParams?.get('subChapter');
 
   useEffect(() => {
     if (!courseId) {
@@ -93,12 +100,52 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
   );
 
   useEffect(() => {
-    if (!activeChapter || contentForm.chapterId) {
+    if (contentForm.chapterId || chapters.length === 0) {
       return;
     }
 
-    setContentForm(buildFreshContentForm(activeChapter, activeChapter.subChapters[0] ?? null));
-  }, [activeChapter, contentForm.chapterId]);
+    const chapterFromRequestedSubChapter =
+      requestedSubChapterId
+        ? chapters.find((chapter) =>
+            chapter.subChapters.some((subChapter) => subChapter.id === requestedSubChapterId),
+          ) ?? null
+        : null;
+    const initialChapter =
+      chapterFromRequestedSubChapter ??
+      chapters.find((chapter) => chapter.id === requestedChapterId) ??
+      chapters[0] ??
+      null;
+    const initialSubChapter =
+      initialChapter?.subChapters.find(
+        (subChapter) => subChapter.id === requestedSubChapterId,
+      ) ??
+      initialChapter?.subChapters[0] ??
+      null;
+
+    setContentForm(buildFreshContentForm(initialChapter, initialSubChapter));
+  }, [chapters, contentForm.chapterId, requestedChapterId, requestedSubChapterId]);
+
+  useEffect(() => {
+    if (!pathname || !activeChapter || !contentForm.chapterId) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? '');
+    nextParams.set('chapter', activeChapter.id);
+
+    if (activeSubChapter) {
+      nextParams.set('subChapter', activeSubChapter.id);
+    } else {
+      nextParams.delete('subChapter');
+    }
+
+    const nextQuery = nextParams.toString();
+    const currentQuery = searchParams?.toString() ?? '';
+
+    if (nextQuery !== currentQuery) {
+      router.replace(`${pathname}?${nextQuery}`, { scroll: false });
+    }
+  }, [activeChapter, activeSubChapter, contentForm.chapterId, pathname, router, searchParams]);
 
   const resetContentForm = (
     chapter: Chapter | null = activeChapter,
@@ -167,6 +214,55 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
       t,
     });
 
+  const returnTo = useMemo(() => {
+    if (!pathname) {
+      return undefined;
+    }
+
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? '');
+
+    if (activeChapter) {
+      nextParams.set('chapter', activeChapter.id);
+    }
+
+    if (activeSubChapter) {
+      nextParams.set('subChapter', activeSubChapter.id);
+    } else {
+      nextParams.delete('subChapter');
+    }
+
+    const nextQuery = nextParams.toString();
+    return `${pathname}${nextQuery ? `?${nextQuery}` : ''}`;
+  }, [activeChapter, activeSubChapter, pathname, searchParams]);
+  const previewHref = useMemo(() => {
+    if (!courseId) {
+      return null;
+    }
+
+    if (activeChapter && activeSubChapter) {
+      return buildCoursePreviewHref(courseId, {
+        returnTo,
+        target: {
+          type: 'subchapter',
+          chapterId: activeChapter.id,
+          subChapterId: activeSubChapter.id,
+        },
+      });
+    }
+
+    if (activeChapter) {
+      return buildCoursePreviewHref(courseId, {
+        returnTo,
+        target: { type: 'chapter', chapterId: activeChapter.id },
+      });
+    }
+
+    return buildCoursePreviewHref(courseId, {
+      returnTo,
+      target: { type: 'overview' },
+    });
+  }, [activeChapter, activeSubChapter, courseId, returnTo]);
+
   return {
     activeChapter,
     activeEditorLocale,
@@ -184,6 +280,7 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
     loadError,
     loadingPage,
     localizedCourseTitle,
+    previewHref,
     setActiveEditorLocale,
     setIsSidebarOpen,
     deleteContent,

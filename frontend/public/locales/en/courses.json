@@ -177,6 +177,9 @@
     "finalTestUnlockedNextDescription": "You completed the last chapter. The final test is now the next step in your learning path.",
     "coursePathCompletedDescription": "You reached the end of this course content. You can review the material again from the overview whenever you want.",
     "close": "Close",
+    "adminPreviewBadge": "Admin preview",
+    "adminPreviewDescription": "You are previewing the learner experience with your current admin draft.",
+    "backToEditor": "Back to editor",
     "backToHome": "Back to home",
     "previous": "Previous",
     "next": "Next"

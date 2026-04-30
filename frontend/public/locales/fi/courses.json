@@ -177,6 +177,9 @@
     "finalTestUnlockedNextDescription": "Suoritit viimeisen luvun. Lopputesti on nyt seuraava vaihe oppimispolullasi.",
     "coursePathCompletedDescription": "Saavutit tämän kurssisisällön lopun. Voit palata materiaalin pariin yleiskatsauksesta milloin tahansa.",
     "close": "Sulje",
+    "adminPreviewBadge": "YllÃ¤pitÃ¤jÃ¤n esikatselu",
+    "adminPreviewDescription": "Esikatselet oppijan nÃ¤kymÃ¤Ã¤ nykyisellÃ¤ yllÃ¤pidon luonnoksellasi.",
+    "backToEditor": "Takaisin editoriin",
     "backToHome": "Takaisin etusivulle",
     "previous": "Edellinen",
     "next": "Seuraava"

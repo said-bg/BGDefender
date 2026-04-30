@@ -150,12 +150,13 @@ export default function CourseDetailPage() {
                   defaultValue: 'Score-based practice for this chapter',
                 })}
                 finalTestLabel={detail.t('detail.finalTest', { defaultValue: 'Final test' })}
-                finalTestDescription={detail.t('detail.finalTestSidebar', {
-                  defaultValue: 'Course-wide assessment unlocked after all chapters',
-                })}
-                onSelectOverview={() => {
-                  detail.navigateToView({ type: 'overview' });
-                  setIsSidebarVisible(false);
+              finalTestDescription={detail.t('detail.finalTestSidebar', {
+                defaultValue: 'Course-wide assessment unlocked after all chapters',
+              })}
+              showUnpublishedAssessments={detail.isAdminPreview}
+              onSelectOverview={() => {
+                detail.navigateToView({ type: 'overview' });
+                setIsSidebarVisible(false);
                 }}
                 onOpenFinalTest={() => {
                   detail.openFinalTest();
@@ -205,6 +206,7 @@ export default function CourseDetailPage() {
               finalTestDescription={detail.t('detail.finalTestSidebar', {
                 defaultValue: 'Course-wide assessment unlocked after all chapters',
               })}
+              showUnpublishedAssessments={detail.isAdminPreview}
               onSelectOverview={() => detail.navigateToView({ type: 'overview' })}
               onOpenFinalTest={detail.openFinalTest}
               onToggleChapter={detail.toggleChapter}
@@ -227,6 +229,7 @@ export default function CourseDetailPage() {
             isAuthenticated={detail.isAuthenticated}
             isPreviewMode={detail.isAdminPreview}
             isCourseCompleted={detail.isCourseCompleted}
+            showUnpublishedAssessments={detail.isAdminPreview}
             headerAction={
               !isSidebarVisible ? (
                 <button

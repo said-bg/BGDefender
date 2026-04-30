@@ -6,6 +6,7 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { UserRole } from '@/types/api';
+import { buildCoursePreviewHref } from './coursePreview.utils';
 import formStyles from './EditCourseForm.module.css';
 import sharedStyles from './EditCoursePage.module.css';
 import shellStyles from './EditCourseShell.module.css';
@@ -52,6 +53,7 @@ type EditCourseShellProps = {
   subtitle: string;
   courseTitle?: string;
   actions?: ReactNode;
+  previewHref?: string;
   wide?: boolean;
   children: ReactNode;
 };
@@ -75,6 +77,9 @@ export function EditCourseShell({
   subtitle,
   courseTitle,
   actions,
+  previewHref = buildCoursePreviewHref(courseId, {
+    returnTo: getEditCourseHref(courseId, section),
+  }),
   wide = false,
   children,
 }: EditCourseShellProps) {
@@ -131,12 +136,7 @@ export function EditCourseShell({
             </nav>
 
             <div className={shellStyles.sectionActions}>
-              <Link
-                href={`/courses/${courseId}?preview=1`}
-                className={shellStyles.previewLink}
-                target="_blank"
-                rel="noreferrer"
-              >
+              <Link href={previewHref} className={shellStyles.previewLink}>
                 {t('edit.preview', { defaultValue: 'Preview course' })}
               </Link>
 

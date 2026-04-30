@@ -57,6 +57,7 @@ function EditCourseContentInner() {
       title={t('edit.tabs.content')}
       subtitle={t('edit.contentBlocks.workspaceSubtitle')}
       courseTitle={studio.localizedCourseTitle}
+      previewHref={studio.previewHref ?? undefined}
     >
       <section className={styles.formCard}>
         <div

@@ -5,6 +5,7 @@ import courseService from '@/services/course';
 jest.mock('@/services/course', () => ({
   __esModule: true,
   default: {
+    getAdminCourseById: jest.fn(),
     getCourseById: jest.fn(),
     getChapterQuiz: jest.fn(),
     getChapterQuizAnalytics: jest.fn(),
@@ -47,13 +48,16 @@ jest.mock('next/link', () => ({
 
 jest.mock('next/navigation', () => ({
   useParams: () => ({ courseId: 'course-1' }),
+  usePathname: () => '/admin/courses/course-1/edit/quiz',
+  useRouter: () => ({ replace: jest.fn() }),
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 const mockedCourseService = courseService as jest.Mocked<typeof courseService>;
 
 describe('QuizPage', () => {
   beforeEach(() => {
-    mockedCourseService.getCourseById.mockResolvedValue({
+    mockedCourseService.getAdminCourseById.mockResolvedValue({
       id: 'course-1',
       titleEn: 'Course EN',
       titleFi: 'Course FI',
@@ -96,10 +100,11 @@ describe('QuizPage', () => {
           subChapters: [],
         },
       ],
-    } as Awaited<ReturnType<typeof courseService.getCourseById>>);
+    } as Awaited<ReturnType<typeof courseService.getAdminCourseById>>);
   });
 
   afterEach(() => {
+    mockedCourseService.getAdminCourseById.mockReset();
     mockedCourseService.getCourseById.mockReset();
     mockedCourseService.getChapterQuiz.mockReset();
     mockedCourseService.getChapterQuizAnalytics.mockReset();

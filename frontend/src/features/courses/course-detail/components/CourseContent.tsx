@@ -9,6 +9,7 @@ import {
   NavigationItem,
   SelectedContent,
   ViewState,
+  getVisibleFinalTest,
 } from '../courseDetail.utils';
 import CourseAuthorsSection from './CourseAuthorsSection';
 import CourseFinalTest from './CourseFinalTest';
@@ -32,6 +33,7 @@ type CourseContentProps = {
   isCourseCompleted?: boolean;
   isFocusMode?: boolean;
   isPreviewMode?: boolean;
+  showUnpublishedAssessments?: boolean;
   nextItem: NavigationItem | null;
   onNavigateToView: (view: ViewState) => void;
   previousItem: NavigationItem | null;
@@ -52,6 +54,7 @@ export function CourseContent({
   isCourseCompleted = false,
   isFocusMode = false,
   isPreviewMode = false,
+  showUnpublishedAssessments = false,
   previousItem,
   nextItem,
   onNavigateToView,
@@ -63,7 +66,9 @@ export function CourseContent({
       : accessState === 'login_required'
       ? t('detail.loginRequiredDescription')
       : t('detail.premiumRequiredDescription');
-  const publishedFinalTest = course.finalTests?.find((finalTest) => finalTest.isPublished) ?? null;
+  const visibleFinalTest = getVisibleFinalTest(course, {
+    includeUnpublishedAssessments: showUnpublishedAssessments,
+  });
 
   return (
     <main
@@ -117,7 +122,7 @@ export function CourseContent({
             <CourseFinalTest
               activeLanguage={activeLanguage}
               courseId={courseId}
-              enabled={canAccessAssessments && Boolean(publishedFinalTest)}
+              enabled={canAccessAssessments && Boolean(visibleFinalTest)}
               previewMode={isPreviewMode}
             />
           ) : (
@@ -132,7 +137,7 @@ export function CourseContent({
         accessState={accessState}
         isCourseCompleted={isCourseCompleted}
         currentKind={selectedContent.kind}
-        hasFinalTest={Boolean(publishedFinalTest)}
+        hasFinalTest={Boolean(visibleFinalTest)}
         isAuthenticated={isAuthenticated}
         nextItem={nextItem}
         onNavigateToView={onNavigateToView}

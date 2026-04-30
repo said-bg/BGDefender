@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useMemo } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import {
   EditCourseErrorState,
@@ -8,6 +10,7 @@ import {
   EditCourseShell,
   useEditCourseId,
 } from '@/features/admin/courses/edit-course/shared/EditCourseShared';
+import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
 import formStyles from '@/features/admin/courses/edit-course/shared/EditCourseForm.module.css';
 import sharedStyles from '@/features/admin/courses/edit-course/shared/EditCoursePage.module.css';
 import sidebarStyles from '@/features/admin/courses/edit-course/shared/EditCourseSidebar.module.css';
@@ -30,6 +33,9 @@ export default function StructurePage() {
 
 function StructurePageContent() {
   const { t, i18n } = useTranslation('admin');
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const courseId = useEditCourseId();
   const structure = useEditCourseStructure({
     courseId,
@@ -37,6 +43,9 @@ function StructurePageContent() {
     t,
   });
   const hasChapters = structure.chapters.length > 0;
+  const requestedMode = searchParams?.get('mode');
+  const requestedChapterId = searchParams?.get('chapter');
+  const requestedSubChapterId = searchParams?.get('subChapter');
 
   const workspace = useStructureWorkspace({
     editingChapterId: structure.editingChapterId,
@@ -53,6 +62,167 @@ function StructurePageContent() {
     },
     t,
   });
+
+  useEffect(() => {
+    if (!structure.course) {
+      return;
+    }
+
+    if (requestedSubChapterId && structure.editingSubChapterId !== requestedSubChapterId) {
+      const parentChapter = structure.chapters.find((chapter) =>
+        chapter.subChapters.some((subChapter) => subChapter.id === requestedSubChapterId),
+      );
+      const requestedSubChapter = parentChapter?.subChapters.find(
+        (subChapter) => subChapter.id === requestedSubChapterId,
+      );
+
+      if (parentChapter && requestedSubChapter) {
+        workspace.openEditSubChapter(parentChapter, requestedSubChapter.id);
+        return;
+      }
+    }
+
+    if (
+      requestedMode === 'chapter' &&
+      requestedChapterId &&
+      structure.editingChapterId !== requestedChapterId
+    ) {
+      const requestedChapter =
+        structure.chapters.find((chapter) => chapter.id === requestedChapterId) ?? null;
+
+      if (requestedChapter) {
+        workspace.openEditChapter(requestedChapter);
+      }
+    }
+  }, [
+    requestedChapterId,
+    requestedMode,
+    requestedSubChapterId,
+    structure.chapters,
+    structure.course,
+    structure.editingChapterId,
+    structure.editingSubChapterId,
+    workspace,
+  ]);
+
+  useEffect(() => {
+    if (!pathname) {
+      return;
+    }
+
+    if (
+      requestedSubChapterId &&
+      !structure.editingSubChapterId &&
+      !structure.editingChapterId
+    ) {
+      return;
+    }
+
+    if (
+      requestedMode === 'chapter' &&
+      requestedChapterId &&
+      !structure.editingChapterId
+    ) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? '');
+
+    if (structure.editingSubChapterId) {
+      nextParams.set('mode', 'subchapter');
+      nextParams.set('chapter', structure.subChapterForm.chapterId);
+      nextParams.set('subChapter', structure.editingSubChapterId);
+    } else if (structure.editingChapterId) {
+      nextParams.set('mode', 'chapter');
+      nextParams.set('chapter', structure.editingChapterId);
+      nextParams.delete('subChapter');
+    } else {
+      nextParams.delete('mode');
+      nextParams.delete('chapter');
+      nextParams.delete('subChapter');
+    }
+
+    const nextQuery = nextParams.toString();
+    const currentQuery = searchParams?.toString() ?? '';
+
+    if (nextQuery !== currentQuery) {
+      router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname, { scroll: false });
+    }
+  }, [
+    pathname,
+    router,
+    searchParams,
+    requestedChapterId,
+    requestedMode,
+    requestedSubChapterId,
+    structure.editingChapterId,
+    structure.editingSubChapterId,
+    structure.subChapterForm.chapterId,
+  ]);
+
+  const returnTo = useMemo(() => {
+    const nextParams = new URLSearchParams(searchParams?.toString() ?? '');
+
+    if (structure.editingSubChapterId) {
+      nextParams.set('mode', 'subchapter');
+      nextParams.set('chapter', structure.subChapterForm.chapterId);
+      nextParams.set('subChapter', structure.editingSubChapterId);
+    } else if (structure.editingChapterId) {
+      nextParams.set('mode', 'chapter');
+      nextParams.set('chapter', structure.editingChapterId);
+      nextParams.delete('subChapter');
+    } else {
+      nextParams.delete('mode');
+      nextParams.delete('chapter');
+      nextParams.delete('subChapter');
+    }
+
+    const nextQuery = nextParams.toString();
+    return `${pathname}${nextQuery ? `?${nextQuery}` : ''}`;
+  }, [
+    pathname,
+    searchParams,
+    structure.editingChapterId,
+    structure.editingSubChapterId,
+    structure.subChapterForm.chapterId,
+  ]);
+  const previewHref = useMemo(() => {
+    if (!structure.courseId) {
+      return undefined;
+    }
+
+    if (structure.editingSubChapterId && structure.subChapterForm.chapterId) {
+      return buildCoursePreviewHref(structure.courseId, {
+        returnTo,
+        target: {
+          type: 'subchapter',
+          chapterId: structure.subChapterForm.chapterId,
+          subChapterId: structure.editingSubChapterId,
+        },
+      });
+    }
+
+    if (structure.editingChapterId) {
+      return buildCoursePreviewHref(structure.courseId, {
+        returnTo,
+        target: {
+          type: 'chapter',
+          chapterId: structure.editingChapterId,
+        },
+      });
+    }
+
+    return buildCoursePreviewHref(structure.courseId, {
+      returnTo,
+      target: { type: 'overview' },
+    });
+  }, [
+    returnTo,
+    structure.courseId,
+    structure.editingChapterId,
+    structure.editingSubChapterId,
+    structure.subChapterForm.chapterId,
+  ]);
 
   if (structure.loadingPage) {
     return <EditCourseLoadingState />;
@@ -75,6 +245,7 @@ function StructurePageContent() {
       title={t('edit.tabs.structure')}
       subtitle={t('edit.chapters.description')}
       courseTitle={structure.localizedCourseTitle}
+      previewHref={previewHref}
       actions={
         <>
         <button

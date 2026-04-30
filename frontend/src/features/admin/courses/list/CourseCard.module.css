@@ -119,6 +119,7 @@
 }
 
 .editLink,
+.inlineActionLink,
 .inlineAction,
 .inlineDanger {
   display: inline-flex;
@@ -143,6 +144,16 @@
 .editLink:hover {
   background: var(--color-brand-soft);
   border-color: var(--color-brand);
+  color: var(--color-brand-active);
+}
+
+.inlineActionLink {
+  text-decoration: none;
+}
+
+.inlineActionLink:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
   color: var(--color-brand-active);
 }
 
@@ -201,6 +212,7 @@
   }
 
   .editLink,
+  .inlineActionLink,
   .inlineAction,
   .inlineDanger {
     width: 100%;

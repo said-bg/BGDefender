@@ -540,6 +540,7 @@
     "deleteFailed": "Failed to delete resource."
   },
   "courseActions": {
+    "preview": "Preview",
     "publish": "Publish",
     "moveToDraft": "Move to draft",
     "archive": "Archive",

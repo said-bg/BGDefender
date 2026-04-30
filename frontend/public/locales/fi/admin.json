@@ -540,6 +540,7 @@
     "deleteFailed": "Resurssin poistaminen epÃ¤onnistui."
   },
   "courseActions": {
+    "preview": "Esikatsele",
     "publish": "Julkaise",
     "moveToDraft": "SiirrÃ¤ luonnokseksi",
     "archive": "Arkistoi",

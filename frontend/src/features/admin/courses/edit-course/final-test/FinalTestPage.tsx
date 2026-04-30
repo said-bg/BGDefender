@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import {
   EditCourseErrorState,
@@ -7,6 +8,7 @@ import {
   EditCourseProtected,
   EditCourseShell,
 } from '@/features/admin/courses/edit-course/shared/EditCourseShared';
+import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
 import formStyles from '@/features/admin/courses/edit-course/shared/EditCourseForm.module.css';
 import sharedStyles from '@/features/admin/courses/edit-course/shared/EditCoursePage.module.css';
 import shellStyles from '@/features/admin/courses/edit-course/shared/EditCourseShell.module.css';
@@ -33,6 +35,7 @@ export default function FinalTestPage() {
 
 function FinalTestPageContent() {
   const { t, i18n } = useTranslation('admin');
+  const pathname = usePathname();
   const finalTestPage = useFinalTestPage(i18n.language, t);
   const analyticsSectionId = 'course-final-test-analytics';
 
@@ -70,6 +73,14 @@ function FinalTestPageContent() {
           'Create one optional scored final test for the full course. Learners unlock it only after finishing the course path.',
       })}
       courseTitle={finalTestPage.localizedCourseTitle}
+      previewHref={
+        finalTestPage.courseId
+          ? buildCoursePreviewHref(finalTestPage.courseId, {
+              returnTo: pathname ?? undefined,
+              target: { type: 'final-test' },
+            })
+          : undefined
+      }
     >
       <section className={styles.formCard}>
         <div className={styles.cardHeader}>

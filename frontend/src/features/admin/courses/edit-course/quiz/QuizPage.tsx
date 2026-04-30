@@ -73,6 +73,7 @@ function QuizPageContent() {
           'Attach one scored training quiz to each chapter. These quizzes can include single-choice and multiple-choice questions with a passing percentage.',
       })}
       courseTitle={quizPage.localizedCourseTitle}
+      previewHref={quizPage.previewHref ?? undefined}
     >
       <section className={styles.formCard}>
         <div className={styles.cardHeader}>

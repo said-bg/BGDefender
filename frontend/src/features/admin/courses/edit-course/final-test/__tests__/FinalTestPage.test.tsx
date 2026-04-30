@@ -5,6 +5,7 @@ import courseService from '@/services/course';
 jest.mock('@/services/course', () => ({
   __esModule: true,
   default: {
+    getAdminCourseById: jest.fn(),
     getCourseById: jest.fn(),
     getCourseFinalTest: jest.fn(),
     getCourseFinalTestAnalytics: jest.fn(),
@@ -47,13 +48,14 @@ jest.mock('next/link', () => ({
 
 jest.mock('next/navigation', () => ({
   useParams: () => ({ courseId: 'course-1' }),
+  usePathname: () => '/admin/courses/course-1/edit/final-test',
 }));
 
 const mockedCourseService = courseService as jest.Mocked<typeof courseService>;
 
 describe('FinalTestPage', () => {
   beforeEach(() => {
-    mockedCourseService.getCourseById.mockResolvedValue({
+    mockedCourseService.getAdminCourseById.mockResolvedValue({
       id: 'course-1',
       titleEn: 'Course EN',
       titleFi: 'Course FI',
@@ -68,10 +70,11 @@ describe('FinalTestPage', () => {
       authors: [],
       finalTests: [],
       chapters: [],
-    } as Awaited<ReturnType<typeof courseService.getCourseById>>);
+    } as Awaited<ReturnType<typeof courseService.getAdminCourseById>>);
   });
 
   afterEach(() => {
+    mockedCourseService.getAdminCourseById.mockReset();
     mockedCourseService.getCourseById.mockReset();
     mockedCourseService.getCourseFinalTest.mockReset();
     mockedCourseService.getCourseFinalTestAnalytics.mockReset();

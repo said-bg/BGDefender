@@ -2,6 +2,31 @@ import type { Course } from '@/services/course';
 import type { CourseProgress, ProgressViewType } from '@/services/progress';
 import type { NavigationItem, ViewState } from '../courseDetail.types';
 
+export type CourseNavigationOptions = {
+  includeUnpublishedAssessments?: boolean;
+};
+
+type SearchParamsLike = {
+  get: (name: string) => string | null;
+} | null | undefined;
+
+export const hasVisibleTrainingQuiz = (
+  chapter: Course['chapters'][number],
+  options: CourseNavigationOptions = {},
+) =>
+  Boolean(
+    chapter.trainingQuiz &&
+      (options.includeUnpublishedAssessments || chapter.trainingQuiz.isPublished),
+  );
+
+export const getVisibleFinalTest = (
+  course: Course,
+  options: CourseNavigationOptions = {},
+) =>
+  course.finalTests?.find(
+    (finalTest) => options.includeUnpublishedAssessments || finalTest.isPublished,
+  ) ?? null;
+
 export const getViewKey = (view: ViewState): string => {
   if (view.type === 'overview') {
     return 'overview';
@@ -22,7 +47,10 @@ export const getViewKey = (view: ViewState): string => {
   return `subchapter:${view.subChapterId}`;
 };
 
-export const buildNavigationItems = (course: Course): NavigationItem[] => {
+export const buildNavigationItems = (
+  course: Course,
+  options: CourseNavigationOptions = {},
+): NavigationItem[] => {
   const items: NavigationItem[] = [
     { key: 'overview', view: { type: 'overview' } },
   ];
@@ -44,7 +72,7 @@ export const buildNavigationItems = (course: Course): NavigationItem[] => {
       });
     }
 
-    if (chapter.trainingQuiz?.isPublished) {
+    if (hasVisibleTrainingQuiz(chapter, options)) {
       items.push({
         key: `quiz:${chapter.id}`,
         view: {
@@ -55,7 +83,7 @@ export const buildNavigationItems = (course: Course): NavigationItem[] => {
     }
   }
 
-  if (course.finalTests?.some((finalTest) => finalTest.isPublished)) {
+  if (getVisibleFinalTest(course, options)) {
     items.push({
       key: 'final-test',
       view: { type: 'final-test' },
@@ -94,6 +122,7 @@ export const getChapterProgressPercentage = (
   course: Course,
   chapterId: string,
   selectedView: ViewState,
+  options: CourseNavigationOptions = {},
 ): number => {
   if (selectedView.type === 'final-test') {
     return 100;
@@ -120,7 +149,7 @@ export const getChapterProgressPercentage = (
   const chapter = course.chapters[chapterIndex];
   const totalSteps = Math.max(
     1,
-    1 + (chapter.subChapters?.length ?? 0) + (chapter.trainingQuiz?.isPublished ? 1 : 0),
+    1 + (chapter.subChapters?.length ?? 0) + (hasVisibleTrainingQuiz(chapter, options) ? 1 : 0),
   );
 
   if (selectedView.type !== 'subchapter') {
@@ -145,12 +174,87 @@ export const getChapterProgressPercentage = (
 export const getCourseProgressPercentage = (
   course: Course,
   selectedView: ViewState,
+  options: CourseNavigationOptions = {},
 ): number => {
   if (selectedView.type === 'overview') {
     return 0;
   }
 
-  return calculateCompletionPercentage(buildNavigationItems(course), selectedView);
+  return calculateCompletionPercentage(buildNavigationItems(course, options), selectedView);
+};
+
+export const resolveViewStateForCourse = (
+  course: Course,
+  requestedView: ViewState,
+  options: CourseNavigationOptions = {},
+): ViewState => {
+  if (requestedView.type === 'overview') {
+    return requestedView;
+  }
+
+  if (requestedView.type === 'final-test') {
+    return getVisibleFinalTest(course, options) ? requestedView : { type: 'overview' };
+  }
+
+  const chapter = course.chapters.find((item) => item.id === requestedView.chapterId);
+
+  if (!chapter) {
+    return { type: 'overview' };
+  }
+
+  if (requestedView.type === 'chapter') {
+    return requestedView;
+  }
+
+  if (requestedView.type === 'quiz') {
+    return hasVisibleTrainingQuiz(chapter, options)
+      ? requestedView
+      : { type: 'chapter', chapterId: chapter.id };
+  }
+
+  const subChapter = chapter.subChapters.find(
+    (item) => item.id === requestedView.subChapterId,
+  );
+
+  return subChapter ? requestedView : { type: 'chapter', chapterId: chapter.id };
+};
+
+export const getPreviewViewFromSearchParams = (
+  searchParams: SearchParamsLike,
+): ViewState => {
+  const view = searchParams?.get('view');
+  const chapterId = searchParams?.get('chapterId');
+  const subChapterId = searchParams?.get('subChapterId');
+
+  if (view === 'final-test') {
+    return { type: 'final-test' };
+  }
+
+  if (view === 'quiz' && chapterId) {
+    return { type: 'quiz', chapterId };
+  }
+
+  if (view === 'subchapter' && chapterId && subChapterId) {
+    return { type: 'subchapter', chapterId, subChapterId };
+  }
+
+  if (view === 'chapter' && chapterId) {
+    return { type: 'chapter', chapterId };
+  }
+
+  return { type: 'overview' };
+};
+
+export const getSafeAdminPreviewReturnTo = (
+  searchParams: SearchParamsLike,
+) => {
+  const returnTo = searchParams?.get('returnTo');
+
+  if (!returnTo || !returnTo.startsWith('/') || returnTo.startsWith('//')) {
+    return null;
+  }
+
+  return returnTo;
 };
 
 export const getViewStateFromProgress = (

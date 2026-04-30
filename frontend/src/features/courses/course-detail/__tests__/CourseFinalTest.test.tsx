@@ -322,5 +322,77 @@ describe('CourseFinalTest', () => {
 
     expect(screen.getByRole('link', { name: 'Complete profile' })).toBeInTheDocument();
   });
+
+  it('simulates preview final test submission locally without saving attempts', async () => {
+    mockedCourseService.getCourseFinalTest.mockResolvedValue({
+      id: 'final-test-1',
+      courseId: 'course-1',
+      titleEn: 'Draft final test',
+      titleFi: 'Draft final test',
+      descriptionEn: 'Draft description',
+      descriptionFi: 'Draft description',
+      passingScore: 70,
+      isPublished: false,
+      stats: {
+        attemptCount: 0,
+        latestAttemptAt: null,
+        bestScore: null,
+      },
+      questions: [
+        {
+          id: 'question-1',
+          promptEn: 'Preview question 1',
+          promptFi: 'Preview question 1',
+          explanationEn: 'Preview final explanation',
+          explanationFi: 'Preview final explanation',
+          type: 'single_choice',
+          orderIndex: 1,
+          options: [
+            {
+              id: 'option-a',
+              labelEn: 'Option A',
+              labelFi: 'Option A',
+              orderIndex: 1,
+              isCorrect: true,
+            },
+          ],
+        },
+      ],
+    });
+
+    render(
+      <CourseFinalTest
+        activeLanguage="en"
+        courseId="course-1"
+        enabled
+        previewMode
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Preview question 1/)).toBeInTheDocument();
+    });
+
+    expect(
+      screen.queryByText('Complete every chapter in this course to unlock the final test.'),
+    ).not.toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText('Option A'));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit final test' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'Preview complete. This final test attempt would pass, and nothing was saved.',
+        ),
+      ).toBeInTheDocument();
+    });
+
+    expect(mockedCourseService.submitCourseFinalTestAttempt).not.toHaveBeenCalled();
+    expect(screen.getByText('Preview final explanation')).toBeInTheDocument();
+    expect(screen.getByText('Latest score')).toBeInTheDocument();
+    expect(screen.getByText('100%')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry final test' }));
+    expect(screen.getByRole('button', { name: 'Clear answers' })).toBeInTheDocument();
+  });
 });
 

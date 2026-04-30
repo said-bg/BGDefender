@@ -4,8 +4,10 @@ import {
   formatCourseDuration,
   getChapterProgressPercentage,
   getCourseProgressPercentage,
+  getPreviewViewFromSearchParams,
   getPreviewParagraph,
   getProgressPayloadFromView,
+  getSafeAdminPreviewReturnTo,
   isCourseProgressSynced,
   preserveCompletedProgress,
   getAuthorRole,
@@ -13,6 +15,7 @@ import {
   getLocalizedText,
   getPreviewText,
   getSelectedContent,
+  resolveViewStateForCourse,
   getSubChapterParagraphs,
   getViewStateFromProgress,
   splitIntoParagraphs,
@@ -481,6 +484,65 @@ describe('course-detail.utils', () => {
     });
   });
 
+  it('shows draft assessments during admin preview', () => {
+    const baseCourse = createCourse();
+    const course: Course = {
+      ...baseCourse,
+      chapters: [
+        {
+          ...baseCourse.chapters[0],
+          trainingQuiz: {
+            id: 'quiz-draft',
+            titleEn: 'Draft quiz',
+            titleFi: 'Draft quiz',
+            descriptionEn: 'Draft quiz description',
+            descriptionFi: 'Draft quiz description',
+            passingScore: 80,
+            isPublished: false,
+          },
+        },
+        ...baseCourse.chapters.slice(1),
+      ],
+      finalTests: [
+        {
+          id: 'final-draft',
+          titleEn: 'Draft final test',
+          titleFi: 'Draft final test',
+          descriptionEn: 'Draft final test description',
+          descriptionFi: 'Draft final test description',
+          passingScore: 75,
+          isPublished: false,
+        },
+      ],
+    };
+
+    expect(
+      getSelectedContent(
+        course,
+        { type: 'quiz', chapterId: 'chapter-1' },
+        'en',
+        t,
+        { includeUnpublishedAssessments: true },
+      ),
+    ).toMatchObject({
+      kind: 'quiz',
+      title: 'Draft quiz',
+    });
+
+    expect(
+      getSelectedContent(
+        course,
+        { type: 'final-test' },
+        'en',
+        t,
+        { includeUnpublishedAssessments: true },
+      ),
+    ).toMatchObject({
+      kind: 'final-test',
+      title: 'Draft final test',
+    });
+  });
+
   // Verifies fallback role text when an author has no translated role defined.
   it('returns author role fallback when author role is missing', () => {
     expect(
@@ -490,6 +552,31 @@ describe('course-detail.utils', () => {
         'Course author',
       ),
     ).toBe('Course author');
+  });
+
+  it('parses preview routes and keeps admin return links internal', () => {
+    expect(
+      getPreviewViewFromSearchParams(
+        new URLSearchParams('preview=1&view=subchapter&chapterId=chapter-1&subChapterId=sub-1'),
+      ),
+    ).toEqual({
+      type: 'subchapter',
+      chapterId: 'chapter-1',
+      subChapterId: 'sub-1',
+    });
+
+    expect(getSafeAdminPreviewReturnTo(new URLSearchParams('returnTo=/admin/courses'))).toBe(
+      '/admin/courses',
+    );
+    expect(getSafeAdminPreviewReturnTo(new URLSearchParams('returnTo=https://evil.test'))).toBe(
+      null,
+    );
+  });
+
+  it('falls back safely when a requested preview view no longer exists', () => {
+    expect(
+      resolveViewStateForCourse(createCourse(), { type: 'quiz', chapterId: 'missing' }),
+    ).toEqual({ type: 'overview' });
   });
 });
 

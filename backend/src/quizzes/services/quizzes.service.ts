@@ -86,7 +86,7 @@ export class QuizzesService {
   ): Promise<AdminQuizView | LearnerQuizView | null> {
     await findChapterOrFail(this.dependencies, courseId, chapterId);
 
-    if (currentUser.role === UserRole.ADMIN && !forceLearnerView) {
+    if (currentUser.role === UserRole.ADMIN) {
       return getChapterQuizForAdmin(this.dependencies, chapterId);
     }
     return getChapterQuizForLearner(
@@ -111,7 +111,7 @@ export class QuizzesService {
   ): Promise<AdminFinalTestView | LearnerFinalTestView | null> {
     await findCourseOrFail(this.dependencies, courseId);
 
-    if (currentUser.role === UserRole.ADMIN && !forceLearnerView) {
+    if (currentUser.role === UserRole.ADMIN) {
       return getCourseFinalTestForAdmin(this.dependencies, courseId);
     }
     return getCourseFinalTestForLearner(

@@ -452,5 +452,75 @@ describe('ChapterTrainingQuiz', () => {
       expect(scrollIntoViewMock).toHaveBeenCalled();
     });
   });
+
+  it('simulates preview submission locally without saving attempts', async () => {
+    mockedCourseService.getChapterQuiz.mockResolvedValue({
+      id: 'quiz-1',
+      chapterId: 'chapter-1',
+      titleEn: 'Draft quiz',
+      titleFi: 'Draft quiz',
+      descriptionEn: 'Draft description',
+      descriptionFi: 'Draft description',
+      passingScore: 70,
+      isPublished: false,
+      stats: {
+        attemptCount: 0,
+        latestAttemptAt: null,
+        bestScore: null,
+      },
+      questions: [
+        {
+          id: 'question-1',
+          promptEn: 'Preview quiz question',
+          promptFi: 'Preview quiz question',
+          explanationEn: 'Preview explanation',
+          explanationFi: 'Preview explanation',
+          type: 'single_choice',
+          orderIndex: 1,
+          options: [
+            {
+              id: 'option-a',
+              labelEn: 'Option A',
+              labelFi: 'Option A',
+              orderIndex: 1,
+              isCorrect: true,
+            },
+          ],
+        },
+      ],
+    });
+
+    render(
+      <ChapterTrainingQuiz
+        activeLanguage="en"
+        chapterId="chapter-1"
+        courseId="course-1"
+        passingScore={70}
+        previewMode
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/Preview quiz question/)).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByLabelText('Option A'));
+    fireEvent.click(screen.getByRole('button', { name: 'Submit quiz' }));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(
+          'Preview complete. This attempt would pass for the learner, and nothing was saved.',
+        ),
+      ).toBeInTheDocument();
+    });
+
+    expect(mockedCourseService.submitChapterQuizAttempt).not.toHaveBeenCalled();
+    expect(screen.getByText('Preview explanation')).toBeInTheDocument();
+    expect(screen.getByText('Latest score')).toBeInTheDocument();
+    expect(screen.getByText('100%')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Retry quiz' }));
+    expect(screen.getByRole('button', { name: 'Clear answers' })).toBeInTheDocument();
+  });
 });
 
