@@ -100,7 +100,7 @@ export default function CourseDetailPage() {
         favoriteRemoveLabel={detail.t('favorites.remove')}
         favoriteVisibleLabel={detail.t('favorites.title')}
         freeCourseLabel={detail.t('detail.freeCourse')}
-        isAuthenticated={detail.isAuthenticated}
+        isAuthenticated={detail.isAuthenticated && !detail.isAdminPreview}
         isFavorite={detail.isFavorite}
         isPending={detail.isPending}
         onToggleFavorite={(courseId) => void detail.toggleFavorite(courseId)}
@@ -225,6 +225,7 @@ export default function CourseDetailPage() {
             canReadContent={detail.canReadContent}
             courseAuthorFallback={detail.courseAuthorFallback}
             isAuthenticated={detail.isAuthenticated}
+            isPreviewMode={detail.isAdminPreview}
             isCourseCompleted={detail.isCourseCompleted}
             headerAction={
               !isSidebarVisible ? (

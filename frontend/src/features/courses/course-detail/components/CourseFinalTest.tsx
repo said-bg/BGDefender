@@ -16,6 +16,7 @@ type CourseFinalTestProps = {
   activeLanguage: ActiveLanguage;
   courseId: string;
   enabled: boolean;
+  previewMode?: boolean;
 };
 
 const getLocalizedValue = (
@@ -37,6 +38,7 @@ export default function CourseFinalTest({
   activeLanguage,
   courseId,
   enabled,
+  previewMode = false,
 }: CourseFinalTestProps) {
   const { t } = useTranslation('courses');
   const finalTestCardRef = useRef<HTMLElement | null>(null);
@@ -62,14 +64,20 @@ export default function CourseFinalTest({
     try {
       setLoading(true);
       setError(null);
-      const response = await courseService.getCourseFinalTest(courseId);
+      const response = await courseService.getCourseFinalTest(courseId, {
+        preview: previewMode,
+      });
       const learnerFinalTest = response && !('stats' in response) ? response : null;
       setFinalTest(learnerFinalTest);
       setLatestAttempt(learnerFinalTest?.latestAttempt ?? null);
       setBestAttempt(learnerFinalTest?.bestAttempt ?? null);
       setSelectedAnswers({});
-      setIsStarted(Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt));
-      setIsReviewMode(Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt));
+      setIsStarted(
+        Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt) && !previewMode,
+      );
+      setIsReviewMode(
+        Boolean(learnerFinalTest?.isUnlocked && learnerFinalTest.latestAttempt) && !previewMode,
+      );
     } catch (loadError) {
       setError(
         getApiErrorMessage(
@@ -82,7 +90,7 @@ export default function CourseFinalTest({
     } finally {
       setLoading(false);
     }
-  }, [courseId, enabled, t]);
+  }, [courseId, enabled, previewMode, t]);
 
   useEffect(() => {
     void loadFinalTest();
@@ -150,7 +158,7 @@ export default function CourseFinalTest({
   };
 
   const handleSubmit = async () => {
-    if (!finalTest?.isUnlocked) {
+    if (!finalTest?.isUnlocked || previewMode) {
       return;
     }
 
@@ -335,6 +343,15 @@ export default function CourseFinalTest({
         </div>
       ) : null}
 
+      {previewMode ? (
+        <p className={styles.helperText}>
+          {t('detail.previewModeFinalTestDescription', {
+            defaultValue:
+              'Preview mode shows the learner-facing final test layout without saving attempts.',
+          })}
+        </p>
+      ) : null}
+
       {!finalTest.isUnlocked ? (
         <p className={styles.helperText}>
           {t('detail.finalTestLockedDescription', {
@@ -350,18 +367,20 @@ export default function CourseFinalTest({
             })}
           </p>
           <div className={styles.quizActions}>
-            <button
-              type="button"
-              className={styles.primaryAction}
-              onClick={startRetryAttempt}
-            >
-              {latestAttempt
-                ? t('detail.finalTestContinue', { defaultValue: 'Continue final test' })
-                : t('detail.finalTestStart', { defaultValue: 'Start final test' })}
-            </button>
+            {previewMode ? null : (
+              <button
+                type="button"
+                className={styles.primaryAction}
+                onClick={startRetryAttempt}
+              >
+                {latestAttempt
+                  ? t('detail.finalTestContinue', { defaultValue: 'Continue final test' })
+                  : t('detail.finalTestStart', { defaultValue: 'Start final test' })}
+              </button>
+            )}
           </div>
         </>
-      ) : isReviewMode && latestAttempt ? (
+      ) : !previewMode && isReviewMode && latestAttempt ? (
         <>
           {submitError ? <p className={styles.errorText}>{submitError}</p> : null}
 
@@ -410,15 +429,6 @@ export default function CourseFinalTest({
                   })}
                 </div>
 
-                {latestAttempt && !latestAttempt.passed ? (
-                  <p className={styles.questionExplanation}>
-                    {getLocalizedValue(
-                      activeLanguage,
-                      question.explanationEn,
-                      question.explanationFi,
-                    )}
-                  </p>
-                ) : null}
               </article>
             ))}
           </div>

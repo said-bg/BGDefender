@@ -67,7 +67,7 @@ export async function submitChapterMutation({
       ? await courseService.updateChapter(courseId, editingChapterId, payload)
       : await courseService.createChapter(courseId, payload);
     const freshCourse = normalizeStructureCourse(
-      await courseService.getCourseById(courseId),
+      await courseService.getAdminCourseById(courseId),
     );
 
     setCourse(freshCourse);
@@ -152,7 +152,7 @@ export async function deleteChapterMutation(
     setDeletingChapterId(chapterId);
     await courseService.deleteChapter(courseId, chapterId);
     const freshCourse = normalizeStructureCourse(
-      await courseService.getCourseById(courseId),
+      await courseService.getAdminCourseById(courseId),
     );
     setCourse(freshCourse);
     setChapterMessage(

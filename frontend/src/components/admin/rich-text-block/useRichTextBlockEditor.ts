@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useEditor } from '@tiptap/react';
-import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import courseService from '@/services/course';
 import {
   applyFontFamilyCommand,
   applyFontSizeCommand,
+  applyTextColorCommand,
   insertImageFromUrlCommand,
   insertPdfFromUrlCommand,
   insertUploadedMediaCommand,
@@ -24,6 +25,7 @@ type UseRichTextBlockEditorParams = {
   onChange: (value: string) => void;
   placeholder: string;
   language: 'en' | 'fi';
+  t: TFunction<'admin'>;
 };
 
 export default function useRichTextBlockEditor({
@@ -31,8 +33,8 @@ export default function useRichTextBlockEditor({
   onChange,
   placeholder,
   language,
+  t,
 }: UseRichTextBlockEditorParams) {
-  const { t } = useTranslation('admin');
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const videoInputRef = useRef<HTMLInputElement | null>(null);
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
@@ -203,6 +205,17 @@ export default function useRichTextBlockEditor({
     [editor],
   );
 
+  const applyTextColor = useCallback(
+    (value: string) => {
+      if (!editor) {
+        return;
+      }
+
+      applyTextColorCommand(editor, value);
+    },
+    [editor],
+  );
+
   const setHeadingLevel = useCallback(
     (value: string) => {
       if (!editor) {
@@ -274,6 +287,7 @@ export default function useRichTextBlockEditor({
     selectedMedia,
     applyFontFamily,
     applyFontSize,
+    applyTextColor,
     setHeadingLevel,
     setLink,
     insertImageFromUrl,

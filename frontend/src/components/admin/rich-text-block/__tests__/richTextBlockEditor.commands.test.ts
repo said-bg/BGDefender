@@ -1,4 +1,5 @@
 import {
+  applyTextColorCommand,
   applyMediaAlignCommand,
   applyMediaWidthCommand,
   removeSelectedMediaCommand,
@@ -10,10 +11,36 @@ const createMockEditor = () => {
   const run = jest.fn();
   const updateImage = jest.fn(() => ({ run }));
   const setImageInline = jest.fn(() => ({ run }));
+  const setColor = jest.fn(() => ({ run }));
+  const unsetColor = jest.fn(() => ({ run }));
   const deleteSelection = jest.fn(() => ({ run }));
-  const setNodeSelection = jest.fn(() => ({ updateImage, setImageInline, deleteSelection, run }));
-  const focus = jest.fn(() => ({ setNodeSelection, updateImage, setImageInline, deleteSelection, run }));
-  const chain = jest.fn(() => ({ focus, setNodeSelection, updateImage, setImageInline, deleteSelection, run }));
+  const setNodeSelection = jest.fn(() => ({
+    updateImage,
+    setImageInline,
+    setColor,
+    unsetColor,
+    deleteSelection,
+    run,
+  }));
+  const focus = jest.fn(() => ({
+    setNodeSelection,
+    updateImage,
+    setImageInline,
+    setColor,
+    unsetColor,
+    deleteSelection,
+    run,
+  }));
+  const chain = jest.fn(() => ({
+    focus,
+    setNodeSelection,
+    updateImage,
+    setImageInline,
+    setColor,
+    unsetColor,
+    deleteSelection,
+    run,
+  }));
 
   return {
     editor: {
@@ -24,6 +51,8 @@ const createMockEditor = () => {
     setNodeSelection,
     updateImage,
     setImageInline,
+    setColor,
+    unsetColor,
     deleteSelection,
     run,
   };
@@ -79,6 +108,24 @@ describe('richTextBlockEditor.commands', () => {
 
     expect(setNodeSelection).toHaveBeenCalledWith(33);
     expect(deleteSelection).toHaveBeenCalled();
+    expect(run).toHaveBeenCalled();
+  });
+
+  it('applies a free text color value', () => {
+    const { editor, setColor, run } = createMockEditor();
+
+    applyTextColorCommand(editor, 'rgba(31,122,106,.9)');
+
+    expect(setColor).toHaveBeenCalledWith('rgba(31,122,106,.9)');
+    expect(run).toHaveBeenCalled();
+  });
+
+  it('clears the text color when value is empty', () => {
+    const { editor, unsetColor, run } = createMockEditor();
+
+    applyTextColorCommand(editor, '   ');
+
+    expect(unsetColor).toHaveBeenCalled();
     expect(run).toHaveBeenCalled();
   });
 });

@@ -61,7 +61,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
       try {
         setLoadingPage(true);
         setLoadError(null);
-        const response = await courseService.getCourseById(courseId);
+        const response = await courseService.getAdminCourseById(courseId);
         setCourse(response);
       } catch (error) {
         setLoadError(

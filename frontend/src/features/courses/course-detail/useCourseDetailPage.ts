@@ -37,6 +37,8 @@ export function useCourseDetailPage() {
     : params?.courseId;
   const activeLanguage: ActiveLanguage = i18n.language === 'fi' ? 'fi' : 'en';
   const courseAuthorFallback = t('detail.courseAuthor');
+  const isPreviewModeRequested = searchParams?.get('preview') === '1';
+  const isAdminPreview = isPreviewModeRequested && user?.role === UserRole.ADMIN;
   const shouldResumeProgress = searchParams?.get('resume') === '1';
 
   useEffect(() => {
@@ -54,12 +56,19 @@ export function useCourseDetailPage() {
       return;
     }
 
+    if (isPreviewModeRequested && !isInitialized) {
+      setLoading(true);
+      return;
+    }
+
     const loadCourse = async () => {
       try {
         setLoading(true);
         setErrorKey(null);
 
-        const result = await courseService.getCourseById(courseId);
+        const result = isAdminPreview
+          ? await courseService.getAdminCourseById(courseId)
+          : await courseService.getCourseById(courseId);
 
         setCourse(result);
         setSelectedView({ type: 'overview' });
@@ -74,7 +83,7 @@ export function useCourseDetailPage() {
     };
 
     void loadCourse();
-  }, [courseId]);
+  }, [courseId, isAdminPreview, isInitialized, isPreviewModeRequested]);
 
   const selectedContent = useMemo<SelectedContent | null>(() => {
     if (!course) {
@@ -203,6 +212,7 @@ export function useCourseDetailPage() {
     canReadContent,
     course,
     courseId,
+    disableSync: isAdminPreview,
     isAuthenticated,
     isInitialized,
     navigationItems,
@@ -210,7 +220,7 @@ export function useCourseDetailPage() {
     setExpandedChapters,
     setSelectedView,
     setViewportMode,
-    shouldRestoreProgress: shouldResumeProgress,
+    shouldRestoreProgress: shouldResumeProgress && !isAdminPreview,
     user,
   });
 
@@ -233,6 +243,7 @@ export function useCourseDetailPage() {
     errorKey,
     expandedChapters,
     heroSummary,
+    isAdminPreview,
     isAuthenticated,
     isCourseCompleted,
     isFavorite,
@@ -248,7 +259,7 @@ export function useCourseDetailPage() {
     selectedView,
     t,
     toggleChapter,
-    toggleFavorite,
+    toggleFavorite: isAdminPreview ? async () => {} : toggleFavorite,
     navigateToView,
     viewportMode,
   };

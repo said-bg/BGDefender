@@ -1,6 +1,7 @@
 'use client';
 
 import { memo } from 'react';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { EditorContent } from '@tiptap/react';
 import RichTextBlockMediaControls from './RichTextBlockMediaControls';
@@ -21,7 +22,7 @@ function RichTextBlockEditor({
   placeholder,
   language,
 }: RichTextBlockEditorProps) {
-  const { t } = useTranslation('admin');
+  const { t } = useTranslation('admin', { lng: language });
   const {
     editor,
     imageInputRef,
@@ -31,6 +32,7 @@ function RichTextBlockEditor({
     selectedMedia,
     applyFontFamily,
     applyFontSize,
+    applyTextColor,
     setHeadingLevel,
     setLink,
     insertImageFromUrl,
@@ -48,6 +50,7 @@ function RichTextBlockEditor({
     onChange,
     placeholder,
     language,
+    t,
   });
 
   if (!editor) {
@@ -65,8 +68,10 @@ function RichTextBlockEditor({
       <RichTextBlockToolbar
         editor={editor}
         isUploading={isUploading}
+        t={t as TFunction<'admin'>}
         onApplyFontFamily={applyFontFamily}
         onApplyFontSize={applyFontSize}
+        onApplyTextColor={applyTextColor}
         onSetHeadingLevel={setHeadingLevel}
         onSetLink={setLink}
         onInsertImageFromUrl={insertImageFromUrl}
@@ -79,6 +84,7 @@ function RichTextBlockEditor({
 
       {selectedMedia ? (
         <RichTextBlockMediaControls
+          t={t as TFunction<'admin'>}
           type={selectedMedia.type}
           width={selectedMedia.width}
           maxWidth={maxMediaWidth}

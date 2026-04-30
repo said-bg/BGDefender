@@ -56,6 +56,11 @@ export const courseService = {
     return response.data;
   },
 
+  async getAdminCourseById(id: string): Promise<Course> {
+    const response = await apiClient.get<Course>(`/courses/admin/${id}`);
+    return response.data;
+  },
+
   async getFreeCourses(): Promise<Course[]> {
     const response = await this.getPublishedCourses(50, 0);
     return response.data.filter((course) => course.level === 'free');
@@ -195,9 +200,13 @@ export const courseService = {
   async getChapterQuiz(
     courseId: string,
     chapterId: string,
+    options?: { preview?: boolean },
   ): Promise<AdminChapterQuiz | LearnerChapterQuiz | null> {
     const response = await apiClient.get<AdminChapterQuiz | LearnerChapterQuiz | null>(
       `/courses/${courseId}/chapters/${chapterId}/quiz`,
+      {
+        params: options?.preview ? { preview: '1' } : undefined,
+      },
     );
     return response.data;
   },
@@ -242,10 +251,13 @@ export const courseService = {
 
   async getCourseFinalTest(
     courseId: string,
+    options?: { preview?: boolean },
   ): Promise<AdminCourseFinalTest | LearnerCourseFinalTest | null> {
     const response = await apiClient.get<
       AdminCourseFinalTest | LearnerCourseFinalTest | null
-    >(`/courses/${courseId}/final-test`);
+    >(`/courses/${courseId}/final-test`, {
+      params: options?.preview ? { preview: '1' } : undefined,
+    });
     return response.data;
   },
 

@@ -8,6 +8,8 @@ import { Dropcursor, Gapcursor, Placeholder, TrailingNode } from '@tiptap/extens
 import { Bold } from 'reactjs-tiptap-editor/bold';
 import { Blockquote } from 'reactjs-tiptap-editor/blockquote';
 import { BulletList } from 'reactjs-tiptap-editor/bulletlist';
+import { Code } from 'reactjs-tiptap-editor/code';
+import { Color } from 'reactjs-tiptap-editor/color';
 import { FontFamily } from 'reactjs-tiptap-editor/fontfamily';
 import { FontSize } from 'reactjs-tiptap-editor/fontsize';
 import { Heading } from 'reactjs-tiptap-editor/heading';
@@ -22,6 +24,7 @@ import { TaskList } from 'reactjs-tiptap-editor/tasklist';
 import { TextAlign } from 'reactjs-tiptap-editor/textalign';
 import { TextUnderline } from 'reactjs-tiptap-editor/textunderline';
 import { Video } from 'reactjs-tiptap-editor/video';
+import SimpleCodeBlock from './simpleCodeBlockExtension';
 
 type BuildRichTextExtensionsParams = {
   placeholder: string;
@@ -37,19 +40,22 @@ export const BLOCK_OPTIONS = [
 
 export const FONT_FAMILY_OPTIONS = [
   { label: 'Font', value: 'Default' },
+  { label: 'System UI', value: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' },
+  { label: 'Inter', value: 'Inter, "Segoe UI", sans-serif' },
+  { label: 'Helvetica', value: 'Helvetica, Arial, sans-serif' },
   { label: 'Georgia', value: 'Georgia, serif' },
   { label: 'Arial', value: 'Arial, sans-serif' },
+  { label: 'Tahoma', value: 'Tahoma, sans-serif' },
+  { label: 'Verdana', value: 'Verdana, sans-serif' },
+  { label: 'Trebuchet', value: '"Trebuchet MS", sans-serif' },
+  { label: 'Palatino', value: '"Palatino Linotype", "Book Antiqua", serif' },
+  { label: 'Garamond', value: 'Garamond, serif' },
+  { label: 'Times', value: '"Times New Roman", serif' },
   { label: 'Courier', value: '"Courier New", monospace' },
 ];
 
-export const FONT_SIZE_OPTIONS = [
-  { label: 'Size', value: 'Default' },
-  { label: '14', value: '14px' },
-  { label: '16', value: '16px' },
-  { label: '18', value: '18px' },
-  { label: '20', value: '20px' },
-  { label: '24', value: '24px' },
-];
+export const FONT_SIZE_PRESET_VALUES = [10, 12, 14, 16, 18, 20, 24, 28, 36, 48, 60, 72];
+const FONT_SIZE_RANGE_VALUES = Array.from({ length: 65 }, (_, index) => index + 8);
 
 const parsePixelWidth = (value: string | null | undefined) => {
   if (!value) {
@@ -422,6 +428,9 @@ export function buildRichTextBlockExtensions({
     TrailingNode,
     ListItem,
     TextStyle,
+    Color.configure({
+      colors: [],
+    }),
     FontFamily.configure({
       fontFamilyList: FONT_FAMILY_OPTIONS.map(({ label, value }) => ({
         name: label,
@@ -429,7 +438,7 @@ export function buildRichTextBlockExtensions({
       })),
     }),
     FontSize.configure({
-      fontSizes: FONT_SIZE_OPTIONS.map(({ value }) => value).filter((value) => value !== 'Default'),
+      fontSizes: FONT_SIZE_RANGE_VALUES.map((size) => `${size}px`),
     }),
     Placeholder.configure({
       placeholder,
@@ -437,6 +446,7 @@ export function buildRichTextBlockExtensions({
     History,
     Heading,
     Bold,
+    Code,
     TextUnderline,
     Italic,
     Strike,
@@ -444,6 +454,7 @@ export function buildRichTextBlockExtensions({
     OrderedList,
     TaskList,
     Blockquote,
+    SimpleCodeBlock,
     TextAlign,
     Link,
     AppImage.configure({

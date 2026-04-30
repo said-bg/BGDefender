@@ -8,8 +8,8 @@
   min-width: 0;
   min-height: 680px;
   padding: 20px 22px;
-  border: 2px solid var(--color-border-muted);
-  border-radius: 22px;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 20px;
   background: var(--color-surface-editor);
   box-shadow:
     inset 0 0 0 1px var(--color-border-editor-inset),
@@ -222,12 +222,38 @@
   color: var(--color-text-muted);
 }
 
+.editorSurface :global(.ProseMirror code) {
+  padding: 0.12rem 0.38rem;
+  border-radius: 8px;
+  background: var(--color-border-subtle-strong);
+  color: var(--color-text-code-accent);
+  font-size: 0.95em;
+}
+
 .editorSurface :global(.ProseMirror pre) {
+  margin: 1rem 0;
   overflow-x: auto;
-  border-radius: 16px;
-  background: var(--color-text-primary);
-  padding: 16px;
-  white-space: pre;
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 18%, var(--color-border-editor) 82%);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #182132 0%, #111827 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  padding: 12px 14px;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+.editorSurface :global(.ProseMirror pre code) {
+  display: block;
+  min-height: 1.4em;
+  padding: 0;
+  background: transparent;
+  color: #f8fafc;
+  font-family: 'Courier New', monospace;
+  font-size: 0.94rem;
+  font-variant-ligatures: none;
+  overflow-wrap: normal;
+  word-break: normal;
+  caret-color: #f8fafc;
 }
 
 .editorSurface :global(.ProseMirror table) {
@@ -246,7 +272,7 @@
   display: grid;
   place-items: center;
   border: 2px dashed var(--color-border-muted);
-  border-radius: 22px;
+  border-radius: 20px;
   background: var(--color-surface-subtle);
   color: var(--color-text-soft);
   font-weight: 700;

@@ -65,7 +65,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
       try {
         setLoadingPage(true);
         setLoadError(null);
-        const response = await courseService.getCourseById(courseId);
+        const response = await courseService.getAdminCourseById(courseId);
         const normalizedCourse = sortChapters(response);
         setCourse(normalizedCourse);
         setSelectedChapterId((previous) => previous ?? normalizedCourse.chapters[0]?.id ?? null);

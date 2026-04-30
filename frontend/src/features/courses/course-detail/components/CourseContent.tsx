@@ -31,6 +31,7 @@ type CourseContentProps = {
   isAuthenticated: boolean;
   isCourseCompleted?: boolean;
   isFocusMode?: boolean;
+  isPreviewMode?: boolean;
   nextItem: NavigationItem | null;
   onNavigateToView: (view: ViewState) => void;
   previousItem: NavigationItem | null;
@@ -50,6 +51,7 @@ export function CourseContent({
   isAuthenticated,
   isCourseCompleted = false,
   isFocusMode = false,
+  isPreviewMode = false,
   previousItem,
   nextItem,
   onNavigateToView,
@@ -109,12 +111,14 @@ export function CourseContent({
               chapterId={selectedContent.chapterId}
               courseId={courseId}
               passingScore={selectedContent.passingScore ?? 70}
+              previewMode={isPreviewMode}
             />
           ) : selectedContent.kind === 'final-test' ? (
             <CourseFinalTest
               activeLanguage={activeLanguage}
               courseId={courseId}
               enabled={canAccessAssessments && Boolean(publishedFinalTest)}
+              previewMode={isPreviewMode}
             />
           ) : (
             <CourseContentBlocks activeLanguage={activeLanguage} selectedContent={selectedContent} />

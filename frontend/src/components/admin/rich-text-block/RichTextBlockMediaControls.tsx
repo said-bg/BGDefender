@@ -1,9 +1,10 @@
 'use client';
 
-import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import styles from './RichTextBlockMediaControls.module.css';
 
 type RichTextBlockMediaControlsProps = {
+  t: TFunction<'admin'>;
   type: 'image' | 'video';
   width: number;
   maxWidth: number;
@@ -16,6 +17,7 @@ type RichTextBlockMediaControlsProps = {
 };
 
 export default function RichTextBlockMediaControls({
+  t,
   type,
   width,
   maxWidth,
@@ -26,7 +28,6 @@ export default function RichTextBlockMediaControls({
   onEndInteraction,
   onRemove,
 }: RichTextBlockMediaControlsProps) {
-  const { t } = useTranslation('admin');
   const widthInputId = `${type}-width-input`;
   const widthSliderId = `${type}-width-slider`;
 

@@ -17,6 +17,7 @@ type ChapterTrainingQuizProps = {
   chapterId: string;
   courseId: string;
   passingScore: number;
+  previewMode?: boolean;
 };
 
 const getLocalizedValue = (
@@ -46,6 +47,7 @@ export default function ChapterTrainingQuiz({
   chapterId,
   courseId,
   passingScore,
+  previewMode = false,
 }: ChapterTrainingQuizProps) {
   const { t } = useTranslation('courses');
   const quizCardRef = useRef<HTMLElement | null>(null);
@@ -90,7 +92,9 @@ export default function ChapterTrainingQuiz({
       try {
         setLoading(true);
         setError(null);
-        const response = await courseService.getChapterQuiz(courseId, chapterId);
+        const response = await courseService.getChapterQuiz(courseId, chapterId, {
+          preview: previewMode,
+        });
         const learnerQuiz = response && !('stats' in response) ? response : null;
         setQuiz(learnerQuiz);
         setLatestAttempt(learnerQuiz?.latestAttempt ?? null);
@@ -114,7 +118,7 @@ export default function ChapterTrainingQuiz({
     };
 
     void loadQuiz();
-  }, [chapterId, courseId, t]);
+  }, [chapterId, courseId, previewMode, t]);
 
   const answeredCount = useMemo(
     () =>
@@ -152,7 +156,7 @@ export default function ChapterTrainingQuiz({
   };
 
   const handleSubmit = async () => {
-    if (!quiz) {
+    if (!quiz || previewMode) {
       return;
     }
 
@@ -307,7 +311,16 @@ export default function ChapterTrainingQuiz({
         </div>
       ) : null}
 
-      {!isQuizActive && latestAttempt?.passed ? (
+      {previewMode ? (
+        <p className={styles.helperText}>
+          {t('detail.previewModeQuizDescription', {
+            defaultValue:
+              'Preview mode shows the learner-facing quiz layout without saving attempts.',
+          })}
+        </p>
+      ) : null}
+
+      {!previewMode && !isQuizActive && latestAttempt?.passed ? (
         <>
           <div className={`${styles.quizActions} ${styles.quizActionsEnd}`}>
             <button
@@ -319,7 +332,7 @@ export default function ChapterTrainingQuiz({
             </button>
           </div>
         </>
-      ) : isReviewMode && latestAttempt && !latestAttempt.passed ? (
+      ) : !previewMode && isReviewMode && latestAttempt && !latestAttempt.passed ? (
         <>
           <div className={styles.questionList}>
             {quiz.questions.map((question, questionIndex) => (
@@ -378,7 +391,7 @@ export default function ChapterTrainingQuiz({
             </button>
           </div>
         </>
-      ) : !isQuizActive && latestAttempt && !latestAttempt.passed ? (
+      ) : !previewMode && !isQuizActive && latestAttempt && !latestAttempt.passed ? (
         <>
           <div className={`${styles.quizActions} ${styles.quizActionsEnd}`}>
             <button

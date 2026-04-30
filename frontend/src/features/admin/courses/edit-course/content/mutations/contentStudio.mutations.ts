@@ -75,7 +75,7 @@ export async function submitContentMutation({
         )
     );
     const freshCourse = normalizeCourseForContentStudio(
-      await courseService.getCourseById(courseId),
+      await courseService.getAdminCourseById(courseId),
     );
     const freshChapter =
       freshCourse.chapters.find((chapter) => chapter.id === contentForm.chapterId) ?? null;
@@ -161,7 +161,7 @@ export async function deleteContentMutation({
     setDeletingContentId(contentId);
     await courseService.deletePedagogicalContent(courseId, chapterId, subChapterId, contentId);
     const freshCourse = normalizeCourseForContentStudio(
-      await courseService.getCourseById(courseId),
+      await courseService.getAdminCourseById(courseId),
     );
     const freshChapter =
       freshCourse.chapters.find((chapter) => chapter.id === chapterId) ?? null;

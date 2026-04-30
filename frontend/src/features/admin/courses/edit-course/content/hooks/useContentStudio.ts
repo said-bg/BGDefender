@@ -50,7 +50,7 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
       try {
         setLoadingPage(true);
         setLoadError(null);
-        const response = await courseService.getCourseById(courseId);
+        const response = await courseService.getAdminCourseById(courseId);
         setCourse(normalizeCourseForContentStudio(response));
       } catch (error) {
         setLoadError(

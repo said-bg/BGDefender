@@ -32,6 +32,17 @@ export const applyFontSizeCommand = (editor: Editor, value: string) => {
   editor.chain().focus().setFontSize(value).run();
 };
 
+export const applyTextColorCommand = (editor: Editor, value: string) => {
+  const normalized = value.trim();
+
+  if (!normalized || normalized === 'Default') {
+    editor.chain().focus().unsetColor().run();
+    return;
+  }
+
+  editor.chain().focus().setColor(normalized).run();
+};
+
 export const setHeadingLevelCommand = (editor: Editor, value: string) => {
   if (value === 'paragraph') {
     editor.chain().focus().setParagraph().run();

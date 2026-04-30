@@ -1,74 +1,99 @@
 import type { Editor } from '@tiptap/react';
 import type { TFunction } from 'i18next';
+import type { ToolbarIconName } from './RichTextToolbarIcon';
 
 type ToolbarAction = {
-  label: string;
+  icon: ToolbarIconName;
   title: string;
   onClick: () => void;
   disabled?: boolean;
+  isActive?: boolean;
 };
 
 export const buildInlineActions = (editor: Editor, t: TFunction<'admin'>): ToolbarAction[] => [
   {
-    label: 'B',
+    icon: 'bold',
     title: t('richText.bold', { defaultValue: 'Bold' }),
     onClick: () => editor.chain().focus().toggleBold().run(),
+    isActive: editor.isActive('bold'),
   },
   {
-    label: 'I',
+    icon: 'code',
+    title: t('richText.code', { defaultValue: 'Inline code' }),
+    onClick: () => editor.chain().focus().toggleCode().run(),
+    isActive: editor.isActive('code'),
+  },
+  {
+    icon: 'italic',
     title: t('richText.italic', { defaultValue: 'Italic' }),
     onClick: () => editor.chain().focus().toggleItalic().run(),
+    isActive: editor.isActive('italic'),
   },
   {
-    label: 'U',
+    icon: 'underline',
     title: t('richText.underline', { defaultValue: 'Underline' }),
     onClick: () => editor.chain().focus().toggleUnderline().run(),
+    isActive: editor.isActive('underline'),
   },
   {
-    label: 'S',
+    icon: 'strike',
     title: t('richText.strike', { defaultValue: 'Strike' }),
     onClick: () => editor.chain().focus().toggleStrike().run(),
+    isActive: editor.isActive('strike'),
   },
 ];
 
 export const buildListActions = (editor: Editor, t: TFunction<'admin'>): ToolbarAction[] => [
   {
-    label: 'Bul',
+    icon: 'bulletList',
     title: t('richText.bulletList', { defaultValue: 'Bullet list' }),
     onClick: () => editor.chain().focus().toggleBulletList().run(),
+    isActive: editor.isActive('bulletList'),
   },
   {
-    label: 'Num',
+    icon: 'orderedList',
     title: t('richText.numberedList', { defaultValue: 'Numbered list' }),
     onClick: () => editor.chain().focus().toggleOrderedList().run(),
+    isActive: editor.isActive('orderedList'),
   },
   {
-    label: 'Task',
+    icon: 'taskList',
     title: t('richText.checklist', { defaultValue: 'Checklist' }),
     onClick: () => editor.chain().focus().toggleTaskList().run(),
+    isActive: editor.isActive('taskList'),
   },
   {
-    label: 'Q',
+    icon: 'blockquote',
     title: t('richText.quote', { defaultValue: 'Quote' }),
     onClick: () => editor.chain().focus().toggleBlockquote().run(),
+    isActive: editor.isActive('blockquote'),
+  },
+  {
+    icon: 'codeBlock',
+    title: t('richText.codeBlock', { defaultValue: 'Code block' }),
+    onClick: () => editor.chain().focus().toggleCodeBlock().run(),
+    isActive: editor.isActive('codeBlock'),
   },
 ];
 
 export const buildAlignActions = (editor: Editor, t: TFunction<'admin'>): ToolbarAction[] => [
   {
-    label: 'L',
+    icon: 'alignLeft',
     title: t('richText.alignLeft', { defaultValue: 'Align left' }),
     onClick: () => editor.chain().focus().setTextAlign('left').run(),
+    isActive: editor.isActive({ textAlign: 'left' }),
   },
   {
-    label: 'C',
+    icon: 'alignCenter',
     title: t('richText.alignCenter', { defaultValue: 'Align center' }),
     onClick: () => editor.chain().focus().setTextAlign('center').run(),
+    isActive: editor.isActive({ textAlign: 'center' }),
   },
   {
-    label: 'R',
+    icon: 'alignRight',
     title: t('richText.alignRight', { defaultValue: 'Align right' }),
     onClick: () => editor.chain().focus().setTextAlign('right').run(),
+    isActive: editor.isActive({ textAlign: 'right' }),
   },
 ];
 
@@ -97,42 +122,47 @@ export const buildInsertActions = ({
   onSetLink,
   t,
 }: InsertActionsParams): ToolbarAction[] => [
-  { label: 'Ln', title: t('richText.link', { defaultValue: 'Link' }), onClick: onSetLink },
   {
-    label: 'Img',
+    icon: 'link',
+    title: t('richText.link', { defaultValue: 'Link' }),
+    onClick: onSetLink,
+    isActive: editor.isActive('link'),
+  },
+  {
+    icon: 'image',
     title: t('richText.insertImageFromUrl', { defaultValue: 'Insert image from URL' }),
     onClick: onInsertImageFromUrl,
   },
   {
-    label: 'Img+',
+    icon: 'imageUpload',
     title: t('richText.uploadImage', { defaultValue: 'Upload image' }),
     onClick: onUploadImage,
     disabled: isUploading,
   },
   {
-    label: 'Vid',
+    icon: 'video',
     title: t('richText.insertVideoFromUrl', { defaultValue: 'Insert video from URL' }),
     onClick: onInsertVideoFromUrl,
   },
   {
-    label: 'Vid+',
+    icon: 'videoUpload',
     title: t('richText.uploadVideo', { defaultValue: 'Upload video' }),
     onClick: onUploadVideo,
     disabled: isUploading,
   },
   {
-    label: 'PDF',
+    icon: 'pdf',
     title: t('richText.insertPdfLink', { defaultValue: 'Insert PDF link' }),
     onClick: onInsertPdfFromUrl,
   },
   {
-    label: 'PDF+',
+    icon: 'pdfUpload',
     title: t('richText.uploadPdf', { defaultValue: 'Upload PDF' }),
     onClick: onUploadPdf,
     disabled: isUploading,
   },
   {
-    label: '---',
+    icon: 'horizontalRule',
     title: t('richText.horizontalRule', { defaultValue: 'Horizontal rule' }),
     onClick: () => editor.chain().focus().setHorizontalRule().run(),
   },

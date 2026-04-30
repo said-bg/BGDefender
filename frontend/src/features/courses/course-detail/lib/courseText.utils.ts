@@ -240,6 +240,7 @@ export const normalizeRichTextHtml = (value: string) => {
       'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
     );
     iframeElement.setAttribute('allowfullscreen', 'true');
+    iframeElement.setAttribute('loading', 'lazy');
     iframeElement.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     iframeElement.setAttribute('width', '100%');
     iframeElement.setAttribute('height', '100%');
@@ -320,6 +321,7 @@ export const normalizeRichTextHtml = (value: string) => {
       'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
     );
     newIframe.setAttribute('allowfullscreen', 'true');
+    newIframe.setAttribute('loading', 'lazy');
     newIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     newIframe.setAttribute('width', '100%');
     newIframe.setAttribute('height', '100%');
@@ -330,6 +332,16 @@ export const normalizeRichTextHtml = (value: string) => {
     wrapper.appendChild(flexDiv);
     
     iframe.replaceWith(wrapper);
+  });
+
+  body.querySelectorAll<HTMLImageElement>('img').forEach((image) => {
+    image.setAttribute('loading', image.getAttribute('loading') || 'lazy');
+    image.setAttribute('decoding', image.getAttribute('decoding') || 'async');
+  });
+
+  body.querySelectorAll<HTMLVideoElement>('video').forEach((video) => {
+    video.setAttribute('preload', video.getAttribute('preload') || 'metadata');
+    video.setAttribute('playsinline', 'true');
   });
 
   return body.innerHTML;

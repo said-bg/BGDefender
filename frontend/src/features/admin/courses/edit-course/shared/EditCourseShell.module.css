@@ -66,6 +66,16 @@
   flex-wrap: wrap;
 }
 
+.previewLink {
+  composes: sectionNavLink;
+}
+
+.previewLink:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
+}
+
 .sectionNavLink {
   display: inline-flex;
   align-items: center;

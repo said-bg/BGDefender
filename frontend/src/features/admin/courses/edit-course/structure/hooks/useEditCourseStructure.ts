@@ -30,7 +30,7 @@ export function useEditCourseStructure({
       return null;
     }
 
-    const response = await courseService.getCourseById(courseId);
+    const response = await courseService.getAdminCourseById(courseId);
     const normalizedCourse = normalizeStructureCourse(response);
     setCourse(normalizedCourse);
     return normalizedCourse;

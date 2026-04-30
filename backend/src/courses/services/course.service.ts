@@ -115,6 +115,26 @@ export class CourseService {
 
   async findById(id: string): Promise<Course> {
     const course = await this.courseRepository.findOne({
+      where: { id, status: CourseStatus.PUBLISHED },
+      relations: [
+        'authors',
+        'finalTests',
+        'chapters',
+        'chapters.trainingQuiz',
+        'chapters.subChapters',
+        'chapters.subChapters.pedagogicalContents',
+      ],
+    });
+
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${id} not found`);
+    }
+
+    return this.sortCourseTree(course);
+  }
+
+  async findByIdForAdmin(id: string): Promise<Course> {
+    const course = await this.courseRepository.findOne({
       where: { id },
       relations: [
         'authors',
@@ -134,7 +154,7 @@ export class CourseService {
   }
 
   async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
-    const course = await this.findById(id);
+    const course = await this.findByIdForAdmin(id);
     const previousStatus = course.status;
     const { authorIds, ...courseData } = updateCourseDto;
 
@@ -172,7 +192,7 @@ export class CourseService {
   }
 
   async delete(id: string): Promise<void> {
-    const course = await this.findById(id);
+    const course = await this.findByIdForAdmin(id);
     await this.courseRepository.remove(course);
     await this.notificationsService.deleteCourseNotifications(course.id);
   }

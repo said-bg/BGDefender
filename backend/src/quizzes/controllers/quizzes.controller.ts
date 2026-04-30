@@ -9,6 +9,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
@@ -30,8 +31,14 @@ export class QuizzesController {
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
     @Param('chapterId', new ParseUUIDPipe()) chapterId: string,
     @CurrentUser() currentUser: SafeUser,
+    @Query('preview') preview?: string,
   ) {
-    return this.quizzesService.getChapterQuiz(courseId, chapterId, currentUser);
+    return this.quizzesService.getChapterQuiz(
+      courseId,
+      chapterId,
+      currentUser,
+      preview === '1',
+    );
   }
 
   @Get('analytics')

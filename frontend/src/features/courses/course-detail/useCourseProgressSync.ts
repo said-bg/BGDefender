@@ -16,6 +16,7 @@ interface UseCourseProgressSyncOptions {
   canReadContent: boolean;
   course: Course | null;
   courseId?: string;
+  disableSync?: boolean;
   isAuthenticated: boolean;
   isInitialized: boolean;
   navigationItems: NavigationItem[];
@@ -66,6 +67,7 @@ export default function useCourseProgressSync({
   canReadContent,
   course,
   courseId,
+  disableSync = false,
   isAuthenticated,
   isInitialized,
   navigationItems,
@@ -96,6 +98,10 @@ export default function useCourseProgressSync({
   }, [courseId, hasRestoredInitialView, selectedView]);
 
   useEffect(() => {
+    if (disableSync) {
+      return;
+    }
+
     if (!courseId || !course || !isInitialized || !isAuthenticated || !user) {
       return;
     }
@@ -160,6 +166,7 @@ export default function useCourseProgressSync({
   }, [
     course,
     courseId,
+    disableSync,
     isAuthenticated,
     isInitialized,
     navigationItems,
@@ -171,6 +178,10 @@ export default function useCourseProgressSync({
   ]);
 
   useEffect(() => {
+    if (disableSync) {
+      return;
+    }
+
     if (
       !courseId ||
       !course ||
@@ -205,6 +216,7 @@ export default function useCourseProgressSync({
     canReadContent,
     course,
     courseId,
+    disableSync,
     isAuthenticated,
     isInitialized,
     navigationItems,
@@ -215,7 +227,7 @@ export default function useCourseProgressSync({
   ]);
 
   return {
-    isCourseCompleted: Boolean(savedProgress?.completed),
+    isCourseCompleted: disableSync ? false : Boolean(savedProgress?.completed),
     restoringProgress,
   };
 }

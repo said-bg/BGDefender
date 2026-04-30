@@ -292,6 +292,12 @@ export class CourseController {
     return { data, count };
   }
 
+  @Get('admin/:id')
+  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  async findByIdForAdmin(@Param('id', new ParseUUIDPipe()) id: string) {
+    return await this.courseService.findByIdForAdmin(id);
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard, AdminRoleGuard)
   async create(@Body() createCourseDto: CreateCourseDto) {

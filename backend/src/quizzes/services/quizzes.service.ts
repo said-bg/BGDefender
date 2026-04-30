@@ -82,10 +82,11 @@ export class QuizzesService {
     courseId: string,
     chapterId: string,
     currentUser: SafeUser,
+    forceLearnerView = false,
   ): Promise<AdminQuizView | LearnerQuizView | null> {
     await findChapterOrFail(this.dependencies, courseId, chapterId);
 
-    if (currentUser.role === UserRole.ADMIN) {
+    if (currentUser.role === UserRole.ADMIN && !forceLearnerView) {
       return getChapterQuizForAdmin(this.dependencies, chapterId);
     }
     return getChapterQuizForLearner(
@@ -106,10 +107,11 @@ export class QuizzesService {
   async getCourseFinalTest(
     courseId: string,
     currentUser: SafeUser,
+    forceLearnerView = false,
   ): Promise<AdminFinalTestView | LearnerFinalTestView | null> {
     await findCourseOrFail(this.dependencies, courseId);
 
-    if (currentUser.role === UserRole.ADMIN) {
+    if (currentUser.role === UserRole.ADMIN && !forceLearnerView) {
       return getCourseFinalTestForAdmin(this.dependencies, courseId);
     }
     return getCourseFinalTestForLearner(
