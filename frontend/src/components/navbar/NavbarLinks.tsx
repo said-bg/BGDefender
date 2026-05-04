@@ -5,6 +5,7 @@ import styles from './NavbarLinks.module.css';
 
 interface NavbarLinksProps {
   adminLabel: string;
+  contactLabel: string;
   favoritesLabel: string;
   homeLabel: string;
   isAdmin: boolean;
@@ -14,6 +15,7 @@ interface NavbarLinksProps {
 
 export default function NavbarLinks({
   adminLabel,
+  contactLabel,
   favoritesLabel,
   homeLabel,
   isAdmin,
@@ -27,20 +29,29 @@ export default function NavbarLinks({
           {adminLabel}
         </Link>
       ) : (
-        <Link href="/" className={styles.navLink}>
-          {homeLabel}
-        </Link>
-      )}
-      {isAuthenticated && !isAdmin ? (
         <>
-          <Link href="/my-courses" className={styles.navLink}>
-            {myCoursesLabel}
+          <Link href="/" className={styles.navLink}>
+            {homeLabel}
           </Link>
-          <Link href="/favorites" className={styles.navLink}>
-            {favoritesLabel}
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link href="/my-courses" className={styles.navLink}>
+                {myCoursesLabel}
+              </Link>
+              <Link href="/favorites" className={styles.navLink}>
+                {favoritesLabel}
+              </Link>
+              <Link href="/contact" className={styles.navLink}>
+                {contactLabel}
+              </Link>
+            </>
+          ) : (
+            <Link href="/contact" className={styles.navLink}>
+              {contactLabel}
+            </Link>
+          )}
         </>
-      ) : null}
+      )}
     </div>
   );
 }

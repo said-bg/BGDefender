@@ -18,6 +18,7 @@ export const useAuth = () => {
       isLoading: state.isLoading,
       isAuthenticated: state.isAuthenticated,
       isInitialized: state.isInitialized,
+      postLogoutRedirectPath: state.postLogoutRedirectPath,
       error: state.error,
 
       // Actions
@@ -29,6 +30,8 @@ export const useAuth = () => {
       fetchCurrentUser: state.fetchCurrentUser,
       setUser: state.setUser,
       setError: state.setError,
+      setPostLogoutRedirectPath: state.setPostLogoutRedirectPath,
+      clearPostLogoutRedirectPath: state.clearPostLogoutRedirectPath,
     }))
   );
 };

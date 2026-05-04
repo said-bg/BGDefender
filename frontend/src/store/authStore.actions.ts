@@ -10,6 +10,7 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
   isLoading: false,
   isAuthenticated: false,
   isInitialized: false,
+  postLogoutRedirectPath: null,
   error: null,
 
   setUser: (user) => {
@@ -31,6 +32,14 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
     set({ error });
   },
 
+  setPostLogoutRedirectPath: (postLogoutRedirectPath) => {
+    set({ postLogoutRedirectPath });
+  },
+
+  clearPostLogoutRedirectPath: () => {
+    set({ postLogoutRedirectPath: null });
+  },
+
   login: async (email, password) => {
     set({ isLoading: true, error: null });
 
@@ -42,6 +51,7 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
         token: response.accessToken,
         isAuthenticated: true,
         isLoading: false,
+        postLogoutRedirectPath: null,
         error: null,
       });
       return response.user;
@@ -108,13 +118,14 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
     }
   },
 
-  logout: () => {
+  logout: (redirectPath = '/') => {
     authService.logout();
 
     set({
       user: null,
       token: null,
       isAuthenticated: false,
+      postLogoutRedirectPath: redirectPath,
       error: null,
     });
   },
@@ -156,6 +167,7 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
           token: null,
           isAuthenticated: false,
           isLoading: false,
+          postLogoutRedirectPath: null,
           isInitialized: true,
         });
         return;
@@ -170,6 +182,7 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
         token: null,
         isAuthenticated: false,
         isLoading: false,
+        postLogoutRedirectPath: null,
         isInitialized: true,
       });
     }

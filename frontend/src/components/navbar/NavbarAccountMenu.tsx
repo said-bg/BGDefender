@@ -141,8 +141,7 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
             className={styles.dropdownLogout}
             onClick={() => {
               closeMenu();
-              logout();
-              window.location.replace('/');
+              void logout();
             }}
           >
             {labels.logout}

@@ -97,6 +97,14 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
+    await page.route(buildApiPattern('/collections'), async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
+      });
+    });
+
     await page.route(buildApiPattern('/progress/me'), async (route) => {
       await route.fulfill({
         status: 200,
@@ -185,6 +193,14 @@ test.describe('Home progression - E2E tests', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(publishedCourses),
+      });
+    });
+
+    await page.route(buildApiPattern('/collections'), async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([]),
       });
     });
 

@@ -136,7 +136,10 @@ export function EditCourseShell({
             </nav>
 
             <div className={shellStyles.sectionActions}>
-              <Link href={previewHref} className={shellStyles.previewLink}>
+              <Link
+                href={previewHref}
+                className={`${shellStyles.sectionNavLink} ${shellStyles.previewLink}`}
+              >
                 {t('edit.preview', { defaultValue: 'Preview course' })}
               </Link>
 

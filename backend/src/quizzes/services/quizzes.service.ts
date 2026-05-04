@@ -82,7 +82,6 @@ export class QuizzesService {
     courseId: string,
     chapterId: string,
     currentUser: SafeUser,
-    forceLearnerView = false,
   ): Promise<AdminQuizView | LearnerQuizView | null> {
     await findChapterOrFail(this.dependencies, courseId, chapterId);
 
@@ -107,7 +106,6 @@ export class QuizzesService {
   async getCourseFinalTest(
     courseId: string,
     currentUser: SafeUser,
-    forceLearnerView = false,
   ): Promise<AdminFinalTestView | LearnerFinalTestView | null> {
     await findCourseOrFail(this.dependencies, courseId);
 

@@ -101,7 +101,14 @@ test.describe('Course detail - E2E tests', () => {
     await mockCertificates(page);
     await mockCourseDetail(page, course, premiumUser);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url().includes(`/progress/me/course/${course.id}`) &&
+          response.request().method() === 'GET',
+      ),
+      page.goto(`/courses/${course.id}?resume=1`, { waitUntil: 'domcontentloaded' }),
+    ]);
 
     await page.getByRole('main').getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByRole('main').getByRole('button', { name: 'Next', exact: true }).click();
@@ -130,7 +137,7 @@ test.describe('Course detail - E2E tests', () => {
       updatedAt: '2026-01-02T00:00:00.000Z',
     });
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`/courses/${course.id}?resume=1`, { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();
     await expect(page.getByRole('main').getByText('free content paragraph 1.')).toBeVisible();
@@ -203,7 +210,14 @@ test.describe('Course detail - E2E tests', () => {
       });
     });
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+    await Promise.all([
+      page.waitForResponse(
+        (response) =>
+          response.url().includes(`/progress/me/course/${course.id}`) &&
+          response.request().method() === 'GET',
+      ),
+      page.goto(`/courses/${course.id}?resume=1`, { waitUntil: 'domcontentloaded' }),
+    ]);
 
     await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();
 

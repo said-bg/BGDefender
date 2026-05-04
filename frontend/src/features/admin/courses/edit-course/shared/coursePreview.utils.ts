@@ -6,7 +6,9 @@ export type AdminCoursePreviewTarget =
   | { type: 'final-test' };
 
 type BuildCoursePreviewHrefOptions = {
+  focus?: 'entry' | 'content';
   returnTo?: string;
+  sidebarMode?: 'default' | 'structure';
   target?: AdminCoursePreviewTarget;
 };
 
@@ -33,6 +35,14 @@ export const buildCoursePreviewHref = (
 
   if (options.returnTo) {
     params.set('returnTo', options.returnTo);
+  }
+
+  if (options.focus && options.focus !== 'entry') {
+    params.set('focus', options.focus);
+  }
+
+  if (options.sidebarMode && options.sidebarMode !== 'default') {
+    params.set('sidebar', options.sidebarMode);
   }
 
   return `/courses/${courseId}?${params.toString()}`;

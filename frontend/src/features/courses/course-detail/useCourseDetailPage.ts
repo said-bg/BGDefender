@@ -41,6 +41,10 @@ export function useCourseDetailPage() {
   const courseAuthorFallback = t('detail.courseAuthor');
   const isPreviewModeRequested = searchParams?.get('preview') === '1';
   const isAdminPreview = isPreviewModeRequested && user?.role === UserRole.ADMIN;
+  const previewFocus = searchParams?.get('focus');
+  const previewSidebarMode = searchParams?.get('sidebar');
+  const shouldFocusCourseContent = isAdminPreview && previewFocus === 'content';
+  const isStructurePreview = isAdminPreview && previewSidebarMode === 'structure';
   const shouldResumeProgress = searchParams?.get('resume') === '1';
   const requestedPreviewView = useMemo<ViewState>(
     () =>
@@ -80,7 +84,7 @@ export function useCourseDetailPage() {
 
         setCourse(result);
         setExpandedChapters(new Set());
-        setViewportMode('entry');
+        setViewportMode(shouldFocusCourseContent ? 'content' : 'entry');
       } catch (loadError) {
         console.error('Failed to load course detail:', loadError);
         setErrorKey('unableToLoad');
@@ -90,7 +94,7 @@ export function useCourseDetailPage() {
     };
 
     void loadCourse();
-  }, [courseId, isAdminPreview, isInitialized, isPreviewModeRequested]);
+  }, [courseId, isAdminPreview, isInitialized, isPreviewModeRequested, shouldFocusCourseContent]);
 
   useEffect(() => {
     if (!course) {
@@ -103,14 +107,22 @@ export function useCourseDetailPage() {
 
     setSelectedView(initialView);
     setExpandedChapters(
-      initialView.type === 'chapter' ||
-        initialView.type === 'subchapter' ||
-        initialView.type === 'quiz'
-        ? new Set([initialView.chapterId])
-        : new Set(),
+      isStructurePreview
+        ? new Set(course.chapters.map((chapter) => chapter.id))
+        : initialView.type === 'chapter' ||
+            initialView.type === 'subchapter' ||
+            initialView.type === 'quiz'
+          ? new Set([initialView.chapterId])
+          : new Set(),
     );
-    setViewportMode(initialView.type === 'overview' ? 'entry' : 'content');
-  }, [course, isAdminPreview, requestedPreviewView]);
+    setViewportMode(
+      initialView.type === 'overview'
+        ? shouldFocusCourseContent
+          ? 'content'
+          : 'entry'
+        : 'content',
+    );
+  }, [course, isAdminPreview, isStructurePreview, requestedPreviewView, shouldFocusCourseContent]);
 
   const selectedContent = useMemo<SelectedContent | null>(() => {
     if (!course) {
@@ -285,6 +297,8 @@ export function useCourseDetailPage() {
     openQuiz,
     openSubChapter,
     previousItem,
+    isStructurePreview,
+    shouldFocusCourseContent,
     shouldResumeProgress,
     selectedContent,
     selectedView,

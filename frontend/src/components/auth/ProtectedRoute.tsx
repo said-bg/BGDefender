@@ -39,7 +39,13 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, isInitialized, user } = useAuth();
+  const {
+    clearPostLogoutRedirectPath,
+    isAuthenticated,
+    isInitialized,
+    postLogoutRedirectPath,
+    user,
+  } = useAuth();
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -50,6 +56,12 @@ export function ProtectedRoute({
 
     // Initialized but not authenticated - redirect to login
     if (!isAuthenticated) {
+      if (postLogoutRedirectPath) {
+        clearPostLogoutRedirectPath();
+        router.replace(postLogoutRedirectPath);
+        return;
+      }
+
       router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
@@ -59,7 +71,17 @@ export function ProtectedRoute({
       router.replace(unauthorizedRedirect);
       return;
     }
-  }, [isAuthenticated, isInitialized, user, requiredRole, unauthorizedRedirect, router, pathname]);
+  }, [
+    clearPostLogoutRedirectPath,
+    isAuthenticated,
+    isInitialized,
+    pathname,
+    postLogoutRedirectPath,
+    requiredRole,
+    router,
+    unauthorizedRedirect,
+    user,
+  ]);
 
   // Show loading state while initializing
   if (!isInitialized) {

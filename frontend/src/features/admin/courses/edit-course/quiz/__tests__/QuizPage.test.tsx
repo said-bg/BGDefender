@@ -46,17 +46,22 @@ jest.mock('next/link', () => ({
   ),
 }));
 
+const navigationState = {
+  searchParams: '',
+};
+
 jest.mock('next/navigation', () => ({
   useParams: () => ({ courseId: 'course-1' }),
   usePathname: () => '/admin/courses/course-1/edit/quiz',
   useRouter: () => ({ replace: jest.fn() }),
-  useSearchParams: () => new URLSearchParams(),
+  useSearchParams: () => new URLSearchParams(navigationState.searchParams),
 }));
 
 const mockedCourseService = courseService as jest.Mocked<typeof courseService>;
 
 describe('QuizPage', () => {
   beforeEach(() => {
+    navigationState.searchParams = '';
     mockedCourseService.getAdminCourseById.mockResolvedValue({
       id: 'course-1',
       titleEn: 'Course EN',
@@ -126,6 +131,7 @@ describe('QuizPage', () => {
         isPublished: true,
         stats: {
           attemptCount: 4,
+          latestAttemptAt: '2026-01-03T10:00:00.000Z',
           bestScore: 100,
         },
         questions: [
@@ -228,6 +234,93 @@ describe('QuizPage', () => {
     expect(screen.getByText('user@example.com')).toBeInTheDocument();
   });
 
+  it('keeps the clicked chapter selection while the url is catching up', async () => {
+    navigationState.searchParams = 'chapter=chapter-2';
+    mockedCourseService.getChapterQuiz
+      .mockResolvedValueOnce({
+        id: 'quiz-2',
+        chapterId: 'chapter-2',
+        titleEn: 'Applied practice training quiz',
+        titleFi: 'Applied practice training quiz',
+        descriptionEn: 'Quiz description',
+        descriptionFi: 'Quiz description',
+        passingScore: 80,
+        isPublished: true,
+        stats: {
+          attemptCount: 4,
+          latestAttemptAt: '2026-01-03T10:00:00.000Z',
+          bestScore: 100,
+        },
+        questions: [],
+      })
+      .mockResolvedValueOnce(null);
+    mockedCourseService.getChapterQuizAnalytics.mockResolvedValue(null);
+
+    render(<QuizPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Quiz title (English)')).toHaveValue(
+        'Applied practice training quiz',
+      );
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /foundations/i }));
+
+    await waitFor(() => {
+      expect(mockedCourseService.getChapterQuiz).toHaveBeenCalledWith('course-1', 'chapter-1');
+    });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Quiz title (English)')).toHaveValue(
+        'Foundations training quiz',
+      );
+    });
+  });
+
+  it('does not reload the full course when only the chapter query changes', async () => {
+    mockedCourseService.getChapterQuiz
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce({
+        id: 'quiz-2',
+        chapterId: 'chapter-2',
+        titleEn: 'Applied practice training quiz',
+        titleFi: 'Applied practice training quiz',
+        descriptionEn: 'Quiz description',
+        descriptionFi: 'Quiz description',
+        passingScore: 80,
+        isPublished: true,
+        stats: {
+          attemptCount: 4,
+          latestAttemptAt: '2026-01-03T10:00:00.000Z',
+          bestScore: 100,
+        },
+        questions: [],
+      });
+    mockedCourseService.getChapterQuizAnalytics.mockResolvedValue(null);
+
+    const { rerender } = render(<QuizPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Quiz title (English)')).toHaveValue(
+        'Foundations training quiz',
+      );
+    });
+
+    expect(mockedCourseService.getAdminCourseById).toHaveBeenCalledTimes(1);
+
+    navigationState.searchParams = 'chapter=chapter-2';
+    rerender(<QuizPage />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText('Quiz title (English)')).toHaveValue(
+        'Applied practice training quiz',
+      );
+    });
+
+    expect(mockedCourseService.getAdminCourseById).toHaveBeenCalledTimes(1);
+    expect(mockedCourseService.getChapterQuiz).toHaveBeenCalledTimes(2);
+  });
+
   it('saves the quiz for the selected chapter', async () => {
     mockedCourseService.getChapterQuiz.mockResolvedValue(null);
     mockedCourseService.getChapterQuizAnalytics
@@ -256,6 +349,7 @@ describe('QuizPage', () => {
       isPublished: true,
       stats: {
         attemptCount: 0,
+        latestAttemptAt: null,
         bestScore: null,
       },
       questions: [

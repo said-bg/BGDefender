@@ -1,0 +1,244 @@
+.page {
+  min-height: 100vh;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.section {
+  width: var(--page-shell-width);
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--color-brand);
+  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.title {
+  max-width: none;
+  margin: 0.7rem 0 0;
+  color: var(--color-text-strong);
+  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
+  font-size: clamp(2rem, 2.4vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.description {
+  color: var(--color-text-soft);
+  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+.description {
+  max-width: 42rem;
+  margin: 0.85rem 0 0;
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.45rem;
+}
+
+.primaryAction,
+.secondaryAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.95rem;
+  padding: 0.82rem 1.22rem;
+  border-radius: 14px;
+  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.primaryAction {
+  border: 1px solid var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+}
+
+.primaryAction:hover {
+  background: var(--color-brand-hover);
+}
+
+.secondaryAction {
+  border: 1px solid var(--color-brand);
+  background: var(--color-surface);
+  color: var(--color-brand);
+}
+
+.secondaryAction:hover {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
+}
+
+.actionDisabled {
+  pointer-events: none;
+  border-color: var(--color-border-soft);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-subtle);
+}
+
+.contactShell {
+  display: grid;
+  gap: 1rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.headerBlock,
+.formCard,
+.typeButton {
+  border: 1px solid var(--color-border-soft);
+  border-radius: 20px;
+  background: var(--color-surface);
+}
+
+.headerBlock {
+  padding: 0.25rem 0 0.2rem;
+  border: 0;
+}
+
+.formCard {
+  padding: 1.5rem;
+}
+
+.typeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 1.1rem;
+}
+
+.typeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.6rem;
+  padding: 0.7rem 1rem;
+  background: var(--color-surface);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.typeButton:hover {
+  border-color: var(--color-brand-border-hover);
+  background: var(--color-brand-soft);
+}
+
+.typeButtonActive {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+}
+
+.typeTitle {
+  color: var(--color-text-strong);
+  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.fieldFull {
+  grid-column: 1 / -1;
+}
+
+.fieldLabel {
+  color: var(--color-text-primary);
+  font-family: var(--font-source-sans), "Segoe UI", Arial, sans-serif;
+  font-size: 0.87rem;
+  font-weight: 600;
+}
+
+.input {
+  width: 100%;
+  min-height: 3.1rem;
+  padding: 0.82rem 0.95rem;
+  border: 1px solid var(--color-border-editor);
+  border-radius: 12px;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font: inherit;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-border-subtle);
+}
+
+.textarea {
+  min-height: 11rem;
+  resize: vertical;
+}
+
+@media (max-width: 1080px) {
+  .formGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .section {
+    width: var(--page-shell-width-mobile);
+    padding-top: 1.6rem;
+  }
+
+  .headerBlock,
+  .formCard {
+    padding: 1.2rem;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    max-width: none;
+    font-size: 1.95rem;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .primaryAction,
+  .secondaryAction {
+    width: 100%;
+  }
+}

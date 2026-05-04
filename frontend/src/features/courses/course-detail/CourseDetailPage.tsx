@@ -30,7 +30,7 @@ export default function CourseDetailPage() {
 
     const syncViewport = (matches: boolean) => {
       setIsMobileViewport(matches);
-      setIsSidebarVisible(!matches);
+      setIsSidebarVisible(matches ? detail.shouldFocusCourseContent : true);
     };
 
     syncViewport(mediaQuery.matches);
@@ -42,7 +42,7 @@ export default function CourseDetailPage() {
     mediaQuery.addEventListener('change', handleChange);
 
     return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
+  }, [detail.shouldFocusCourseContent]);
 
   useEffect(() => {
     if (!isMobileViewport || !isSidebarVisible) {
@@ -150,6 +150,7 @@ export default function CourseDetailPage() {
                   defaultValue: 'Score-based practice for this chapter',
                 })}
                 finalTestLabel={detail.t('detail.finalTest', { defaultValue: 'Final test' })}
+              showProgress={!detail.isStructurePreview}
               finalTestDescription={detail.t('detail.finalTestSidebar', {
                 defaultValue: 'Course-wide assessment unlocked after all chapters',
               })}
@@ -203,6 +204,7 @@ export default function CourseDetailPage() {
                 defaultValue: 'Score-based practice for this chapter',
               })}
               finalTestLabel={detail.t('detail.finalTest', { defaultValue: 'Final test' })}
+              showProgress={!detail.isStructurePreview}
               finalTestDescription={detail.t('detail.finalTestSidebar', {
                 defaultValue: 'Course-wide assessment unlocked after all chapters',
               })}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { TFunction } from 'i18next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
@@ -55,6 +55,12 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     updateTopLevelField,
   } = assessment;
   const requestedChapterId = searchParams?.get('chapter');
+  const requestedChapterIdRef = useRef<string | null>(requestedChapterId);
+  const previousRequestedChapterIdRef = useRef<string | null>(requestedChapterId);
+
+  useEffect(() => {
+    requestedChapterIdRef.current = requestedChapterId;
+  }, [requestedChapterId]);
 
   useEffect(() => {
     if (!courseId) {
@@ -75,11 +81,15 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
         const normalizedCourse = sortChapters(response);
         setCourse(normalizedCourse);
         setSelectedChapterId((previous) => {
+          if (previous && normalizedCourse.chapters.some((chapter) => chapter.id === previous)) {
+            return previous;
+          }
+
           if (
-            requestedChapterId &&
-            normalizedCourse.chapters.some((chapter) => chapter.id === requestedChapterId)
+            requestedChapterIdRef.current &&
+            normalizedCourse.chapters.some((chapter) => chapter.id === requestedChapterIdRef.current)
           ) {
-            return requestedChapterId;
+            return requestedChapterIdRef.current;
           }
 
           return previous ?? normalizedCourse.chapters[0]?.id ?? null;
@@ -99,7 +109,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     };
 
     void loadCourse();
-  }, [courseId, requestedChapterId, t]);
+  }, [courseId, t]);
 
   const chapters = useMemo(
     () =>
@@ -108,6 +118,26 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
   );
 
   const selectedChapter = chapters.find((chapter) => chapter.id === selectedChapterId) ?? null;
+
+  useEffect(() => {
+    if (!requestedChapterId) {
+      previousRequestedChapterIdRef.current = requestedChapterId;
+      return;
+    }
+
+    const requestedChapterChanged = previousRequestedChapterIdRef.current !== requestedChapterId;
+    previousRequestedChapterIdRef.current = requestedChapterId;
+
+    if (!requestedChapterChanged) {
+      return;
+    }
+
+    const requestedChapterExists = chapters.some((chapter) => chapter.id === requestedChapterId);
+
+    if (requestedChapterExists && requestedChapterId !== selectedChapterId) {
+      setSelectedChapterId(requestedChapterId);
+    }
+  }, [chapters, requestedChapterId, selectedChapterId]);
 
   const localizedCourseTitle = useMemo(() => {
     if (!course) {

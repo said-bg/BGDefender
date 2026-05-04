@@ -94,7 +94,10 @@ export const Navbar = () => {
       links.push(
         { href: '/my-courses', label: t('myCourses') },
         { href: '/favorites', label: t('favorites') },
+        { href: '/contact', label: t('contact') },
       );
+    } else {
+      links.push({ href: '/contact', label: t('contact') });
     }
 
     return links;
@@ -121,6 +124,14 @@ export const Navbar = () => {
   }, [isAuthenticated, t, user]);
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const handleLogout = () => {
+    closeMobileMenu();
+    logout('/');
+
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
+  };
 
   return (
     <nav className={styles.navbar} aria-label="Primary">
@@ -143,6 +154,7 @@ export const Navbar = () => {
           <div className={styles.desktopLinks}>
             <NavbarLinks
               adminLabel={t('admin')}
+              contactLabel={t('contact')}
               favoritesLabel={t('favorites')}
               homeLabel={t('home')}
               isAdmin={isAdmin}
@@ -177,7 +189,7 @@ export const Navbar = () => {
               {isAuthenticated && user ? (
                 <NavbarAccountMenu
                   user={user}
-                  logout={logout}
+                  logout={handleLogout}
                   labels={{
                     admin: t('admin'),
                     adminBadge: t('badges.admin'),
@@ -298,11 +310,7 @@ export const Navbar = () => {
               <button
                 type="button"
                 className={styles.mobileLogoutButton}
-                onClick={() => {
-                  closeMobileMenu();
-                  logout();
-                  window.location.replace('/');
-                }}
+                onClick={handleLogout}
               >
                 {t('logout')}
               </button>

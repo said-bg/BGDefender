@@ -396,7 +396,7 @@ describe('CourseService', () => {
         ),
       ).toEqual(['content-1', 'content-2']);
       expect(courseRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'course-1' },
+        where: { id: 'course-1', status: CourseStatus.PUBLISHED },
         relations: [
           'authors',
           'finalTests',

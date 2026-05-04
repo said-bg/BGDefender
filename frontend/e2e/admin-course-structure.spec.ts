@@ -1,16 +1,17 @@
 import { expect, test } from '@playwright/test';
 import {
   adminUser,
+  buildApiPattern,
   createCourse,
   mockAuthenticatedSession,
   type MockCourse,
 } from './support/courseFixtures';
 
 const COURSE_ID = 'course-structure';
-const COURSE_ROUTE = new RegExp(`/api/courses/${COURSE_ID}$`);
-const CHAPTERS_ROUTE = new RegExp(`/api/courses/${COURSE_ID}/chapters$`);
-const SUB_CHAPTERS_ROUTE = new RegExp(
-  `/api/courses/${COURSE_ID}/chapters/chapter-1/sub-chapters$`,
+const COURSE_ROUTE = buildApiPattern(`/courses/admin/${COURSE_ID}`);
+const CHAPTERS_ROUTE = buildApiPattern(`/courses/${COURSE_ID}/chapters`);
+const SUB_CHAPTERS_ROUTE = buildApiPattern(
+  `/courses/${COURSE_ID}/chapters/chapter-1/sub-chapters`,
 );
 
 const buildCourse = (overrides: Partial<MockCourse> = {}): MockCourse => ({

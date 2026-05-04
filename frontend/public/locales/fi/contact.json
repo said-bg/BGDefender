@@ -1,0 +1,99 @@
+{
+  "hero": {
+    "eyebrow": "Ota yhteyttä BG Defenderiin",
+    "title": "Ota yhteyttä oikeaan tiimiin ilman turhaa kitkaa.",
+    "description": "Lähetä viesti tuesta, käyttöoikeuksista, sisällöntuottajan pääsystä tai premium-kysymyksistä. Ohjaamme pyyntösi nopeasti oikeaan paikkaan.",
+    "primaryAction": "Aloita pyyntö",
+    "secondaryAction": "Lähetä sähköposti suoraan",
+    "panelBadge": "Nopea ohjaus",
+    "stats": {
+      "support": "Tuki",
+      "access": "Käyttöpyynnöt",
+      "creator": "Sisällöntuottajat",
+      "premium": "Premium-suunnittelu"
+    }
+  },
+  "routing": {
+    "eyebrow": "Valitse aihe",
+    "title": "Aloita pyynnöstä, joka sopii parhaiten tilanteeseesi.",
+    "description": "Kun valitset oikean aiheen heti alussa, voimme ohjata viestisi nopeammin ja vastata selkeämmin ilman turhia lisäkysymyksiä."
+  },
+  "types": {
+    "general": {
+      "title": "Yleiset tiedustelut",
+      "description": "Kysymyksiä alustasta, kursseista tai saatavuudesta."
+    },
+    "support": {
+      "title": "Tekninen tuki",
+      "description": "Jokin ei toimi odotetulla tavalla? Autamme mielellämme."
+    },
+    "creator": {
+      "title": "Sisällöntuottajan käyttöoikeus",
+      "description": "Pyydä oikeuksia oppimissisällön luomiseen ja hallintaan."
+    },
+    "premium": {
+      "title": "Premium-käyttöoikeus",
+      "description": "Kysy premium-käytöstä, räätälöidyistä suunnitelmista tai päivityksistä."
+    }
+  },
+  "form": {
+    "eyebrow": "Valmistele pyyntösi",
+    "title": "Kirjoita yksi selkeä viesti ja lähetä se oikealla kontekstilla.",
+    "description": "Täytämme sähköpostin valmiiksi alla olevilla tiedoilla, jotta viestisi saapuu heti jäsenneltynä ja valmiina käsittelyyn.",
+    "primaryAction": "Valmistele sähköposti",
+    "secondaryAction": "Avaa tukisähköposti",
+    "note": "Yllä oleva painike avaa sähköpostisovelluksesi ja lisää pyynnön valmiiksi jäsenneltynä BG Defender -tiimille."
+  },
+  "fields": {
+    "name": "Koko nimi",
+    "namePlaceholder": "Nimesi",
+    "email": "Sähköpostiosoite",
+    "emailPlaceholder": "sinä@example.com",
+    "organization": "Organisaatio",
+    "organizationPlaceholder": "Yritys, oppilaitos tai tiimi",
+    "requestType": "Pyynnön tyyppi",
+    "subject": "Aihe",
+    "subjectPlaceholder": "Lyhyt yhteenveto pyynnöstäsi",
+    "message": "Viesti",
+    "messagePlaceholder": "Kuvaile tiedot, jotka haluat tiimin tarkistavan ja joihin haluat vastauksen.",
+    "context": {
+      "generalLabel": "Miten voimme auttaa?",
+      "generalPlaceholder": "Lisää hyödyllinen tausta, jotta voimme ohjata sinut oikeaan suuntaan.",
+      "supportLabel": "Mitä tapahtui?",
+      "supportPlaceholder": "Kerro missä ongelma ilmeni ja mitä olit tekemässä.",
+      "creatorLabel": "Kerro millaista oppimisympäristöä haluat rakentaa",
+      "creatorPlaceholder": "Kuvaile lyhyesti sisältöäsi, yleisöäsi tai työnkulun tavoitteita.",
+      "premiumLabel": "Kerro millaista käyttöoikeutta etsit",
+      "premiumPlaceholder": "Kerro tarvitsetko premium-käyttöä itsellesi, tiimille tai ohjelmalle."
+    }
+  },
+  "mail": {
+    "defaultSubject": "{{requestType}} -pyyntö",
+    "labels": {
+      "name": "Nimi",
+      "email": "Sähköposti",
+      "organization": "Organisaatio",
+      "requestType": "Pyynnön tyyppi",
+      "message": "Viesti"
+    }
+  },
+  "sidebar": {
+    "contact": {
+      "eyebrow": "Suora yhteys",
+      "title": "Haluatko lähettää viestin suoraan?",
+      "description": "Jos tiedät jo tarkalleen mitä tarvitset, voit lähettää sähköpostin suoraan tiimille ja ohjaamme sen siitä eteenpäin."
+    },
+    "response": {
+      "eyebrow": "Vastausajat",
+      "support": "Teknisen tuen pyynnöt käsitellään yleensä yhden arkipäivän sisällä.",
+      "access": "Käyttöoikeus-, sisällöntuottaja- ja premium-pyynnöt käsitellään tavallisesti kahden arkipäivän sisällä.",
+      "context": "Selkeä taustatieto auttaa tiimiä vastaamaan nopeammin ja vähentää lisäkysymysten tarvetta."
+    },
+    "tips": {
+      "eyebrow": "Mitä kannattaa lisätä",
+      "account": "Tilisi sähköpostiosoite tai työtila, jota käytät.",
+      "course": "Kurssi, sivu tai ominaisuus, johon pyyntösi liittyy.",
+      "goal": "Tavoite, jonka haluat saavuttaa, jotta voimme ohjata sinua paremmin."
+    }
+  }
+}

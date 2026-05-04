@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { buildApiPattern } from './support/courseFixtures';
 
 const API_BASE = 'http://localhost:3001/api';
 
@@ -27,6 +28,17 @@ test.describe('Authentication - E2E Tests', () => {
     await page.addInitScript(() => {
       window.localStorage.setItem('i18nextLng', 'en');
     });
+
+    await page.route(buildApiPattern('/auth/me'), async (route) => {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          statusCode: 401,
+          message: 'Unauthorized',
+        }),
+      });
+    });
   });
 
   /**
@@ -53,8 +65,8 @@ test.describe('Authentication - E2E Tests', () => {
       });
     });
 
-    await page.goto('/register', { waitUntil: 'networkidle' });
-    await expect(page.locator('h1')).toContainText(/create account/i);
+    await page.goto('/register', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/create account/i);
 
     // Fill form
     await page.locator('input[name="email"]').fill(email);
@@ -85,7 +97,7 @@ test.describe('Authentication - E2E Tests', () => {
     expect(page.url()).toContain('/login');
 
     // Verify login page is visible (title is "Welcome Back")
-    await expect(page.locator('h1')).toContainText(/welcome back/i);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/welcome back/i);
   });
 
   /**
@@ -100,10 +112,10 @@ test.describe('Authentication - E2E Tests', () => {
    * - Has signup link
    */
   test('should have proper login page structure', async ({ page }) => {
-    await page.goto('/login', { waitUntil: 'networkidle' });
+    await page.goto('/login', { waitUntil: 'domcontentloaded' });
 
     // Verify title and form structure
-    await expect(page.locator('h1')).toContainText(/welcome back/i);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/welcome back/i);
 
     const emailInput = page.locator('input[name="email"]');
     await expect(emailInput).toBeVisible();
@@ -133,10 +145,10 @@ test.describe('Authentication - E2E Tests', () => {
    * - Has login link for existing users
    */
   test('should have proper register page structure', async ({ page }) => {
-    await page.goto('/register', { waitUntil: 'networkidle' });
+    await page.goto('/register', { waitUntil: 'domcontentloaded' });
 
     // Verify title and form structure
-    await expect(page.locator('h1')).toContainText(/create account/i);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/create account/i);
 
     const emailInput = page.locator('input[name="email"]');
     await expect(emailInput).toBeVisible();
@@ -164,7 +176,7 @@ test.describe('Authentication - E2E Tests', () => {
    * - Submitting with non-matching passwords shows error
    */
   test('should display validation errors on invalid input', async ({ page }) => {
-    await page.goto('/register', { waitUntil: 'networkidle' });
+    await page.goto('/register', { waitUntil: 'domcontentloaded' });
 
     // Test 1: Submit empty form should show errors
     await page.getByRole('button', { name: /create account/i }).click();
@@ -208,7 +220,8 @@ test.describe('Authentication - E2E Tests', () => {
       });
     });
 
-    await page.goto('/login', { waitUntil: 'networkidle' });
+    await page.goto('/login', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { level: 1, name: /welcome back/i })).toBeVisible();
 
     await page.locator('input[name="email"]').fill('wrong@example.com');
     await page.locator('input[name="password"]').fill('WrongPassword123');
@@ -217,7 +230,7 @@ test.describe('Authentication - E2E Tests', () => {
     await expect(page.getByText('Invalid email or password')).toBeVisible();
 
     await page.getByRole('button', { name: /select language/i }).click();
-    await page.getByRole('button', { name: 'Suomi' }).click();
+    await page.getByRole('button', { name: /suomi|finnish/i }).click();
 
     await expect(page.getByText('Invalid email or password')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: /tervetuloa takaisin/i })).toBeVisible();

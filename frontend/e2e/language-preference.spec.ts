@@ -35,7 +35,7 @@ test.describe('Language preference - E2E tests', () => {
       .first();
 
     await languageSwitcher.click();
-    await page.getByRole('button', { name: 'English' }).click();
+    await page.getByRole('button', { name: /english|englanti/i }).click();
     await expect(
       page.getByRole('navigation').getByRole('link', { name: 'Home' }),
     ).toBeVisible();
@@ -46,7 +46,7 @@ test.describe('Language preference - E2E tests', () => {
     ).toBeVisible();
 
     await languageSwitcher.click();
-    await page.getByRole('button', { name: 'Suomi' }).click();
+    await page.getByRole('button', { name: /suomi|finnish/i }).click();
     await expect(
       page.getByRole('navigation').getByRole('link', { name: 'Etusivu' }),
     ).toBeVisible();

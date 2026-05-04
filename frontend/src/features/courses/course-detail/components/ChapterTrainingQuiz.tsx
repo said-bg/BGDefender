@@ -70,6 +70,41 @@ const toPreviewQuiz = (
   return response;
 };
 
+const pendingQuizRequests = new Map<
+  string,
+  Promise<AdminChapterQuiz | LearnerChapterQuiz | null>
+>();
+
+const getQuizRequestKey = (
+  courseId: string,
+  chapterId: string,
+  previewMode: boolean,
+) => `${courseId}:${chapterId}:${previewMode ? 'preview' : 'live'}`;
+
+const loadChapterQuizOnce = (
+  courseId: string,
+  chapterId: string,
+  previewMode: boolean,
+) => {
+  const cacheKey = getQuizRequestKey(courseId, chapterId, previewMode);
+  const existingRequest = pendingQuizRequests.get(cacheKey);
+
+  if (existingRequest) {
+    return existingRequest;
+  }
+
+  const request = courseService
+    .getChapterQuiz(courseId, chapterId, {
+      preview: previewMode,
+    })
+    .finally(() => {
+      pendingQuizRequests.delete(cacheKey);
+    });
+
+  pendingQuizRequests.set(cacheKey, request);
+  return request;
+};
+
 export default function ChapterTrainingQuiz({
   activeLanguage,
   chapterId,
@@ -116,13 +151,18 @@ export default function ChapterTrainingQuiz({
     : t('detail.quizRetryAvailable', { defaultValue: 'Retry available' });
 
   useEffect(() => {
+    let isActive = true;
+
     const loadQuiz = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await courseService.getChapterQuiz(courseId, chapterId, {
-          preview: previewMode,
-        });
+        const response = await loadChapterQuizOnce(courseId, chapterId, previewMode);
+
+        if (!isActive) {
+          return;
+        }
+
         const effectiveQuiz = previewMode
           ? toPreviewQuiz(response)
           : response && !('stats' in response)
@@ -136,21 +176,29 @@ export default function ChapterTrainingQuiz({
         setIsQuizActive(previewMode || !Boolean(effectiveQuiz?.latestAttempt));
         setIsReviewMode(false);
       } catch (loadError) {
+        if (!isActive) {
+          return;
+        }
+
         setError(
           getApiErrorMessage(
             loadError,
-            t('detail.quizLoadFailed', {
-              defaultValue: 'Failed to load the training quiz.',
-            }),
+            'Failed to load the training quiz.',
           ),
         );
       } finally {
-        setLoading(false);
+        if (isActive) {
+          setLoading(false);
+        }
       }
     };
 
     void loadQuiz();
-  }, [chapterId, courseId, previewMode, t]);
+
+    return () => {
+      isActive = false;
+    };
+  }, [chapterId, courseId, previewMode]);
 
   const answeredCount = useMemo(
     () =>

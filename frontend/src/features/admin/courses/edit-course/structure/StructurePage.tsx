@@ -193,7 +193,9 @@ function StructurePageContent() {
 
     if (structure.editingSubChapterId && structure.subChapterForm.chapterId) {
       return buildCoursePreviewHref(structure.courseId, {
+        focus: 'content',
         returnTo,
+        sidebarMode: 'structure',
         target: {
           type: 'subchapter',
           chapterId: structure.subChapterForm.chapterId,
@@ -204,7 +206,9 @@ function StructurePageContent() {
 
     if (structure.editingChapterId) {
       return buildCoursePreviewHref(structure.courseId, {
+        focus: 'content',
         returnTo,
+        sidebarMode: 'structure',
         target: {
           type: 'chapter',
           chapterId: structure.editingChapterId,
@@ -213,7 +217,9 @@ function StructurePageContent() {
     }
 
     return buildCoursePreviewHref(structure.courseId, {
+      focus: 'content',
       returnTo,
+      sidebarMode: 'structure',
       target: { type: 'overview' },
     });
   }, [

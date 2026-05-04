@@ -29,6 +29,7 @@ type CourseSidebarProps = {
   quizDescription: string;
   finalTestLabel: string;
   finalTestDescription: string;
+  showProgress?: boolean;
   showUnpublishedAssessments?: boolean;
   onSelectOverview: () => void;
   onOpenFinalTest: () => void;
@@ -50,6 +51,7 @@ export function CourseSidebar({
   quizDescription,
   finalTestLabel,
   finalTestDescription,
+  showProgress = true,
   showUnpublishedAssessments = false,
   onSelectOverview,
   onOpenFinalTest,
@@ -85,12 +87,14 @@ export function CourseSidebar({
           {overviewPreview ? (
             <p className={styles.overviewText}>{overviewPreview}</p>
           ) : null}
-          <progress
-            className={styles.overviewProgress}
-            max={100}
-            value={courseProgress}
-            aria-label={courseProgressLabel}
-          />
+          {showProgress ? (
+            <progress
+              className={styles.overviewProgress}
+              max={100}
+              value={courseProgress}
+              aria-label={courseProgressLabel}
+            />
+          ) : null}
         </div>
       </button>
 
@@ -144,12 +148,14 @@ export function CourseSidebar({
                     {chapterPreview ? (
                       <div className={styles.chapterTeaser}>{chapterPreview}</div>
                     ) : null}
-                    <progress
-                      className={styles.chapterProgress}
-                      max={100}
-                      value={chapterProgress}
-                      aria-label={`${chapterTitle} ${courseProgressLabel}`}
-                    />
+                    {showProgress ? (
+                      <progress
+                        className={styles.chapterProgress}
+                        max={100}
+                        value={chapterProgress}
+                        aria-label={`${chapterTitle} ${courseProgressLabel}`}
+                      />
+                    ) : null}
                   </div>
                 </div>
                 <span className={styles.chapterChevron}>

@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
+    "start:e2e": "next start -p 3100",
+    "clean:next": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
     "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watch",
