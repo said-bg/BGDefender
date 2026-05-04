@@ -16,7 +16,7 @@ export default function AdminUsersPage() {
 }
 
 function AdminUsersPageContent() {
-  const { t } = useTranslation('admin');
+  const { t, i18n } = useTranslation('admin');
   const {
     actingUserId,
     canManagePlan,
@@ -38,7 +38,7 @@ function AdminUsersPageContent() {
   } = useAdminUsers();
 
   return (
-    <div className={styles.page}>
+    <div className={`${styles.page} ${i18n.language === 'fi' ? styles.pageFi : ''}`}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <Link href="/admin" className={styles.backLink}>
