@@ -32,7 +32,7 @@ export default function CourseSettingsFields({
     <>
       <div className={formStyles.fieldGroup}>
         <label className={formStyles.field}>
-          <span>{t('create.level', { defaultValue: 'Access level' })}</span>
+          <span>{t('create.level')}</span>
           <select
             value={form.level}
             onChange={(event) =>
@@ -42,15 +42,13 @@ export default function CourseSettingsFields({
               }))
             }
           >
-            <option value="free">{t('levels.free', { defaultValue: 'Free' })}</option>
-            <option value="premium">
-              {t('levels.premium', { defaultValue: 'Premium' })}
-            </option>
+            <option value="free">{t('levels.free')}</option>
+            <option value="premium">{t('levels.premium')}</option>
           </select>
         </label>
 
         <label className={formStyles.field}>
-          <span>{t('create.status', { defaultValue: 'Status' })}</span>
+          <span>{t('create.status')}</span>
           <select
             value={form.status}
             onChange={(event) =>
@@ -60,26 +58,17 @@ export default function CourseSettingsFields({
               }))
             }
           >
-            <option value="draft">{t('status.draft', { defaultValue: 'Draft' })}</option>
-            <option value="published">
-              {t('status.published', { defaultValue: 'Published' })}
-            </option>
+            <option value="draft">{t('status.draft')}</option>
+            <option value="published">{t('status.published')}</option>
           </select>
         </label>
       </div>
 
       <div className={formStyles.fieldGroup}>
         <label className={formStyles.field}>
-          <span>
-            {t('create.duration', {
-              defaultValue: 'Estimated duration (optional)',
-            })}
-          </span>
+          <span>{t('create.duration')}</span>
           <p className={sharedStyles.helperText}>
-            {t('create.durationDescription', {
-              defaultValue:
-                'Leave this empty if you do not want to show a duration on the course page.',
-            })}
+            {t('create.durationDescription')}
           </p>
           <input
             type="number"
@@ -91,9 +80,7 @@ export default function CourseSettingsFields({
                 estimatedDuration: event.target.value,
               }))
             }
-            placeholder={t('create.durationPlaceholder', {
-              defaultValue: 'Example: 90',
-            })}
+            placeholder={t('create.durationPlaceholder')}
           />
         </label>
 

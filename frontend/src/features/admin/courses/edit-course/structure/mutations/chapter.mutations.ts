@@ -44,11 +44,7 @@ export async function submitChapterMutation({
   setChapterError(null);
 
   if (!course || !courseId) {
-    setChapterError(
-      t('edit.chapters.missingCourseId', {
-        defaultValue: 'Missing course id.',
-      }),
-    );
+    setChapterError(t('edit.chapters.missingCourseId'));
     return;
   }
 
@@ -72,9 +68,7 @@ export async function submitChapterMutation({
 
     setCourse(freshCourse);
     setChapterMessage(
-      editingChapterId
-        ? t('edit.chapters.updated', { defaultValue: 'Chapter updated successfully.' })
-        : t('edit.chapters.created', { defaultValue: 'Chapter created successfully.' }),
+      editingChapterId ? t('edit.chapters.updated') : t('edit.chapters.created'),
     );
     resetChapterForm(freshCourse);
 
@@ -91,12 +85,8 @@ export async function submitChapterMutation({
       getApiErrorMessage(
         error,
         editingChapterId
-          ? t('edit.chapters.updateFailed', {
-              defaultValue: 'Failed to update chapter.',
-            })
-          : t('edit.chapters.createFailed', {
-              defaultValue: 'Failed to create chapter.',
-            }),
+          ? t('edit.chapters.updateFailed')
+          : t('edit.chapters.createFailed'),
       ),
     );
   } finally {
@@ -136,9 +126,7 @@ export async function deleteChapterMutation(
   }
 
   const confirmed = window.confirm(
-    t('edit.chapters.deleteConfirm', {
-      defaultValue: 'Delete this chapter? This action cannot be undone.',
-    }),
+    t('edit.chapters.deleteConfirm'),
   );
 
   if (!confirmed) {
@@ -155,11 +143,7 @@ export async function deleteChapterMutation(
       await courseService.getAdminCourseById(courseId),
     );
     setCourse(freshCourse);
-    setChapterMessage(
-      t('edit.chapters.deleted', {
-        defaultValue: 'Chapter deleted successfully.',
-      }),
-    );
+    setChapterMessage(t('edit.chapters.deleted'));
 
     if (!editingChapterId || editingChapterId === chapterId) {
       resetChapterForm(freshCourse);
@@ -172,9 +156,7 @@ export async function deleteChapterMutation(
     setChapterError(
       getApiErrorMessage(
         error,
-        t('edit.chapters.deleteFailed', {
-          defaultValue: 'Failed to delete chapter.',
-        }),
+        t('edit.chapters.deleteFailed'),
       ),
     );
   } finally {

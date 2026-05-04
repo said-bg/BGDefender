@@ -13,6 +13,7 @@ import { QuizzesModule } from './quizzes/quizzes.module';
 import { CertificatesModule } from './certificates/certificates.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { CollectionsModule } from './collections/collections.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -43,6 +44,8 @@ import { CollectionsModule } from './collections/collections.module';
     NotificationsModule,
     // Collections module: admin-curated learner sections on the home page
     CollectionsModule,
+    // Contact module: public contact form email delivery
+    ContactModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -26,19 +26,17 @@ export default function QuizChapterSidebar({
     <aside className={styles.quizSidebar}>
       <div className={styles.quizSidebarHeader}>
         <h3 className={styles.chapterSectionTitle}>
-          {t('edit.quiz.chapterListTitle', { defaultValue: 'Chapters' })}
+          {t('edit.quiz.chapterListTitle')}
         </h3>
         <p className={styles.sectionDescription}>
-          {t('edit.quiz.chapterListDescription', {
-            defaultValue: 'Choose the chapter whose training quiz you want to manage.',
-          })}
+          {t('edit.quiz.chapterListDescription')}
         </p>
       </div>
 
       {chapters.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.emptyTitle}>
-            {t('edit.chapters.emptyTitle', { defaultValue: 'No chapters yet' })}
+            {t('edit.chapters.emptyTitle')}
           </p>
         </div>
       ) : (
@@ -59,7 +57,7 @@ export default function QuizChapterSidebar({
               >
                 <div className={styles.chapterPickerCardBody}>
                   <p className={styles.chapterOrderLabel}>
-                    {t('edit.chapters.orderLabel', { defaultValue: 'Chapter' })} {chapter.orderIndex}
+                    {t('edit.chapters.orderLabel')} {chapter.orderIndex}
                   </p>
                   <h4 className={styles.chapterTitle}>{chapterTitle}</h4>
                   <div className={styles.quizChapterMeta}>
@@ -74,18 +72,16 @@ export default function QuizChapterSidebar({
                     >
                       {chapterQuiz
                         ? chapterQuiz.isPublished
-                          ? t('edit.quiz.statusPublished', { defaultValue: 'Published' })
-                          : t('edit.quiz.statusDraft', { defaultValue: 'Draft quiz' })
-                        : t('edit.quiz.statusEmpty', { defaultValue: 'No quiz yet' })}
+                          ? t('edit.quiz.statusPublished')
+                          : t('edit.quiz.statusDraft')
+                        : t('edit.quiz.statusEmpty')}
                     </span>
                     <span className={styles.quizCountLabel}>
                       {selectedChapterQuiz
-                        ? `${selectedChapterQuiz.questions.length} ${t('edit.quiz.questionsShort', {
-                            defaultValue: 'questions',
-                          })}`
+                        ? `${selectedChapterQuiz.questions.length} ${t('edit.quiz.questionsShort')}`
                         : chapterQuiz
-                          ? t('edit.quiz.quizReady', { defaultValue: 'Quiz ready' })
-                          : t('edit.quiz.notConfigured', { defaultValue: 'Not configured' })}
+                          ? t('edit.quiz.quizReady')
+                          : t('edit.quiz.notConfigured')}
                     </span>
                   </div>
                 </div>

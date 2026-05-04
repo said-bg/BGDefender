@@ -149,9 +149,7 @@ export default function EditCourseChapterForm({
             </div>
           </div>
           <p className={styles.orderHint}>
-            {t('edit.chapters.orderHint', {
-              defaultValue: 'Existing chapters are shifted automatically to keep the order unique.',
-            })}
+            {t('edit.chapters.orderHint')}
           </p>
         </label>
 
@@ -161,8 +159,8 @@ export default function EditCourseChapterForm({
         <div className={styles.actions}>
           <button type="button" className={styles.secondaryAction} onClick={onReset}>
             {editingChapterId
-              ? t('edit.chapters.cancelEdit', { defaultValue: 'Cancel chapter edit' })
-              : t('common.cancel', { defaultValue: 'Cancel' })}
+              ? t('edit.chapters.cancelEdit')
+              : t('common.cancel')}
           </button>
           <button type="submit" className={styles.primaryAction} disabled={isSubmittingChapter}>
             {isSubmittingChapter

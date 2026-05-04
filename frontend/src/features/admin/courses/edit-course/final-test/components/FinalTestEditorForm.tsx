@@ -67,58 +67,36 @@ export default function FinalTestEditorForm({
   return (
     <AssessmentEditorForm
       copy={{
-        addOption: t('edit.finalTest.addOption', { defaultValue: 'Add option' }),
-        addQuestion: t('edit.finalTest.addQuestion', { defaultValue: 'Add question' }),
-        attemptsShort: t('edit.finalTest.attemptsShort', { defaultValue: 'attempts' }),
-        bestScoreLabel: t('edit.finalTest.bestScoreLabel', { defaultValue: 'Best score' }),
-        cancel: t('common.cancel', { defaultValue: 'Cancel' }),
-        correctAnswer: t('edit.finalTest.correctAnswer', { defaultValue: 'Correct' }),
-        deleteAction: t('edit.finalTest.deleteTest', { defaultValue: 'Delete final test' }),
-        deleteQuestion: t('edit.finalTest.deleteQuestion', {
-          defaultValue: 'Delete question',
-        }),
-        deletingAction: t('edit.finalTest.deleting', {
-          defaultValue: 'Deleting final test...',
-        }),
-        descriptionEn: t('edit.finalTest.descriptionEn', {
-          defaultValue: 'Description (English)',
-        }),
-        descriptionFi: t('edit.finalTest.descriptionFi', {
-          defaultValue: 'Description (Finnish)',
-        }),
-        explanationEn: t('edit.finalTest.explanationEn', {
-          defaultValue: 'Explanation (English)',
-        }),
-        explanationFi: t('edit.finalTest.explanationFi', {
-          defaultValue: 'Explanation (Finnish)',
-        }),
-        multipleChoice: t('edit.finalTest.multipleChoice', {
-          defaultValue: 'Multiple choice',
-        }),
-        optionEn: t('edit.finalTest.optionEn', { defaultValue: 'Option (English)' }),
-        optionFi: t('edit.finalTest.optionFi', { defaultValue: 'Option (Finnish)' }),
-        optionsTitle: t('edit.finalTest.optionsTitle', { defaultValue: 'Answer options' }),
-        passingScore: t('edit.finalTest.passingScore', {
-          defaultValue: 'Passing score (%)',
-        }),
-        promptEn: t('edit.finalTest.promptEn', { defaultValue: 'Prompt (English)' }),
-        promptFi: t('edit.finalTest.promptFi', { defaultValue: 'Prompt (Finnish)' }),
-        publishNow: t('edit.finalTest.publishNow', {
-          defaultValue: 'Make this final test visible to learners now',
-        }),
-        questionLabel: t('edit.finalTest.questionLabel', { defaultValue: 'Question' }),
-        questionType: t('edit.finalTest.questionType', { defaultValue: 'Question type' }),
-        questionsTitle: t('edit.finalTest.questionsTitle', { defaultValue: 'Questions' }),
-        saveAction: t('edit.finalTest.saveTest', { defaultValue: 'Save final test' }),
-        savingAction: t('edit.finalTest.saving', {
-          defaultValue: 'Saving final test...',
-        }),
-        singleChoice: t('edit.finalTest.singleChoice', { defaultValue: 'Single choice' }),
-        titleEn: t('edit.finalTest.titleEn', { defaultValue: 'Final test title (English)' }),
-        titleFi: t('edit.finalTest.titleFi', { defaultValue: 'Final test title (Finnish)' }),
-        untitledQuestion: t('edit.finalTest.untitledQuestion', {
-          defaultValue: 'Untitled question',
-        }),
+        addOption: t('edit.finalTest.addOption'),
+        addQuestion: t('edit.finalTest.addQuestion'),
+        attemptsShort: t('edit.finalTest.attemptsShort'),
+        bestScoreLabel: t('edit.finalTest.bestScoreLabel'),
+        cancel: t('common.cancel'),
+        correctAnswer: t('edit.finalTest.correctAnswer'),
+        deleteAction: t('edit.finalTest.deleteTest'),
+        deleteQuestion: t('edit.finalTest.deleteQuestion'),
+        deletingAction: t('edit.finalTest.deleting'),
+        descriptionEn: t('edit.finalTest.descriptionEn'),
+        descriptionFi: t('edit.finalTest.descriptionFi'),
+        explanationEn: t('edit.finalTest.explanationEn'),
+        explanationFi: t('edit.finalTest.explanationFi'),
+        multipleChoice: t('edit.finalTest.multipleChoice'),
+        optionEn: t('edit.finalTest.optionEn'),
+        optionFi: t('edit.finalTest.optionFi'),
+        optionsTitle: t('edit.finalTest.optionsTitle'),
+        passingScore: t('edit.finalTest.passingScore'),
+        promptEn: t('edit.finalTest.promptEn'),
+        promptFi: t('edit.finalTest.promptFi'),
+        publishNow: t('edit.finalTest.publishNow'),
+        questionLabel: t('edit.finalTest.questionLabel'),
+        questionType: t('edit.finalTest.questionType'),
+        questionsTitle: t('edit.finalTest.questionsTitle'),
+        saveAction: t('edit.finalTest.saveTest'),
+        savingAction: t('edit.finalTest.saving'),
+        singleChoice: t('edit.finalTest.singleChoice'),
+        titleEn: t('edit.finalTest.titleEn'),
+        titleFi: t('edit.finalTest.titleFi'),
+        untitledQuestion: t('edit.finalTest.untitledQuestion'),
       }}
       error={finalTestError}
       form={form}

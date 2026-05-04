@@ -87,12 +87,8 @@ export async function submitContentMutation({
     setCourse(freshCourse);
     setContentMessage(
       editingContentId
-        ? t('edit.contentBlocks.updated', {
-            defaultValue: 'Content block updated successfully.',
-          })
-        : t('edit.contentBlocks.created', {
-            defaultValue: 'Content block created successfully.',
-          }),
+        ? t('edit.contentBlocks.updated')
+        : t('edit.contentBlocks.created'),
     );
     resetContentForm(freshChapter, freshSubChapter);
   } catch (error) {
@@ -100,12 +96,8 @@ export async function submitContentMutation({
       getApiErrorMessage(
         error,
         editingContentId
-          ? t('edit.contentBlocks.updateFailed', {
-              defaultValue: 'Failed to update content block.',
-            })
-          : t('edit.contentBlocks.createFailed', {
-              defaultValue: 'Failed to create content block.',
-            }),
+          ? t('edit.contentBlocks.updateFailed')
+          : t('edit.contentBlocks.createFailed'),
       ),
     );
   } finally {
@@ -145,9 +137,7 @@ export async function deleteContentMutation({
   }
 
   const confirmed = window.confirm(
-    t('edit.contentBlocks.deleteConfirm', {
-      defaultValue: 'Delete this content block? This action cannot be undone.',
-    }),
+    t('edit.contentBlocks.deleteConfirm'),
   );
 
   if (!confirmed) {
@@ -169,11 +159,7 @@ export async function deleteContentMutation({
       freshChapter?.subChapters.find((subChapter) => subChapter.id === subChapterId) ?? null;
 
     setCourse(freshCourse);
-    setContentMessage(
-      t('edit.contentBlocks.deleted', {
-        defaultValue: 'Content block deleted successfully.',
-      }),
-    );
+    setContentMessage(t('edit.contentBlocks.deleted'));
 
     if (editingContentId === contentId) {
       resetContentForm(freshChapter, freshSubChapter);
@@ -182,9 +168,7 @@ export async function deleteContentMutation({
     setContentError(
       getApiErrorMessage(
         error,
-        t('edit.contentBlocks.deleteFailed', {
-          defaultValue: 'Failed to delete content block.',
-        }),
+        t('edit.contentBlocks.deleteFailed'),
       ),
     );
   } finally {

@@ -21,12 +21,10 @@ export default function CreateCourseActions({
 
       <div className={styles.actions}>
         <Link href="/admin/courses" className={styles.secondaryAction}>
-          {t('common.cancel', { defaultValue: 'Cancel' })}
+          {t('common.cancel')}
         </Link>
         <button type="submit" className={styles.primaryAction} disabled={isSubmitting}>
-          {isSubmitting
-            ? t('create.creating', { defaultValue: 'Creating course...' })
-            : t('create.submit', { defaultValue: 'Create course' })}
+          {isSubmitting ? t('create.creating') : t('create.submit')}
         </button>
       </div>
     </>

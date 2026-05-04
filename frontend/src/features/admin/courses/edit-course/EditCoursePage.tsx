@@ -38,12 +38,7 @@ function EditCourseDetailsContent() {
   if (details.loadError || !courseId) {
     return (
       <EditCourseErrorState
-        message={
-          details.loadError ||
-          t('edit.missingCourseId', {
-            defaultValue: 'Missing course id.',
-          })
-        }
+        message={details.loadError || t('edit.missingCourseId')}
       />
     );
   }
@@ -52,11 +47,8 @@ function EditCourseDetailsContent() {
     <EditCourseShell
       courseId={courseId}
       section="details"
-      title={t('edit.title', { defaultValue: 'Edit course' })}
-      subtitle={t('edit.subtitle', {
-        defaultValue:
-          'Update the course shell before moving into chapters, subchapters, and content editing.',
-      })}
+      title={t('edit.title')}
+      subtitle={t('edit.subtitle')}
       courseTitle={details.localizedCourseTitle}
     >
       <CourseDetailsForm

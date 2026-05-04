@@ -17,11 +17,7 @@ export default function CourseDescriptionFields({
   return (
     <>
       <label className={formStyles.fieldWide}>
-        <span>
-          {t('create.descriptionEn', {
-            defaultValue: 'Description / Overview (English)',
-          })}
-        </span>
+        <span>{t('create.descriptionEn')}</span>
         <textarea
           className={formStyles.textareaField}
           rows={5}
@@ -29,18 +25,12 @@ export default function CourseDescriptionFields({
           onChange={(event) =>
             setForm((previous) => ({ ...previous, descriptionEn: event.target.value }))
           }
-          placeholder={t('create.descriptionEnPlaceholder', {
-            defaultValue: 'Write the English course overview shown on the overview tab.',
-          })}
+          placeholder={t('create.descriptionEnPlaceholder')}
         />
       </label>
 
       <label className={formStyles.fieldWide}>
-        <span>
-          {t('create.descriptionFi', {
-            defaultValue: 'Description / Overview (Finnish)',
-          })}
-        </span>
+        <span>{t('create.descriptionFi')}</span>
         <textarea
           className={formStyles.textareaField}
           rows={5}
@@ -48,9 +38,7 @@ export default function CourseDescriptionFields({
           onChange={(event) =>
             setForm((previous) => ({ ...previous, descriptionFi: event.target.value }))
           }
-          placeholder={t('create.descriptionFiPlaceholder', {
-            defaultValue: 'Write the Finnish course overview shown on the overview tab.',
-          })}
+          placeholder={t('create.descriptionFiPlaceholder')}
         />
       </label>
     </>

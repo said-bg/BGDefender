@@ -56,13 +56,13 @@ const resolveBlockOptionLabel = (
 ) => {
   switch (value) {
     case 'paragraph':
-      return t('richText.blockOptionParagraph', { defaultValue: 'Block' });
+      return t('richText.blockOptionParagraph');
     case '1':
-      return t('richText.blockOptionHeading1', { defaultValue: 'Heading 1' });
+      return t('richText.blockOptionHeading1');
     case '2':
-      return t('richText.blockOptionHeading2', { defaultValue: 'Heading 2' });
+      return t('richText.blockOptionHeading2');
     case '3':
-      return t('richText.blockOptionHeading3', { defaultValue: 'Heading 3' });
+      return t('richText.blockOptionHeading3');
     default:
       return value;
   }
@@ -74,7 +74,7 @@ const resolveFontFamilyOptionLabel = (
   t: (key: string, options?: Record<string, unknown>) => string,
 ) => {
   if (value === 'Default') {
-    return t('richText.fontFamilyDefault', { defaultValue: label });
+    return t('richText.fontFamilyDefault');
   }
 
   return label;
@@ -163,8 +163,8 @@ export default function RichTextBlockToolbar({
           <button
             type="button"
             className={styles.toolbarButton}
-            title={t('richText.undo', { defaultValue: 'Undo' })}
-            aria-label={t('richText.undo', { defaultValue: 'Undo' })}
+            title={t('richText.undo')}
+            aria-label={t('richText.undo')}
             onClick={() => editor.chain().focus().undo().run()}
           >
             <RichTextToolbarIcon name="undo" />
@@ -172,8 +172,8 @@ export default function RichTextBlockToolbar({
           <button
             type="button"
             className={styles.toolbarButton}
-            title={t('richText.redo', { defaultValue: 'Redo' })}
-            aria-label={t('richText.redo', { defaultValue: 'Redo' })}
+            title={t('richText.redo')}
+            aria-label={t('richText.redo')}
             onClick={() => editor.chain().focus().redo().run()}
           >
             <RichTextToolbarIcon name="redo" />
@@ -183,7 +183,7 @@ export default function RichTextBlockToolbar({
         <div className={styles.toolbarGroup}>
           <select
             className={styles.toolbarSelect}
-            aria-label={t('richText.blockStyle', { defaultValue: 'Block style' })}
+            aria-label={t('richText.blockStyle')}
             value={resolveSelectValue(toolbarState.activeBlock, BLOCK_OPTIONS, 'paragraph')}
             onChange={(event) => onSetHeadingLevel(event.target.value)}
           >
@@ -195,7 +195,7 @@ export default function RichTextBlockToolbar({
           </select>
           <select
             className={styles.toolbarSelect}
-            aria-label={t('richText.fontFamily', { defaultValue: 'Font family' })}
+            aria-label={t('richText.fontFamily')}
             value={resolveSelectValue(toolbarState.fontFamily, FONT_FAMILY_OPTIONS, 'Default')}
             onChange={(event) => onApplyFontFamily(event.target.value)}
           >

@@ -29,53 +29,42 @@ export default function CourseSettingsFields({
     <>
       <div className={styles.fieldGroup}>
         <label className={styles.field}>
-          <span>{t('create.level', { defaultValue: 'Access level' })}</span>
+          <span>{t('create.level')}</span>
           <select
             value={form.level}
             onChange={(event) => setField('level', event.target.value as 'free' | 'premium')}
           >
-            <option value="free">{t('levels.free', { defaultValue: 'Free' })}</option>
-            <option value="premium">
-              {t('levels.premium', { defaultValue: 'Premium' })}
-            </option>
+            <option value="free">{t('levels.free')}</option>
+            <option value="premium">{t('levels.premium')}</option>
           </select>
         </label>
 
         <label className={styles.field}>
-          <span>{t('create.status', { defaultValue: 'Status' })}</span>
+          <span>{t('create.status')}</span>
           <select
             value={form.status}
             onChange={(event) =>
               setField('status', event.target.value as 'draft' | 'published')
             }
           >
-            <option value="draft">{t('status.draft', { defaultValue: 'Draft' })}</option>
-            <option value="published">
-              {t('status.published', { defaultValue: 'Published' })}
-            </option>
+            <option value="draft">{t('status.draft')}</option>
+            <option value="published">{t('status.published')}</option>
           </select>
         </label>
       </div>
 
       <div className={styles.fieldGroup}>
         <label className={styles.field}>
-          <span>
-            {t('create.duration', { defaultValue: 'Estimated duration (optional)' })}
-          </span>
+          <span>{t('create.duration')}</span>
           <p className={styles.helperText}>
-            {t('create.durationDescription', {
-              defaultValue:
-                'Leave this empty if you do not want to show a duration on the course page.',
-            })}
+            {t('create.durationDescription')}
           </p>
           <input
             type="number"
             min="1"
             value={form.estimatedDuration}
             onChange={(event) => setField('estimatedDuration', event.target.value)}
-            placeholder={t('create.durationPlaceholder', {
-              defaultValue: 'Example: 90',
-            })}
+            placeholder={t('create.durationPlaceholder')}
           />
         </label>
 

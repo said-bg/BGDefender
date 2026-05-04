@@ -99,17 +99,13 @@ export default function useAdminCourses() {
       }));
 
       setActionMessage(
-        t('courseActions.statusUpdated', {
-          defaultValue: 'Course status updated.',
-        }),
+        t('courseActions.statusUpdated'),
       );
     } catch (error) {
       setActionError(
         getApiErrorMessage(
           error,
-          t('courseActions.statusUpdateFailed', {
-            defaultValue: 'Failed to update course status.',
-          }),
+          t('courseActions.statusUpdateFailed'),
         ),
       );
     } finally {
@@ -118,11 +114,7 @@ export default function useAdminCourses() {
   };
 
   const handleDeleteCourse = async (course: Course) => {
-    const confirmed = window.confirm(
-      t('courseActions.deleteConfirm', {
-        defaultValue: 'Delete this course permanently? This action cannot be undone.',
-      }),
-    );
+    const confirmed = window.confirm(t('courseActions.deleteConfirm'));
 
     if (!confirmed) {
       return;
@@ -145,17 +137,13 @@ export default function useAdminCourses() {
       }));
 
       setActionMessage(
-        t('courseActions.deleted', {
-          defaultValue: 'Course deleted successfully.',
-        }),
+        t('courseActions.deleted'),
       );
     } catch (error) {
       setActionError(
         getApiErrorMessage(
           error,
-          t('courseActions.deleteFailed', {
-            defaultValue: 'Failed to delete course.',
-          }),
+          t('courseActions.deleteFailed'),
         ),
       );
     } finally {

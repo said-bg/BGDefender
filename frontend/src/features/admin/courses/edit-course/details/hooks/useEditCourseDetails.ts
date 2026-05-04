@@ -45,11 +45,7 @@ export function useEditCourseDetails({
 
   useEffect(() => {
     if (!courseId) {
-      setLoadError(
-        t('edit.missingCourseId', {
-          defaultValue: 'Missing course id.',
-        }),
-      );
+      setLoadError(t('edit.missingCourseId'));
       setLoadingPage(false);
       return;
     }
@@ -67,9 +63,7 @@ export function useEditCourseDetails({
       } catch (error) {
         const message = getApiErrorMessage(
           error,
-          t('edit.failedToLoad', {
-            defaultValue: 'Failed to load course data.',
-          }),
+          t('edit.failedToLoad'),
         );
 
         setLoadError(message);
@@ -114,12 +108,7 @@ export function useEditCourseDetails({
       setImageMode('upload');
     } catch (error) {
       setCoverUploadError(
-        getApiErrorMessage(
-          error,
-          t('create.coverUploadFailed', {
-            defaultValue: 'Failed to upload cover image.',
-          }),
-        ),
+        getApiErrorMessage(error, t('create.coverUploadFailed')),
       );
     } finally {
       setIsUploadingCover(false);
@@ -132,11 +121,7 @@ export function useEditCourseDetails({
     setSubmitMessage(null);
 
     if (!courseId) {
-      setSubmitError(
-        t('edit.missingCourseId', {
-          defaultValue: 'Missing course id.',
-        }),
-      );
+      setSubmitError(t('edit.missingCourseId'));
       return;
     }
 
@@ -152,20 +137,11 @@ export function useEditCourseDetails({
       setIsSubmitting(true);
       const updatedCourse = await courseService.updateCourse(courseId, payload);
       setCourse(updatedCourse);
-      setSubmitMessage(
-        t('edit.success', {
-          defaultValue: 'Course updated successfully. Redirecting to course management...',
-        }),
-      );
+      setSubmitMessage(t('edit.success'));
       setTimeout(onSuccessRedirect, 900);
     } catch (error) {
       setSubmitError(
-        getApiErrorMessage(
-          error,
-          t('edit.failed', {
-            defaultValue: 'Failed to update course.',
-          }),
-        ),
+        getApiErrorMessage(error, t('edit.failed')),
       );
     } finally {
       setIsSubmitting(false);
@@ -194,4 +170,3 @@ export function useEditCourseDetails({
     handleSubmit,
   };
 }
-

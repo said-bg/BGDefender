@@ -54,6 +54,15 @@ export interface ForgotPasswordRequest {
   email: string;
 }
 
+export type ContactRequestType = 'general' | 'support' | 'creator' | 'premium';
+
+export interface ContactRequest {
+  requestType: ContactRequestType;
+  name: string;
+  email: string;
+  message: string;
+}
+
 export interface ResetPasswordRequest {
   token: string;
   newPassword: string;
@@ -86,6 +95,10 @@ export interface LoginResponse {
 }
 
 export interface ForgotPasswordResponse {
+  message: string;
+}
+
+export interface ContactResponse {
   message: string;
 }
 

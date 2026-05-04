@@ -80,10 +80,8 @@ export default function EditCourseSubChapterForm({
           <div className={styles.actions}>
             <button type="button" className={styles.secondaryAction} onClick={onReset}>
               {editingSubChapterId
-                ? t('edit.subchapters.cancelEdit', {
-                    defaultValue: 'Cancel subchapter edit',
-                  })
-                : t('common.cancel', { defaultValue: 'Cancel' })}
+                ? t('edit.subchapters.cancelEdit')
+                : t('common.cancel')}
             </button>
             <button type="submit" className={styles.primaryAction} disabled={isSubmittingSubChapter}>
               {isSubmittingSubChapter

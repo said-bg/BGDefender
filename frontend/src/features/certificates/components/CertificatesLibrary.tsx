@@ -25,31 +25,25 @@ export default function CertificatesLibrary({
   return (
     <section className={styles.listCard}>
       <h2 className={styles.sectionTitle}>
-        {t('libraryTitle', { defaultValue: 'Certificate library' })}
+        {t('libraryTitle')}
       </h2>
       <p className={styles.sectionDescription}>
-        {t('libraryDescription', {
-          defaultValue:
-            'Issued certificates and passed courses waiting for a complete profile all appear here.',
-        })}
+        {t('libraryDescription')}
       </p>
 
       {loading ? (
         <p className={styles.helperText}>
-          {t('loading', { defaultValue: 'Loading certificates...' })}
+          {t('loading')}
         </p>
       ) : error ? (
         <p className={styles.errorText}>{error}</p>
       ) : certificates.length === 0 ? (
         <div className={styles.emptyState}>
           <h3 className={styles.emptyTitle}>
-            {t('emptyTitle', { defaultValue: 'No certificates yet' })}
+            {t('emptyTitle')}
           </h3>
           <p className={styles.emptyDescription}>
-            {t('emptyDescription', {
-              defaultValue:
-                'Once you pass a certifying course final test, your certificate record will appear here.',
-            })}
+            {t('emptyDescription')}
           </p>
         </div>
       ) : (
@@ -71,12 +65,9 @@ export default function CertificatesLibrary({
               <p className={styles.certificateMeta}>
                 {certificate.issuedAt
                   ? t('issuedOn', {
-                      defaultValue: 'Issued on {{date}}',
                       date: new Date(certificate.issuedAt).toLocaleDateString(),
                     })
-                  : t('pendingMeta', {
-                      defaultValue: 'Waiting for profile completion before issuance',
-                    })}
+                  : t('pendingMeta')}
               </p>
               <div className={styles.badgeRow}>
                 <span
@@ -87,8 +78,8 @@ export default function CertificatesLibrary({
                   }`}
                 >
                   {certificate.status === CertificateStatus.ISSUED
-                    ? t('issuedBadge', { defaultValue: 'Issued' })
-                    : t('pendingBadge', { defaultValue: 'Pending profile' })}
+                    ? t('issuedBadge')
+                    : t('pendingBadge')}
                 </span>
               </div>
             </button>

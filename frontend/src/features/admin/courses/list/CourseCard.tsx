@@ -38,7 +38,7 @@ export default function CourseCard({
           <div>
             <h3 className={styles.courseTitle}>{course.title}</h3>
             <p className={styles.courseAuthorLine}>
-              {course.authorNames || t('noAuthors', { defaultValue: 'No authors assigned' })}
+              {course.authorNames || t('noAuthors')}
             </p>
           </div>
         </div>
@@ -64,32 +64,29 @@ export default function CourseCard({
       </div>
 
       <p className={styles.courseDescription} title={course.description || undefined}>
-        {course.description ||
-          t('noDescription', {
-            defaultValue: 'No description added yet.',
-          })}
+        {course.description || t('noDescription')}
       </p>
 
       <div className={styles.courseStats}>
         <span>
           {course.authorNames
             ? `${course.authors.length} ${t('authorsCount')}`
-            : t('noAuthors', { defaultValue: 'No authors assigned' })}
+            : t('noAuthors')}
         </span>
         <span>
           {course.chapterCount} {t('chaptersCount')}
         </span>
         <span>
-          {course.lessonCount} {t('lessonsCount', { defaultValue: 'lessons' })}
+          {course.lessonCount} {t('lessonsCount')}
         </span>
         <span>
-          {t('updatedLabel', { defaultValue: 'Updated' })}: {formatUpdatedAt(course.updatedAt)}
+          {t('updatedLabel')}: {formatUpdatedAt(course.updatedAt)}
         </span>
       </div>
 
       <div className={styles.courseActions}>
         <Link href={`/admin/courses/${course.id}/edit`} className={styles.editLink}>
-          {t('editCourse', { defaultValue: 'Edit course' })}
+          {t('editCourse')}
         </Link>
 
         <Link
@@ -98,7 +95,7 @@ export default function CourseCard({
           })}
           className={styles.inlineActionLink}
         >
-          {t('courseActions.preview', { defaultValue: 'Preview' })}
+          {t('courseActions.preview')}
         </Link>
 
         {course.status !== 'published' ? (
@@ -108,7 +105,7 @@ export default function CourseCard({
             onClick={() => onStatusChange(course, 'published')}
             disabled={actingCourseId === course.id}
           >
-            {t('courseActions.publish', { defaultValue: 'Publish' })}
+            {t('courseActions.publish')}
           </button>
         ) : null}
 
@@ -119,7 +116,7 @@ export default function CourseCard({
             onClick={() => onStatusChange(course, 'draft')}
             disabled={actingCourseId === course.id}
           >
-            {t('courseActions.moveToDraft', { defaultValue: 'Move to draft' })}
+            {t('courseActions.moveToDraft')}
           </button>
         ) : null}
 
@@ -130,8 +127,8 @@ export default function CourseCard({
           disabled={actingCourseId === course.id}
         >
           {actingCourseId === course.id
-            ? t('courseActions.working', { defaultValue: 'Working...' })
-            : t('courseActions.delete', { defaultValue: 'Delete' })}
+            ? t('courseActions.working')
+            : t('courseActions.delete')}
         </button>
       </div>
     </article>

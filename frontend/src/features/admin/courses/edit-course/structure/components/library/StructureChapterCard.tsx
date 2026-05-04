@@ -42,16 +42,14 @@ export default function StructureChapterCard({
         <div className={styles.structureIndexBadge}>{chapter.orderIndex}</div>
         <div className={styles.structureNodeHeading}>
           <p className={styles.structureNodeType}>
-            {t('edit.chapters.orderLabel', { defaultValue: 'Chapter' })}
+            {t('edit.chapters.orderLabel')}
           </p>
           <h4 className={styles.structureNodeTitle}>{chapterTitle}</h4>
           <p className={styles.structureNodeDescription}>{chapterDescription}</p>
         </div>
         <span className={styles.structureCountBadge}>
           {subChapterCount}{' '}
-          {t('edit.chapters.subchapterCount', {
-            defaultValue: 'subchapters',
-          })}
+          {t('edit.chapters.subchapterCount')}
         </span>
       </div>
 
@@ -62,7 +60,7 @@ export default function StructureChapterCard({
           disabled={chapter.orderIndex === 1}
           onClick={() => void onMoveChapter(chapter.id, 'up')}
         >
-          Up
+          {t('collections.moveUp')}
         </button>
         <button
           type="button"
@@ -70,16 +68,14 @@ export default function StructureChapterCard({
           disabled={chapter.orderIndex === totalChapters}
           onClick={() => void onMoveChapter(chapter.id, 'down')}
         >
-          Down
+          {t('collections.moveDown')}
         </button>
         <button
           type="button"
           className={styles.compactAction}
           onClick={() => onEditChapter(chapter)}
         >
-          {t('edit.chapters.editAction', {
-            defaultValue: 'Open',
-          })}
+          {t('edit.chapters.editAction')}
         </button>
         <button
           type="button"
@@ -88,8 +84,8 @@ export default function StructureChapterCard({
           onClick={() => void onDeleteChapter(chapter.id)}
         >
           {deletingChapterId === chapter.id
-            ? t('edit.chapters.deleting', { defaultValue: 'Deleting...' })
-            : t('courseActions.delete', { defaultValue: 'Delete' })}
+            ? t('edit.chapters.deleting')
+            : t('courseActions.delete')}
         </button>
       </div>
     </div>

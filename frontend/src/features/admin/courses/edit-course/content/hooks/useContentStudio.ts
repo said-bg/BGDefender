@@ -46,9 +46,7 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
 
   useEffect(() => {
     if (!courseId) {
-      setLoadError(
-        t('edit.contentBlocks.missingCourseId', { defaultValue: 'Missing course id.' }),
-      );
+      setLoadError(t('edit.contentBlocks.missingCourseId'));
       setLoadingPage(false);
       return;
     }
@@ -60,12 +58,7 @@ export function useContentStudio({ courseId, language, t }: UseContentStudioPara
         const response = await courseService.getAdminCourseById(courseId);
         setCourse(normalizeCourseForContentStudio(response));
       } catch (error) {
-        setLoadError(
-          getApiErrorMessage(
-            error,
-            t('edit.failedToLoad', { defaultValue: 'Failed to load course data.' }),
-          ),
-        );
+        setLoadError(getApiErrorMessage(error, t('edit.failedToLoad')));
       } finally {
         setLoadingPage(false);
       }

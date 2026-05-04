@@ -175,9 +175,11 @@ export class CollectionsService {
       collection.isPublished = dto.isPublished;
     }
 
+    let rebuiltItems: CourseCollectionItem[] | null = null;
+
     if (dto.courseIds !== undefined) {
       const courses = await this.resolveCourses(dto.courseIds);
-      collection.items = dto.courseIds.map((courseId, index) =>
+      rebuiltItems = dto.courseIds.map((courseId, index) =>
         this.collectionItemRepository.create({
           collectionId: collection.id,
           courseId,
@@ -188,6 +190,19 @@ export class CollectionsService {
     }
 
     await this.collectionRepository.save(collection);
+
+    if (rebuiltItems !== null) {
+      await this.collectionItemRepository.delete({
+        collectionId: collection.id,
+      });
+
+      if (rebuiltItems.length > 0) {
+        await this.collectionItemRepository.save(rebuiltItems);
+      }
+
+      collection.items = rebuiltItems;
+    }
+
     const hydratedCollection = await this.findCollectionOrThrow(collection.id);
 
     return this.toView(hydratedCollection, false);

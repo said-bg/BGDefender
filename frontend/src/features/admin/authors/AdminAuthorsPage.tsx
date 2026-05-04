@@ -47,19 +47,16 @@ function AdminAuthorsPageContent() {
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <Link href="/admin" className={styles.backLink}>
-            {t('backToOverview', { defaultValue: 'Back to dashboard' })}
+            {t('backToOverview')}
           </Link>
           <p className={styles.eyebrow}>
-            {t('authors.eyebrow', { defaultValue: 'Author library' })}
+            {t('authors.eyebrow')}
           </p>
           <h1 className={styles.title}>
-            {t('authors.title', { defaultValue: 'Manage authors' })}
+            {t('authors.title')}
           </h1>
           <p className={styles.subtitle}>
-            {t('authors.subtitle', {
-              defaultValue:
-                'Create and maintain reusable author profiles so you can attach them to any course whenever you need.',
-            })}
+            {t('authors.subtitle')}
           </p>
         </div>
       </section>

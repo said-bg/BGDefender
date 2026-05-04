@@ -43,19 +43,16 @@ export default function CreateCourseForm() {
       <section className={shellStyles.hero}>
         <div className={shellStyles.heroCopy}>
           <Link href="/admin/courses" className={shellStyles.backLink}>
-            {t('create.backToCourses', { defaultValue: 'Back to course management' })}
+            {t('create.backToCourses')}
           </Link>
           <p className={shellStyles.eyebrow}>
-            {t('create.eyebrow', { defaultValue: 'Create course' })}
+            {t('create.eyebrow')}
           </p>
           <h1 className={shellStyles.title}>
-            {t('create.title', { defaultValue: 'Create a new course' })}
+            {t('create.title')}
           </h1>
           <p className={shellStyles.subtitle}>
-            {t('create.subtitle', {
-              defaultValue:
-                'Set up the course shell first. We will handle chapters, subchapters, and rich content right after this step.',
-            })}
+            {t('create.subtitle')}
           </p>
         </div>
       </section>
@@ -63,13 +60,10 @@ export default function CreateCourseForm() {
       <section className={formStyles.formCard}>
         <div className={formStyles.cardHeader}>
           <h2 className={formStyles.sectionTitle}>
-            {t('create.detailsTitle', { defaultValue: 'Course details' })}
+            {t('create.detailsTitle')}
           </h2>
           <p className={formStyles.sectionDescription}>
-            {t('create.detailsDescription', {
-              defaultValue:
-                'This information feeds the course overview and the main catalog cards.',
-            })}
+            {t('create.detailsDescription')}
           </p>
         </div>
 

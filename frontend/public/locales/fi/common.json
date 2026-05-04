@@ -6,12 +6,12 @@
   "close": "Sulje",
   "footer": {
     "eyebrow": "BG Defender",
-    "title": "Kyberturvallisuuden oppimis- ja hallintatyötila",
+    "title": "Kyberturvallisuuden oppimis- ja ylläpitotyötila",
     "description": "Kouluta oppijoita, hallitse kursseja ja pidä alusta selkeänä sekä ylläpitäjille että käyttäjille.",
     "navigation": "Navigointi",
     "rights": "BG Defender. Kaikki oikeudet pidätetään.",
     "links": {
-      "contact": "Yhteys",
+      "contact": "Yhteystiedot",
       "manageCourses": "Hallitse kursseja",
       "manageUsers": "Hallitse käyttäjiä"
     }

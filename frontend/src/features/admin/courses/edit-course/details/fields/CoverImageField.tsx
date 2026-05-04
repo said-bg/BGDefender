@@ -38,7 +38,7 @@ export default function CoverImageField({
 
   return (
     <div className={formStyles.field}>
-      <span>{t('create.coverImage', { defaultValue: 'Cover image' })}</span>
+      <span>{t('create.coverImage')}</span>
       <div className={detailStyles.modeSwitch}>
         <button
           type="button"
@@ -47,7 +47,7 @@ export default function CoverImageField({
           }`}
           onClick={() => onModeChange('url')}
         >
-          {t('create.imageModeUrl', { defaultValue: 'Use URL' })}
+          {t('create.imageModeUrl')}
         </button>
         <button
           type="button"
@@ -56,7 +56,7 @@ export default function CoverImageField({
           }`}
           onClick={() => onModeChange('upload')}
         >
-          {t('create.imageModeUpload', { defaultValue: 'Upload image' })}
+          {t('create.imageModeUpload')}
         </button>
       </div>
 
@@ -64,9 +64,7 @@ export default function CoverImageField({
         <input
           value={coverImage}
           onChange={(event) => onValueChange(event.target.value)}
-          placeholder={t('create.coverImagePlaceholder', {
-            defaultValue: 'https://example.com/course-cover.jpg',
-          })}
+          placeholder={t('create.coverImagePlaceholder')}
         />
       ) : (
         <div className={detailStyles.uploadBox}>
@@ -79,25 +77,17 @@ export default function CoverImageField({
             />
             <span className={detailStyles.uploadLabelText}>
               {isUploadingCover
-                ? t('create.coverUploading', {
-                    defaultValue: 'Uploading image...',
-                  })
-                : t('create.coverUploadCta', {
-                    defaultValue: 'Choose an image to upload',
-                  })}
+                ? t('create.coverUploading')
+                : t('create.coverUploadCta')}
             </span>
             <span className={detailStyles.uploadHelper}>
-              {t('create.coverUploadHint', {
-                defaultValue: 'JPG, PNG, or WEBP up to 5 MB.',
-              })}
+              {t('create.coverUploadHint')}
             </span>
           </label>
 
           {uploadedFilename ? (
             <p className={sharedStyles.helperMessage}>
-              {t('create.coverUploadSuccess', {
-                defaultValue: 'Uploaded file:',
-              })}{' '}
+              {t('create.coverUploadSuccess')}{' '}
               {uploadedFilename}
             </p>
           ) : null}

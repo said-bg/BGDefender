@@ -1,18 +1,25 @@
 'use client';
 
+import type { FormEvent } from 'react';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { sendContactRequest } from '@/services/contact';
+import type { ContactRequestType } from '@/types/api';
+import { getApiErrorMessage } from '@/utils/apiError';
+import { validateEmail } from '@/utils/validation';
 import styles from './ContactPage.module.css';
 
 const SUPPORT_EMAIL = 'support@bgdefender.com';
-
-type RequestType = 'general' | 'support' | 'creator' | 'premium';
 
 type ContactFormState = {
   name: string;
   email: string;
   message: string;
 };
+
+type ContactFormErrors = Partial<
+  Record<keyof ContactFormState | 'form', string>
+>;
 
 const INITIAL_FORM_STATE: ContactFormState = {
   name: '',
@@ -22,180 +29,209 @@ const INITIAL_FORM_STATE: ContactFormState = {
 
 export default function ContactPage() {
   const { t } = useTranslation('contact');
-  const [requestType, setRequestType] = useState<RequestType>('general');
+  const [requestType, setRequestType] = useState<ContactRequestType>('general');
   const [formState, setFormState] = useState<ContactFormState>(INITIAL_FORM_STATE);
+  const [errors, setErrors] = useState<ContactFormErrors>({});
+  const [isSending, setIsSending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const requestTypes = useMemo(
     () =>
       [
         {
           id: 'general',
-          title: t('types.general.title', { defaultValue: 'General information' }),
-          description: t('types.general.description', {
-            defaultValue: 'Questions about the platform, courses, or availability.',
-          }),
+          title: t('types.general.title'),
+          description: t('types.general.description'),
         },
         {
           id: 'support',
-          title: t('types.support.title', { defaultValue: 'Technical support' }),
-          description: t('types.support.description', {
-            defaultValue: 'Something is not working as expected? We can help.',
-          }),
+          title: t('types.support.title'),
+          description: t('types.support.description'),
         },
         {
           id: 'creator',
-          title: t('types.creator.title', { defaultValue: 'Creator access' }),
-          description: t('types.creator.description', {
-            defaultValue: 'Request access to create and manage learning content.',
-          }),
+          title: t('types.creator.title'),
+          description: t('types.creator.description'),
         },
         {
           id: 'premium',
-          title: t('types.premium.title', { defaultValue: 'Premium access' }),
-          description: t('types.premium.description', {
-            defaultValue: 'Ask about premium access, tailored plans, or upgrades.',
-          }),
+          title: t('types.premium.title'),
+          description: t('types.premium.description'),
         },
-      ] satisfies Array<{ id: RequestType; title: string; description: string }>,
+      ] satisfies Array<{ id: ContactRequestType; title: string; description: string }>,
     [t],
   );
 
   const activeRequestType =
     requestTypes.find((type) => type.id === requestType) ?? requestTypes[0];
-  const requestTypeLabel = activeRequestType.title;
-  const normalizedSubject = t('mail.defaultSubject', {
-    defaultValue: '{{requestType}} request',
-    requestType: requestTypeLabel,
-  });
-
-  const mailtoHref = useMemo(() => {
-    const lines = [
-      `${t('mail.labels.name', { defaultValue: 'Name' })}: ${formState.name || '-'}`,
-      `${t('mail.labels.email', { defaultValue: 'Email' })}: ${formState.email || '-'}`,
-      `${t('mail.labels.requestType', { defaultValue: 'Request type' })}: ${requestTypeLabel}`,
-      '',
-      `${t('mail.labels.message', { defaultValue: 'Message' })}:`,
-      formState.message || '-',
-    ];
-
-    return `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-      normalizedSubject,
-    )}&body=${encodeURIComponent(lines.join('\n'))}`;
-  }, [
-    formState.email,
-    formState.message,
-    formState.name,
-    normalizedSubject,
-    requestTypeLabel,
-    t,
-  ]);
-
-  const hasRequiredFields =
-    formState.name.trim().length > 0 &&
-    formState.email.trim().length > 0 &&
-    formState.message.trim().length > 0;
 
   const updateField = (field: keyof ContactFormState, value: string) => {
     setFormState((previous) => ({
       ...previous,
       [field]: value,
     }));
+
+    if (errors[field]) {
+      setErrors((previous) => ({ ...previous, [field]: undefined }));
+    }
+
+    if (errors.form) {
+      setErrors((previous) => ({ ...previous, form: undefined }));
+    }
+
+    if (successMessage) {
+      setSuccessMessage('');
+    }
+  };
+
+  const validateForm = () => {
+    const nextErrors: ContactFormErrors = {};
+
+    if (!formState.name.trim()) {
+      nextErrors.name = t('validation.nameRequired');
+    }
+
+    if (!formState.email.trim()) {
+      nextErrors.email = t('validation.emailRequired');
+    } else if (!validateEmail(formState.email.trim())) {
+      nextErrors.email = t('validation.emailInvalid');
+    }
+
+    if (!formState.message.trim()) {
+      nextErrors.message = t('validation.messageRequired');
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSending(true);
+    setErrors({});
+    setSuccessMessage('');
+
+    try {
+      const response = await sendContactRequest({
+        requestType,
+        name: formState.name.trim(),
+        email: formState.email.trim(),
+        message: formState.message.trim(),
+      });
+
+      setFormState(INITIAL_FORM_STATE);
+      setSuccessMessage(response.message);
+    } catch (error) {
+      setErrors({
+        form: getApiErrorMessage(error, t('form.failed')),
+      });
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
     <main className={styles.page}>
       <section className={styles.section}>
-        <div className={styles.contactShell}>
-          <div className={styles.headerBlock}>
-            <p className={styles.eyebrow}>
-              {t('hero.eyebrow', { defaultValue: 'Contact BG Defender' })}
-            </p>
-            <h1 className={styles.title}>
-              {t('contact.simpleTitle', {
-                defaultValue: 'Contact the team',
-              })}
-            </h1>
-            <p className={styles.description}>
-              {t('contact.simpleDescription', {
-                defaultValue:
-                  'Choose a topic, write your message, and we will prepare the email for you.',
-              })}
-            </p>
-          </div>
+        <header className={styles.headerBlock}>
+          <p className={styles.eyebrow}>{t('hero.eyebrow')}</p>
+          <h1 className={styles.title}>{t('hero.title')}</h1>
+          <p className={styles.description}>{t('hero.description')}</p>
+        </header>
 
-          <article id="contact-form" className={styles.formCard}>
-            <div className={styles.typeRow}>
-              {requestTypes.map((type) => (
-                <button
-                  key={type.id}
-                  type="button"
-                  className={`${styles.typeButton} ${
-                    requestType === type.id ? styles.typeButtonActive : ''
-                  }`}
-                  onClick={() => setRequestType(type.id)}
-                >
-                  <strong className={styles.typeTitle}>{type.title}</strong>
-                </button>
-              ))}
+        <article id="contact-form" className={styles.formPanel}>
+          {successMessage ? (
+            <div className={styles.successMessage}>{successMessage}</div>
+          ) : null}
+
+          {errors.form ? <div className={styles.errorMessage}>{errors.form}</div> : null}
+
+          <form onSubmit={handleSubmit} noValidate>
+            <div className={styles.topicBlock}>
+              <label className={styles.topicLabel}>{t('fields.requestType')}</label>
+              <div className={styles.typeRow}>
+                {requestTypes.map((type) => (
+                  <button
+                    key={type.id}
+                    type="button"
+                    className={`${styles.typeButton} ${
+                      requestType === type.id ? styles.typeButtonActive : ''
+                    }`}
+                    onClick={() => setRequestType(type.id)}
+                    aria-pressed={requestType === type.id}
+                    disabled={isSending}
+                  >
+                    {type.title}
+                  </button>
+                ))}
+              </div>
+              <p className={styles.topicDescription}>{activeRequestType.description}</p>
             </div>
 
             <div className={styles.formGrid}>
               <label className={styles.field}>
-                <span className={styles.fieldLabel}>
-                  {t('fields.name', { defaultValue: 'Full name' })}
-                </span>
+                <span className={styles.fieldLabel}>{t('fields.name')}</span>
                 <input
                   type="text"
                   value={formState.name}
                   onChange={(event) => updateField('name', event.target.value)}
-                  placeholder={t('fields.namePlaceholder', { defaultValue: 'Your name' })}
+                  placeholder={t('fields.namePlaceholder')}
                   className={styles.input}
+                  disabled={isSending}
                 />
+                {errors.name ? <span className={styles.fieldError}>{errors.name}</span> : null}
               </label>
 
               <label className={styles.field}>
-                <span className={styles.fieldLabel}>
-                  {t('fields.email', { defaultValue: 'Email address' })}
-                </span>
+                <span className={styles.fieldLabel}>{t('fields.email')}</span>
                 <input
                   type="email"
                   value={formState.email}
                   onChange={(event) => updateField('email', event.target.value)}
-                  placeholder={t('fields.emailPlaceholder', { defaultValue: 'you@example.com' })}
+                  placeholder={t('fields.emailPlaceholder')}
                   className={styles.input}
+                  disabled={isSending}
                 />
+                {errors.email ? <span className={styles.fieldError}>{errors.email}</span> : null}
               </label>
 
               <label className={`${styles.field} ${styles.fieldFull}`}>
-                <span className={styles.fieldLabel}>
-                  {t('fields.message', { defaultValue: 'Message' })}
-                </span>
+                <span className={styles.fieldLabel}>{t('fields.message')}</span>
                 <textarea
                   value={formState.message}
                   onChange={(event) => updateField('message', event.target.value)}
-                  placeholder={t('contact.messagePlaceholder', {
-                    defaultValue: 'Write your message here.',
-                  })}
+                  placeholder={t('fields.messagePlaceholder')}
                   className={`${styles.input} ${styles.textarea}`}
                   rows={8}
+                  disabled={isSending}
                 />
+                {errors.message ? (
+                  <span className={styles.fieldError}>{errors.message}</span>
+                ) : null}
               </label>
             </div>
 
             <div className={styles.formActions}>
-              <a
-                href={hasRequiredFields ? mailtoHref : undefined}
-                className={`${styles.primaryAction} ${!hasRequiredFields ? styles.actionDisabled : ''}`}
-                aria-disabled={!hasRequiredFields}
+              <button
+                type="submit"
+                className={`${styles.primaryAction} ${isSending ? styles.actionDisabled : ''}`}
+                disabled={isSending}
               >
-                {t('form.primaryAction', { defaultValue: 'Prepare email' })}
-              </a>
+                {isSending ? t('form.sending') : t('form.primaryAction')}
+              </button>
               <a href={`mailto:${SUPPORT_EMAIL}`} className={styles.secondaryAction}>
-                {t('contact.directEmail', { defaultValue: 'Or email us directly' })}
+                {t('form.secondaryAction')}
               </a>
             </div>
-          </article>
-        </div>
+          </form>
+
+          <p className={styles.formNote}>{t('form.note')}</p>
+        </article>
       </section>
     </main>
   );

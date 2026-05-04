@@ -30,22 +30,19 @@ export default function AuthorsField({
     <div className={pageStyles.fieldWide}>
       <div className={detailStyles.fieldHeader}>
         <span className={detailStyles.fieldLabel}>
-          {t('create.authors', { defaultValue: 'Authors' })}
+          {t('create.authors')}
         </span>
         <Link href="/admin/authors" className={detailStyles.inlineLink}>
-          {t('manageAuthors', { defaultValue: 'Manage authors' })}
+          {t('manageAuthors')}
         </Link>
       </div>
       <p className={pageStyles.helperText}>
-        {t('create.authorsDescription', {
-          defaultValue:
-            'Select one or more authors that should appear on the course overview.',
-        })}
+        {t('create.authorsDescription')}
       </p>
 
       {loadingAuthors ? (
         <p className={pageStyles.helperMessage}>
-          {t('create.authorsLoading', { defaultValue: 'Loading authors...' })}
+          {t('create.authorsLoading')}
         </p>
       ) : authorsError ? (
         <p className={pageStyles.errorMessage}>{authorsError}</p>

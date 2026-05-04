@@ -35,24 +35,17 @@ export default function RichTextBlockMediaControls({
     <div className={styles.mediaControls} data-media-controls="true">
       <div className={styles.mediaControlsHeader}>
         <strong>
-          {type === 'image'
-            ? t('richText.mediaTypeImage', { defaultValue: 'Image' })
-            : t('richText.mediaTypeVideo', { defaultValue: 'Video' })}
+          {type === 'image' ? t('richText.mediaTypeImage') : t('richText.mediaTypeVideo')}
         </strong>
         <span>{width}px</span>
       </div>
       <div className={styles.mediaHint}>
-        {t('richText.mediaMaxWidthHint', {
-          defaultValue: 'Maximum usable width: {{maxWidth}}px',
-          maxWidth,
-        })}
+        {t('richText.mediaMaxWidthHint', { maxWidth })}
       </div>
 
       <div className={styles.mediaControlsRow}>
         <label className={styles.mediaField} htmlFor={widthInputId}>
-          <span>
-            {t('richText.mediaWidthLabel', { defaultValue: 'Width (px)' })}
-          </span>
+          <span>{t('richText.mediaWidthLabel')}</span>
           <input
             id={widthInputId}
             className={styles.mediaNumberInput}
@@ -60,12 +53,8 @@ export default function RichTextBlockMediaControls({
             min="160"
             max={maxWidth}
             step="1"
-            title={t('richText.mediaWidthTitle', {
-              defaultValue: 'Media width in pixels',
-            })}
-            aria-label={t('richText.mediaWidthTitle', {
-              defaultValue: 'Media width in pixels',
-            })}
+            title={t('richText.mediaWidthTitle')}
+            aria-label={t('richText.mediaWidthTitle')}
             value={width}
             onMouseDownCapture={onBeginInteraction}
             onTouchStartCapture={onBeginInteraction}
@@ -82,12 +71,8 @@ export default function RichTextBlockMediaControls({
           min="160"
           max={maxWidth}
           step="1"
-          title={t('richText.mediaWidthAdjust', {
-            defaultValue: 'Adjust media width',
-          })}
-          aria-label={t('richText.mediaWidthAdjust', {
-            defaultValue: 'Adjust media width',
-          })}
+          title={t('richText.mediaWidthAdjust')}
+          aria-label={t('richText.mediaWidthAdjust')}
           value={width}
           onMouseDownCapture={onBeginInteraction}
           onMouseUpCapture={onEndInteraction}
@@ -105,7 +90,7 @@ export default function RichTextBlockMediaControls({
             data-active={align === 'left'}
             onClick={() => onAlignChange('left')}
           >
-            {t('richText.mediaAlignLeft', { defaultValue: 'Left' })}
+            {t('richText.mediaAlignLeft')}
           </button>
           <button
             type="button"
@@ -113,7 +98,7 @@ export default function RichTextBlockMediaControls({
             data-active={align === 'center'}
             onClick={() => onAlignChange('center')}
           >
-            {t('richText.mediaAlignCenter', { defaultValue: 'Center' })}
+            {t('richText.mediaAlignCenter')}
           </button>
           <button
             type="button"
@@ -121,7 +106,7 @@ export default function RichTextBlockMediaControls({
             data-active={align === 'right'}
             onClick={() => onAlignChange('right')}
           >
-            {t('richText.mediaAlignRight', { defaultValue: 'Right' })}
+            {t('richText.mediaAlignRight')}
           </button>
         </div>
         <button
@@ -129,9 +114,7 @@ export default function RichTextBlockMediaControls({
           className={styles.mediaRemoveButton}
           onClick={onRemove}
         >
-          {type === 'image'
-            ? t('richText.removeImage', { defaultValue: 'Remove image' })
-            : t('richText.removeVideo', { defaultValue: 'Remove video' })}
+          {type === 'image' ? t('richText.removeImage') : t('richText.removeVideo')}
         </button>
       </div>
     </div>

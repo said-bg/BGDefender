@@ -145,19 +145,15 @@ export default function CourseDetailPage() {
                 expandedChapters={detail.expandedChapters}
                 courseProgressLabel={detail.t('detail.courseProgress')}
                 overviewLabel={detail.t('detail.overview')}
-                quizLabel={detail.t('detail.trainingQuiz', { defaultValue: 'Training quiz' })}
-                quizDescription={detail.t('detail.trainingQuizSidebar', {
-                  defaultValue: 'Score-based practice for this chapter',
-                })}
-                finalTestLabel={detail.t('detail.finalTest', { defaultValue: 'Final test' })}
-              showProgress={!detail.isStructurePreview}
-              finalTestDescription={detail.t('detail.finalTestSidebar', {
-                defaultValue: 'Course-wide assessment unlocked after all chapters',
-              })}
-              showUnpublishedAssessments={detail.isAdminPreview}
-              onSelectOverview={() => {
-                detail.navigateToView({ type: 'overview' });
-                setIsSidebarVisible(false);
+                quizLabel={detail.t('detail.trainingQuiz')}
+                quizDescription={detail.t('detail.trainingQuizSidebar')}
+                finalTestLabel={detail.t('detail.finalTest')}
+                showProgress={!detail.isStructurePreview}
+                finalTestDescription={detail.t('detail.finalTestSidebar')}
+                showUnpublishedAssessments={detail.isAdminPreview}
+                onSelectOverview={() => {
+                  detail.navigateToView({ type: 'overview' });
+                  setIsSidebarVisible(false);
                 }}
                 onOpenFinalTest={() => {
                   detail.openFinalTest();
@@ -199,15 +195,11 @@ export default function CourseDetailPage() {
               expandedChapters={detail.expandedChapters}
               courseProgressLabel={detail.t('detail.courseProgress')}
               overviewLabel={detail.t('detail.overview')}
-              quizLabel={detail.t('detail.trainingQuiz', { defaultValue: 'Training quiz' })}
-              quizDescription={detail.t('detail.trainingQuizSidebar', {
-                defaultValue: 'Score-based practice for this chapter',
-              })}
-              finalTestLabel={detail.t('detail.finalTest', { defaultValue: 'Final test' })}
+              quizLabel={detail.t('detail.trainingQuiz')}
+              quizDescription={detail.t('detail.trainingQuizSidebar')}
+              finalTestLabel={detail.t('detail.finalTest')}
               showProgress={!detail.isStructurePreview}
-              finalTestDescription={detail.t('detail.finalTestSidebar', {
-                defaultValue: 'Course-wide assessment unlocked after all chapters',
-              })}
+              finalTestDescription={detail.t('detail.finalTestSidebar')}
               showUnpublishedAssessments={detail.isAdminPreview}
               onSelectOverview={() => detail.navigateToView({ type: 'overview' })}
               onOpenFinalTest={detail.openFinalTest}

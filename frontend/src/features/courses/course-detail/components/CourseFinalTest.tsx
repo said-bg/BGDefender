@@ -123,14 +123,7 @@ export default function CourseFinalTest({
         Boolean(effectiveFinalTest?.isUnlocked && effectiveFinalTest.latestAttempt) && !previewMode,
       );
     } catch (loadError) {
-      setError(
-        getApiErrorMessage(
-          loadError,
-          t('detail.finalTestLoadFailed', {
-            defaultValue: 'Failed to load the final test.',
-          }),
-        ),
-      );
+      setError(getApiErrorMessage(loadError, t('detail.finalTestLoadFailed')));
     } finally {
       setLoading(false);
     }
@@ -144,23 +137,15 @@ export default function CourseFinalTest({
   const summaryMessage = latestAttempt
     ? latestAttempt.passed
       ? submitMessage
-      : submitMessage ??
-        t('detail.finalTestFailedSummary', {
-          defaultValue:
-            'Your latest result is saved. Review the course, adjust your answers, and try again whenever you want.',
-        })
+      : submitMessage ?? t('detail.finalTestFailedSummary')
     : null;
   const latestScoreLabel = latestAttempt ? `${latestAttempt.score}%` : '-';
   const latestCorrectAnswersLabel = latestAttempt
     ? `${latestAttempt.correctAnswers}/${latestAttempt.totalQuestions}`
     : '-';
   const completionStatusLabel = latestAttempt?.passed
-    ? t('detail.finalTestCourseCompleted', {
-        defaultValue: 'Course completed',
-      })
-    : t('detail.finalTestRetryNeeded', {
-        defaultValue: 'Retry available',
-      });
+    ? t('detail.finalTestCourseCompleted')
+    : t('detail.finalTestRetryNeeded');
 
   const answeredCount = useMemo(
     () =>
@@ -235,14 +220,8 @@ export default function CourseFinalTest({
       setSubmitError(null);
       setSubmitMessage(
         previewResult.attempt.passed
-          ? t('detail.previewFinalTestPassedMessage', {
-              defaultValue:
-                'Preview complete. This final test attempt would pass, and nothing was saved.',
-            })
-          : t('detail.previewFinalTestFailedMessage', {
-              defaultValue:
-                'Preview complete. This final test attempt would not pass, and nothing was saved.',
-            }),
+          ? t('detail.previewFinalTestPassedMessage')
+          : t('detail.previewFinalTestFailedMessage'),
       );
       setIsStarted(true);
       setIsReviewMode(true);
@@ -268,27 +247,15 @@ export default function CourseFinalTest({
       setBestAttempt(response.bestAttempt);
       setSubmitMessage(
         response.attempt.passed
-          ? t('detail.finalTestPassedMessage', {
-              defaultValue: 'Excellent work. You passed the course final test.',
-            })
-          : t('detail.finalTestFailedMessage', {
-              defaultValue:
-                'You can review the course and retry the final test whenever you are ready.',
-            }),
+          ? t('detail.finalTestPassedMessage')
+          : t('detail.finalTestFailedMessage'),
       );
       await loadFinalTest();
       window.requestAnimationFrame(() => {
         scrollFinalTestCardIntoView(finalTestCardRef.current);
       });
     } catch (submissionError) {
-      setSubmitError(
-        getApiErrorMessage(
-          submissionError,
-          t('detail.finalTestSubmitFailed', {
-            defaultValue: 'Failed to submit the final test.',
-          }),
-        ),
-      );
+      setSubmitError(getApiErrorMessage(submissionError, t('detail.finalTestSubmitFailed')));
     } finally {
       setIsSubmitting(false);
     }
@@ -301,7 +268,7 @@ export default function CourseFinalTest({
   if (loading) {
     return (
       <p className={styles.helperText}>
-        {t('detail.finalTestLoading', { defaultValue: 'Loading final test...' })}
+        {t('detail.finalTestLoading')}
       </p>
     );
   }
@@ -328,26 +295,24 @@ export default function CourseFinalTest({
         >
           {latestAttempt
             ? latestAttempt.passed
-              ? t('detail.finalTestPassed', { defaultValue: 'Passed' })
-              : t('detail.finalTestNotPassed', { defaultValue: 'Not passed yet' })
+              ? t('detail.finalTestPassed')
+              : t('detail.finalTestNotPassed')
             : isUnlockedForPreview
-              ? t('detail.finalTest', { defaultValue: 'Final test' })
-              : t('detail.finalTestLocked', {
-                  defaultValue: 'Locked until the full course is completed',
-                })}
+              ? t('detail.finalTest')
+              : t('detail.finalTestLocked')}
         </span>
       </div>
 
       <div className={styles.quizMeta}>
         <div className={styles.metaCard}>
           <span className={styles.metaLabel}>
-            {t('detail.finalTestPassingScore', { defaultValue: 'Passing score' })}
+            {t('detail.finalTestPassingScore')}
           </span>
           <span className={styles.metaValue}>{finalTest.passingScore}%</span>
         </div>
         <div className={styles.metaCard}>
           <span className={styles.metaLabel}>
-            {t('detail.finalTestAnswered', { defaultValue: 'Answered now' })}
+            {t('detail.finalTestAnswered')}
           </span>
           <span className={styles.metaValue}>
             {answeredCount}/{finalTest.questions.length}
@@ -355,7 +320,7 @@ export default function CourseFinalTest({
         </div>
         <div className={styles.metaCard}>
           <span className={styles.metaLabel}>
-            {t('detail.finalTestBestScore', { defaultValue: 'Best score' })}
+            {t('detail.finalTestBestScore')}
           </span>
           <span className={styles.metaValue}>{bestAttempt?.score ?? '-'}</span>
         </div>
@@ -366,19 +331,19 @@ export default function CourseFinalTest({
           <div className={styles.quizMeta}>
             <div className={styles.metaCard}>
               <span className={styles.metaLabel}>
-                {t('detail.finalTestLatestScore', { defaultValue: 'Latest score' })}
+                {t('detail.finalTestLatestScore')}
               </span>
               <span className={styles.metaValue}>{latestScoreLabel}</span>
             </div>
             <div className={styles.metaCard}>
               <span className={styles.metaLabel}>
-                {t('detail.finalTestCorrectAnswers', { defaultValue: 'Correct answers' })}
+                {t('detail.finalTestCorrectAnswers')}
               </span>
               <span className={styles.metaValue}>{latestCorrectAnswersLabel}</span>
             </div>
             <div className={styles.metaCard}>
               <span className={styles.metaLabel}>
-                {t('detail.finalTestCourseStatus', { defaultValue: 'Course status' })}
+                {t('detail.finalTestCourseStatus')}
               </span>
               <span className={styles.metaValue}>{completionStatusLabel}</span>
             </div>
@@ -393,19 +358,14 @@ export default function CourseFinalTest({
           {certificateStatus === 'pending_profile' ? (
             <div className={styles.questionCard}>
               <p className={styles.questionPrompt}>
-                {t('detail.certificatePendingTitle', {
-                  defaultValue: 'Certificate waiting for profile completion',
-                })}
+                {t('detail.certificatePendingTitle')}
               </p>
               <p className={styles.helperText}>
-                {t('detail.certificatePendingDescription', {
-                  defaultValue:
-                    'You passed the final test. Complete your profile with your first and last name to generate the certificate automatically.',
-                })}
+                {t('detail.certificatePendingDescription')}
               </p>
               <div className={styles.quizActions}>
                 <Link href="/account" className={styles.secondaryAction}>
-                  {t('detail.completeProfile', { defaultValue: 'Complete profile' })}
+                  {t('detail.completeProfile')}
                 </Link>
               </div>
             </div>
@@ -414,18 +374,14 @@ export default function CourseFinalTest({
           {certificateStatus === 'issued' ? (
             <div className={styles.questionCard}>
               <p className={styles.questionPrompt}>
-                {t('detail.certificateIssuedTitle', {
-                  defaultValue: 'Certificate earned',
-                })}
+                {t('detail.certificateIssuedTitle')}
               </p>
               <p className={styles.helperText}>
-                {t('detail.certificateIssuedDescription', {
-                  defaultValue: 'Your certificate is now ready in your certificates space.',
-                })}
+                {t('detail.certificateIssuedDescription')}
               </p>
               <div className={styles.quizActions}>
                 <Link href="/certificates" className={styles.secondaryAction}>
-                  {t('detail.viewCertificate', { defaultValue: 'View certificates' })}
+                  {t('detail.viewCertificate')}
                 </Link>
               </div>
             </div>
@@ -435,10 +391,7 @@ export default function CourseFinalTest({
 
       {previewMode ? (
         <p className={styles.helperText}>
-          {t('detail.previewModeFinalTestDescription', {
-            defaultValue:
-              'Preview mode shows the learner-facing final test layout without saving attempts.',
-          })}
+          {t('detail.previewModeFinalTestDescription')}
         </p>
       ) : null}
 
@@ -497,9 +450,7 @@ export default function CourseFinalTest({
               className={styles.primaryAction}
               onClick={startRetryAttempt}
             >
-              {t('detail.finalTestStartRetry', {
-                defaultValue: 'Retry final test',
-              })}
+              {t('detail.finalTestStartRetry')}
             </button>
           </div>
         </>
@@ -547,33 +498,26 @@ export default function CourseFinalTest({
               onClick={() => void handleSubmit()}
             >
               {isSubmitting
-                ? t('detail.finalTestSubmitting', {
-                    defaultValue: 'Submitting final test...',
-                  })
-                : t('detail.finalTestSubmit', { defaultValue: 'Submit final test' })}
+                ? t('detail.finalTestSubmitting')
+                : t('detail.finalTestSubmit')}
             </button>
             <button
               type="button"
               className={styles.secondaryAction}
               onClick={() => setSelectedAnswers({})}
             >
-              {t('detail.finalTestRetry', { defaultValue: 'Clear answers' })}
+              {t('detail.finalTestRetry')}
             </button>
           </div>
         </>
       ) : !finalTest.isUnlocked ? (
         <p className={styles.helperText}>
-          {t('detail.finalTestLockedDescription', {
-            defaultValue: 'Complete every chapter in this course to unlock the final test.',
-          })}
+          {t('detail.finalTestLockedDescription')}
         </p>
       ) : !isStarted ? (
         <>
           <p className={styles.helperText}>
-            {t('detail.finalTestUnlockedDescription', {
-              defaultValue:
-                'You unlocked the final assessment. When you are ready, answer the questions below and reach the required passing score.',
-            })}
+            {t('detail.finalTestUnlockedDescription')}
           </p>
           <div className={styles.quizActions}>
             {previewMode ? null : (
@@ -583,8 +527,8 @@ export default function CourseFinalTest({
                 onClick={startRetryAttempt}
               >
                 {latestAttempt
-                  ? t('detail.finalTestContinue', { defaultValue: 'Continue final test' })
-                  : t('detail.finalTestStart', { defaultValue: 'Start final test' })}
+                  ? t('detail.finalTestContinue')
+                  : t('detail.finalTestStart')}
               </button>
             )}
           </div>
@@ -599,9 +543,7 @@ export default function CourseFinalTest({
               className={styles.primaryAction}
               onClick={startRetryAttempt}
             >
-              {t('detail.finalTestStartRetry', {
-                defaultValue: 'Retry final test',
-              })}
+              {t('detail.finalTestStartRetry')}
             </button>
           </div>
         </>
@@ -652,17 +594,15 @@ export default function CourseFinalTest({
               onClick={() => void handleSubmit()}
             >
               {isSubmitting
-                ? t('detail.finalTestSubmitting', {
-                    defaultValue: 'Submitting final test...',
-                  })
-                : t('detail.finalTestSubmit', { defaultValue: 'Submit final test' })}
+                ? t('detail.finalTestSubmitting')
+                : t('detail.finalTestSubmit')}
             </button>
             <button
               type="button"
               className={styles.secondaryAction}
               onClick={() => setSelectedAnswers({})}
             >
-              {t('detail.finalTestRetry', { defaultValue: 'Clear answers' })}
+              {t('detail.finalTestRetry')}
             </button>
           </div>
         </>

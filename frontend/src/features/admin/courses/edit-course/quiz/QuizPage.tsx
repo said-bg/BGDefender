@@ -55,9 +55,7 @@ function QuizPageContent() {
       <EditCourseErrorState
         message={
           quizPage.loadError ||
-          t('edit.chapters.missingCourseId', {
-            defaultValue: 'Missing course id.',
-          })
+          t('edit.chapters.missingCourseId')
         }
       />
     );
@@ -67,24 +65,18 @@ function QuizPageContent() {
     <EditCourseShell
       courseId={quizPage.courseId}
       section="quiz"
-      title={t('edit.tabs.quiz', { defaultValue: 'Training quiz' })}
-      subtitle={t('edit.quiz.subtitle', {
-        defaultValue:
-          'Attach one scored training quiz to each chapter. These quizzes can include single-choice and multiple-choice questions with a passing percentage.',
-      })}
+      title={t('edit.tabs.quiz')}
+      subtitle={t('edit.quiz.subtitle')}
       courseTitle={quizPage.localizedCourseTitle}
       previewHref={quizPage.previewHref ?? undefined}
     >
       <section className={styles.formCard}>
         <div className={styles.cardHeader}>
           <h2 className={styles.sectionTitle}>
-            {t('edit.quiz.title', { defaultValue: 'Chapter training quizzes' })}
+            {t('edit.quiz.title')}
           </h2>
           <p className={styles.sectionDescription}>
-            {t('edit.quiz.description', {
-              defaultValue:
-                'Pick a chapter on the left, then create or update the scored training quiz learners will see at the end of that chapter.',
-            })}
+            {t('edit.quiz.description')}
           </p>
         </div>
 
@@ -108,33 +100,26 @@ function QuizPageContent() {
               <>
                 <div className={styles.cardHeader}>
                   <h3 className={styles.chapterSectionTitle}>
-                    {t('edit.quiz.editorTitle', { defaultValue: 'Training quiz editor' })}
+                    {t('edit.quiz.editorTitle')}
                   </h3>
                   <p className={styles.sectionDescription}>
-                    {t('edit.quiz.editorDescription', {
-                      defaultValue:
-                        'Configure the scored quiz for the selected chapter, including the pass percentage and the full question set.',
-                    })}
+                    {t('edit.quiz.editorDescription')}
                   </p>
                 </div>
 
                 <QuizAnalyticsSummaryBar
                   analytics={quizPage.quizAnalytics}
                   isLoading={quizPage.quizAnalyticsLoading}
-                  title={t('edit.quiz.analyticsTitle', {
-                    defaultValue: 'Learner quiz analytics',
-                  })}
+                  title={t('edit.quiz.analyticsTitle')}
                   styles={styles}
-                  actionLabel={t('edit.quiz.analyticsOpenDetails', {
-                    defaultValue: 'View learner analytics',
-                  })}
+                  actionLabel={t('edit.quiz.analyticsOpenDetails')}
                   onOpenDetails={scrollToAnalytics}
                 />
 
                 {quizPage.quizLoading ? (
                   <div className={styles.emptyState}>
                     <p className={styles.emptyDescription}>
-                      {t('edit.quiz.loading', { defaultValue: 'Loading training quiz...' })}
+                      {t('edit.quiz.loading')}
                     </p>
                   </div>
                 ) : (
@@ -169,13 +154,8 @@ function QuizPageContent() {
                       language={i18n.language}
                       styles={styles}
                       t={t}
-                      title={t('edit.quiz.analyticsTitle', {
-                        defaultValue: 'Learner quiz analytics',
-                      })}
-                      description={t('edit.quiz.analyticsDescription', {
-                        defaultValue:
-                          'Review who attempted this quiz, how often they retried it, and how they performed.',
-                      })}
+                      title={t('edit.quiz.analyticsTitle')}
+                      description={t('edit.quiz.analyticsDescription')}
                     />
                   </>
                 )}
@@ -183,13 +163,10 @@ function QuizPageContent() {
             ) : (
               <div className={styles.emptyState}>
                 <p className={styles.emptyTitle}>
-                  {t('edit.quiz.selectChapterTitle', { defaultValue: 'Select a chapter first' })}
+                  {t('edit.quiz.selectChapterTitle')}
                 </p>
                 <p className={styles.emptyDescription}>
-                  {t('edit.quiz.selectChapterDescription', {
-                    defaultValue:
-                      'Choose a chapter from the left sidebar to manage its training quiz.',
-                  })}
+                  {t('edit.quiz.selectChapterDescription')}
                 </p>
               </div>
             )}

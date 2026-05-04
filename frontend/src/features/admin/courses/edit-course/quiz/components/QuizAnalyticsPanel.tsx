@@ -52,9 +52,7 @@ export default function QuizAnalyticsPanel({
 
         <div className={styles.emptyState}>
           <p className={styles.emptyDescription}>
-            {t('edit.quiz.analyticsLoading', {
-              defaultValue: 'Loading learner analytics...',
-            })}
+            {t('edit.quiz.analyticsLoading')}
           </p>
         </div>
       </section>
@@ -75,7 +73,7 @@ export default function QuizAnalyticsPanel({
       <div className={styles.quizAnalyticsSummaryGrid}>
         <article className={styles.quizAnalyticsMetric}>
           <span className={styles.quizAnalyticsMetricLabel}>
-            {t('edit.quiz.analyticsLearners', { defaultValue: 'Learners' })}
+            {t('edit.quiz.analyticsLearners')}
           </span>
           <strong className={styles.quizAnalyticsMetricValue}>
             {analytics.summary.learnerCount}
@@ -83,7 +81,7 @@ export default function QuizAnalyticsPanel({
         </article>
         <article className={styles.quizAnalyticsMetric}>
           <span className={styles.quizAnalyticsMetricLabel}>
-            {t('edit.quiz.analyticsAttempts', { defaultValue: 'Attempts' })}
+            {t('edit.quiz.analyticsAttempts')}
           </span>
           <strong className={styles.quizAnalyticsMetricValue}>
             {analytics.summary.attemptCount}
@@ -91,7 +89,7 @@ export default function QuizAnalyticsPanel({
         </article>
         <article className={styles.quizAnalyticsMetric}>
           <span className={styles.quizAnalyticsMetricLabel}>
-            {t('edit.quiz.analyticsAverageScore', { defaultValue: 'Average score' })}
+            {t('edit.quiz.analyticsAverageScore')}
           </span>
           <strong className={styles.quizAnalyticsMetricValue}>
             {analytics.summary.averageScore ?? '-'}
@@ -99,7 +97,7 @@ export default function QuizAnalyticsPanel({
         </article>
         <article className={styles.quizAnalyticsMetric}>
           <span className={styles.quizAnalyticsMetricLabel}>
-            {t('edit.quiz.analyticsPassRate', { defaultValue: 'Pass rate' })}
+            {t('edit.quiz.analyticsPassRate')}
           </span>
           <strong className={styles.quizAnalyticsMetricValue}>
             {analytics.summary.passRate !== null ? `${analytics.summary.passRate}%` : '-'}
@@ -109,11 +107,11 @@ export default function QuizAnalyticsPanel({
 
       <div className={styles.quizAnalyticsMetaRow}>
         <span>
-          {t('edit.quiz.analyticsBestScore', { defaultValue: 'Best score' })}:{' '}
+          {t('edit.quiz.analyticsBestScore')}:{' '}
           {analytics.summary.bestScore ?? '-'}
         </span>
         <span>
-          {t('edit.quiz.analyticsLatestAttempt', { defaultValue: 'Latest activity' })}:{' '}
+          {t('edit.quiz.analyticsLatestAttempt')}:{' '}
           {formatDate(analytics.summary.latestAttemptAt, language)}
         </span>
       </div>
@@ -137,26 +135,26 @@ export default function QuizAnalyticsPanel({
                   }
                 >
                   {learner.hasPassed
-                    ? t('edit.quiz.analyticsPassed', { defaultValue: 'Passed' })
-                    : t('edit.quiz.analyticsNotPassed', { defaultValue: 'Not passed yet' })}
+                    ? t('edit.quiz.analyticsPassed')
+                    : t('edit.quiz.analyticsNotPassed')}
                 </span>
               </div>
 
               <div className={styles.quizAnalyticsLearnerStats}>
                 <span>
-                  {t('edit.quiz.analyticsAttempts', { defaultValue: 'Attempts' })}:{' '}
+                  {t('edit.quiz.analyticsAttempts')}:{' '}
                   {learner.attemptCount}
                 </span>
                 <span>
-                  {t('edit.quiz.analyticsLatestScore', { defaultValue: 'Latest score' })}:{' '}
+                  {t('edit.quiz.analyticsLatestScore')}:{' '}
                   {learner.latestScore}
                 </span>
                 <span>
-                  {t('edit.quiz.analyticsBestScore', { defaultValue: 'Best score' })}:{' '}
+                  {t('edit.quiz.analyticsBestScore')}:{' '}
                   {learner.bestScore}
                 </span>
                 <span>
-                  {t('edit.quiz.analyticsLatestAttempt', { defaultValue: 'Latest activity' })}:{' '}
+                  {t('edit.quiz.analyticsLatestAttempt')}:{' '}
                   {formatDate(learner.latestAttemptAt, language)}
                 </span>
               </div>
@@ -166,13 +164,10 @@ export default function QuizAnalyticsPanel({
       ) : (
         <div className={styles.emptyState}>
           <p className={styles.emptyTitle}>
-            {t('edit.quiz.analyticsEmptyTitle', { defaultValue: 'No learner attempts yet' })}
+            {t('edit.quiz.analyticsEmptyTitle')}
           </p>
           <p className={styles.emptyDescription}>
-            {t('edit.quiz.analyticsEmptyDescription', {
-              defaultValue:
-                'As soon as learners start completing this quiz, their attempts and best scores will appear here.',
-            })}
+            {t('edit.quiz.analyticsEmptyDescription')}
           </p>
         </div>
       )}

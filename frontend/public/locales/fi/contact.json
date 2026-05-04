@@ -1,48 +1,50 @@
 {
   "hero": {
     "eyebrow": "Ota yhteyttä BG Defenderiin",
-    "title": "Ota yhteyttä oikeaan tiimiin ilman turhaa kitkaa.",
-    "description": "Lähetä viesti tuesta, käyttöoikeuksista, sisällöntuottajan pääsystä tai premium-kysymyksistä. Ohjaamme pyyntösi nopeasti oikeaan paikkaan.",
+    "title": "Ota yhteyttä",
+    "description": "Ota yhteyttä saadaksesi tukea, käyttöoikeuspyyntöjä, sisällöntuottajan käyttöönottoa tai premium-kysymyksiä varten. Autamme sinut nopeasti oikeaan paikkaan.",
     "primaryAction": "Aloita pyyntö",
-    "secondaryAction": "Lähetä sähköposti suoraan",
+    "secondaryAction": "Lähetä sähköpostia suoraan tukeen",
     "panelBadge": "Nopea ohjaus",
     "stats": {
       "support": "Tuki",
-      "access": "Käyttöpyynnöt",
-      "creator": "Sisällöntuottajat",
+      "access": "Käyttöoikeuspyynnöt",
+      "creator": "Sisällöntuottajan käyttöönotto",
       "premium": "Premium-suunnittelu"
     }
   },
   "routing": {
-    "eyebrow": "Valitse aihe",
-    "title": "Aloita pyynnöstä, joka sopii parhaiten tilanteeseesi.",
-    "description": "Kun valitset oikean aiheen heti alussa, voimme ohjata viestisi nopeammin ja vastata selkeämmin ilman turhia lisäkysymyksiä."
+    "eyebrow": "Valitse polku",
+    "title": "Aloita pyynnöstä, joka sopii tilanteeseesi parhaiten.",
+    "description": "Oikean aiheen valitseminen auttaa meitä valmistelemaan vastauksen, ohjaamaan pyyntösi nopeammin ja pitämään keskustelun selkeänä ensimmäisestä viestistä lähtien."
   },
   "types": {
     "general": {
-      "title": "Yleiset tiedustelut",
+      "title": "Yleiset tiedot",
       "description": "Kysymyksiä alustasta, kursseista tai saatavuudesta."
     },
     "support": {
       "title": "Tekninen tuki",
-      "description": "Jokin ei toimi odotetulla tavalla? Autamme mielellämme."
+      "description": "Eikö jokin toimi odotetulla tavalla? Voimme auttaa."
     },
     "creator": {
       "title": "Sisällöntuottajan käyttöoikeus",
-      "description": "Pyydä oikeuksia oppimissisällön luomiseen ja hallintaan."
+      "description": "Pyydä käyttöoikeutta oppimissisällön luomiseen ja hallintaan."
     },
     "premium": {
       "title": "Premium-käyttöoikeus",
-      "description": "Kysy premium-käytöstä, räätälöidyistä suunnitelmista tai päivityksistä."
+      "description": "Kysy premium-käyttöoikeudesta, räätälöidyistä suunnitelmista tai päivityksistä."
     }
   },
   "form": {
     "eyebrow": "Valmistele pyyntösi",
-    "title": "Kirjoita yksi selkeä viesti ja lähetä se oikealla kontekstilla.",
-    "description": "Täytämme sähköpostin valmiiksi alla olevilla tiedoilla, jotta viestisi saapuu heti jäsenneltynä ja valmiina käsittelyyn.",
-    "primaryAction": "Valmistele sähköposti",
-    "secondaryAction": "Avaa tukisähköposti",
-    "note": "Yllä oleva painike avaa sähköpostisovelluksesi ja lisää pyynnön valmiiksi jäsenneltynä BG Defender -tiimille."
+    "title": "Kirjoita yksi selkeä viesti ja lähetä se kontekstin kanssa.",
+    "description": "Lisää tärkeimmät tiedot alle ja lähetä viestisi suoraan BG Defender -tiimille.",
+    "primaryAction": "Lähetä viesti",
+    "secondaryAction": "Lähetä sähköpostia suoraan tukeen",
+    "sending": "Lähetetään...",
+    "note": "Viestisi lähetetään suoraan BG Defender -tiimille.",
+    "failed": "Emme voineet lähettää viestiäsi juuri nyt. Yritä uudelleen."
   },
   "fields": {
     "name": "Koko nimi",
@@ -50,25 +52,25 @@
     "email": "Sähköpostiosoite",
     "emailPlaceholder": "sinä@example.com",
     "organization": "Organisaatio",
-    "organizationPlaceholder": "Yritys, oppilaitos tai tiimi",
+    "organizationPlaceholder": "Yritys, koulu tai tiimi",
     "requestType": "Pyynnön tyyppi",
     "subject": "Aihe",
     "subjectPlaceholder": "Lyhyt yhteenveto pyynnöstäsi",
     "message": "Viesti",
-    "messagePlaceholder": "Kuvaile tiedot, jotka haluat tiimin tarkistavan ja joihin haluat vastauksen.",
+    "messagePlaceholder": "Kerro tiedot, jotka haluat tiimimme tarkistavan ja joihin haluat vastauksen.",
     "context": {
-      "generalLabel": "Miten voimme auttaa?",
-      "generalPlaceholder": "Lisää hyödyllinen tausta, jotta voimme ohjata sinut oikeaan suuntaan.",
+      "generalLabel": "Kuinka voimme auttaa?",
+      "generalPlaceholder": "Lisää hyödyllistä kontekstia, jotta voimme ohjata sinut oikeaan suuntaan.",
       "supportLabel": "Mitä tapahtui?",
-      "supportPlaceholder": "Kerro missä ongelma ilmeni ja mitä olit tekemässä.",
-      "creatorLabel": "Kerro millaista oppimisympäristöä haluat rakentaa",
-      "creatorPlaceholder": "Kuvaile lyhyesti sisältöäsi, yleisöäsi tai työnkulun tavoitteita.",
-      "premiumLabel": "Kerro millaista käyttöoikeutta etsit",
-      "premiumPlaceholder": "Kerro tarvitsetko premium-käyttöä itsellesi, tiimille tai ohjelmalle."
+      "supportPlaceholder": "Kerro, missä ongelma ilmeni ja mitä yritit tehdä.",
+      "creatorLabel": "Kerro oppimisympäristöstä, jonka haluat rakentaa",
+      "creatorPlaceholder": "Kerro lyhyesti sisällöstäsi, kohdeyleisöstäsi tai työnkulun tavoitteistasi.",
+      "premiumLabel": "Kerro, millaista käyttöoikeutta etsit",
+      "premiumPlaceholder": "Kerro, tarvitsetko premium-käyttöoikeuden itsellesi, tiimille vai ohjelmalle."
     }
   },
   "mail": {
-    "defaultSubject": "{{requestType}} -pyyntö",
+    "defaultSubject": "{{requestType}}-pyyntö",
     "labels": {
       "name": "Nimi",
       "email": "Sähköposti",
@@ -77,23 +79,29 @@
       "message": "Viesti"
     }
   },
+  "validation": {
+    "nameRequired": "Nimi vaaditaan",
+    "emailRequired": "Sähköposti vaaditaan",
+    "emailInvalid": "Virheellinen sähköpostin muoto",
+    "messageRequired": "Viesti vaaditaan"
+  },
   "sidebar": {
     "contact": {
-      "eyebrow": "Suora yhteys",
-      "title": "Haluatko lähettää viestin suoraan?",
-      "description": "Jos tiedät jo tarkalleen mitä tarvitset, voit lähettää sähköpostin suoraan tiimille ja ohjaamme sen siitä eteenpäin."
+      "eyebrow": "Suora yhteydenotto",
+      "title": "Haluatko mieluummin lähettää suoran viestin?",
+      "description": "Jos tiedät jo, mitä tarvitset, voit lähettää tiimille sähköpostia suoraan, ja ohjaamme asian siitä eteenpäin."
     },
     "response": {
       "eyebrow": "Vastausajat",
-      "support": "Teknisen tuen pyynnöt käsitellään yleensä yhden arkipäivän sisällä.",
-      "access": "Käyttöoikeus-, sisällöntuottaja- ja premium-pyynnöt käsitellään tavallisesti kahden arkipäivän sisällä.",
-      "context": "Selkeä taustatieto auttaa tiimiä vastaamaan nopeammin ja vähentää lisäkysymysten tarvetta."
+      "support": "Teknisen tuen pyynnöt tarkistetaan yleensä yhden arkipäivän kuluessa.",
+      "access": "Käyttöoikeus-, sisällöntuottaja- ja premium-pyynnöt tarkistetaan yleensä kahden arkipäivän kuluessa.",
+      "context": "Selkeä konteksti auttaa tiimiä vastaamaan nopeammin ja vähentää lisäkysymysten tarvetta."
     },
     "tips": {
-      "eyebrow": "Mitä kannattaa lisätä",
-      "account": "Tilisi sähköpostiosoite tai työtila, jota käytät.",
-      "course": "Kurssi, sivu tai ominaisuus, johon pyyntösi liittyy.",
-      "goal": "Tavoite, jonka haluat saavuttaa, jotta voimme ohjata sinua paremmin."
+      "eyebrow": "Mitä kannattaa sisällyttää",
+      "account": "Tilisi sähköpostiosoite tai käyttämäsi työtila.",
+      "course": "Kurssi, sivu tai ominaisuus, jota pyyntösi koskee.",
+      "goal": "Tavoite, johon pyrit, jotta voimme ohjata sinua oikein."
     }
   }
 }

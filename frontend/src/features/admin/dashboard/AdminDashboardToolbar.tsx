@@ -8,24 +8,21 @@ type AdminDashboardToolbarProps = {
 
 export default function AdminDashboardToolbar({ t }: AdminDashboardToolbarProps) {
   return (
-    <section
-      className={styles.toolbar}
-      aria-label={t('dashboard.toolbarLabel', { defaultValue: 'Admin actions' })}
-    >
+    <section className={styles.toolbar} aria-label={t('dashboard.toolbarLabel')}>
       <Link href="/admin/courses" className={styles.secondaryAction}>
-        {t('manageCourses', { defaultValue: 'Open course library' })}
+        {t('manageCourses')}
       </Link>
       <Link href="/admin/authors" className={styles.secondaryAction}>
-        {t('manageAuthors', { defaultValue: 'Manage authors' })}
+        {t('manageAuthors')}
       </Link>
       <Link href="/admin/users" className={styles.secondaryAction}>
-        {t('manageUsers', { defaultValue: 'Manage users' })}
+        {t('manageUsers')}
       </Link>
       <Link href="/admin/resources" className={styles.secondaryAction}>
-        {t('manageResources', { defaultValue: 'Manage resources' })}
+        {t('manageResources')}
       </Link>
       <Link href="/admin/collections" className={styles.secondaryAction}>
-        {t('collections.title', { defaultValue: 'Manage collections' })}
+        {t('collections.title')}
       </Link>
     </section>
   );

@@ -60,7 +60,7 @@ export default function StructureSubChapterCard({
             disabled={subChapter.orderIndex === 1}
             onClick={() => void onMoveSubChapter(chapter.id, subChapter.id, 'up')}
           >
-            Up
+            {t('collections.moveUp')}
           </button>
           <button
             type="button"
@@ -68,30 +68,24 @@ export default function StructureSubChapterCard({
             disabled={subChapter.orderIndex === totalSubChapters}
             onClick={() => void onMoveSubChapter(chapter.id, subChapter.id, 'down')}
           >
-            Down
+            {t('collections.moveDown')}
           </button>
           <button
             type="button"
-            className={styles.compactAction}
-            onClick={() => onEditSubChapter(chapter, subChapter.id)}
-          >
-            {t('edit.subchapters.editAction', {
-              defaultValue: 'Open',
-            })}
+          className={styles.compactAction}
+          onClick={() => onEditSubChapter(chapter, subChapter.id)}
+        >
+            {t('edit.subchapters.editAction')}
           </button>
           <button
             type="button"
             className={styles.compactDanger}
             disabled={deletingSubChapterId === subChapter.id}
             onClick={() => void onDeleteSubChapter(chapter.id, subChapter.id)}
-          >
-            {deletingSubChapterId === subChapter.id
-              ? t('edit.subchapters.deleting', {
-                  defaultValue: 'Deleting...',
-                })
-              : t('courseActions.delete', {
-                  defaultValue: 'Delete',
-                })}
+        >
+          {deletingSubChapterId === subChapter.id
+              ? t('edit.subchapters.deleting')
+              : t('courseActions.delete')}
           </button>
         </div>
       </div>

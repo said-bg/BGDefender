@@ -36,7 +36,7 @@ export default function SubChapterParentField({
 }: SubChapterParentFieldProps) {
   return (
     <label className={formStyles.fieldWide}>
-      <span>{t('edit.subchapters.parentChapter', { defaultValue: 'Parent chapter' })}</span>
+      <span>{t('edit.subchapters.parentChapter')}</span>
       <select
         value={subChapterForm.chapterId}
         onChange={(event) => {
@@ -62,9 +62,7 @@ export default function SubChapterParentField({
       </select>
       {availableParentChapter ? (
         <p className={sharedStyles.helperText}>
-          {t('edit.subchapters.parentHint', {
-            defaultValue: 'This subchapter will be saved inside',
-          })}{' '}
+          {t('edit.subchapters.parentHint')}{' '}
           <strong>
             {language === 'fi'
               ? availableParentChapter.titleFi

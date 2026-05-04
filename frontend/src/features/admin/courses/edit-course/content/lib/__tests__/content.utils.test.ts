@@ -10,8 +10,16 @@ import {
   validateContentForm,
 } from '../content.utils';
 
+const TRANSLATIONS: Record<string, string> = {
+  'edit.contentBlocks.missingCourseId': 'Missing course id.',
+  'edit.contentBlocks.parentRequired': 'Choose a subchapter before creating a content block.',
+  'edit.contentBlocks.titleRequired': 'Both English and Finnish block titles are required.',
+  'edit.contentBlocks.contentRequired': 'Both English and Finnish block contents are required.',
+  'edit.contentBlocks.orderInvalid': 'Block order must be a number greater than zero.',
+};
+
 const t = (key: string, options?: Record<string, unknown>) =>
-  String(options?.defaultValue ?? key);
+  String(TRANSLATIONS[key] ?? options?.defaultValue ?? key);
 
 const createContent = (
   overrides: Partial<PedagogicalContent> = {},

@@ -1,7 +1,7 @@
 {
   "hero": {
     "eyebrow": "Contact BG Defender",
-    "title": "Get in touch with the right team, without the friction.",
+    "title": "Contact us",
     "description": "Reach out for support, access requests, creator onboarding, or premium questions. We will help you get to the right place quickly.",
     "primaryAction": "Start a request",
     "secondaryAction": "Email support directly",
@@ -39,10 +39,12 @@
   "form": {
     "eyebrow": "Prepare your request",
     "title": "Write one clear message and send it with context.",
-    "description": "We will prefill your email with the details below so your message already arrives structured and ready to review.",
-    "primaryAction": "Prepare email",
-    "secondaryAction": "Open support mailbox",
-    "note": "The button above opens your email app with the request already structured for the BG Defender team."
+    "description": "Add the key details below and send your message directly to the BG Defender team.",
+    "primaryAction": "Send message",
+    "secondaryAction": "Email support directly",
+    "sending": "Sending...",
+    "note": "Your message will be sent directly to the BG Defender team.",
+    "failed": "We could not send your message right now. Please try again."
   },
   "fields": {
     "name": "Full name",
@@ -76,6 +78,12 @@
       "requestType": "Request type",
       "message": "Message"
     }
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email format",
+    "messageRequired": "Message is required"
   },
   "sidebar": {
     "contact": {

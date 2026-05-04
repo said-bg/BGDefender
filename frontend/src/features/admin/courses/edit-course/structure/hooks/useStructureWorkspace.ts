@@ -45,38 +45,26 @@ export function useStructureWorkspace({
   const workspaceTitle = useMemo(() => {
     switch (effectiveWorkspaceMode) {
       case 'edit-chapter':
-        return t('edit.chapters.editTitle', { defaultValue: 'Edit chapter' });
+        return t('edit.chapters.editTitle');
       case 'create-chapter':
-        return t('edit.chapters.createTitle', { defaultValue: 'Create chapter' });
+        return t('edit.chapters.createTitle');
       case 'edit-subchapter':
-        return t('edit.subchapters.editTitle', { defaultValue: 'Edit subchapter' });
+        return t('edit.subchapters.editTitle');
       default:
-        return t('edit.subchapters.createTitle', { defaultValue: 'Create subchapter' });
+        return t('edit.subchapters.createTitle');
     }
   }, [effectiveWorkspaceMode, t]);
 
   const workspaceDescription = useMemo(() => {
     switch (effectiveWorkspaceMode) {
       case 'edit-chapter':
-        return t('edit.chapters.workspaceEditDescription', {
-          defaultValue:
-            'Update the selected chapter here. Pick another chapter or switch to subchapters from the left sidebar.',
-        });
+        return t('edit.chapters.workspaceEditDescription');
       case 'create-chapter':
-        return t('edit.chapters.workspaceCreateDescription', {
-          defaultValue:
-            'Start by creating a chapter. Once a chapter exists, you can switch to subchapters from the left sidebar.',
-        });
+        return t('edit.chapters.workspaceCreateDescription');
       case 'edit-subchapter':
-        return t('edit.subchapters.workspaceEditDescription', {
-          defaultValue:
-            'Update the selected subchapter here. Use the left sidebar to open another one anytime.',
-        });
+        return t('edit.subchapters.workspaceEditDescription');
       default:
-        return t('edit.subchapters.workspaceCreateDescription', {
-          defaultValue:
-            'Create a new subchapter inside the chosen chapter, then keep adding the rest from the same workspace.',
-        });
+        return t('edit.subchapters.workspaceCreateDescription');
     }
   }, [effectiveWorkspaceMode, t]);
 

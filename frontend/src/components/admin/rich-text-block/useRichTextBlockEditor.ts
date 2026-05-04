@@ -45,12 +45,12 @@ export default function useRichTextBlockEditor({
 
   const commandLabels = useMemo<RichTextCommandLabels>(
     () => ({
-      imagePromptTitle: t('richText.imagePromptTitle', { defaultValue: 'Image URL' }),
-      linkPromptTitle: t('richText.linkPromptTitle', { defaultValue: 'URL' }),
-      pdfLinkLabel: t('richText.pdfLinkLabel', { defaultValue: 'Open PDF' }),
-      pdfPromptTitle: t('richText.pdfPromptTitle', { defaultValue: 'PDF URL' }),
-      uploadFailed: t('richText.uploadFailed', { defaultValue: 'Upload failed.' }),
-      videoPromptTitle: t('richText.videoPromptTitle', { defaultValue: 'Video URL' }),
+      imagePromptTitle: t('richText.imagePromptTitle'),
+      linkPromptTitle: t('richText.linkPromptTitle'),
+      pdfLinkLabel: t('richText.pdfLinkLabel'),
+      pdfPromptTitle: t('richText.pdfPromptTitle'),
+      uploadFailed: t('richText.uploadFailed'),
+      videoPromptTitle: t('richText.videoPromptTitle'),
     }),
     [t],
   );

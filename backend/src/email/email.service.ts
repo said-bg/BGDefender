@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type { SentMessageInfo } from 'nodemailer';
 import type SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { ContactRequestType } from '../contact/dto/contact-request.dto';
 
 @Injectable()
 export class EmailService {
@@ -112,6 +113,92 @@ export class EmailService {
       to: email,
       subject,
       html: htmlContent,
+    });
+  }
+
+  async sendContactEmail({
+    requestType,
+    name,
+    email,
+    message,
+    language = 'en',
+  }: {
+    requestType: ContactRequestType;
+    name: string;
+    email: string;
+    message: string;
+    language?: string;
+  }): Promise<void> {
+    const fromEmail =
+      process.env.SMTP_FROM ??
+      process.env.SMTP_USER ??
+      'noreply@bgdefender.com';
+    const recipientEmail = process.env.CONTACT_EMAIL ?? 'support@bgdefender.com';
+
+    const requestTypeLabels: Record<
+      string,
+      Record<ContactRequestType, string>
+    > = {
+      en: {
+        [ContactRequestType.GENERAL]: 'General information',
+        [ContactRequestType.SUPPORT]: 'Technical support',
+        [ContactRequestType.CREATOR]: 'Creator access',
+        [ContactRequestType.PREMIUM]: 'Premium access',
+      },
+      fi: {
+        [ContactRequestType.GENERAL]: 'Yleiset tiedustelut',
+        [ContactRequestType.SUPPORT]: 'Tekninen tuki',
+        [ContactRequestType.CREATOR]: 'Sisallontuottajan kayttooikeus',
+        [ContactRequestType.PREMIUM]: 'Premium-kayttooikeus',
+      },
+    };
+
+    const labels: Record<
+      string,
+      {
+        subjectPrefix: string;
+        name: string;
+        email: string;
+        requestType: string;
+        message: string;
+      }
+    > = {
+      en: {
+        subjectPrefix: 'Contact request',
+        name: 'Name',
+        email: 'Email',
+        requestType: 'Request type',
+        message: 'Message',
+      },
+      fi: {
+        subjectPrefix: 'Yhteydenotto',
+        name: 'Nimi',
+        email: 'Sahkoposti',
+        requestType: 'Pyynnon tyyppi',
+        message: 'Viesti',
+      },
+    };
+
+    const activeLabels = labels[language] ?? labels.en;
+    const localizedRequestType =
+      requestTypeLabels[language]?.[requestType] ??
+      requestTypeLabels.en[requestType];
+    const subject = `${activeLabels.subjectPrefix}: ${localizedRequestType}`;
+    const text = [
+      `${activeLabels.name}: ${name}`,
+      `${activeLabels.email}: ${email}`,
+      `${activeLabels.requestType}: ${localizedRequestType}`,
+      '',
+      `${activeLabels.message}:`,
+      message,
+    ].join('\n');
+
+    await this.transporter.sendMail({
+      from: fromEmail,
+      to: recipientEmail,
+      replyTo: email,
+      subject,
+      text,
     });
   }
 }

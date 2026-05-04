@@ -54,15 +54,8 @@ export default function CoursesSection({
     <section className={styles.section}>
       <div className={styles.sectionHeader}>
         <div>
-          <h2 className={styles.sectionTitle}>
-            {t('coursesListTitle', { defaultValue: 'All courses' })}
-          </h2>
-          <p className={styles.sectionDescription}>
-            {t('coursesListDescription', {
-              defaultValue:
-                'A simple view of every course, with its status, access level, authors, and structure size.',
-            })}
-          </p>
+          <h2 className={styles.sectionTitle}>{t('coursesListTitle')}</h2>
+          <p className={styles.sectionDescription}>{t('coursesListDescription')}</p>
         </div>
       </div>
 
@@ -71,14 +64,8 @@ export default function CoursesSection({
 
       {courses.length === 0 ? (
         <div className={styles.emptyState}>
-          <h3 className={styles.emptyTitle}>
-            {t('emptyCoursesTitle', { defaultValue: 'No courses yet' })}
-          </h3>
-          <p className={styles.emptyDescription}>
-            {t('emptyCoursesDescription', {
-              defaultValue: 'As soon as courses exist, they will appear here for admin review.',
-            })}
-          </p>
+          <h3 className={styles.emptyTitle}>{t('emptyCoursesTitle')}</h3>
+          <p className={styles.emptyDescription}>{t('emptyCoursesDescription')}</p>
         </div>
       ) : (
         <div className={styles.courseList}>

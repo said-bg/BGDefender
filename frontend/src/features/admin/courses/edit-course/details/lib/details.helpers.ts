@@ -27,22 +27,16 @@ export const validateCourseDetailsForm = (
   t: TranslationFn,
 ) => {
   if (!form.titleEn.trim() || !form.titleFi.trim()) {
-    return t('create.titleRequired', {
-      defaultValue: 'Both English and Finnish titles are required.',
-    });
+    return t('create.titleRequired');
   }
 
   if (!form.descriptionEn.trim() || !form.descriptionFi.trim()) {
-    return t('create.descriptionRequired', {
-      defaultValue: 'Both English and Finnish descriptions are required.',
-    });
+    return t('create.descriptionRequired');
   }
 
   const durationValue = form.estimatedDuration.trim();
   if (durationValue && Number(durationValue) <= 0) {
-    return t('create.durationInvalid', {
-      defaultValue: 'Estimated duration must be greater than zero.',
-    });
+    return t('create.durationInvalid');
   }
 
   return null;

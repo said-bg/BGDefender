@@ -49,11 +49,7 @@ export default function AdminRecentCourses({ courses, language, t }: AdminRecent
             </article>
           ))
         ) : (
-          <p className={styles.emptyText}>
-            {t('dashboard.noActivity', {
-              defaultValue: 'No course updates yet.',
-            })}
-          </p>
+          <p className={styles.emptyText}>{t('dashboard.noActivity')}</p>
         )}
       </div>
     </section>

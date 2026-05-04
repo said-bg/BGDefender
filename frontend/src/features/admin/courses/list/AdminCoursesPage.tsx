@@ -38,25 +38,16 @@ function AdminCoursesPageContent() {
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <Link href="/admin" className={styles.backLink}>
-            {t('backToOverview', { defaultValue: 'Back to dashboard' })}
+            {t('backToOverview')}
           </Link>
-          <p className={styles.eyebrow}>
-            {t('coursesEyebrow', { defaultValue: 'Course library' })}
-          </p>
-          <h1 className={styles.title}>
-            {t('coursesTitle', { defaultValue: 'Manage courses' })}
-          </h1>
-          <p className={styles.subtitle}>
-            {t('coursesSubtitle', {
-              defaultValue:
-                'Create, review, and prepare courses before moving into chapters, subchapters, and content editing.',
-            })}
-          </p>
+          <p className={styles.eyebrow}>{t('coursesEyebrow')}</p>
+          <h1 className={styles.title}>{t('coursesTitle')}</h1>
+          <p className={styles.subtitle}>{t('coursesSubtitle')}</p>
         </div>
 
         <div className={styles.heroActions}>
           <Link href="/admin/courses/new" className={styles.primaryAction}>
-            {t('createCourse', { defaultValue: 'Create course' })}
+            {t('createCourse')}
           </Link>
         </div>
       </section>

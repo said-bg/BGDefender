@@ -38,11 +38,7 @@ export function useEditCourseStructure({
 
   useEffect(() => {
     if (!courseId) {
-      setLoadError(
-        t('edit.chapters.missingCourseId', {
-          defaultValue: 'Missing course id.',
-        }),
-      );
+      setLoadError(t('edit.chapters.missingCourseId'));
       setLoadingPage(false);
       return;
     }
@@ -53,14 +49,7 @@ export function useEditCourseStructure({
         setLoadError(null);
         await reloadCourse();
       } catch (error) {
-        setLoadError(
-          getApiErrorMessage(
-            error,
-            t('edit.failedToLoad', {
-              defaultValue: 'Failed to load course data.',
-            }),
-          ),
-        );
+        setLoadError(getApiErrorMessage(error, t('edit.failedToLoad')));
       } finally {
         setLoadingPage(false);
       }

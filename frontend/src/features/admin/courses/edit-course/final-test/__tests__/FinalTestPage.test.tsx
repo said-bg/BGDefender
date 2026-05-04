@@ -19,8 +19,60 @@ jest.mock('@/components/auth/ProtectedRoute', () => ({
   default: ({ children }: { children: React.ReactNode }) => children,
 }));
 
+const TRANSLATIONS: Record<string, string> = {
+  'common.cancel': 'Cancel',
+  'edit.missingCourseId': 'Missing course id.',
+  'edit.failedToLoad': 'Failed to load course data.',
+  'edit.tabs.finalTest': 'Final test',
+  'edit.finalTest.subtitle':
+    'Create one optional scored final test for the full course. Learners unlock it only after finishing the course path.',
+  'edit.finalTest.title': 'Course final test',
+  'edit.finalTest.description':
+    'Configure the optional final assessment for this course, including its passing percentage and question set.',
+  'edit.finalTest.analyticsTitle': 'Learner final test analytics',
+  'edit.finalTest.analyticsOpenDetails': 'View learner analytics',
+  'edit.finalTest.analyticsDescription':
+    'Review who attempted the final test, how often they retried it, and how they performed.',
+  'edit.finalTest.loading': 'Loading final test...',
+  'edit.finalTest.failedToLoad': 'Failed to load the final test.',
+  'edit.finalTest.saved': 'Final test saved successfully.',
+  'edit.finalTest.saveFailed': 'Failed to save the final test.',
+  'edit.finalTest.deleteConfirm': 'Delete this final test? This action cannot be undone.',
+  'edit.finalTest.deleted': 'Final test deleted successfully.',
+  'edit.finalTest.deleteFailed': 'Failed to delete the final test.',
+  'edit.finalTest.titleEn': 'Final test title (English)',
+  'edit.finalTest.titleFi': 'Final test title (Finnish)',
+  'edit.finalTest.descriptionEn': 'Description (English)',
+  'edit.finalTest.descriptionFi': 'Description (Finnish)',
+  'edit.finalTest.passingScore': 'Passing score (%)',
+  'edit.finalTest.publishNow': 'Make this final test visible to learners now',
+  'edit.finalTest.attemptsShort': 'attempts',
+  'edit.finalTest.bestScoreLabel': 'Best score',
+  'edit.finalTest.questionsTitle': 'Questions',
+  'edit.finalTest.addQuestion': 'Add question',
+  'edit.finalTest.questionLabel': 'Question',
+  'edit.finalTest.untitledQuestion': 'Untitled question',
+  'edit.finalTest.promptEn': 'Prompt (English)',
+  'edit.finalTest.promptFi': 'Prompt (Finnish)',
+  'edit.finalTest.explanationEn': 'Explanation (English)',
+  'edit.finalTest.explanationFi': 'Explanation (Finnish)',
+  'edit.finalTest.questionType': 'Question type',
+  'edit.finalTest.singleChoice': 'Single choice',
+  'edit.finalTest.multipleChoice': 'Multiple choice',
+  'edit.finalTest.optionsTitle': 'Answer options',
+  'edit.finalTest.addOption': 'Add option',
+  'edit.finalTest.correctAnswer': 'Correct',
+  'edit.finalTest.optionEn': 'Option (English)',
+  'edit.finalTest.optionFi': 'Option (Finnish)',
+  'edit.finalTest.deleting': 'Deleting final test...',
+  'edit.finalTest.deleteQuestion': 'Delete question',
+  'edit.finalTest.deleteTest': 'Delete final test',
+  'edit.finalTest.saving': 'Saving final test...',
+  'edit.finalTest.saveTest': 'Save final test',
+};
+
 const mockT = (key: string, options?: { defaultValue?: string }) =>
-  options?.defaultValue ?? key;
+  TRANSLATIONS[key] ?? options?.defaultValue ?? key;
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({

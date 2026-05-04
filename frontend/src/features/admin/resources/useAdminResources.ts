@@ -78,9 +78,7 @@ export default function useAdminResources() {
         setError(
           getApiErrorMessage(
             loadError,
-            t('resources.failedToLoad', {
-              defaultValue: 'Failed to load resources.',
-            }),
+            t('resources.failedToLoad'),
           ),
         );
       } finally {
@@ -123,17 +121,13 @@ export default function useAdminResources() {
         mimeType: uploaded.mimeType,
       }));
       setMessage(
-        t('resources.uploaded', {
-          defaultValue: 'Document uploaded successfully.',
-        }),
+        t('resources.uploaded'),
       );
     } catch (uploadErr) {
       setUploadError(
         getApiErrorMessage(
           uploadErr,
-          t('resources.uploadFailed', {
-            defaultValue: 'Failed to upload document.',
-          }),
+          t('resources.uploadFailed'),
         ),
       );
     } finally {
@@ -146,27 +140,21 @@ export default function useAdminResources() {
 
     if (!form.title.trim() || !assignedUserId) {
       setError(
-        t('resources.validationRequired', {
-          defaultValue: 'Title and target user are required.',
-        }),
+        t('resources.validationRequired'),
       );
       return;
     }
 
     if (form.type === ResourceTypeEnum.FILE && !form.fileUrl) {
       setError(
-        t('resources.validationFile', {
-          defaultValue: 'Upload a document before saving this resource.',
-        }),
+        t('resources.validationFile'),
       );
       return;
     }
 
     if (form.type === ResourceTypeEnum.LINK && !form.linkUrl.trim()) {
       setError(
-        t('resources.validationLink', {
-          defaultValue: 'Add a link before saving this resource.',
-        }),
+        t('resources.validationLink'),
       );
       return;
     }
@@ -190,9 +178,7 @@ export default function useAdminResources() {
       const created = await resourceService.createAdminResource(payload);
       setResources((previous) => [created, ...previous]);
       setMessage(
-        t('resources.created', {
-          defaultValue: 'Resource sent successfully.',
-        }),
+        t('resources.created'),
       );
       setForm(INITIAL_FORM);
       setUploadError(null);
@@ -200,9 +186,7 @@ export default function useAdminResources() {
       setError(
         getApiErrorMessage(
           submitError,
-          t('resources.createFailed', {
-            defaultValue: 'Failed to create resource.',
-          }),
+          t('resources.createFailed'),
         ),
       );
     } finally {
@@ -218,17 +202,13 @@ export default function useAdminResources() {
       await resourceService.deleteAdminResource(resource.id);
       setResources((previous) => previous.filter((entry) => entry.id !== resource.id));
       setMessage(
-        t('resources.deleted', {
-          defaultValue: 'Resource deleted successfully.',
-        }),
+        t('resources.deleted'),
       );
     } catch (deleteError) {
       setError(
         getApiErrorMessage(
           deleteError,
-          t('resources.deleteFailed', {
-            defaultValue: 'Failed to delete resource.',
-          }),
+          t('resources.deleteFailed'),
         ),
       );
     } finally {
@@ -245,9 +225,7 @@ export default function useAdminResources() {
       setError(
         getApiErrorMessage(
           openError,
-          t('resources.openFailed', {
-            defaultValue: 'Failed to open document.',
-          }),
+          t('resources.openFailed'),
         ),
       );
     } finally {

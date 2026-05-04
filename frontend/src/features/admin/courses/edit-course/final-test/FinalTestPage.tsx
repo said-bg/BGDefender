@@ -53,12 +53,7 @@ function FinalTestPageContent() {
   if (finalTestPage.loadError || !finalTestPage.courseId || !finalTestPage.course) {
     return (
       <EditCourseErrorState
-        message={
-          finalTestPage.loadError ||
-          t('edit.missingCourseId', {
-            defaultValue: 'Missing course id.',
-          })
-        }
+        message={finalTestPage.loadError || t('edit.missingCourseId')}
       />
     );
   }
@@ -67,11 +62,8 @@ function FinalTestPageContent() {
     <EditCourseShell
       courseId={finalTestPage.courseId}
       section="final-test"
-      title={t('edit.tabs.finalTest', { defaultValue: 'Final test' })}
-      subtitle={t('edit.finalTest.subtitle', {
-        defaultValue:
-          'Create one optional scored final test for the full course. Learners unlock it only after finishing the course path.',
-      })}
+      title={t('edit.tabs.finalTest')}
+      subtitle={t('edit.finalTest.subtitle')}
       courseTitle={finalTestPage.localizedCourseTitle}
       previewHref={
         finalTestPage.courseId
@@ -84,15 +76,8 @@ function FinalTestPageContent() {
     >
       <section className={styles.formCard}>
         <div className={styles.cardHeader}>
-          <h2 className={styles.sectionTitle}>
-            {t('edit.finalTest.title', { defaultValue: 'Course final test' })}
-          </h2>
-          <p className={styles.sectionDescription}>
-            {t('edit.finalTest.description', {
-              defaultValue:
-                'Configure the optional final assessment for this course, including its passing percentage and question set.',
-            })}
-          </p>
+          <h2 className={styles.sectionTitle}>{t('edit.finalTest.title')}</h2>
+          <p className={styles.sectionDescription}>{t('edit.finalTest.description')}</p>
         </div>
 
         <div className={styles.editorLayout}>
@@ -100,23 +85,15 @@ function FinalTestPageContent() {
             <QuizAnalyticsSummaryBar
               analytics={finalTestPage.finalTestAnalytics}
               isLoading={finalTestPage.finalTestAnalyticsLoading}
-              title={t('edit.finalTest.analyticsTitle', {
-                defaultValue: 'Learner final test analytics',
-              })}
+              title={t('edit.finalTest.analyticsTitle')}
               styles={styles}
-              actionLabel={t('edit.finalTest.analyticsOpenDetails', {
-                defaultValue: 'View learner analytics',
-              })}
+              actionLabel={t('edit.finalTest.analyticsOpenDetails')}
               onOpenDetails={scrollToAnalytics}
             />
 
             {finalTestPage.finalTestLoading ? (
               <div className={styles.emptyState}>
-                <p className={styles.emptyDescription}>
-                  {t('edit.finalTest.loading', {
-                    defaultValue: 'Loading final test...',
-                  })}
-                </p>
+                <p className={styles.emptyDescription}>{t('edit.finalTest.loading')}</p>
               </div>
             ) : (
               <>
@@ -150,13 +127,8 @@ function FinalTestPageContent() {
                   language={i18n.language}
                   styles={styles}
                   t={t}
-                  title={t('edit.finalTest.analyticsTitle', {
-                    defaultValue: 'Learner final test analytics',
-                  })}
-                  description={t('edit.finalTest.analyticsDescription', {
-                    defaultValue:
-                      'Review who attempted the final test, how often they retried it, and how they performed.',
-                  })}
+                  title={t('edit.finalTest.analyticsTitle')}
+                  description={t('edit.finalTest.analyticsDescription')}
                 />
               </>
             )}

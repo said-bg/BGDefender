@@ -22,12 +22,10 @@ export default function CourseDetailsActions({
 
       <div className={sharedStyles.actions}>
         <Link href="/admin/courses" className={sharedStyles.secondaryAction}>
-          {t('common.cancel', { defaultValue: 'Cancel' })}
+          {t('common.cancel')}
         </Link>
         <button type="submit" className={sharedStyles.primaryAction} disabled={isSubmitting}>
-          {isSubmitting
-            ? t('edit.saving', { defaultValue: 'Saving changes...' })
-            : t('edit.submit', { defaultValue: 'Save changes' })}
+          {isSubmitting ? t('edit.saving') : t('edit.submit')}
         </button>
       </div>
     </>

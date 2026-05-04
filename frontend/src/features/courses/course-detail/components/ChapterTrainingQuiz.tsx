@@ -126,29 +126,16 @@ export default function ChapterTrainingQuiz({
   const [isQuizActive, setIsQuizActive] = useState(true);
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [reviewAnswers, setReviewAnswers] = useState<QuizAttemptAnswerReview[]>([]);
-  const passedSummaryMessage =
-    submitMessage ??
-    t('detail.quizPassedSummary', {
-      defaultValue:
-        'You already passed this training quiz. Start a new attempt whenever you want to practice again.',
-    });
-  const failedSummaryMessage =
-    submitMessage ??
-    t('detail.quizFailedSummary', {
-      defaultValue:
-        'Your latest result is saved. Review the explanations below, then retry whenever you want.',
-    });
-  const failedClosedSummaryMessage = t('detail.quizFailedClosedSummary', {
-    defaultValue:
-      'Your latest result is saved. Start a new attempt whenever you are ready.',
-  });
+  const passedSummaryMessage = submitMessage ?? t('detail.quizPassedSummary');
+  const failedSummaryMessage = submitMessage ?? t('detail.quizFailedSummary');
+  const failedClosedSummaryMessage = t('detail.quizFailedClosedSummary');
   const latestScoreLabel = latestAttempt ? `${latestAttempt.score}%` : '-';
   const latestCorrectAnswersLabel = latestAttempt
     ? `${latestAttempt.correctAnswers}/${latestAttempt.totalQuestions}`
     : '-';
   const latestStatusLabel = latestAttempt?.passed
-    ? t('detail.quizPassed', { defaultValue: 'Passed' })
-    : t('detail.quizRetryAvailable', { defaultValue: 'Retry available' });
+    ? t('detail.quizPassed')
+    : t('detail.quizRetryAvailable');
 
   useEffect(() => {
     let isActive = true;
@@ -180,12 +167,7 @@ export default function ChapterTrainingQuiz({
           return;
         }
 
-        setError(
-          getApiErrorMessage(
-            loadError,
-            'Failed to load the training quiz.',
-          ),
-        );
+        setError(getApiErrorMessage(loadError, t('detail.quizLoadFailed')));
       } finally {
         if (isActive) {
           setLoading(false);
@@ -257,14 +239,8 @@ export default function ChapterTrainingQuiz({
       setSubmitError(null);
       setSubmitMessage(
         previewResult.attempt.passed
-          ? t('detail.previewQuizPassedMessage', {
-              defaultValue:
-                'Preview complete. This attempt would pass for the learner, and nothing was saved.',
-            })
-          : t('detail.previewQuizFailedMessage', {
-              defaultValue:
-                'Preview complete. This attempt would not pass, and nothing was saved.',
-            }),
+          ? t('detail.previewQuizPassedMessage')
+          : t('detail.previewQuizFailedMessage'),
       );
       setIsQuizActive(false);
       setIsReviewMode(true);
@@ -291,12 +267,8 @@ export default function ChapterTrainingQuiz({
       setReviewAnswers(response.answers);
       setSubmitMessage(
         response.attempt.passed
-          ? t('detail.quizPassedMessage', {
-              defaultValue: 'Nice work. You passed this chapter training quiz.',
-            })
-          : t('detail.quizFailedMessage', {
-              defaultValue: 'You can retry this training quiz as many times as you want.',
-            }),
+          ? t('detail.quizPassedMessage')
+          : t('detail.quizFailedMessage'),
       );
       setIsQuizActive(false);
       setIsReviewMode(!response.attempt.passed);
@@ -304,14 +276,7 @@ export default function ChapterTrainingQuiz({
         scrollQuizCardIntoView(quizCardRef.current);
       });
     } catch (submissionError) {
-      setSubmitError(
-        getApiErrorMessage(
-          submissionError,
-          t('detail.quizSubmitFailed', {
-            defaultValue: 'Failed to submit the training quiz.',
-          }),
-        ),
-      );
+      setSubmitError(getApiErrorMessage(submissionError, t('detail.quizSubmitFailed')));
     } finally {
       setIsSubmitting(false);
     }
@@ -333,7 +298,7 @@ export default function ChapterTrainingQuiz({
   };
 
   if (loading) {
-    return <p className={styles.helperText}>{t('detail.quizLoading', { defaultValue: 'Loading quiz...' })}</p>;
+    return <p className={styles.helperText}>{t('detail.quizLoading')}</p>;
   }
 
   if (error) {
@@ -343,9 +308,7 @@ export default function ChapterTrainingQuiz({
   if (!quiz) {
     return (
       <p className={styles.helperText}>
-        {t('detail.quizUnavailable', {
-          defaultValue: 'No training quiz is published for this chapter yet.',
-        })}
+        {t('detail.quizUnavailable')}
       </p>
     );
   }
@@ -360,22 +323,22 @@ export default function ChapterTrainingQuiz({
         >
           {latestAttempt
             ? latestAttempt.passed
-              ? t('detail.quizPassed', { defaultValue: 'Passed' })
-              : t('detail.quizNotPassed', { defaultValue: 'Not passed yet' })
-            : t('detail.trainingQuiz', { defaultValue: 'Training quiz' })}
+              ? t('detail.quizPassed')
+              : t('detail.quizNotPassed')
+            : t('detail.trainingQuiz')}
         </span>
       </div>
 
       <div className={styles.quizMeta}>
         <div className={styles.metaCard}>
           <span className={styles.metaLabel}>
-            {t('detail.quizPassingScore', { defaultValue: 'Passing score' })}
+            {t('detail.quizPassingScore')}
           </span>
           <span className={styles.metaValue}>{passingScore}%</span>
         </div>
         <div className={styles.metaCard}>
           <span className={styles.metaLabel}>
-            {t('detail.quizAnswered', { defaultValue: 'Answered now' })}
+            {t('detail.quizAnswered')}
           </span>
           <span className={styles.metaValue}>
             {answeredCount}/{quiz.questions.length}
@@ -383,7 +346,7 @@ export default function ChapterTrainingQuiz({
         </div>
         <div className={styles.metaCard}>
           <span className={styles.metaLabel}>
-            {t('detail.quizBestScore', { defaultValue: 'Best score' })}
+            {t('detail.quizBestScore')}
           </span>
           <span className={styles.metaValue}>{bestAttempt?.score ?? '-'}</span>
         </div>
@@ -394,19 +357,19 @@ export default function ChapterTrainingQuiz({
           <div className={styles.quizMeta}>
             <div className={styles.metaCard}>
               <span className={styles.metaLabel}>
-                {t('detail.quizLatestScore', { defaultValue: 'Latest score' })}
+                {t('detail.quizLatestScore')}
               </span>
               <span className={styles.metaValue}>{latestScoreLabel}</span>
             </div>
             <div className={styles.metaCard}>
               <span className={styles.metaLabel}>
-                {t('detail.quizCorrectAnswers', { defaultValue: 'Correct answers' })}
+                {t('detail.quizCorrectAnswers')}
               </span>
               <span className={styles.metaValue}>{latestCorrectAnswersLabel}</span>
             </div>
             <div className={styles.metaCard}>
               <span className={styles.metaLabel}>
-                {t('detail.quizStatus', { defaultValue: 'Quiz status' })}
+                {t('detail.quizStatus')}
               </span>
               <span className={styles.metaValue}>{latestStatusLabel}</span>
             </div>
@@ -430,10 +393,7 @@ export default function ChapterTrainingQuiz({
 
       {previewMode ? (
         <p className={styles.helperText}>
-          {t('detail.previewModeQuizDescription', {
-            defaultValue:
-              'Preview mode shows the learner-facing quiz layout without saving attempts.',
-          })}
+          {t('detail.previewModeQuizDescription')}
         </p>
       ) : null}
 
@@ -445,7 +405,7 @@ export default function ChapterTrainingQuiz({
               className={styles.primaryAction}
               onClick={startRetry}
             >
-              {t('detail.quizStartRetry', { defaultValue: 'Retry quiz' })}
+              {t('detail.quizStartRetry')}
             </button>
           </div>
         </>
@@ -504,7 +464,7 @@ export default function ChapterTrainingQuiz({
               className={styles.primaryAction}
               onClick={startRetry}
             >
-              {t('detail.quizStartRetry', { defaultValue: 'Retry quiz' })}
+              {t('detail.quizStartRetry')}
             </button>
           </div>
         </>
@@ -516,7 +476,7 @@ export default function ChapterTrainingQuiz({
               className={styles.primaryAction}
               onClick={startRetry}
             >
-              {t('detail.quizStartRetry', { defaultValue: 'Retry quiz' })}
+              {t('detail.quizStartRetry')}
             </button>
           </div>
         </>
@@ -563,7 +523,7 @@ export default function ChapterTrainingQuiz({
               className={styles.secondaryAction}
               onClick={() => setSelectedAnswers({})}
             >
-              {t('detail.quizRetry', { defaultValue: 'Clear answers' })}
+              {t('detail.quizRetry')}
             </button>
             <button
               type="button"
@@ -572,8 +532,8 @@ export default function ChapterTrainingQuiz({
               onClick={() => void handleSubmit()}
             >
               {isSubmitting
-                ? t('detail.quizSubmitting', { defaultValue: 'Submitting quiz...' })
-                : t('detail.quizSubmit', { defaultValue: 'Submit quiz' })}
+                ? t('detail.quizSubmitting')
+                : t('detail.quizSubmit')}
             </button>
           </div>
         </>

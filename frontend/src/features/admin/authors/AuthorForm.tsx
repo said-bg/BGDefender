@@ -57,49 +57,40 @@ export default function AuthorForm({
       <div className={pageStyles.cardHeader}>
         <h2 className={pageStyles.sectionTitle}>
           {editingAuthorId
-            ? t('authors.editTitle', { defaultValue: 'Edit author' })
-            : t('authors.createTitle', { defaultValue: 'Create author' })}
+            ? t('authors.editTitle')
+            : t('authors.createTitle')}
         </h2>
         <p className={pageStyles.sectionDescription}>
-          {t('authors.formDescription', {
-            defaultValue:
-              'Keep author information ready once so you can reuse it across all courses.',
-          })}
+          {t('authors.formDescription')}
         </p>
       </div>
 
       <form className={formStyles.form} onSubmit={handleSubmit}>
         <label className={formStyles.field}>
-          <span>{t('authors.name', { defaultValue: 'Name' })}</span>
+          <span>{t('authors.name')}</span>
           <input
             value={form.name}
             onChange={(event) => onSetField('name', event.target.value)}
-            placeholder={t('authors.namePlaceholder', {
-              defaultValue: 'Enter the author name',
-            })}
+            placeholder={t('authors.namePlaceholder')}
           />
         </label>
 
         <div className={formStyles.fieldGroup}>
           <label className={formStyles.field}>
-            <span>{t('authors.roleEn', { defaultValue: 'Role (English)' })}</span>
+            <span>{t('authors.roleEn')}</span>
             <input
               value={form.roleEn}
               onChange={(event) => onSetField('roleEn', event.target.value)}
-              placeholder={t('authors.roleEnPlaceholder', {
-                defaultValue: 'Example: Security Analyst',
-              })}
+              placeholder={t('authors.roleEnPlaceholder')}
             />
           </label>
 
           <label className={formStyles.field}>
-            <span>{t('authors.roleFi', { defaultValue: 'Role (Finnish)' })}</span>
+            <span>{t('authors.roleFi')}</span>
             <input
               value={form.roleFi}
               onChange={(event) => onSetField('roleFi', event.target.value)}
-              placeholder={t('authors.roleFiPlaceholder', {
-                defaultValue: 'Example: Tietoturva-asiantuntija',
-              })}
+              placeholder={t('authors.roleFiPlaceholder')}
             />
           </label>
         </div>
@@ -118,26 +109,22 @@ export default function AuthorForm({
         />
 
         <label className={formStyles.fieldWide}>
-          <span>{t('authors.biographyEn', { defaultValue: 'Biography (English)' })}</span>
+          <span>{t('authors.biographyEn')}</span>
           <textarea
             rows={4}
             value={form.biographyEn}
             onChange={(event) => onSetField('biographyEn', event.target.value)}
-            placeholder={t('authors.biographyEnPlaceholder', {
-              defaultValue: 'Write a short English biography for this author.',
-            })}
+            placeholder={t('authors.biographyEnPlaceholder')}
           />
         </label>
 
         <label className={formStyles.fieldWide}>
-          <span>{t('authors.biographyFi', { defaultValue: 'Biography (Finnish)' })}</span>
+          <span>{t('authors.biographyFi')}</span>
           <textarea
             rows={4}
             value={form.biographyFi}
             onChange={(event) => onSetField('biographyFi', event.target.value)}
-            placeholder={t('authors.biographyFiPlaceholder', {
-              defaultValue: 'Write a short Finnish biography for this author.',
-            })}
+            placeholder={t('authors.biographyFiPlaceholder')}
           />
         </label>
 
@@ -147,17 +134,17 @@ export default function AuthorForm({
         <div className={formStyles.actions}>
           <button type="button" className={formStyles.secondaryAction} onClick={onReset}>
             {editingAuthorId
-              ? t('authors.cancelEdit', { defaultValue: 'Cancel edit' })
-              : t('common.cancel', { defaultValue: 'Cancel' })}
+              ? t('authors.cancelEdit')
+              : t('common.cancel')}
           </button>
           <button type="submit" className={formStyles.primaryAction} disabled={isSubmitting}>
             {isSubmitting
               ? editingAuthorId
-                ? t('authors.saving', { defaultValue: 'Saving author...' })
-                : t('authors.creating', { defaultValue: 'Creating author...' })
+                ? t('authors.saving')
+                : t('authors.creating')
               : editingAuthorId
-                ? t('authors.save', { defaultValue: 'Save author' })
-                : t('authors.create', { defaultValue: 'Create author' })}
+                ? t('authors.save')
+                : t('authors.create')}
           </button>
         </div>
       </form>

@@ -32,12 +32,7 @@ export default function useCreateCourse() {
         setAuthors(response.data);
       } catch (error) {
         setAuthorsError(
-          getApiErrorMessage(
-            error,
-            t('create.authorsFailed', {
-              defaultValue: 'Failed to load authors.',
-            }),
-          ),
+          getApiErrorMessage(error, t('create.authorsFailed')),
         );
       } finally {
         setLoadingAuthors(false);
@@ -78,12 +73,7 @@ export default function useCreateCourse() {
       setField('coverImage', response.url);
     } catch (error) {
       setCoverUploadError(
-        getApiErrorMessage(
-          error,
-          t('create.coverUploadFailed', {
-            defaultValue: 'Failed to upload cover image.',
-          }),
-        ),
+        getApiErrorMessage(error, t('create.coverUploadFailed')),
       );
     } finally {
       setIsUploadingCover(false);
@@ -95,30 +85,18 @@ export default function useCreateCourse() {
     setSubmitMessage(null);
 
     if (!form.titleEn.trim() || !form.titleFi.trim()) {
-      setSubmitError(
-        t('create.titleRequired', {
-          defaultValue: 'Both English and Finnish titles are required.',
-        }),
-      );
+      setSubmitError(t('create.titleRequired'));
       return;
     }
 
     if (!form.descriptionEn.trim() || !form.descriptionFi.trim()) {
-      setSubmitError(
-        t('create.descriptionRequired', {
-          defaultValue: 'Both English and Finnish descriptions are required.',
-        }),
-      );
+      setSubmitError(t('create.descriptionRequired'));
       return;
     }
 
     const durationValue = form.estimatedDuration.trim();
     if (durationValue && Number(durationValue) <= 0) {
-      setSubmitError(
-        t('create.durationInvalid', {
-          defaultValue: 'Estimated duration must be greater than zero.',
-        }),
-      );
+      setSubmitError(t('create.durationInvalid'));
       return;
     }
 
@@ -137,23 +115,14 @@ export default function useCreateCourse() {
     try {
       setIsSubmitting(true);
       await courseService.createCourse(payload);
-      setSubmitMessage(
-        t('create.success', {
-          defaultValue: 'Course created successfully. Redirecting to course management...',
-        }),
-      );
+      setSubmitMessage(t('create.success'));
       setForm(initialCreateCourseFormState);
       setTimeout(() => {
         router.push('/admin/courses');
       }, 900);
     } catch (error) {
       setSubmitError(
-        getApiErrorMessage(
-          error,
-          t('create.failed', {
-            defaultValue: 'Failed to create course.',
-          }),
-        ),
+        getApiErrorMessage(error, t('create.failed')),
       );
     } finally {
       setIsSubmitting(false);

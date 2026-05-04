@@ -92,7 +92,7 @@ export function useResetPasswordForm() {
         if (error.code === 'noNumber') {
           return t('password.noNumber');
         }
-        return t('password.invalid', { defaultValue: 'Invalid password' });
+        return t('password.invalid');
       });
     }
 

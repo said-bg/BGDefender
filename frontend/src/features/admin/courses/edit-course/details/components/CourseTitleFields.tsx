@@ -17,28 +17,24 @@ export default function CourseTitleFields({
   return (
     <>
       <label className={formStyles.field}>
-        <span>{t('create.titleEn', { defaultValue: 'Title (English)' })}</span>
+        <span>{t('create.titleEn')}</span>
         <input
           value={form.titleEn}
           onChange={(event) =>
             setForm((previous) => ({ ...previous, titleEn: event.target.value }))
           }
-          placeholder={t('create.titleEnPlaceholder', {
-            defaultValue: 'Enter the English course title',
-          })}
+          placeholder={t('create.titleEnPlaceholder')}
         />
       </label>
 
       <label className={formStyles.field}>
-        <span>{t('create.titleFi', { defaultValue: 'Title (Finnish)' })}</span>
+        <span>{t('create.titleFi')}</span>
         <input
           value={form.titleFi}
           onChange={(event) =>
             setForm((previous) => ({ ...previous, titleFi: event.target.value }))
           }
-          placeholder={t('create.titleFiPlaceholder', {
-            defaultValue: 'Enter the Finnish course title',
-          })}
+          placeholder={t('create.titleFiPlaceholder')}
         />
       </label>
     </>

@@ -54,13 +54,7 @@ function RichTextBlockEditor({
   });
 
   if (!editor) {
-    return (
-      <div className={styles.loading}>
-        {t('edit.contentBlocks.loadingEditor', {
-          defaultValue: 'Loading editor...',
-        })}
-      </div>
-    );
+    return <div className={styles.loading}>{t('edit.contentBlocks.loadingEditor')}</div>;
   }
 
   return (

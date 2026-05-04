@@ -1,18 +1,49 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { sendContactRequest } from '@/services/contact';
 import ContactPage from '../ContactPage';
 
+jest.mock('@/services/contact', () => ({
+  sendContactRequest: jest.fn(),
+}));
+
+const translations: Record<string, string> = {
+  'hero.eyebrow': 'Contact BG Defender',
+  'hero.title': 'Contact us',
+  'hero.description':
+    'Reach out for support, access requests, creator onboarding, or premium questions. We will help you get to the right place quickly.',
+  'types.general.title': 'General information',
+  'types.general.description': 'Questions about the platform, courses, or availability.',
+  'types.support.title': 'Technical support',
+  'types.support.description': 'Something is not working as expected? We can help.',
+  'types.creator.title': 'Creator access',
+  'types.creator.description': 'Request access to create and manage learning content.',
+  'types.premium.title': 'Premium access',
+  'types.premium.description': 'Ask about premium access, tailored plans, or upgrades.',
+  'fields.requestType': 'Request type',
+  'fields.name': 'Full name',
+  'fields.namePlaceholder': 'Your name',
+  'fields.email': 'Email address',
+  'fields.emailPlaceholder': 'you@example.com',
+  'fields.message': 'Message',
+  'fields.messagePlaceholder': 'Share the details you want our team to review and respond to.',
+  'form.primaryAction': 'Send message',
+  'form.secondaryAction': 'Email support directly',
+  'form.sending': 'Sending...',
+  'form.note': 'Your message will be sent directly to the BG Defender team.',
+  'form.failed': 'We could not send your message right now. Please try again.',
+  'validation.nameRequired': 'Name is required',
+  'validation.emailRequired': 'Email is required',
+  'validation.emailInvalid': 'Invalid email format',
+  'validation.messageRequired': 'Message is required',
+};
+
 const mockT = (key: string, options?: Record<string, string>) => {
-  if (!options?.defaultValue) {
-    return key;
-  }
+  const template = translations[key] ?? key;
 
-  return Object.entries(options).reduce((value, [token, replacement]) => {
-    if (token === 'defaultValue') {
-      return value;
-    }
-
-    return value.replace(`{{${token}}}`, replacement);
-  }, options.defaultValue);
+  return Object.entries(options ?? {}).reduce(
+    (value, [token, replacement]) => value.replace(`{{${token}}}`, replacement),
+    template,
+  );
 };
 
 jest.mock('react-i18next', () => ({
@@ -22,12 +53,17 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('ContactPage', () => {
-  it('prefills the request email link from the selected request type and form content', () => {
+  it('submits the contact request and shows the success message', async () => {
+    const mockedSendContactRequest = jest.mocked(sendContactRequest);
+    mockedSendContactRequest.mockResolvedValue({
+      message: 'Your message has been sent. We will get back to you by email.',
+    });
+
     render(<ContactPage />);
 
     expect(
       screen.getByRole('heading', {
-        name: 'Contact the team',
+        name: 'Contact us',
       }),
     ).toBeInTheDocument();
 
@@ -42,14 +78,19 @@ describe('ContactPage', () => {
       target: { value: 'Please help me set up creator access.' },
     });
 
-    const action = screen.getByRole('link', { name: 'Prepare email' });
+    fireEvent.click(screen.getByRole('button', { name: 'Send message' }));
 
-    expect(action).toHaveAttribute(
-      'href',
-      expect.stringContaining('mailto:support@bgdefender.com?subject=Creator%20access%20request'),
-    );
-    expect(action).toHaveAttribute('href', expect.stringContaining('Jane%20Doe'));
-    expect(action).toHaveAttribute('href', expect.stringContaining('creator%20access'));
-    expect(action).not.toHaveAttribute('aria-disabled', 'true');
+    await waitFor(() => {
+      expect(mockedSendContactRequest).toHaveBeenCalledWith({
+        requestType: 'creator',
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        message: 'Please help me set up creator access.',
+      });
+    });
+
+    expect(
+      screen.getByText('Your message has been sent. We will get back to you by email.'),
+    ).toBeInTheDocument();
   });
 });

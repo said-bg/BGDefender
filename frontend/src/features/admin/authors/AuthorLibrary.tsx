@@ -43,13 +43,10 @@ export default function AuthorLibrary({
     <section className={pageStyles.listCard}>
       <div className={pageStyles.cardHeader}>
         <h2 className={pageStyles.sectionTitle}>
-          {t('authors.listTitle', { defaultValue: 'Author library' })}
+          {t('authors.listTitle')}
         </h2>
         <p className={pageStyles.sectionDescription}>
-          {t('authors.listDescription', {
-            defaultValue:
-              'Every author you create here becomes reusable across all course forms.',
-          })}
+          {t('authors.listDescription')}
         </p>
       </div>
 
@@ -58,38 +55,31 @@ export default function AuthorLibrary({
         value={search}
         onChange={(event) => setSearch(event.target.value)}
         className={libraryStyles.searchInput}
-        placeholder={t('authors.searchPlaceholder', {
-          defaultValue: 'Search authors by name, role, or biography',
-        })}
+        placeholder={t('authors.searchPlaceholder')}
       />
 
       {loading ? (
         <p className={pageStyles.helperMessage}>
-          {t('loading', { defaultValue: 'Loading admin data...' })}
+          {t('loading')}
         </p>
       ) : loadError ? (
         <p className={pageStyles.errorMessage}>{loadError}</p>
       ) : authors.length === 0 ? (
         <div className={pageStyles.emptyState}>
           <h3 className={pageStyles.emptyTitle}>
-            {t('authors.emptyTitle', { defaultValue: 'No authors yet' })}
+            {t('authors.emptyTitle')}
           </h3>
           <p className={pageStyles.emptyDescription}>
-            {t('authors.emptyDescription', {
-              defaultValue:
-                'Create the first author profile and it will be ready for course assignment right away.',
-            })}
+            {t('authors.emptyDescription')}
           </p>
         </div>
       ) : filteredAuthors.length === 0 ? (
         <div className={pageStyles.emptyState}>
           <h3 className={pageStyles.emptyTitle}>
-            {t('authors.searchEmptyTitle', { defaultValue: 'No matching authors' })}
+            {t('authors.searchEmptyTitle')}
           </h3>
           <p className={pageStyles.emptyDescription}>
-            {t('authors.searchEmptyDescription', {
-              defaultValue: 'Try another name, role, or biography keyword.',
-            })}
+            {t('authors.searchEmptyDescription')}
           </p>
         </div>
       ) : (
@@ -101,29 +91,27 @@ export default function AuthorLibrary({
             return (
               <article key={author.id} className={libraryStyles.authorCard}>
                 <div className={libraryStyles.authorHeader}>
-                    <div className={libraryStyles.authorIdentity}>
-                      {author.photo ? (
-                        <>
-                          <Image
-                            src={author.photo}
-                            alt={author.name}
-                            className={libraryStyles.authorAvatar}
-                            width={56}
-                            height={56}
-                            unoptimized
-                            loading="lazy"
-                          />
-                        </>
-                      ) : (
-                        <div className={libraryStyles.authorAvatarFallback}>
-                          {getAuthorInitials(author.name)}
-                        </div>
-                      )}
+                  <div className={libraryStyles.authorIdentity}>
+                    {author.photo ? (
+                      <Image
+                        src={author.photo}
+                        alt={author.name}
+                        className={libraryStyles.authorAvatar}
+                        width={56}
+                        height={56}
+                        unoptimized
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className={libraryStyles.authorAvatarFallback}>
+                        {getAuthorInitials(author.name)}
+                      </div>
+                    )}
 
                     <div>
                       <h3 className={libraryStyles.authorName}>{author.name}</h3>
                       <p className={libraryStyles.authorRole}>
-                        {localizedRole || t('authors.noRole', { defaultValue: 'No role added yet' })}
+                        {localizedRole || t('authors.noRole')}
                       </p>
                     </div>
                   </div>
@@ -133,7 +121,7 @@ export default function AuthorLibrary({
                       className={libraryStyles.inlineAction}
                       onClick={() => onEdit(author)}
                     >
-                      {t('authors.editAction', { defaultValue: 'Edit author' })}
+                      {t('authors.editAction')}
                     </button>
                     <button
                       type="button"
@@ -142,8 +130,8 @@ export default function AuthorLibrary({
                       disabled={deletingAuthorId === author.id}
                     >
                       {deletingAuthorId === author.id
-                        ? t('authors.deleting', { defaultValue: 'Deleting...' })
-                        : t('authors.delete', { defaultValue: 'Delete' })}
+                        ? t('authors.deleting')
+                        : t('authors.delete')}
                     </button>
                   </div>
                 </div>

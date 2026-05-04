@@ -40,11 +40,7 @@ export async function submitSubChapterMutation({
   setSubChapterError(null);
 
   if (!course || !courseId) {
-    setSubChapterError(
-      t('edit.subchapters.missingCourseId', {
-        defaultValue: 'Missing course id.',
-      }),
-    );
+    setSubChapterError(t('edit.subchapters.missingCourseId'));
     return;
   }
 
@@ -76,12 +72,8 @@ export async function submitSubChapterMutation({
     setCourse(freshCourse);
     setSubChapterMessage(
       editingSubChapterId
-        ? t('edit.subchapters.updated', {
-            defaultValue: 'Subchapter updated successfully.',
-          })
-        : t('edit.subchapters.created', {
-          defaultValue: 'Subchapter created successfully.',
-        }),
+        ? t('edit.subchapters.updated')
+        : t('edit.subchapters.created'),
     );
     resetSubChapterForm(subChapterForm.chapterId, freshCourse.chapters);
   } catch (error) {
@@ -89,12 +81,8 @@ export async function submitSubChapterMutation({
       getApiErrorMessage(
         error,
         editingSubChapterId
-          ? t('edit.subchapters.updateFailed', {
-              defaultValue: 'Failed to update subchapter.',
-            })
-          : t('edit.subchapters.createFailed', {
-              defaultValue: 'Failed to create subchapter.',
-            }),
+          ? t('edit.subchapters.updateFailed')
+          : t('edit.subchapters.createFailed'),
       ),
     );
   } finally {
@@ -133,9 +121,7 @@ export async function deleteSubChapterMutation(
   }
 
   const confirmed = window.confirm(
-    t('edit.subchapters.deleteConfirm', {
-      defaultValue: 'Delete this subchapter? This action cannot be undone.',
-    }),
+    t('edit.subchapters.deleteConfirm'),
   );
 
   if (!confirmed) {
@@ -152,11 +138,7 @@ export async function deleteSubChapterMutation(
       await courseService.getAdminCourseById(courseId),
     );
     setCourse(freshCourse);
-    setSubChapterMessage(
-      t('edit.subchapters.deleted', {
-        defaultValue: 'Subchapter deleted successfully.',
-      }),
-    );
+    setSubChapterMessage(t('edit.subchapters.deleted'));
 
     if (
       editingSubChapterId === subChapterId ||
@@ -168,9 +150,7 @@ export async function deleteSubChapterMutation(
     setSubChapterError(
       getApiErrorMessage(
         error,
-        t('edit.subchapters.deleteFailed', {
-          defaultValue: 'Failed to delete subchapter.',
-        }),
+        t('edit.subchapters.deleteFailed'),
       ),
     );
   } finally {

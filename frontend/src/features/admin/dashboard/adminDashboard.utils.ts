@@ -6,9 +6,7 @@ export function getCourseTitle(course: Course, language: string) {
 }
 
 export function formatCourseLevel(level: Course['level'], t: AdminDashboardT) {
-  return level === 'premium'
-    ? t('levels.premium', { defaultValue: 'Premium' })
-    : t('levels.free', { defaultValue: 'Free' });
+  return level === 'premium' ? t('levels.premium') : t('levels.free');
 }
 
 export function formatCourseStatus(
@@ -17,9 +15,9 @@ export function formatCourseStatus(
 ) {
   switch (status) {
     case 'published':
-      return t('status.published', { defaultValue: 'Published' });
+      return t('status.published');
     default:
-      return t('status.draft', { defaultValue: 'Draft' });
+      return t('status.draft');
   }
 }
 

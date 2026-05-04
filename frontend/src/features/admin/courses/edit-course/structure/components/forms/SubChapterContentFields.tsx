@@ -125,9 +125,7 @@ export default function SubChapterContentFields({
           </div>
         </div>
         <p className={styles.orderHint}>
-          {t('edit.subchapters.orderHint', {
-            defaultValue: 'Existing subchapters are shifted automatically to keep the order unique.',
-          })}
+          {t('edit.subchapters.orderHint')}
         </p>
       </label>
     </>

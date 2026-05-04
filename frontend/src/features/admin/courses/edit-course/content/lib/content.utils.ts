@@ -50,34 +50,24 @@ export const validateContentForm = (
   t: (key: string, options?: Record<string, unknown>) => string,
 ) => {
   if (!courseId) {
-    return t('edit.contentBlocks.missingCourseId', {
-      defaultValue: 'Missing course id.',
-    });
+    return t('edit.contentBlocks.missingCourseId');
   }
 
   if (!form.subChapterId || !form.chapterId) {
-    return t('edit.contentBlocks.parentRequired', {
-      defaultValue: 'Choose a subchapter before creating a content block.',
-    });
+    return t('edit.contentBlocks.parentRequired');
   }
 
   if (!form.titleEn.trim() || !form.titleFi.trim()) {
-    return t('edit.contentBlocks.titleRequired', {
-      defaultValue: 'Both English and Finnish block titles are required.',
-    });
+    return t('edit.contentBlocks.titleRequired');
   }
 
   if (!form.contentEn.trim() || !form.contentFi.trim()) {
-    return t('edit.contentBlocks.contentRequired', {
-      defaultValue: 'Both English and Finnish block contents are required.',
-    });
+    return t('edit.contentBlocks.contentRequired');
   }
 
   const orderIndex = Number(form.orderIndex);
   if (!Number.isFinite(orderIndex) || orderIndex <= 0) {
-    return t('edit.contentBlocks.orderInvalid', {
-      defaultValue: 'Block order must be a number greater than zero.',
-    });
+    return t('edit.contentBlocks.orderInvalid');
   }
 
   return null;

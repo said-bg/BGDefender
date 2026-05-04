@@ -53,13 +53,10 @@ export default function CourseDetailsForm({
     <section className={formStyles.formCard}>
       <div className={formStyles.cardHeader}>
         <h2 className={formStyles.sectionTitle}>
-          {t('edit.detailsTitle', { defaultValue: 'Course details' })}
+          {t('edit.detailsTitle')}
         </h2>
         <p className={formStyles.sectionDescription}>
-          {t('edit.detailsDescription', {
-            defaultValue:
-              'Update the course overview, metadata, cover image, and author assignment.',
-          })}
+          {t('edit.detailsDescription')}
         </p>
       </div>
 

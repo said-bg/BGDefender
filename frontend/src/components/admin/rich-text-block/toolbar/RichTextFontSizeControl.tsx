@@ -51,7 +51,7 @@ export default function RichTextFontSizeControl({
   const [draftValue, setDraftValue] = useState('');
 
   const currentValue = formatFontSizeValue(currentFontSize);
-  const triggerLabel = currentValue || t('richText.fontSizeDefault', { defaultValue: 'Size' });
+  const triggerLabel = currentValue || t('richText.fontSizeDefault');
 
   useEffect(() => {
     if (!isOpen) {
@@ -127,7 +127,7 @@ export default function RichTextFontSizeControl({
         className={styles.toolbarSelectButton}
         aria-haspopup="dialog"
         aria-expanded={isOpen ? 'true' : 'false'}
-        aria-label={t('richText.fontSize', { defaultValue: 'Font size' })}
+        aria-label={t('richText.fontSize')}
         data-active={currentValue ? 'true' : 'false'}
         onClick={() => {
           if (!isOpen) {
@@ -143,7 +143,7 @@ export default function RichTextFontSizeControl({
         <div
           className={styles.fontSizePanel}
           role="dialog"
-          aria-label={t('richText.fontSize', { defaultValue: 'Font size' })}
+          aria-label={t('richText.fontSize')}
         >
           <div className={styles.fontSizeInputRow}>
             <input
@@ -151,8 +151,8 @@ export default function RichTextFontSizeControl({
               type="text"
               inputMode="numeric"
               className={styles.fontSizePanelInput}
-              aria-label={t('richText.fontSize', { defaultValue: 'Font size' })}
-              placeholder={t('richText.fontSizeDefault', { defaultValue: 'Size' })}
+              aria-label={t('richText.fontSize')}
+              placeholder={t('richText.fontSizeDefault')}
               value={draftValue}
               onChange={(event) => setDraftValue(event.target.value)}
               onKeyDown={(event) => {
@@ -167,7 +167,7 @@ export default function RichTextFontSizeControl({
               className={styles.colorResetButton}
               onClick={() => applyAndClose('Default')}
             >
-              {t('richText.clearColor', { defaultValue: 'Reset' })}
+              {t('richText.clearColor')}
             </button>
           </div>
 

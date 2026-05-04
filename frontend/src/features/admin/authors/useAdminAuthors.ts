@@ -95,11 +95,7 @@ export default function useAdminAuthors() {
     setSubmitMessage(null);
 
     if (!form.name.trim()) {
-      setSubmitError(
-        t('authors.nameRequired', {
-          defaultValue: 'Author name is required.',
-        }),
-      );
+      setSubmitError(t('authors.nameRequired'));
       return;
     }
 
@@ -123,9 +119,7 @@ export default function useAdminAuthors() {
 
   const handleDelete = async (author: Author) => {
     const confirmed = window.confirm(
-      t('authors.deleteConfirm', {
-        defaultValue: 'Delete this author? This action cannot be undone.',
-      }),
+      t('authors.deleteConfirm'),
     );
 
     if (!confirmed) {

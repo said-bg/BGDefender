@@ -26,9 +26,11 @@ type MockCollectionRepository = Pick<
 
 type MockCollectionItemRepository = Pick<
   Repository<CourseCollectionItem>,
-  'create'
+  'create' | 'delete' | 'save'
 > & {
   create: jest.Mock;
+  delete: jest.Mock;
+  save: jest.Mock;
 };
 
 type MockCourseRepository = Pick<Repository<Course>, 'findByIds'> & {
@@ -150,6 +152,8 @@ describe('CollectionsService', () => {
 
     collectionItemRepository = {
       create: jest.fn(),
+      delete: jest.fn(),
+      save: jest.fn(),
     };
 
     courseRepository = {
@@ -162,6 +166,11 @@ describe('CollectionsService', () => {
     collectionItemRepository.create.mockImplementation(
       (value: Partial<CourseCollectionItem>) => value as CourseCollectionItem,
     );
+    collectionItemRepository.save.mockImplementation(
+      (value: CourseCollectionItem | CourseCollectionItem[]) =>
+        Promise.resolve(value),
+    );
+    collectionItemRepository.delete.mockResolvedValue({ affected: 0 });
     collectionRepository.save.mockImplementation((value: CourseCollection) =>
       Promise.resolve(value),
     );
@@ -542,6 +551,21 @@ describe('CollectionsService', () => {
         orderIndex: 2,
         course: updatedCourses[1],
       });
+      expect(collectionItemRepository.delete).toHaveBeenCalledWith({
+        collectionId: 'collection-1',
+      });
+      expect(collectionItemRepository.save).toHaveBeenCalledWith([
+        expect.objectContaining({
+          collectionId: 'collection-1',
+          courseId: 'course-2',
+          orderIndex: 1,
+        }),
+        expect.objectContaining({
+          collectionId: 'collection-1',
+          courseId: 'course-3',
+          orderIndex: 2,
+        }),
+      ]);
       expect(collectionRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
           id: 'collection-1',
@@ -587,6 +611,8 @@ describe('CollectionsService', () => {
 
       // Omitting courseIds should preserve the current item list instead of rebuilding it.
       expect(collectionItemRepository.create).not.toHaveBeenCalled();
+      expect(collectionItemRepository.delete).not.toHaveBeenCalled();
+      expect(collectionItemRepository.save).not.toHaveBeenCalled();
       expect(courseRepository.findByIds).not.toHaveBeenCalled();
       expect(collectionRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -654,6 +680,41 @@ describe('CollectionsService', () => {
       ).rejects.toThrow(NotFoundException);
 
       expect(collectionRepository.save).not.toHaveBeenCalled();
+      expect(collectionItemRepository.delete).not.toHaveBeenCalled();
+      expect(collectionItemRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('removes all collection items when update receives an empty course list', async () => {
+      const existingCollection = createCollection({
+        id: 'collection-1',
+        items: [
+          createCollectionItem({
+            collectionId: 'collection-1',
+            courseId: 'course-1',
+            course: createCourse({ id: 'course-1' }),
+          }),
+        ],
+      });
+
+      collectionRepository.findOne
+        .mockResolvedValueOnce(existingCollection)
+        .mockResolvedValueOnce(
+          createCollection({
+            id: 'collection-1',
+            items: [],
+          }),
+        );
+
+      const result = await service.update('collection-1', {
+        courseIds: [],
+      });
+
+      expect(courseRepository.findByIds).not.toHaveBeenCalled();
+      expect(collectionItemRepository.delete).toHaveBeenCalledWith({
+        collectionId: 'collection-1',
+      });
+      expect(collectionItemRepository.save).not.toHaveBeenCalled();
+      expect(result.courses).toEqual([]);
     });
   });
 

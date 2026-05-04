@@ -19,24 +19,15 @@ export default function AdminDashboardActivity({
   const [isOpen, setIsOpen] = useState(true);
   const summaryLabel =
     items.length > 0
-      ? t('dashboard.activitySummary', {
-          count: items.length,
-          defaultValue: `${items.length} recent update${items.length > 1 ? 's' : ''}`,
-        })
-      : t('dashboard.noActivity', {
-          defaultValue: 'No course updates yet.',
-        });
+      ? t('dashboard.activitySummary', { count: items.length })
+      : t('dashboard.noActivity');
 
   return (
     <section className={styles.activity}>
       <div className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>
-            {t('dashboard.activityEyebrow', { defaultValue: 'Activity' })}
-          </p>
-          <h2 className={styles.title}>
-            {t('dashboard.activityTitle', { defaultValue: 'Recent updates' })}
-          </h2>
+          <p className={styles.eyebrow}>{t('dashboard.activityEyebrow')}</p>
+          <h2 className={styles.title}>{t('dashboard.activityTitle')}</h2>
         </div>
         <button
           type="button"
@@ -45,8 +36,8 @@ export default function AdminDashboardActivity({
           aria-expanded={isOpen}
         >
           {isOpen
-            ? t('dashboard.collapseActivity', { defaultValue: 'Hide' })
-            : t('dashboard.expandActivity', { defaultValue: 'Show' })}
+            ? t('dashboard.collapseActivity')
+            : t('dashboard.expandActivity')}
         </button>
       </div>
 
@@ -74,11 +65,7 @@ export default function AdminDashboardActivity({
               </article>
             ))
           ) : (
-            <p className={styles.emptyText}>
-              {t('dashboard.noActivity', {
-                defaultValue: 'No course updates yet.',
-              })}
-            </p>
+            <p className={styles.emptyText}>{t('dashboard.noActivity')}</p>
           )}
         </div>
       ) : null}

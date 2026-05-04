@@ -334,7 +334,16 @@ export default function AdminCollectionsForm({
         <div className={styles.actionsRow}>
           <button
             type="button"
-            className={`${sharedStyles.pillButton} ${sharedStyles.primaryButton} ${styles.responsiveButton}`}
+            className={styles.secondaryAction}
+            onClick={resetForm}
+          >
+            {editingCollectionId
+              ? t('collections.cancelEdit')
+              : t('collections.reset')}
+          </button>
+          <button
+            type="button"
+            className={styles.primaryAction}
             onClick={() => void handleSubmit()}
             disabled={submitting}
           >
@@ -343,15 +352,6 @@ export default function AdminCollectionsForm({
               : editingCollectionId
                 ? t('collections.save')
                 : t('collections.create')}
-          </button>
-          <button
-            type="button"
-            className={`${sharedStyles.pillButton} ${sharedStyles.neutralButton} ${styles.responsiveButton}`}
-            onClick={resetForm}
-          >
-            {editingCollectionId
-              ? t('collections.cancelEdit')
-              : t('collections.reset')}
           </button>
         </div>
       </div>

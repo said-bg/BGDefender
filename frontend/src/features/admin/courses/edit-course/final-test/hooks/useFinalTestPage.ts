@@ -48,11 +48,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
 
   useEffect(() => {
     if (!courseId) {
-      setLoadError(
-        t('edit.missingCourseId', {
-          defaultValue: 'Missing course id.',
-        }),
-      );
+      setLoadError(t('edit.missingCourseId'));
       setLoadingPage(false);
       return;
     }
@@ -64,14 +60,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
         const response = await courseService.getAdminCourseById(courseId);
         setCourse(response);
       } catch (error) {
-        setLoadError(
-          getApiErrorMessage(
-            error,
-            t('edit.failedToLoad', {
-              defaultValue: 'Failed to load course data.',
-            }),
-          ),
-        );
+        setLoadError(getApiErrorMessage(error, t('edit.failedToLoad')));
       } finally {
         setLoadingPage(false);
       }
@@ -108,14 +97,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
               ),
         );
       } catch (error) {
-        setFinalTestError(
-          getApiErrorMessage(
-            error,
-            t('edit.finalTest.failedToLoad', {
-              defaultValue: 'Failed to load the final test.',
-            }),
-          ),
-        );
+        setFinalTestError(getApiErrorMessage(error, t('edit.finalTest.failedToLoad')));
         setFinalTestAnalytics(null);
       } finally {
         setFinalTestLoading(false);
@@ -194,20 +176,9 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
       setLoadedFinalTest(savedFinalTest);
       replaceForm(mapAssessmentToForm(savedFinalTest));
       await loadFinalTestAnalytics(courseId);
-      setFinalTestMessage(
-        t('edit.finalTest.saved', {
-          defaultValue: 'Final test saved successfully.',
-        }),
-      );
+      setFinalTestMessage(t('edit.finalTest.saved'));
     } catch (error) {
-      setFinalTestError(
-        getApiErrorMessage(
-          error,
-          t('edit.finalTest.saveFailed', {
-            defaultValue: 'Failed to save the final test.',
-          }),
-        ),
-      );
+      setFinalTestError(getApiErrorMessage(error, t('edit.finalTest.saveFailed')));
     } finally {
       setIsSavingFinalTest(false);
     }
@@ -218,11 +189,7 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
       return;
     }
 
-    const confirmed = window.confirm(
-      t('edit.finalTest.deleteConfirm', {
-        defaultValue: 'Delete this final test? This action cannot be undone.',
-      }),
-    );
+    const confirmed = window.confirm(t('edit.finalTest.deleteConfirm'));
 
     if (!confirmed) {
       return;
@@ -241,20 +208,9 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
           course ? `${course.titleFi} final test` : '',
         ),
       );
-      setFinalTestMessage(
-        t('edit.finalTest.deleted', {
-          defaultValue: 'Final test deleted successfully.',
-        }),
-      );
+      setFinalTestMessage(t('edit.finalTest.deleted'));
     } catch (error) {
-      setFinalTestError(
-        getApiErrorMessage(
-          error,
-          t('edit.finalTest.deleteFailed', {
-            defaultValue: 'Failed to delete the final test.',
-          }),
-        ),
-      );
+      setFinalTestError(getApiErrorMessage(error, t('edit.finalTest.deleteFailed')));
     } finally {
       setIsDeletingFinalTest(false);
     }

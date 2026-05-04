@@ -19,8 +19,59 @@ jest.mock('@/components/auth/ProtectedRoute', () => ({
   default: ({ children }: { children: React.ReactNode }) => children,
 }));
 
+const TRANSLATIONS: Record<string, string> = {
+  'common.cancel': 'Cancel',
+  'edit.tabs.quiz': 'Training quiz',
+  'edit.tabs.details': 'Course details',
+  'edit.tabs.structure': 'Structure',
+  'edit.tabs.content': 'Content',
+  'edit.tabs.finalTest': 'Final test',
+  'edit.quiz.subtitle':
+    'Attach one scored training quiz to each chapter. These quizzes can include single-choice and multiple-choice questions with a passing percentage.',
+  'edit.quiz.title': 'Chapter training quizzes',
+  'edit.quiz.description':
+    'Pick a chapter on the left, then create or update the scored training quiz learners will see at the end of that chapter.',
+  'edit.quiz.chapterListTitle': 'Chapters',
+  'edit.quiz.chapterListDescription': 'Choose the chapter whose training quiz you want to manage.',
+  'edit.chapters.orderLabel': 'Chapter',
+  'edit.quiz.statusEmpty': 'No quiz yet',
+  'edit.quiz.notConfigured': 'Not configured',
+  'edit.quiz.statusPublished': 'Published',
+  'edit.quiz.quizReady': 'Quiz ready',
+  'edit.quiz.editorTitle': 'Training quiz editor',
+  'edit.quiz.editorDescription':
+    'Configure the scored quiz for the selected chapter, including the pass percentage and the full question set.',
+  'edit.quiz.titleEn': 'Quiz title (English)',
+  'edit.quiz.titleFi': 'Quiz title (Finnish)',
+  'edit.quiz.descriptionEn': 'Description (English)',
+  'edit.quiz.descriptionFi': 'Description (Finnish)',
+  'edit.quiz.passingScore': 'Passing score (%)',
+  'edit.quiz.publishNow': 'Make this quiz visible to learners now',
+  'edit.quiz.questionsTitle': 'Questions',
+  'edit.quiz.addQuestion': 'Add question',
+  'edit.quiz.questionLabel': 'Question',
+  'edit.quiz.untitledQuestion': 'Untitled question',
+  'edit.quiz.promptEn': 'Prompt (English)',
+  'edit.quiz.promptFi': 'Prompt (Finnish)',
+  'edit.quiz.explanationEn': 'Explanation (English)',
+  'edit.quiz.explanationFi': 'Explanation (Finnish)',
+  'edit.quiz.questionType': 'Question type',
+  'edit.quiz.singleChoice': 'Single choice',
+  'edit.quiz.multipleChoice': 'Multiple choice',
+  'edit.quiz.optionsTitle': 'Answer options',
+  'edit.quiz.addOption': 'Add option',
+  'edit.quiz.correctAnswer': 'Correct',
+  'edit.quiz.optionEn': 'Option (English)',
+  'edit.quiz.optionFi': 'Option (Finnish)',
+  'edit.quiz.deleteQuestion': 'Delete question',
+  'edit.quiz.saveQuiz': 'Save quiz',
+  'edit.quiz.saved': 'Training quiz saved successfully.',
+  'edit.quiz.analyticsTitle': 'Learner quiz analytics',
+  'edit.quiz.analyticsOpenDetails': 'View learner analytics',
+};
+
 const mockT = (key: string, options?: { defaultValue?: string }) =>
-  options?.defaultValue ?? key;
+  TRANSLATIONS[key] ?? options?.defaultValue ?? key;
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({

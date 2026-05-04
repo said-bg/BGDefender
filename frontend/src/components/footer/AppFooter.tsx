@@ -13,7 +13,7 @@ export default function AppFooter() {
       <div className={styles.row}>
         <div className={styles.links}>
           <Link href="/contact" className={styles.link}>
-            {t('footer.links.contact', { defaultValue: 'Contact' })}
+            {t('footer.links.contact')}
           </Link>
         </div>
         <p className={styles.text}>

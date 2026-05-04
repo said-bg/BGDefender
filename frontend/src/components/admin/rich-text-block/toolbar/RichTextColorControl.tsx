@@ -247,13 +247,8 @@ function RichTextColorControl({
           className={styles.colorTriggerSwatch}
           aria-hidden="true"
         />
-        <span className={styles.srOnly}>
-          {t('richText.textColor', { defaultValue: 'Text color' })}{' '}
-        </span>
-        <span className={styles.colorSummaryText}>
-          {colorSummary ||
-            t('richText.textColorShort', { defaultValue: 'Color' })}
-        </span>
+        <span className={styles.srOnly}>{t('richText.textColor')} </span>
+        <span className={styles.colorSummaryText}>{colorSummary || t('richText.textColorShort')}</span>
       </button>
 
       <div
@@ -261,7 +256,7 @@ function RichTextColorControl({
         hidden={!isOpen}
       >
           <div className={styles.colorPanelHeader}>
-            <span>{t('richText.textColor', { defaultValue: 'Text color' })}</span>
+            <span>{t('richText.textColor')}</span>
             <button
               type="button"
               className={styles.colorResetButton}
@@ -271,7 +266,7 @@ function RichTextColorControl({
                 setIsOpen(false);
               }}
             >
-              {t('richText.clearColor', { defaultValue: 'Reset' })}
+              {t('richText.clearColor')}
             </button>
           </div>
 
@@ -284,7 +279,7 @@ function RichTextColorControl({
                 data-active={
                   normalizeColorForPicker(currentColor) === presetColor.value.toLowerCase()
                 }
-                aria-label={`${t('richText.textColor', { defaultValue: 'Text color' })} ${presetColor.value.toUpperCase()}`}
+                aria-label={`${t('richText.textColor')} ${presetColor.value.toUpperCase()}`}
                 onClick={() => applyColor(presetColor.value, true)}
               >
                 <span
@@ -296,13 +291,11 @@ function RichTextColorControl({
           </div>
 
           <div className={styles.colorPanelRow}>
-            <label className={styles.colorSwatch} title={t('richText.textColor', { defaultValue: 'Text color' })}>
+            <label className={styles.colorSwatch} title={t('richText.textColor')}>
               <input
                 type="color"
                 value={normalizeColorForPicker(draftColor || currentColor)}
-                aria-label={t('richText.textColorPicker', {
-                  defaultValue: 'Pick a text color',
-                })}
+                aria-label={t('richText.textColorPicker')}
                 onChange={(event) => {
                   const nextColor = event.target.value;
                   setDraftColor(nextColor);
@@ -324,9 +317,7 @@ function RichTextColorControl({
               className={styles.colorTextInput}
               value={draftColor}
               placeholder="#1F7A6A or rgba(...)"
-              aria-label={t('richText.textColorValue', {
-                defaultValue: 'Text color value',
-              })}
+              aria-label={t('richText.textColorValue')}
               onChange={(event) => setDraftColor(event.target.value)}
               onBlur={() => applyColor(draftColor)}
               onKeyDown={(event) => {
@@ -339,7 +330,7 @@ function RichTextColorControl({
           </div>
 
           <label className={styles.colorSliderField}>
-            <span>{t('richText.opacity', { defaultValue: 'Opacity' })}</span>
+            <span>{t('richText.opacity')}</span>
             <div className={styles.colorSliderRow}>
               <input
                 type="range"
@@ -348,7 +339,7 @@ function RichTextColorControl({
                 step="1"
                 className={styles.colorSlider}
                 value={Math.round((parsedDraftColor?.alpha ?? 1) * 100)}
-                aria-label={t('richText.opacity', { defaultValue: 'Opacity' })}
+                aria-label={t('richText.opacity')}
                 onChange={(event) => {
                   const nextAlpha = Number(event.target.value) / 100;
                   updateParsedDraft({ alpha: nextAlpha });

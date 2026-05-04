@@ -6,12 +6,6 @@ import authorService, {
 import { getApiErrorMessage } from '@/utils/apiError';
 import { AuthorFormState } from './types';
 
-const DEFAULT_LOAD_ERROR = 'Failed to load authors.';
-const DEFAULT_UPLOAD_ERROR = 'Failed to upload author photo.';
-const DEFAULT_CREATE_ERROR = 'Failed to create author.';
-const DEFAULT_UPDATE_ERROR = 'Failed to update author.';
-const DEFAULT_DELETE_ERROR = 'Failed to delete author.';
-
 export async function loadAuthors(
   t: (key: string, options?: Record<string, unknown>) => string,
 ) {
@@ -22,9 +16,7 @@ export async function loadAuthors(
     throw new Error(
       getApiErrorMessage(
         error,
-        t('authors.failedToLoad', {
-          defaultValue: DEFAULT_LOAD_ERROR,
-        }),
+        t('authors.failedToLoad'),
       ),
     );
   }
@@ -40,9 +32,7 @@ export async function uploadAuthorPhoto(
     throw new Error(
       getApiErrorMessage(
         error,
-        t('authors.photoUploadFailed', {
-          defaultValue: DEFAULT_UPLOAD_ERROR,
-        }),
+        t('authors.photoUploadFailed'),
       ),
     );
   }
@@ -73,26 +63,22 @@ export async function saveAuthor(
       const author = await authorService.updateAuthor(editingAuthorId, payload);
       return {
         author,
-        message: t('authors.updated', {
-          defaultValue: 'Author updated successfully.',
-        }),
+        message: t('authors.updated'),
       };
     }
 
     const author = await authorService.createAuthor(payload as CreateAuthorRequest);
     return {
       author,
-      message: t('authors.created', {
-        defaultValue: 'Author created successfully.',
-      }),
+      message: t('authors.created'),
     };
   } catch (error) {
     throw new Error(
       getApiErrorMessage(
         error,
         editingAuthorId
-          ? t('authors.updateFailed', { defaultValue: DEFAULT_UPDATE_ERROR })
-          : t('authors.createFailed', { defaultValue: DEFAULT_CREATE_ERROR }),
+          ? t('authors.updateFailed')
+          : t('authors.createFailed'),
       ),
     );
   }
@@ -108,9 +94,7 @@ export async function deleteAuthor(
     throw new Error(
       getApiErrorMessage(
         error,
-        t('authors.deleteFailed', {
-          defaultValue: DEFAULT_DELETE_ERROR,
-        }),
+        t('authors.deleteFailed'),
       ),
     );
   }

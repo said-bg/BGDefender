@@ -34,7 +34,7 @@ export default function AuthorPhotoField({
     <div className={formStyles.fieldWide}>
       <div className={formStyles.fieldHeader}>
         <span className={formStyles.fieldLabel}>
-          {t('authors.photo', { defaultValue: 'Photo (optional)' })}
+          {t('authors.photo')}
         </span>
       </div>
       <div className={photoStyles.modeSwitch}>
@@ -43,14 +43,14 @@ export default function AuthorPhotoField({
           className={`${photoStyles.modeButton} ${photoMode === 'url' ? photoStyles.modeButtonActive : ''}`}
           onClick={() => onPhotoModeChange('url')}
         >
-          {t('authors.photoModeUrl', { defaultValue: 'Use URL' })}
+          {t('authors.photoModeUrl')}
         </button>
         <button
           type="button"
           className={`${photoStyles.modeButton} ${photoMode === 'upload' ? photoStyles.modeButtonActive : ''}`}
           onClick={() => onPhotoModeChange('upload')}
         >
-          {t('authors.photoModeUpload', { defaultValue: 'Upload image' })}
+          {t('authors.photoModeUpload')}
         </button>
       </div>
 
@@ -58,9 +58,7 @@ export default function AuthorPhotoField({
         <input
           value={photo}
           onChange={(event) => onPhotoChange(event.target.value)}
-          placeholder={t('authors.photoPlaceholder', {
-            defaultValue: 'https://example.com/author-photo.jpg',
-          })}
+          placeholder={t('authors.photoPlaceholder')}
         />
       ) : (
         <div className={photoStyles.uploadBox}>
@@ -78,25 +76,17 @@ export default function AuthorPhotoField({
             />
             <span className={photoStyles.uploadLabelText}>
               {isUploadingPhoto
-                ? t('authors.photoUploading', {
-                    defaultValue: 'Uploading photo...',
-                  })
-                : t('authors.photoUploadCta', {
-                    defaultValue: 'Choose an author photo to upload',
-                  })}
+                ? t('authors.photoUploading')
+                : t('authors.photoUploadCta')}
             </span>
             <span className={photoStyles.uploadHelper}>
-              {t('authors.photoUploadHint', {
-                defaultValue: 'JPG, PNG, or WEBP up to 5 MB.',
-              })}
+              {t('authors.photoUploadHint')}
             </span>
           </label>
 
           {uploadedPhotoFilename ? (
             <p className={pageStyles.helperMessage}>
-              {t('authors.photoUploadSuccess', {
-                defaultValue: 'Uploaded file:',
-              })}{' '}
+              {t('authors.photoUploadSuccess')}{' '}
               {uploadedPhotoFilename}
             </p>
           ) : null}
@@ -111,7 +101,7 @@ export default function AuthorPhotoField({
         <div className={photoStyles.photoPreview}>
           <Image
             src={photo}
-            alt={formName || t('authors.photoPreviewAlt', { defaultValue: 'Author preview' })}
+            alt={formName || t('authors.photoPreviewAlt')}
             className={photoStyles.photoPreviewImage}
             width={64}
             height={64}
@@ -120,10 +110,10 @@ export default function AuthorPhotoField({
           />
           <div className={photoStyles.photoPreviewCopy}>
             <strong className={photoStyles.photoPreviewTitle}>
-              {t('authors.previewTitle', { defaultValue: 'Preview' })}
+              {t('authors.previewTitle')}
             </strong>
             <span className={photoStyles.photoPreviewText}>
-              {formName || t('authors.previewFallback', { defaultValue: 'Author name' })}
+              {formName || t('authors.previewFallback')}
             </span>
           </div>
         </div>

@@ -84,9 +84,9 @@ export function CourseContent({
               : selectedContent.kind === 'chapter'
                 ? t('detail.chapterOverview')
                 : selectedContent.kind === 'quiz'
-                  ? t('detail.trainingQuiz', { defaultValue: 'Training quiz' })
+                  ? t('detail.trainingQuiz')
                   : selectedContent.kind === 'final-test'
-                    ? t('detail.finalTestEyebrow', { defaultValue: 'Final assessment' })
+                    ? t('detail.finalTestEyebrow')
                 : selectedContent.parentTitle}
           </p>
           <h2 className={styles.contentTitle}>{selectedContent.title}</h2>

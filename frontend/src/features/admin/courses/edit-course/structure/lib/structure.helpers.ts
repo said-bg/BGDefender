@@ -22,22 +22,16 @@ export const validateChapterForm = (
   t: TranslationFn,
 ): string | null => {
   if (!chapterForm.titleEn.trim() || !chapterForm.titleFi.trim()) {
-    return t('edit.chapters.titleRequired', {
-      defaultValue: 'Both English and Finnish chapter titles are required.',
-    });
+    return t('edit.chapters.titleRequired');
   }
 
   if (!chapterForm.descriptionEn.trim() || !chapterForm.descriptionFi.trim()) {
-    return t('edit.chapters.descriptionRequired', {
-      defaultValue: 'Both English and Finnish chapter descriptions are required.',
-    });
+    return t('edit.chapters.descriptionRequired');
   }
 
   const orderIndex = Number(chapterForm.orderIndex);
   if (!Number.isFinite(orderIndex) || orderIndex <= 0) {
-    return t('edit.chapters.orderInvalid', {
-      defaultValue: 'Chapter order must be a number greater than zero.',
-    });
+    return t('edit.chapters.orderInvalid');
   }
 
   return null;
@@ -58,28 +52,20 @@ export const validateSubChapterForm = (
   t: TranslationFn,
 ): string | null => {
   if (!subChapterForm.chapterId) {
-    return t('edit.subchapters.parentRequired', {
-      defaultValue: 'Choose a chapter before creating a subchapter.',
-    });
+    return t('edit.subchapters.parentRequired');
   }
 
   if (!subChapterForm.titleEn.trim() || !subChapterForm.titleFi.trim()) {
-    return t('edit.subchapters.titleRequired', {
-      defaultValue: 'Both English and Finnish subchapter titles are required.',
-    });
+    return t('edit.subchapters.titleRequired');
   }
 
   if (!subChapterForm.descriptionEn.trim() || !subChapterForm.descriptionFi.trim()) {
-    return t('edit.subchapters.descriptionRequired', {
-      defaultValue: 'Both English and Finnish subchapter descriptions are required.',
-    });
+    return t('edit.subchapters.descriptionRequired');
   }
 
   const orderIndex = Number(subChapterForm.orderIndex);
   if (!Number.isFinite(orderIndex) || orderIndex <= 0) {
-    return t('edit.subchapters.orderInvalid', {
-      defaultValue: 'Subchapter order must be a number greater than zero.',
-    });
+    return t('edit.subchapters.orderInvalid');
   }
 
   return null;

@@ -10,8 +10,21 @@ import {
   validateSubChapterForm,
 } from '../structure.helpers';
 
+const TRANSLATIONS: Record<string, string> = {
+  'edit.chapters.titleRequired': 'Both English and Finnish chapter titles are required.',
+  'edit.chapters.descriptionRequired':
+    'Both English and Finnish chapter descriptions are required.',
+  'edit.chapters.orderInvalid': 'Chapter order must be a number greater than zero.',
+  'edit.subchapters.parentRequired': 'Choose a chapter before creating a subchapter.',
+  'edit.subchapters.titleRequired':
+    'Both English and Finnish subchapter titles are required.',
+  'edit.subchapters.descriptionRequired':
+    'Both English and Finnish subchapter descriptions are required.',
+  'edit.subchapters.orderInvalid': 'Subchapter order must be a number greater than zero.',
+};
+
 const t = (key: string, options?: Record<string, unknown>) =>
-  String(options?.defaultValue ?? key);
+  String(TRANSLATIONS[key] ?? options?.defaultValue ?? key);
 
 const createSubChapter = (overrides: Partial<SubChapter> = {}): SubChapter => ({
   id: 'sub-1',

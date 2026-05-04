@@ -64,11 +64,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
 
   useEffect(() => {
     if (!courseId) {
-      setLoadError(
-        t('edit.chapters.missingCourseId', {
-          defaultValue: 'Missing course id.',
-        }),
-      );
+      setLoadError(t('edit.chapters.missingCourseId'));
       setLoadingPage(false);
       return;
     }
@@ -98,9 +94,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
         setLoadError(
           getApiErrorMessage(
             error,
-            t('edit.failedToLoad', {
-              defaultValue: 'Failed to load course data.',
-            }),
+            t('edit.failedToLoad'),
           ),
         );
       } finally {
@@ -267,9 +261,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
         setQuizError(
           getApiErrorMessage(
             error,
-            t('edit.quiz.failedToLoad', {
-              defaultValue: 'Failed to load chapter quiz.',
-            }),
+            t('edit.quiz.failedToLoad'),
           ),
         );
         setQuizAnalytics(null);
@@ -334,17 +326,13 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
       syncChapterQuizSummary(selectedChapterId, savedQuiz);
       await loadQuizAnalytics(courseId, selectedChapterId);
       setQuizMessage(
-        t('edit.quiz.saved', {
-          defaultValue: 'Training quiz saved successfully.',
-        }),
+        t('edit.quiz.saved'),
       );
     } catch (error) {
       setQuizError(
         getApiErrorMessage(
           error,
-          t('edit.quiz.saveFailed', {
-            defaultValue: 'Failed to save training quiz.',
-          }),
+          t('edit.quiz.saveFailed'),
         ),
       );
     } finally {
@@ -358,9 +346,7 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
     }
 
     const confirmed = window.confirm(
-      t('edit.quiz.deleteConfirm', {
-        defaultValue: 'Delete this training quiz? This action cannot be undone.',
-      }),
+      t('edit.quiz.deleteConfirm'),
     );
 
     if (!confirmed) {
@@ -382,17 +368,13 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
       );
       syncChapterQuizSummary(selectedChapterId, null);
       setQuizMessage(
-        t('edit.quiz.deleted', {
-          defaultValue: 'Training quiz deleted successfully.',
-        }),
+        t('edit.quiz.deleted'),
       );
     } catch (error) {
       setQuizError(
         getApiErrorMessage(
           error,
-          t('edit.quiz.deleteFailed', {
-            defaultValue: 'Failed to delete training quiz.',
-          }),
+          t('edit.quiz.deleteFailed'),
         ),
       );
     } finally {

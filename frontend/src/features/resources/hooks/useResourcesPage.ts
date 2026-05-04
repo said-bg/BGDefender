@@ -258,7 +258,7 @@ export default function useResourcesPage() {
       setError(
         getApiErrorMessage(
           openFailure,
-          t('openFailed', { defaultValue: 'Failed to open document.' }),
+          t('openFailed'),
         ),
       );
     } finally {

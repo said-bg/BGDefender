@@ -50,27 +50,14 @@ export default function CourseContentNavigation({
     accessState === 'checking' || accessState === 'premium_required';
   const completionTitle =
     currentKind === 'final-test'
-      ? t('detail.courseCompletedTitle', {
-          defaultValue: 'Congratulations, you finished this course',
-        })
-      : t('detail.chapterCompletedTitle', {
-          defaultValue: 'Nice work, you reached the end of this course path',
-        });
+      ? t('detail.courseCompletedTitle')
+      : t('detail.chapterCompletedTitle');
   const completionDescription =
     currentKind === 'final-test'
-      ? t('detail.courseCompletedDescription', {
-          defaultValue:
-            'You completed the final step of this course. Your result is saved, and you can review the material again whenever you want.',
-        })
+      ? t('detail.courseCompletedDescription')
       : hasFinalTest
-        ? t('detail.finalTestUnlockedNextDescription', {
-            defaultValue:
-              'You completed the last chapter. The final test is now the next step in your learning path.',
-          })
-        : t('detail.coursePathCompletedDescription', {
-            defaultValue:
-              'You reached the end of this course content. You can review the material again from the overview whenever you want.',
-          });
+        ? t('detail.finalTestUnlockedNextDescription')
+        : t('detail.coursePathCompletedDescription');
 
   return (
     <>
@@ -97,10 +84,8 @@ export default function CourseContentNavigation({
             disabled
           >
             {accessState === 'checking'
-              ? t('detail.checkingAccess', { defaultValue: 'Checking access...' })
-              : t('detail.premiumRequiredTitle', {
-                  defaultValue: 'Premium access required',
-                })}
+              ? t('detail.checkingAccess')
+              : t('detail.premiumRequiredTitle')}
           </button>
         ) : isCourseEnd ? (
           isCourseCompleted ? (
@@ -109,7 +94,7 @@ export default function CourseContentNavigation({
               className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
               onClick={() => onNavigateToView({ type: 'overview' })}
             >
-              {t('detail.backToOverview', { defaultValue: 'Back to overview' })}
+              {t('detail.backToOverview')}
             </button>
           ) : (
             <button
@@ -117,7 +102,7 @@ export default function CourseContentNavigation({
               className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
               onClick={() => setIsCompletionOpen(true)}
             >
-              {t('detail.finishCourse', { defaultValue: 'Finish' })}
+              {t('detail.finishCourse')}
             </button>
           )
         ) : (
@@ -141,7 +126,7 @@ export default function CourseContentNavigation({
         >
           <div className={styles.completionCard}>
             <p className={styles.completionEyebrow}>
-              {t('detail.courseJourneyComplete', { defaultValue: 'Course complete' })}
+              {t('detail.courseJourneyComplete')}
             </p>
             <h3 className={styles.completionTitle}>{completionTitle}</h3>
             <p className={styles.completionDescription}>{completionDescription}</p>
@@ -151,14 +136,14 @@ export default function CourseContentNavigation({
                 className={styles.navigationButton}
                 onClick={() => setIsCompletionOpen(false)}
               >
-                {t('detail.close', { defaultValue: 'Close' })}
+                {t('detail.close')}
               </button>
               <Link
                 href="/"
                 className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
                 onClick={() => setIsCompletionOpen(false)}
               >
-                {t('detail.backToHome', { defaultValue: 'Back to home' })}
+                {t('detail.backToHome')}
               </Link>
             </div>
           </div>
