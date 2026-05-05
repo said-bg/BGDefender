@@ -22,6 +22,8 @@ import { CurrentUser } from '../decorators/current-user.decorator';
 import { EmailService } from '../../email/email.service';
 import { PasswordTokenService } from '../services/password-token.service';
 import { resolveLanguage } from '../../config/request-language';
+import { RateLimit } from '../../security/rate-limit.decorator';
+import { RateLimitGuard } from '../../security/rate-limit.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -32,6 +34,8 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @UseGuards(RateLimitGuard)
+  @RateLimit({ keyPrefix: 'auth:register', maxRequests: 5, windowMs: 60_000 })
   async register(
     @Body() registerDto: RegisterDto,
     @Headers('accept-language') acceptLanguage?: string,
@@ -42,6 +46,8 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RateLimitGuard)
+  @RateLimit({ keyPrefix: 'auth:login', maxRequests: 5, windowMs: 60_000 })
   async login(
     @Body() loginDto: LoginDto,
     @Headers('accept-language') acceptLanguage?: string,
@@ -67,6 +73,12 @@ export class AuthController {
 
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RateLimitGuard)
+  @RateLimit({
+    keyPrefix: 'auth:forgot-password',
+    maxRequests: 3,
+    windowMs: 15 * 60_000,
+  })
   async forgotPassword(
     @Body() forgotPasswordDto: ForgotPasswordDto,
     @Headers('accept-language') acceptLanguage?: string,
@@ -107,6 +119,12 @@ export class AuthController {
 
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RateLimitGuard)
+  @RateLimit({
+    keyPrefix: 'auth:reset-password',
+    maxRequests: 5,
+    windowMs: 15 * 60_000,
+  })
   async resetPassword(
     @Body() resetPasswordDto: ResetPasswordDto,
     @Headers('accept-language') acceptLanguage?: string,

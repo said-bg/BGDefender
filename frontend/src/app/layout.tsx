@@ -13,8 +13,18 @@ const sourceSans = Source_Sans_3({
 });
 
 export const metadata: Metadata = {
-  title: "BG Defender - Cybersecurity E-Learning",
+  title: "Defender Academy",
   description: "Learn cybersecurity online with BG Defender",
+  icons: {
+    icon: [
+      {
+        url: "/assets/images/bgdefender.jpeg",
+        type: "image/jpeg",
+      },
+    ],
+    shortcut: ["/assets/images/bgdefender.jpeg"],
+    apple: ["/assets/images/bgdefender.jpeg"],
+  },
 };
 
 export default function RootLayout({

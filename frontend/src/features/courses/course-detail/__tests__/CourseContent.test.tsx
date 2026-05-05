@@ -520,6 +520,53 @@ describe('CourseContent', () => {
     expect(container.querySelector('hr')).toBeTruthy();
   });
 
+  it('sanitizes dangerous rich text html before rendering it to learners', () => {
+    const { container } = render(
+      <CourseContent
+        course={createCourse()}
+        activeLanguage="en"
+        selectedContent={{
+          kind: 'subchapter',
+          title: 'Secure lesson',
+          description: 'Security description',
+          paragraphs: [],
+          parentTitle: 'Chapter 1',
+          contentBlocks: [
+            {
+              id: 'content-security-1',
+              titleEn: 'Secure lesson',
+              titleFi: 'Secure lesson',
+              type: 'text',
+              contentEn:
+                '<p>Safe paragraph</p><img src="x" onerror="alert(\'xss\')"><script>alert("xss")</script><a href="javascript:alert(\'xss\')" onclick="alert(\'xss\')">Bad link</a><iframe src="javascript:alert(\'xss\')"></iframe>',
+              contentFi:
+                '<p>Safe paragraph</p><img src="x" onerror="alert(\'xss\')"><script>alert("xss")</script><a href="javascript:alert(\'xss\')" onclick="alert(\'xss\')">Bad link</a><iframe src="javascript:alert(\'xss\')"></iframe>',
+              url: null,
+              orderIndex: 5,
+            },
+          ],
+        }}
+        accessState="public"
+        canAccessAssessments={false}
+        canReadContent
+        courseId="course-1"
+        courseAuthorFallback="Course author"
+        isAuthenticated
+        previousItem={null}
+        nextItem={null}
+        onNavigateToView={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Safe paragraph')).toBeInTheDocument();
+    expect(container.querySelector('script')).toBeNull();
+    expect(container.querySelector('img')).toBeNull();
+    expect(container.querySelector('iframe')).toBeNull();
+    expect(container.querySelector('[onerror], [onclick]')).toBeNull();
+    expect(container.querySelector('a[href^="javascript:"]')).toBeNull();
+    expect(screen.getByText('Bad link')).toBeInTheDocument();
+  });
+
   it('uses a discreet back to overview action for already completed courses', () => {
     const onNavigateToView = jest.fn();
 

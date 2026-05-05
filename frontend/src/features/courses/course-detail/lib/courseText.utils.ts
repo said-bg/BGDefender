@@ -72,6 +72,90 @@ const looksLikeRichHtml = (value: string) =>
     value,
   );
 
+const allowedRichTextTags = new Set([
+  'a',
+  'blockquote',
+  'br',
+  'code',
+  'div',
+  'em',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'hr',
+  'iframe',
+  'img',
+  'li',
+  'ol',
+  'p',
+  'pre',
+  's',
+  'span',
+  'strong',
+  'table',
+  'tbody',
+  'td',
+  'th',
+  'thead',
+  'tr',
+  'u',
+  'ul',
+  'video',
+]);
+
+const blockedRichTextTags = new Set([
+  'base',
+  'button',
+  'embed',
+  'form',
+  'input',
+  'link',
+  'math',
+  'meta',
+  'object',
+  'script',
+  'select',
+  'style',
+  'svg',
+  'textarea',
+]);
+
+const allowedEmbedHosts = new Set([
+  'drive.google.com',
+  'player.bilibili.com',
+  'player.vimeo.com',
+  'www.youtube.com',
+  'youtube.com',
+]);
+
+const allowedUrlProtocols = new Set(['http:', 'https:', 'mailto:']);
+
+const allowedStyleProperties = new Set([
+  'aspect-ratio',
+  'border',
+  'border-radius',
+  'clear',
+  'color',
+  'display',
+  'float',
+  'font-family',
+  'font-size',
+  'height',
+  'inset',
+  'justify-content',
+  'margin',
+  'max-width',
+  'overflow',
+  'position',
+  'text-align',
+  'width',
+]);
+
+const allowedWrapperClasses = new Set(['iframe-wrapper', 'video-file-wrapper']);
+
 const isDirectVideoFile = (src: string) => /\.(mp4|webm|ogg|mov|m4v)(\?.*)?$/i.test(src);
 
 const normalizeVideoAlign = (value: string | null | undefined) => {
@@ -144,6 +228,303 @@ const normalizeEmbeddedVideoSrc = (src: string) => {
   }
 };
 
+const isSafeRichTextUrl = (
+  value: string,
+  kind: 'link' | 'media' | 'embed' = 'link',
+) => {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    return false;
+  }
+
+  if (trimmedValue.startsWith('#')) {
+    return kind === 'link';
+  }
+
+  if (trimmedValue.startsWith('/')) {
+    return /^\/(uploads|assets\/images)\//.test(trimmedValue);
+  }
+
+  try {
+    const url = new URL(trimmedValue);
+
+    if (!allowedUrlProtocols.has(url.protocol)) {
+      return false;
+    }
+
+    if (kind === 'embed') {
+      return allowedEmbedHosts.has(url.hostname.toLowerCase());
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const sanitizeStyleValue = (property: string, value: string) => {
+  const trimmedValue = value.trim();
+
+  if (
+    !trimmedValue ||
+    /expression|javascript:|url\(|@import|behaviou?r/i.test(trimmedValue)
+  ) {
+    return null;
+  }
+
+  switch (property) {
+    case 'aspect-ratio':
+      return /^\d+\s*\/\s*\d+$/.test(trimmedValue) ? trimmedValue : null;
+    case 'border':
+      return /^(0|none|\d+(?:\.\d+)?px\s+(solid|dashed|dotted)\s+[#(),.%\w\s-]+)$/i.test(
+        trimmedValue,
+      )
+        ? trimmedValue
+        : null;
+    case 'border-radius':
+    case 'font-size':
+    case 'height':
+    case 'inset':
+    case 'margin':
+    case 'max-width':
+    case 'width':
+      return /^(auto|0|\d+(?:\.\d+)?(px|%|rem|em|vh|vw))$/i.test(trimmedValue)
+        ? trimmedValue
+        : null;
+    case 'clear':
+    case 'display':
+    case 'float':
+    case 'justify-content':
+    case 'overflow':
+    case 'position':
+    case 'text-align':
+      return /^(auto|block|center|flex|flex-end|flex-start|hidden|inline|inline-block|justify|left|none|relative|right|static|visible|absolute)$/i.test(
+        trimmedValue,
+      )
+        ? trimmedValue
+        : null;
+    case 'color':
+      return /^(#[0-9a-f]{3,8}|rgb(a)?\([^)]+\)|[a-z]+)$/i.test(trimmedValue)
+        ? trimmedValue
+        : null;
+    case 'font-family':
+      return /^[\w\s,"'-]+$/.test(trimmedValue) ? trimmedValue : null;
+    default:
+      return null;
+  }
+};
+
+const sanitizeStyleAttribute = (value: string) => {
+  const sanitizedDeclarations = value
+    .split(';')
+    .map((declaration) => declaration.trim())
+    .filter(Boolean)
+    .flatMap((declaration) => {
+      const separatorIndex = declaration.indexOf(':');
+
+      if (separatorIndex === -1) {
+        return [];
+      }
+
+      const property = declaration.slice(0, separatorIndex).trim().toLowerCase();
+      const rawValue = declaration.slice(separatorIndex + 1);
+
+      if (!allowedStyleProperties.has(property)) {
+        return [];
+      }
+
+      const sanitizedValue = sanitizeStyleValue(property, rawValue);
+      return sanitizedValue ? [`${property}: ${sanitizedValue}`] : [];
+    });
+
+  return sanitizedDeclarations.length > 0 ? sanitizedDeclarations.join('; ') : null;
+};
+
+const sanitizeRichTextAttributes = (element: HTMLElement) => {
+  const tagName = element.tagName.toLowerCase();
+
+  Array.from(element.attributes).forEach((attribute) => {
+    const name = attribute.name.toLowerCase();
+    const value = attribute.value;
+
+    if (name.startsWith('on') || name === 'srcdoc') {
+      element.removeAttribute(attribute.name);
+      return;
+    }
+
+    if (name === 'style') {
+      const sanitizedStyle = sanitizeStyleAttribute(value);
+
+      if (sanitizedStyle) {
+        element.setAttribute('style', sanitizedStyle);
+      } else {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'class') {
+      if (tagName !== 'div') {
+        element.removeAttribute(attribute.name);
+        return;
+      }
+
+      const safeClassNames = value
+        .split(/\s+/)
+        .map((className) => className.trim())
+        .filter((className) => allowedWrapperClasses.has(className));
+
+      if (safeClassNames.length > 0) {
+        element.setAttribute('class', safeClassNames.join(' '));
+      } else {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'href') {
+      if (tagName !== 'a' || !isSafeRichTextUrl(value, 'link')) {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'src') {
+      const kind =
+        tagName === 'iframe' ? 'embed' : tagName === 'img' || tagName === 'video' ? 'media' : null;
+
+      if (!kind || !isSafeRichTextUrl(value, kind)) {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'data-video-src') {
+      if (!isSafeRichTextUrl(value, 'embed') && !isSafeRichTextUrl(value, 'media')) {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'target') {
+      if (tagName === 'a' && value === '_blank') {
+        element.setAttribute('target', '_blank');
+      } else {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'rel') {
+      if (tagName === 'a') {
+        element.setAttribute('rel', 'noreferrer noopener');
+      } else {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'allow') {
+      if (tagName === 'iframe') {
+        element.setAttribute(
+          'allow',
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+        );
+      } else {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    if (name === 'allowfullscreen') {
+      if (tagName === 'iframe') {
+        element.setAttribute('allowfullscreen', 'true');
+      } else {
+        element.removeAttribute(attribute.name);
+      }
+      return;
+    }
+
+    const isGenericAttribute =
+      name === 'align' ||
+      name === 'loading' ||
+      name === 'decoding' ||
+      name === 'preload' ||
+      name === 'playsinline' ||
+      name === 'controls' ||
+      name === 'width' ||
+      name === 'height' ||
+      name === 'colspan' ||
+      name === 'rowspan' ||
+      name === 'data-video' ||
+      name.startsWith('data-image-') ||
+      name.startsWith('data-video-') ||
+      name === 'referrerpolicy';
+
+    if (!isGenericAttribute) {
+      element.removeAttribute(attribute.name);
+    }
+  });
+
+  if (tagName === 'a' && element.hasAttribute('href')) {
+    element.setAttribute('rel', 'noreferrer noopener');
+  }
+};
+
+const sanitizeRichTextTree = (root: HTMLElement) => {
+  const sanitizeNode = (node: Node): void => {
+    if (node.nodeType === Node.COMMENT_NODE) {
+      node.parentNode?.removeChild(node);
+      return;
+    }
+
+    if (!(node instanceof HTMLElement)) {
+      return;
+    }
+
+    const tagName = node.tagName.toLowerCase();
+
+    if (blockedRichTextTags.has(tagName)) {
+      node.remove();
+      return;
+    }
+
+    if (!allowedRichTextTags.has(tagName)) {
+      const fragment = node.ownerDocument.createDocumentFragment();
+      const childNodes = Array.from(node.childNodes);
+
+      childNodes.forEach((child) => {
+        sanitizeNode(child);
+        if (child.parentNode === node) {
+          fragment.appendChild(child);
+        }
+      });
+
+      node.replaceWith(fragment);
+      return;
+    }
+
+    sanitizeRichTextAttributes(node);
+    Array.from(node.childNodes).forEach(sanitizeNode);
+
+    if ((tagName === 'img' || tagName === 'iframe' || tagName === 'video') && !node.getAttribute('src')) {
+      node.remove();
+      return;
+    }
+
+    if (tagName === 'a' && !node.getAttribute('href')) {
+      const fragment = node.ownerDocument.createDocumentFragment();
+      while (node.firstChild) {
+        fragment.appendChild(node.firstChild);
+      }
+      node.replaceWith(fragment);
+    }
+  };
+
+  Array.from(root.childNodes).forEach(sanitizeNode);
+};
+
 const normalizeRichTextHtmlFallback = (value: string) => {
   let normalized = value.replace(
     /<iframe\b[^>]*\bsrc=(['"])(.*?)\1[^>]*><\/iframe>/gi,
@@ -187,12 +568,7 @@ const normalizeRichTextHtmlFallback = (value: string) => {
 export const normalizeRichTextHtml = (value: string) => {
   const normalizedFromString = normalizeRichTextHtmlFallback(value);
 
-  if (
-    typeof DOMParser === 'undefined' ||
-    (!normalizedFromString.includes('<iframe') &&
-      !normalizedFromString.includes('<video') &&
-      !normalizedFromString.includes('data-video'))
-  ) {
+  if (typeof DOMParser === 'undefined') {
     return normalizedFromString;
   }
 
@@ -343,6 +719,8 @@ export const normalizeRichTextHtml = (value: string) => {
     video.setAttribute('preload', video.getAttribute('preload') || 'metadata');
     video.setAttribute('playsinline', 'true');
   });
+
+  sanitizeRichTextTree(body);
 
   return body.innerHTML;
 };

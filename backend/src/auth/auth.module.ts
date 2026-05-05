@@ -13,6 +13,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { PasswordTokenService } from './services/password-token.service';
 import { EmailModule } from '../email/email.module';
 import { CertificatesModule } from '../certificates/certificates.module';
+import { SecurityModule } from '../security/security.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CertificatesModule } from '../certificates/certificates.module';
     EmailModule,
     // Certificates module: sync pending certificates after profile completion
     CertificatesModule,
+    SecurityModule,
   ],
   providers: [AuthService, JwtStrategy, PasswordTokenService],
   controllers: [AuthController],

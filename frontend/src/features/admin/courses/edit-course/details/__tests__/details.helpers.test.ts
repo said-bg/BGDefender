@@ -7,8 +7,14 @@ import {
   validateCourseDetailsForm,
 } from '../lib/details.helpers';
 
+const adminTranslations: Record<string, string> = {
+  'create.titleRequired': 'Both English and Finnish titles are required.',
+  'create.descriptionRequired': 'Both English and Finnish descriptions are required.',
+  'create.durationInvalid': 'Estimated duration must be greater than zero.',
+};
+
 const t = (key: string, options?: Record<string, unknown>) =>
-  String(options?.defaultValue ?? key);
+  String(options?.defaultValue ?? adminTranslations[key] ?? key);
 
 const createCourse = (overrides: Partial<Course> = {}): Course => ({
   id: 'course-1',

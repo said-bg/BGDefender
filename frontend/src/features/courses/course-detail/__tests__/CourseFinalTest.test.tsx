@@ -22,8 +22,41 @@ jest.mock('@/services/course', () => ({
   },
 }));
 
+const courseTranslations: Record<string, string> = {
+  'detail.finalTestLockedDescription':
+    'Complete every chapter in this course to unlock the final test.',
+  'detail.finalTestStart': 'Start final test',
+  'detail.finalTestSubmit': 'Submit final test',
+  'detail.finalTestSubmitting': 'Submitting final test...',
+  'detail.finalTestRetry': 'Clear answers',
+  'detail.finalTestStartRetry': 'Retry final test',
+  'detail.finalTestUnlockedDescription': 'The final test is ready when you are.',
+  'detail.finalTestPassedMessage': 'Excellent work. You passed the course final test.',
+  'detail.finalTestFailedSummary': 'Your latest final test result is saved.',
+  'detail.previewFinalTestPassedMessage':
+    'Preview complete. This final test attempt would pass, and nothing was saved.',
+  'detail.previewFinalTestFailedMessage':
+    'Preview complete. This final test attempt would not pass, and nothing was saved.',
+  'detail.certificatePendingTitle': 'Certificate waiting for profile completion',
+  'detail.completeProfile': 'Complete profile',
+  'detail.viewCertificate': 'View certificates',
+  'detail.finalTestPassingScore': 'Passing score',
+  'detail.finalTestAnswered': 'Answered',
+  'detail.finalTestBestScore': 'Best score',
+  'detail.finalTestLatestScore': 'Latest score',
+  'detail.finalTestCorrectAnswers': 'Correct answers',
+  'detail.finalTestCourseStatus': 'Course status',
+  'detail.finalTestCourseCompleted': 'Course completed',
+  'detail.finalTestRetryNeeded': 'Retry available',
+  'detail.finalTestPassed': 'Passed',
+  'detail.finalTestNotPassed': 'Not passed',
+  'detail.finalTest': 'Final test',
+  'detail.finalTestLocked': 'Locked',
+  'detail.previewModeFinalTestDescription': 'Preview mode',
+};
+
 const mockT = (key: string, options?: { defaultValue?: string }) =>
-  options?.defaultValue ?? key;
+  options?.defaultValue ?? courseTranslations[key] ?? key;
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({

@@ -1,7 +1,17 @@
-import { Body, Controller, Headers, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { resolveLanguage } from '../../config/request-language';
 import { EmailService } from '../../email/email.service';
 import { ContactRequestDto } from '../dto/contact-request.dto';
+import { RateLimit } from '../../security/rate-limit.decorator';
+import { RateLimitGuard } from '../../security/rate-limit.guard';
 
 @Controller('contact')
 export class ContactController {
@@ -9,6 +19,8 @@ export class ContactController {
 
   @Post()
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RateLimitGuard)
+  @RateLimit({ keyPrefix: 'contact:submit', maxRequests: 3, windowMs: 15 * 60_000 })
   async submitContactRequest(
     @Body() contactRequestDto: ContactRequestDto,
     @Headers('accept-language') acceptLanguage?: string,

@@ -10,8 +10,37 @@ jest.mock('@/services/course', () => ({
   },
 }));
 
+const courseTranslations: Record<string, string> = {
+  'detail.quizUnavailable': 'No training quiz is published for this chapter yet.',
+  'detail.quizSubmit': 'Submit quiz',
+  'detail.quizSubmitting': 'Submitting quiz...',
+  'detail.quizRetry': 'Clear answers',
+  'detail.quizStartRetry': 'Retry quiz',
+  'detail.quizPassedMessage': 'Nice work. You passed this chapter training quiz.',
+  'detail.quizPassedSummary':
+    'You already passed this training quiz. Start a new attempt whenever you want to practice again.',
+  'detail.quizFailedMessage': 'You can retry this training quiz as many times as you want.',
+  'detail.quizFailedClosedSummary':
+    'Your latest result is saved. Start a new attempt whenever you are ready.',
+  'detail.quizRetryAvailable': 'Retry available',
+  'detail.previewQuizPassedMessage':
+    'Preview complete. This attempt would pass for the learner, and nothing was saved.',
+  'detail.previewQuizFailedMessage':
+    'Preview complete. This attempt would not pass, and nothing was saved.',
+  'detail.quizPassingScore': 'Passing score',
+  'detail.quizAnswered': 'Answered',
+  'detail.quizBestScore': 'Best score',
+  'detail.quizLatestScore': 'Latest score',
+  'detail.quizCorrectAnswers': 'Correct answers',
+  'detail.quizStatus': 'Quiz status',
+  'detail.quizPassed': 'Passed',
+  'detail.quizNotPassed': 'Not passed',
+  'detail.trainingQuiz': 'Training quiz',
+  'detail.previewModeQuizDescription': 'Preview mode',
+};
+
 const mockT = (key: string, options?: { defaultValue?: string }) =>
-  options?.defaultValue ?? key;
+  options?.defaultValue ?? courseTranslations[key] ?? key;
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
