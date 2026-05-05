@@ -1,6 +1,7 @@
 import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Request } from 'express';
+import * as uploadSecurityUtils from '../../uploads/upload-security.utils';
 import { CollectionsController } from '../controllers/collections.controller';
 import { CollectionsService } from '../services/collections.service';
 
@@ -17,6 +18,9 @@ describe('CollectionsController', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    jest
+      .spyOn(uploadSecurityUtils, 'matchesDeclaredFileSignature')
+      .mockReturnValue(true);
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CollectionsController],

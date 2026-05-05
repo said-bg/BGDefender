@@ -7,9 +7,11 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  Matches,
   MaxLength,
 } from 'class-validator';
 import { CourseLevel, CourseStatus } from '../../entities/course.entity';
+import { safeAssetUrlPattern } from '../../uploads/upload-security.utils';
 
 export class CreateCourseDto {
   @IsString()
@@ -45,6 +47,10 @@ export class CreateCourseDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(2048)
+  @Matches(safeAssetUrlPattern, {
+    message: 'coverImage must be an http(s) URL or a trusted local asset path',
+  })
   coverImage?: string;
 
   @IsArray()

@@ -1,4 +1,5 @@
-import { IsString, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional, Matches, MaxLength } from 'class-validator';
+import { safeAssetUrlPattern } from '../../uploads/upload-security.utils';
 
 export class CreateAuthorDto {
   @IsString()
@@ -25,5 +26,9 @@ export class CreateAuthorDto {
 
   @IsString()
   @IsOptional()
+  @MaxLength(2048)
+  @Matches(safeAssetUrlPattern, {
+    message: 'photo must be an http(s) URL or a trusted local asset path',
+  })
   photo?: string;
 }

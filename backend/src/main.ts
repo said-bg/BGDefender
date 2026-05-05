@@ -48,6 +48,14 @@ async function bootstrap() {
 
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
+    setHeaders: (response: Response) => {
+      response.setHeader('X-Content-Type-Options', 'nosniff');
+      response.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+      response.setHeader(
+        'Content-Security-Policy',
+        "default-src 'none'; img-src 'self' data: blob:; media-src 'self' data: blob:; script-src 'none'; style-src 'none'; sandbox;",
+      );
+    },
   });
 
   // ValidationPipe globale: bloque les payloads invalides

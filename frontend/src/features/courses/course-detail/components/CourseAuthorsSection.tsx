@@ -29,6 +29,8 @@ export default function CourseAuthorsSection({
                 className={styles.authorAvatarImage}
                 width={50}
                 height={50}
+                unoptimized
+                loading="lazy"
               />
             ) : (
               <div className={styles.authorAvatar}>{author.name.slice(0, 1)}</div>

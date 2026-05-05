@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import CourseCover from '@/components/course-cover/CourseCover';
 import useHomeCourseRailScroll from '../hooks/useHomeCourseRailScroll';
@@ -25,6 +26,27 @@ export default function HomeCollectionsSection({
 }: HomeCollectionsSectionProps) {
   const { canScrollLeft, canScrollRight, scrollByViewport, viewportRef } =
     useHomeCourseRailScroll(collections.length);
+  const [isCompactViewport, setIsCompactViewport] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 960px)');
+
+    const syncViewport = (matches: boolean) => {
+      setIsCompactViewport(matches);
+    };
+
+    syncViewport(mediaQuery.matches);
+
+    const handleChange = (event: MediaQueryListEvent) => {
+      syncViewport(event.matches);
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  const shouldUseRail = collections.length > 3 || (isCompactViewport && collections.length > 1);
 
   const renderCollectionCard = (collection: HomeCourseCollection, index: number) => {
     const collectionTitle = getCollectionTitle(collection);
@@ -130,7 +152,7 @@ export default function HomeCollectionsSection({
 
       {collections.length === 0 ? (
         <p className={styles.emptyState}>{emptyLabel}</p>
-      ) : collections.length <= 3 ? (
+      ) : !shouldUseRail ? (
         <div className={styles.grid}>
           {collections.map((collection, index) => renderCollectionCard(collection, index))}
         </div>

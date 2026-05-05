@@ -1,4 +1,5 @@
 .section {
+  --collection-card-width: clamp(320px, 21vw, 356px);
   composes: section from './HomeRailShared.module.css';
 }
 
@@ -20,8 +21,11 @@
 
 .grid {
   composes: grid from './HomeRailShared.module.css';
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
-  gap: 1.15rem;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, var(--collection-card-width)), var(--collection-card-width))
+  );
+  gap: 1rem;
 }
 
 .railShell {
@@ -34,8 +38,8 @@
 
 .railViewport {
   composes: railViewport from './HomeRailShared.module.css';
-  grid-auto-columns: clamp(286px, 22vw, 360px);
-  gap: 1.15rem;
+  grid-auto-columns: var(--collection-card-width);
+  gap: 1rem;
 }
 
 .railCard {
@@ -68,6 +72,7 @@
 
 .card {
   position: relative;
+  width: 100%;
   overflow: hidden;
   border: 1px solid var(--color-border-card);
   border-radius: var(--radius-2xl);
@@ -238,6 +243,10 @@
 }
 
 @media (max-width: 720px) {
+  .railViewport {
+    grid-auto-columns: minmax(280px, 88vw);
+  }
+
   .cardHero {
     height: 12.8rem;
     margin: 0.9rem 0.9rem 0;
@@ -246,10 +255,6 @@
   .heroPanel {
     right: 0.9rem;
     width: auto;
-  }
-
-  .railViewport {
-    grid-auto-columns: minmax(264px, 88vw);
   }
 
   .stackLayer {

@@ -18,7 +18,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { mkdirSync } from 'fs';
-import { extname, join } from 'path';
+import { join } from 'path';
 import type { Request } from 'express';
 import type { Response } from 'express';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
@@ -30,6 +30,10 @@ import { CreateAdminResourceDto } from '../dto/create-admin-resource.dto';
 import { CreateMyResourceDto } from '../dto/create-my-resource.dto';
 import { ListResourcesDto } from '../dto/list-resources.dto';
 import { ResourcesService } from '../services/resources.service';
+import {
+  buildSafeUploadedFilename,
+  resourceUploadExtensions,
+} from '../../uploads/upload-security.utils';
 
 const resourcesUploadDirectory = join(process.cwd(), 'uploads', 'resources');
 
@@ -48,12 +52,6 @@ type UploadRequest = Pick<Request, 'headers'>;
 type FilenameCallback = (error: Error | null, filename: string) => void;
 type DestinationCallback = (error: Error | null, destination: string) => void;
 type FilterCallback = (error: Error | null, acceptFile: boolean) => void;
-
-const sanitizeFilename = (name: string) =>
-  name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
 
 @Controller('resources')
 @UseGuards(JwtAuthGuard)
@@ -157,12 +155,15 @@ export class ResourcesController {
           file: MulterUploadedFile,
           callback: FilenameCallback,
         ) => {
-          const extension = extname(file.originalname || '').toLowerCase();
-          const baseName = sanitizeFilename(
-            file.originalname.replace(/\.[^/.]+$/, '') || 'resource',
+          callback(
+            null,
+            buildSafeUploadedFilename(
+              file.originalname,
+              'resource',
+              file.mimetype,
+              resourceUploadExtensions,
+            ),
           );
-          const timestamp = Date.now();
-          callback(null, `${baseName || 'resource'}-${timestamp}${extension}`);
         },
       }),
       fileFilter: (

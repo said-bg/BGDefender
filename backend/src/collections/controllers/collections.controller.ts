@@ -18,11 +18,17 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { mkdirSync } from 'fs';
-import { extname, join } from 'path';
+import { join } from 'path';
 import type { Request } from 'express';
 import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { resolveLanguage } from '../../config/request-language';
+import {
+  buildSafeUploadedFilename,
+  imageUploadExtensions,
+  matchesDeclaredFileSignature,
+  removeUploadedFile,
+} from '../../uploads/upload-security.utils';
 import { CollectionsService } from '../services/collections.service';
 import { CreateCourseCollectionDto } from '../dto/create-course-collection.dto';
 import { UpdateCourseCollectionDto } from '../dto/update-course-collection.dto';
@@ -46,13 +52,8 @@ type FilterCallback = (error: Error | null, acceptFile: boolean) => void;
 interface UploadedCoverFile {
   path: string;
   filename: string;
+  mimetype: string;
 }
-
-const sanitizeFilename = (name: string) =>
-  name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
 
 @Controller('collections')
 export class CollectionsController {
@@ -87,14 +88,14 @@ export class CollectionsController {
           file: MulterUploadedFile,
           callback: FilenameCallback,
         ) => {
-          const extension = extname(file.originalname || '').toLowerCase();
-          const baseName = sanitizeFilename(
-            file.originalname.replace(/\.[^/.]+$/, '') || 'collection-cover',
-          );
-          const timestamp = Date.now();
           callback(
             null,
-            `${baseName || 'collection-cover'}-${timestamp}${extension}`,
+            buildSafeUploadedFilename(
+              file.originalname,
+              'collection-cover',
+              file.mimetype,
+              imageUploadExtensions,
+            ),
           );
         },
       }),
@@ -144,6 +145,15 @@ export class CollectionsController {
         language === 'fi'
           ? 'Kokoelman kansikuvatiedosto vaaditaan'
           : 'A collection cover image file is required',
+      );
+    }
+
+    if (!matchesDeclaredFileSignature(file.path, file.mimetype)) {
+      removeUploadedFile(file.path);
+      throw new BadRequestException(
+        language === 'fi'
+          ? 'Ladatun kuvan sisältö ei vastaa sallittua tiedostomuotoa'
+          : 'Uploaded image content does not match an allowed file format',
       );
     }
 

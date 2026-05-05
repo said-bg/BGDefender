@@ -6,8 +6,10 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  Matches,
   MaxLength,
 } from 'class-validator';
+import { safeAssetUrlPattern } from '../../uploads/upload-security.utils';
 
 export class CreateCourseCollectionDto {
   @IsString()
@@ -29,6 +31,9 @@ export class CreateCourseCollectionDto {
   @IsString()
   @IsOptional()
   @MaxLength(500)
+  @Matches(safeAssetUrlPattern, {
+    message: 'coverImage must be an http(s) URL or a trusted local asset path',
+  })
   coverImage?: string | null;
 
   @IsNumber()

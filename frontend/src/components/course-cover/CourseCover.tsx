@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import type { CSSProperties } from 'react';
+import { useState, type CSSProperties } from 'react';
+import { isNextManagedCourseCoverSource } from '@/config/courseCoverImageSources';
 import styles from './CourseCover.module.css';
 
 type CourseCoverProps = {
@@ -47,6 +48,7 @@ export default function CourseCover({
   fallbackClassName,
   variant = 'card',
 }: CourseCoverProps) {
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const displayTitle = getDisplayTitle(
     title,
     'Untitled course',
@@ -60,17 +62,35 @@ export default function CourseCover({
     paletteSeed,
     variant,
   );
+  const normalizedSrc = typeof src === 'string' && src.length > 0 ? src : null;
+  const shouldRenderImage = normalizedSrc !== null && failedSrc !== normalizedSrc;
 
-  if (src) {
+  if (shouldRenderImage && isNextManagedCourseCoverSource(normalizedSrc)) {
     return (
       <Image
-        src={src}
+        src={normalizedSrc}
         alt={displayTitle}
         fill
         className={imageClassName}
         sizes={sizes}
         priority={priority}
         loading={priority ? 'eager' : 'lazy'}
+        onError={() => setFailedSrc(normalizedSrc)}
+      />
+    );
+  }
+
+  if (shouldRenderImage) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={normalizedSrc}
+        alt={displayTitle}
+        className={`${styles.nativeImage} ${imageClassName ?? ''}`}
+        loading={priority ? 'eager' : 'lazy'}
+        decoding="async"
+        fetchPriority={priority ? 'high' : 'auto'}
+        onError={() => setFailedSrc(normalizedSrc)}
       />
     );
   }
