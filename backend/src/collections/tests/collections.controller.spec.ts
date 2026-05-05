@@ -1,7 +1,7 @@
 import { BadRequestException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import type { Request } from 'express';
-import * as uploadSecurityUtils from '../../uploads/upload-security.utils';
+import * as uploadSecurityUtils from '../../security/upload-security.utils';
 import { CollectionsController } from '../controllers/collections.controller';
 import { CollectionsService } from '../services/collections.service';
 

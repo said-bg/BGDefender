@@ -28,7 +28,7 @@ import {
   imageUploadExtensions,
   matchesDeclaredFileSignature,
   removeUploadedFile,
-} from '../../uploads/upload-security.utils';
+} from '../../security/upload-security.utils';
 import { CollectionsService } from '../services/collections.service';
 import { CreateCourseCollectionDto } from '../dto/create-course-collection.dto';
 import { UpdateCourseCollectionDto } from '../dto/update-course-collection.dto';

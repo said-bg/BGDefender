@@ -33,7 +33,7 @@ import { ResourcesService } from '../services/resources.service';
 import {
   buildSafeUploadedFilename,
   resourceUploadExtensions,
-} from '../../uploads/upload-security.utils';
+} from '../../security/upload-security.utils';
 
 const resourcesUploadDirectory = join(process.cwd(), 'uploads', 'resources');
 

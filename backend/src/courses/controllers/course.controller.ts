@@ -33,7 +33,7 @@ import {
   imageUploadExtensions,
   matchesDeclaredFileSignature,
   removeUploadedFile,
-} from '../../uploads/upload-security.utils';
+} from '../../security/upload-security.utils';
 
 const courseCoverUploadDirectory = join(
   process.cwd(),

@@ -1,5 +1,5 @@
 import { IsString, IsOptional, Matches, MaxLength } from 'class-validator';
-import { safeAssetUrlPattern } from '../../uploads/upload-security.utils';
+import { safeAssetUrlPattern } from '../../security/upload-security.utils';
 
 export class UpdateAuthorDto {
   @IsString()
