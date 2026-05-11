@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import courseService, { Course, CreateChapterRequest } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import { ChapterFormState, SubChapterFormState, TranslationFn } from '../types';
 import {
   buildChapterPayload,
@@ -125,9 +126,13 @@ export async function deleteChapterMutation(
     return;
   }
 
-  const confirmed = window.confirm(
-    t('edit.chapters.deleteConfirm'),
-  );
+  const confirmed = await confirmWithModal({
+    title: t('courseActions.delete'),
+    message: t('edit.chapters.deleteConfirm'),
+    confirmLabel: t('courseActions.delete'),
+    type: 'warning',
+    confirmVariant: 'danger',
+  });
 
   if (!confirmed) {
     return;

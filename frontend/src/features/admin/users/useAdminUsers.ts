@@ -6,6 +6,7 @@ import { userService } from '@/services';
 import { useAuth } from '@/hooks';
 import { User, UserPlan, UserRole } from '@/types/api';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import {
   canManagePlan,
   canToggleCreator,
@@ -84,9 +85,13 @@ export default function useAdminUsers() {
   };
 
   const handleDeleteUser = async (user: User) => {
-    const confirmed = window.confirm(
-      t('users.deleteConfirm'),
-    );
+    const confirmed = await confirmWithModal({
+      title: t('users.deleteShort'),
+      message: t('users.deleteConfirm'),
+      confirmLabel: t('users.deleteShort'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
 
     if (!confirmed) {
       return;

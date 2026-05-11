@@ -112,6 +112,7 @@ export function useRegisterForm() {
       await register(form.email, form.password);
       const modalId = showModal({
         type: 'success',
+        branded: true,
         title: t('alerts.accountCreated'),
         message: t('alerts.accountCreatedMessage'),
       });

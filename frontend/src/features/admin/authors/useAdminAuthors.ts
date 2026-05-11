@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Author } from '@/services/course';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import { sortAuthorsByUpdatedAt } from './authorAdmin.utils';
 import { deleteAuthor, loadAuthors, saveAuthor, uploadAuthorPhoto } from './authorAdmin.mutations';
 import { AuthorFormState, initialAuthorFormState, PhotoMode } from './types';
@@ -118,9 +119,13 @@ export default function useAdminAuthors() {
   };
 
   const handleDelete = async (author: Author) => {
-    const confirmed = window.confirm(
-      t('authors.deleteConfirm'),
-    );
+    const confirmed = await confirmWithModal({
+      title: t('authors.delete'),
+      message: t('authors.deleteConfirm'),
+      confirmLabel: t('authors.delete'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
 
     if (!confirmed) {
       return;

@@ -11,6 +11,7 @@ type MailOptions = {
   to: string;
   subject: string;
   html: string;
+  text?: string;
 };
 
 type SendMailFn = (options: MailOptions) => Promise<{ messageId: string }>;
@@ -151,6 +152,9 @@ describe('EmailService', () => {
     expect(mail.html).toContain('https://bgdefender.example/reset?token=abc');
     expect(mail.html).toContain('https://bgdefender.example');
     expect(mail.html).not.toContain('{{RESET_LINK}}');
+    expect(mail.text).toContain(
+      'Reset link: https://bgdefender.example/reset?token=abc',
+    );
   });
 
   it('uses the finnish template and subject when language is fi', async () => {
@@ -209,6 +213,7 @@ describe('EmailService', () => {
 
     expect(mail.from).toBe('noreply@bgdefender.com');
     expect(mail.html).toContain('http://localhost:3000');
+    expect(mail.text).toContain('Website: http://localhost:3000');
   });
 
   it('keeps an empty template when the template directory does not exist', async () => {

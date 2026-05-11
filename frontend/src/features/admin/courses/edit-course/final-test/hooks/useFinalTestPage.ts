@@ -9,6 +9,7 @@ import courseService, {
   type UpsertCourseFinalTestRequest,
 } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import { useEditCourseId } from '@/features/admin/courses/edit-course/shared/EditCourseShared';
 import useAssessmentDraftForm from '@/features/admin/courses/edit-course/assessments/hooks/useAssessmentDraftForm';
 import {
@@ -189,7 +190,13 @@ export default function useFinalTestPage(language: string, t: TFunction<'admin',
       return;
     }
 
-    const confirmed = window.confirm(t('edit.finalTest.deleteConfirm'));
+    const confirmed = await confirmWithModal({
+      title: t('edit.finalTest.deleteTest'),
+      message: t('edit.finalTest.deleteConfirm'),
+      confirmLabel: t('edit.finalTest.deleteTest'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
 
     if (!confirmed) {
       return;

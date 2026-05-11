@@ -93,11 +93,18 @@ export class EmailService {
 
     // Get frontend URL for email links
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    // Logo image intentionally disabled for local development:
+    // email clients cannot load localhost assets reliably.
+    //
+    // Re-enable in production with a public frontend domain:
+    // const logoUrl = new URL('/assets/images/bgdefender.jpeg', frontendUrl).toString();
 
     // Get translated template with inlined CSS
     const htmlContent = this.getTemplate('password-reset', language, {
       RESET_LINK: resetLink,
       WEBSITE_URL: frontendUrl,
+      // Uncomment in production once FRONTEND_URL points to a public domain.
+      // LOGO_URL: logoUrl,
     });
 
     // Determine subject and text based on language
@@ -105,14 +112,36 @@ export class EmailService {
       en: 'Password Reset Request - BG Defender Academy',
       fi: 'Salasanan nollaus - BG Defender Academy',
     };
+    const textBodies: Record<string, string> = {
+      en: [
+        'BG Defender Academy',
+        '',
+        'We received a request to reset your password.',
+        `Reset link: ${resetLink}`,
+        '',
+        'This link expires in 1 hour.',
+        `Website: ${frontendUrl}`,
+      ].join('\n'),
+      fi: [
+        'BG Defender Academy',
+        '',
+        'Saimme pyynnön nollata salasanasi.',
+        `Nollauslinkki: ${resetLink}`,
+        '',
+        'Linkki vanhenee 1 tunnin kuluttua.',
+        `Verkkosivusto: ${frontendUrl}`,
+      ].join('\n'),
+    };
 
     const subject = subjects[language] || subjects.en;
+    const text = textBodies[language] || textBodies.en;
 
     await this.transporter.sendMail({
       from: fromEmail,
       to: email,
       subject,
       html: htmlContent,
+      text,
     });
   }
 

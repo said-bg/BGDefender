@@ -8,6 +8,7 @@ import courseService, {
   CourseCollection,
   CreateCourseCollectionRequest,
 } from '@/services/course';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import {
   getNextCollectionOrderIndex,
   moveCollectionCourse,
@@ -307,6 +308,18 @@ export default function useAdminCollections() {
   };
 
   const handleDelete = async (collection: CourseCollection) => {
+    const confirmed = await confirmWithModal({
+      title: t('collections.delete'),
+      message: t('collections.deleteConfirm'),
+      confirmLabel: t('collections.delete'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
     setDeletingId(collection.id);
     clearFeedback();
 

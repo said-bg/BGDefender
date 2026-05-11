@@ -124,6 +124,7 @@ export function useResetPasswordForm() {
       await resetPassword({ token, newPassword });
       const modalId = showModal({
         type: 'success',
+        branded: true,
         title: t('alerts.passwordResetSuccess'),
         message: t('alerts.passwordResetSuccessMessage'),
       });

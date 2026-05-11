@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import { resourceService, userService } from '@/services';
 import type {
   CreateAdminResourceRequest,
@@ -195,6 +196,18 @@ export default function useAdminResources() {
   };
 
   const handleDelete = async (resource: Resource) => {
+    const confirmed = await confirmWithModal({
+      title: t('resources.delete'),
+      message: t('resources.deleteConfirm'),
+      confirmLabel: t('resources.delete'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
     try {
       setDeletingId(resource.id);
       setError(null);

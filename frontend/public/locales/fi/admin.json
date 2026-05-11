@@ -501,6 +501,7 @@
     "updateFailed": "Kokoelman päivittäminen epäonnistui.",
     "deleted": "Kokoelma poistettu onnistuneesti.",
     "deleteFailed": "Kokoelman poistaminen epäonnistui.",
+    "deleteConfirm": "Poistetaanko tämä kokoelma? Tätä toimintoa ei voi kumota.",
     "titleRequired": "Sekä englannin- että suomenkielinen otsikko vaaditaan.",
     "summaryTotal": "Kokoelmat",
     "summaryPublished": "Julkaistut",
@@ -559,7 +560,8 @@
     "delete": "Poista",
     "deleting": "Poistetaan...",
     "deleted": "Resurssi poistettu onnistuneesti.",
-    "deleteFailed": "Resurssin poistaminen epäonnistui."
+    "deleteFailed": "Resurssin poistaminen epäonnistui.",
+    "deleteConfirm": "Poistetaanko tämä resurssi? Tätä toimintoa ei voi kumota."
   },
   "courseActions": {
     "preview": "Esikatsele",

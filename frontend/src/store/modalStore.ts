@@ -9,6 +9,8 @@ export interface Modal {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  confirmVariant?: 'primary' | 'danger';
+  branded?: boolean;
   onConfirm?: () => void | Promise<void>;
   onCancel?: () => void;
 }

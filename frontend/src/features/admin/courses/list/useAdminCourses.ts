@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import courseService, { AdminCourseSummary, Course } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import {
   formatAdminCourseLevel,
   formatAdminCourseStatus,
@@ -114,7 +115,13 @@ export default function useAdminCourses() {
   };
 
   const handleDeleteCourse = async (course: Course) => {
-    const confirmed = window.confirm(t('courseActions.deleteConfirm'));
+    const confirmed = await confirmWithModal({
+      title: t('courseActions.delete'),
+      message: t('courseActions.deleteConfirm'),
+      confirmLabel: t('courseActions.delete'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
 
     if (!confirmed) {
       return;

@@ -6,6 +6,7 @@ import { resourceService } from '@/services';
 import type { Resource } from '@/types/api';
 import { ResourceSource, ResourceType } from '@/types/api';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import { getResourcesSummary } from '../lib/resources.utils';
 
 type ResourceFormState = {
@@ -219,9 +220,13 @@ export default function useResourcesPage() {
       return;
     }
 
-    const confirmed = window.confirm(
-      t('deleteConfirm'),
-    );
+    const confirmed = await confirmWithModal({
+      title: t('delete'),
+      message: t('deleteConfirm'),
+      confirmLabel: t('delete'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
 
     if (!confirmed) {
       return;

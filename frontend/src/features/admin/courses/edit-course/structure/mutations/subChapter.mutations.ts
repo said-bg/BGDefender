@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import courseService, { Course, CreateSubChapterRequest } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import { SubChapterFormState, TranslationFn } from '../types';
 import {
   buildSubChapterPayload,
@@ -120,9 +121,13 @@ export async function deleteSubChapterMutation(
     return;
   }
 
-  const confirmed = window.confirm(
-    t('edit.subchapters.deleteConfirm'),
-  );
+  const confirmed = await confirmWithModal({
+    title: t('courseActions.delete'),
+    message: t('edit.subchapters.deleteConfirm'),
+    confirmLabel: t('courseActions.delete'),
+    type: 'warning',
+    confirmVariant: 'danger',
+  });
 
   if (!confirmed) {
     return;

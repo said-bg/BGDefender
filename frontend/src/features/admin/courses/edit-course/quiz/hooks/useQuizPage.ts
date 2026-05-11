@@ -11,6 +11,7 @@ import courseService, {
   type UpsertChapterQuizRequest,
 } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import { useEditCourseId } from '@/features/admin/courses/edit-course/shared/EditCourseShared';
 import useAssessmentDraftForm from '@/features/admin/courses/edit-course/assessments/hooks/useAssessmentDraftForm';
 import {
@@ -345,9 +346,13 @@ export default function useQuizPage(language: string, t: TFunction<'admin', unde
       return;
     }
 
-    const confirmed = window.confirm(
-      t('edit.quiz.deleteConfirm'),
-    );
+    const confirmed = await confirmWithModal({
+      title: t('edit.quiz.deleteQuiz'),
+      message: t('edit.quiz.deleteConfirm'),
+      confirmLabel: t('edit.quiz.deleteQuiz'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
 
     if (!confirmed) {
       return;

@@ -126,7 +126,8 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
               const t = translations[lang as keyof typeof translations] || translations.en;
 
               storeWithShowModal.showModal?.({
-                type: 'error',
+                type: 'warning',
+                branded: true,
                 title: t.title,
                 message: t.message,
                 confirmLabel: t.button,

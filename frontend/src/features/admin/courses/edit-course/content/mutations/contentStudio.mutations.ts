@@ -6,6 +6,7 @@ import courseService, {
   SubChapter,
 } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
+import { confirmWithModal } from '@/utils/modalFeedback';
 import {
   ContentBlockFormState,
   normalizeCourseForContentStudio,
@@ -136,9 +137,13 @@ export async function deleteContentMutation({
     return;
   }
 
-  const confirmed = window.confirm(
-    t('edit.contentBlocks.deleteConfirm'),
-  );
+  const confirmed = await confirmWithModal({
+    title: t('courseActions.delete'),
+    message: t('edit.contentBlocks.deleteConfirm'),
+    confirmLabel: t('courseActions.delete'),
+    type: 'warning',
+    confirmVariant: 'danger',
+  });
 
   if (!confirmed) {
     return;

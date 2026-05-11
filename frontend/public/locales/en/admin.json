@@ -501,6 +501,7 @@
     "updateFailed": "Failed to update collection.",
     "deleted": "Collection deleted successfully.",
     "deleteFailed": "Failed to delete collection.",
+    "deleteConfirm": "Delete this collection? This action cannot be undone.",
     "titleRequired": "Both English and Finnish titles are required.",
     "summaryTotal": "Collections",
     "summaryPublished": "Published",
@@ -559,7 +560,8 @@
     "delete": "Delete",
     "deleting": "Deleting...",
     "deleted": "Resource deleted successfully.",
-    "deleteFailed": "Failed to delete resource."
+    "deleteFailed": "Failed to delete resource.",
+    "deleteConfirm": "Delete this resource? This action cannot be undone."
   },
   "courseActions": {
     "preview": "Preview",
