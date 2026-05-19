@@ -12,10 +12,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
+import { AdminOrCreatorRoleGuard } from '../../auth/guards/admin-or-creator-role.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import type { SafeUser } from '../../auth/types/safe-user.type';
 import { resolveLanguage } from '../../config/request-language';
+import { CourseService } from '../../courses/services/course.service';
 import { SubmitChapterQuizAttemptDto } from '../dto/submit-chapter-quiz-attempt.dto';
 import { UpsertChapterQuizDto } from '../dto/upsert-chapter-quiz.dto';
 import { QuizzesService } from '../services/quizzes.service';
@@ -23,7 +24,10 @@ import { QuizzesService } from '../services/quizzes.service';
 @Controller('courses/:courseId/chapters/:chapterId/quiz')
 @UseGuards(JwtAuthGuard)
 export class QuizzesController {
-  constructor(private readonly quizzesService: QuizzesService) {}
+  constructor(
+    private readonly quizzesService: QuizzesService,
+    private readonly courseService: CourseService,
+  ) {}
 
   @Get()
   async getChapterQuiz(
@@ -35,32 +39,38 @@ export class QuizzesController {
   }
 
   @Get('analytics')
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminOrCreatorRoleGuard)
   async getChapterQuizAnalytics(
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
     @Param('chapterId', new ParseUUIDPipe()) chapterId: string,
+    @CurrentUser() currentUser: SafeUser,
   ) {
+    await this.courseService.assertCanManageCourse(courseId, currentUser);
     return this.quizzesService.getChapterQuizAnalytics(courseId, chapterId);
   }
 
   @Put()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminOrCreatorRoleGuard)
   async upsertChapterQuiz(
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
     @Param('chapterId', new ParseUUIDPipe()) chapterId: string,
     @Body() dto: UpsertChapterQuizDto,
+    @CurrentUser() currentUser: SafeUser,
   ) {
+    await this.courseService.assertCanManageCourse(courseId, currentUser);
     return this.quizzesService.upsertChapterQuiz(courseId, chapterId, dto);
   }
 
   @Delete()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminOrCreatorRoleGuard)
   @HttpCode(204)
   async deleteChapterQuiz(
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
     @Param('chapterId', new ParseUUIDPipe()) chapterId: string,
+    @CurrentUser() currentUser: SafeUser,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
+    await this.courseService.assertCanManageCourse(courseId, currentUser);
     await this.quizzesService.deleteChapterQuiz(
       courseId,
       chapterId,

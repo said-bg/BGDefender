@@ -12,10 +12,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
+import { AdminOrCreatorRoleGuard } from '../../auth/guards/admin-or-creator-role.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import type { SafeUser } from '../../auth/types/safe-user.type';
 import { resolveLanguage } from '../../config/request-language';
+import { CourseService } from '../../courses/services/course.service';
 import { SubmitChapterQuizAttemptDto } from '../dto/submit-chapter-quiz-attempt.dto';
 import { UpsertChapterQuizDto } from '../dto/upsert-chapter-quiz.dto';
 import { QuizzesService } from '../services/quizzes.service';
@@ -23,7 +24,10 @@ import { QuizzesService } from '../services/quizzes.service';
 @Controller('courses/:courseId/final-test')
 @UseGuards(JwtAuthGuard)
 export class FinalTestsController {
-  constructor(private readonly quizzesService: QuizzesService) {}
+  constructor(
+    private readonly quizzesService: QuizzesService,
+    private readonly courseService: CourseService,
+  ) {}
 
   @Get()
   async getCourseFinalTest(
@@ -34,29 +38,35 @@ export class FinalTestsController {
   }
 
   @Get('analytics')
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminOrCreatorRoleGuard)
   async getCourseFinalTestAnalytics(
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
+    @CurrentUser() currentUser: SafeUser,
   ) {
+    await this.courseService.assertCanManageCourse(courseId, currentUser);
     return this.quizzesService.getCourseFinalTestAnalytics(courseId);
   }
 
   @Put()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminOrCreatorRoleGuard)
   async upsertCourseFinalTest(
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
     @Body() dto: UpsertChapterQuizDto,
+    @CurrentUser() currentUser: SafeUser,
   ) {
+    await this.courseService.assertCanManageCourse(courseId, currentUser);
     return this.quizzesService.upsertCourseFinalTest(courseId, dto);
   }
 
   @Delete()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(AdminOrCreatorRoleGuard)
   @HttpCode(204)
   async deleteCourseFinalTest(
     @Param('courseId', new ParseUUIDPipe()) courseId: string,
+    @CurrentUser() currentUser: SafeUser,
     @Headers('accept-language') acceptLanguage?: string,
   ) {
+    await this.courseService.assertCanManageCourse(courseId, currentUser);
     await this.quizzesService.deleteCourseFinalTest(
       courseId,
       resolveLanguage(acceptLanguage),

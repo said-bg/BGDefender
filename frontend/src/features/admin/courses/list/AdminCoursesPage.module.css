@@ -38,6 +38,38 @@
 .heroActions {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+}
+
+.scopeTabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.24rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+}
+
+.scopeTab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.1rem;
+  padding: 0.38rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.scopeTabActive {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-active);
 }
 
 .primaryAction {
@@ -69,7 +101,8 @@
 
   .heroActions {
     width: 100%;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
@@ -80,6 +113,14 @@
 
   .heroActions {
     width: 100%;
+  }
+
+  .scopeTabs {
+    width: 100%;
+  }
+
+  .scopeTab {
+    flex: 1 1 0;
   }
 
   .primaryAction {

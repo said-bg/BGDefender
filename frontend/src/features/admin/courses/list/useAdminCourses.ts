@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import courseService, { AdminCourseSummary, Course } from '@/services/course';
+import courseService, {
+  AdminCourseSummary,
+  Course,
+  CourseManagementScope,
+} from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { confirmWithModal } from '@/utils/modalFeedback';
 import {
@@ -21,7 +25,7 @@ type AdminCoursesState = {
   error: string | null;
 };
 
-export default function useAdminCourses() {
+export default function useAdminCourses(scope: CourseManagementScope) {
   const { t, i18n } = useTranslation('admin');
   const [state, setState] = useState<AdminCoursesState>({
     summary: null,
@@ -39,8 +43,8 @@ export default function useAdminCourses() {
         setState((previous) => ({ ...previous, loading: true, error: null }));
 
         const [summary, coursesResponse] = await Promise.all([
-          courseService.getAdminSummary(),
-          courseService.getAdminCourses(50, 0),
+          courseService.getAdminSummary(scope),
+          courseService.getAdminCourses(50, 0, scope),
         ]);
 
         setState({
@@ -59,7 +63,7 @@ export default function useAdminCourses() {
     };
 
     void loadAdminCourses();
-  }, [t]);
+  }, [scope, t]);
 
   const localizedCourses = useMemo(
     () => state.courses.map((course) => toLocalizedCourse(course, i18n.language)),
@@ -93,7 +97,7 @@ export default function useAdminCourses() {
         ...previous,
         summary: updateSummaryForStatusChange(
           previous.summary,
-          course.status as 'draft' | 'published' | 'archived',
+          course.status as 'draft' | 'published',
           nextStatus,
         ),
         courses: previous.courses.map((entry) => (entry.id === course.id ? updatedCourse : entry)),
@@ -138,7 +142,7 @@ export default function useAdminCourses() {
         ...previous,
         summary: updateSummaryForDelete(
           previous.summary,
-          course.status as 'draft' | 'published' | 'archived',
+          course.status as 'draft' | 'published',
         ),
         courses: previous.courses.filter((entry) => entry.id !== course.id),
       }));

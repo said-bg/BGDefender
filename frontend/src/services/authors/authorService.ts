@@ -42,6 +42,24 @@ const authorService = {
     return response.data;
   },
 
+  async getAuthorsForCourse(
+    courseId: string,
+    limit = 100,
+    offset = 0,
+  ): Promise<AuthorsResponse> {
+    const response = await apiClient.get<AuthorsResponse>(
+      `/courses/admin/${courseId}/authors`,
+      {
+        params: {
+          limit,
+          offset,
+        },
+      },
+    );
+
+    return response.data;
+  },
+
   async createAuthor(payload: CreateAuthorRequest): Promise<Author> {
     const response = await apiClient.post<Author>('/authors', payload);
     return response.data;

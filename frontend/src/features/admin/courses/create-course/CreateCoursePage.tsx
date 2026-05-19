@@ -6,7 +6,7 @@ import CreateCourseForm from '@/features/admin/courses/create-course/CreateCours
 
 export default function CreateCoursePage() {
   return (
-    <ProtectedRoute requiredRole={[UserRole.ADMIN]}>
+    <ProtectedRoute requiredRole={[UserRole.ADMIN, UserRole.CREATOR]}>
       <CreateCourseForm />
     </ProtectedRoute>
   );

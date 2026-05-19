@@ -248,6 +248,7 @@ function StructurePageContent() {
     <EditCourseShell
       courseId={structure.courseId}
       section="structure"
+      course={structure.course}
       title={t('edit.tabs.structure')}
       subtitle={t('edit.chapters.description')}
       courseTitle={structure.localizedCourseTitle}

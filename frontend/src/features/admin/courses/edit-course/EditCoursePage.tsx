@@ -47,6 +47,7 @@ function EditCourseDetailsContent() {
     <EditCourseShell
       courseId={courseId}
       section="details"
+      course={details.course}
       title={t('edit.title')}
       subtitle={t('edit.subtitle')}
       courseTitle={details.localizedCourseTitle}

@@ -70,7 +70,6 @@ const createSummary = (
   totalCourses: 4,
   publishedCourses: 1,
   draftCourses: 2,
-  archivedCourses: 0,
   ...overrides,
 });
 
@@ -94,7 +93,6 @@ describe('courseAdmin.utils', () => {
       totalCourses: 4,
       publishedCourses: 2,
       draftCourses: 1,
-      archivedCourses: 0,
     });
   });
 
@@ -110,14 +108,13 @@ describe('courseAdmin.utils', () => {
   it('updates delete counters without dropping below zero', () => {
     expect(
       updateSummaryForDelete(
-        createSummary({ totalCourses: 0, archivedCourses: 0 }),
-        'archived',
+        createSummary({ totalCourses: 0, draftCourses: 0 }),
+        'draft',
       ),
     ).toEqual({
       totalCourses: 0,
       publishedCourses: 1,
-      draftCourses: 1,
-      archivedCourses: 0,
+      draftCourses: 0,
     });
   });
 });

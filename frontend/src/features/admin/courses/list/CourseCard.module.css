@@ -50,6 +50,13 @@
   line-height: 1.5;
 }
 
+.courseOwnerLine {
+  margin: 2px 0 0;
+  color: var(--color-text-subtle);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
 .badges {
   display: flex;
   align-items: center;
@@ -108,6 +115,17 @@
   gap: 14px;
   color: var(--color-text-subtle);
   font-size: 0.84rem;
+}
+
+.courseLearningStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 0.72rem 0.9rem;
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-muted, rgba(255, 176, 32, 0.08));
+  color: var(--color-text-soft);
+  font-size: 0.82rem;
 }
 
 .courseActions {
@@ -202,6 +220,11 @@
   }
 
   .courseStats {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .courseLearningStats {
     display: grid;
     gap: 0.35rem;
   }

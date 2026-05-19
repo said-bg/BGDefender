@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { useAuth } from '@/hooks';
 import { UserRole } from '@/types/api';
 import AuthorForm from './AuthorForm';
 import AuthorLibrary from './AuthorLibrary';
@@ -11,7 +12,7 @@ import useAdminAuthors from './useAdminAuthors';
 
 export default function AdminAuthorsPage() {
   return (
-    <ProtectedRoute requiredRole={[UserRole.ADMIN]}>
+    <ProtectedRoute requiredRole={[UserRole.ADMIN, UserRole.CREATOR]}>
       <AdminAuthorsPageContent />
     </ProtectedRoute>
   );
@@ -19,6 +20,7 @@ export default function AdminAuthorsPage() {
 
 function AdminAuthorsPageContent() {
   const { i18n, t } = useTranslation('admin');
+  const { user } = useAuth();
   const {
     authors,
     deletingAuthorId,
@@ -41,12 +43,13 @@ function AdminAuthorsPageContent() {
     submitMessage,
     uploadedPhotoFilename,
   } = useAdminAuthors();
+  const backHref = user?.role === UserRole.ADMIN ? '/admin' : '/creator';
 
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <Link href="/admin" className={styles.backLink}>
+          <Link href={backHref} className={styles.backLink}>
             {t('backToOverview')}
           </Link>
           <p className={styles.eyebrow}>

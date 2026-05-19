@@ -15,6 +15,7 @@ interface NavbarAccountMenuLabels {
   premiumBadge: string;
   profile: string;
   resources: string;
+  studio: string;
   userBadge: string;
 }
 
@@ -76,6 +77,8 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
         ? styles.creatorTone
         : styles.userTone;
   const isStandardUser = user.role === UserRole.USER;
+  const managementHref = user.role === UserRole.ADMIN ? '/admin' : '/creator';
+  const managementLabel = user.role === UserRole.ADMIN ? labels.admin : labels.studio;
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -116,9 +119,9 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
           </div>
 
           <div className={styles.dropdownLinks}>
-            {user.role === UserRole.ADMIN ? (
-              <Link href="/admin" className={styles.dropdownLink} onClick={closeMenu}>
-                {labels.admin}
+            {user.role === UserRole.ADMIN || user.role === UserRole.CREATOR ? (
+              <Link href={managementHref} className={styles.dropdownLink} onClick={closeMenu}>
+                {managementLabel}
               </Link>
             ) : null}
             {user.role !== UserRole.ADMIN ? (

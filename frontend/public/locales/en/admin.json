@@ -11,12 +11,45 @@
   "coursesEyebrow": "Course library",
   "coursesTitle": "Manage courses",
   "coursesSubtitle": "Create, review, and prepare courses before moving into chapters, subchapters, and content editing.",
+  "myCoursesTitle": "My courses",
+  "myCoursesSubtitle": "Use this as your main workspace for the courses you manage directly.",
+  "reviewCoursesTitle": "Review creator courses",
+  "reviewCoursesSubtitle": "Inspect the wider creator catalog separately whenever you need admin supervision.",
   "courseCountLabel": "Courses available",
   "coursesListTitle": "All courses",
   "coursesListDescription": "A simple view of every course, with its status, access level, authors, and structure size.",
+  "myCoursesListTitle": "My course library",
+  "myCoursesListDescription": "The courses you actively manage, draft, publish, and maintain yourself.",
+  "reviewCoursesListTitle": "Review queue",
+  "reviewCoursesListDescription": "A wider admin-only view of creator-owned courses so you can inspect progress and intervene when needed.",
   "emptyCoursesTitle": "No courses yet",
   "emptyCoursesDescription": "As soon as courses exist, they will appear here for admin review.",
+  "emptyMyCoursesTitle": "No courses in your library yet",
+  "emptyMyCoursesDescription": "Create your first course and it will appear here as your primary working space.",
+  "emptyReviewCoursesTitle": "No creator courses to review yet",
+  "emptyReviewCoursesDescription": "Creator-owned courses will appear here as soon as they start building them.",
   "createCourse": "Create course",
+  "creatorDashboard": {
+    "eyebrow": "Creator studio",
+    "welcomeTitle": "Welcome back, {{name}}",
+    "subtitle": "Manage your own courses, drafts, and author profiles from one focused studio workspace.",
+    "toolbarLabel": "Creator studio actions",
+    "metrics": {
+      "startedLearners": "Learners started",
+      "startedLearnersHint": "Unique learners who have started one of your courses.",
+      "completedLearners": "Learners completed",
+      "completedLearnersHint": "Unique learners who reached full completion in your course space.",
+      "averageProgress": "Average progress",
+      "averageProgressHint": "Average completion percentage across saved learner progress.",
+      "finalTestPassRate": "Final test pass rate",
+      "finalTestPassRateHint": "{{count}} final test attempts recorded."
+    }
+  },
+  "courseScopes": {
+    "label": "Course view",
+    "mine": "My courses",
+    "review": "Review courses"
+  },
   "editCourse": "Edit course",
   "loading": "Loading admin data...",
   "failedToLoad": "Failed to load admin data.",
@@ -29,14 +62,24 @@
   "updatedLabel": "Updated",
   "authorsCount": "authors",
   "chaptersCount": "chapters",
+  "reviewOwnerLabel": "Created by {{owner}}",
+  "reviewOwnerUnknown": "Unknown owner",
+  "courseLearning": {
+    "startedLearners": "{{count}} started",
+    "completedLearners": "{{count}} completed",
+    "averageProgress": "Average progress: {{value}}",
+    "finalTestPassRate": "Final test pass rate: {{value}} ({{count}} attempts)",
+    "noAverageProgress": "Not enough data",
+    "noFinalTestPassRate": "No attempts yet",
+    "empty": "No learner activity recorded yet."
+  },
   "levels": {
     "free": "Free",
     "premium": "Premium"
   },
   "status": {
     "draft": "Draft",
-    "published": "Published",
-    "archived": "Archived"
+    "published": "Published"
   },
   "create": {
     "backToCourses": "Back to course management",
@@ -86,6 +129,7 @@
     "title": "Edit course",
     "subtitle": "Update the course shell before moving into chapters, subchapters, and content editing.",
     "tabs": {
+      "analytics": "Analytics",
       "details": "Course details",
       "structure": "Structure",
       "content": "Content",
@@ -101,6 +145,23 @@
     "saving": "Saving changes...",
     "preview": "Preview course",
     "submit": "Save changes",
+    "analytics": {
+      "title": "Course analytics",
+      "subtitle": "Review learner progress, chapter quiz activity, and final test performance for this course.",
+      "overviewTitle": "Course overview",
+      "overviewDescription": "A quick view of how learners are progressing through this course overall.",
+      "trainingQuizTitle": "Chapter quiz analytics",
+      "trainingQuizDescription": "Inspect learner attempts chapter by chapter to spot where the course is easy, unclear, or too difficult.",
+      "finalTestTitle": "Final test analytics",
+      "finalTestDescription": "Review overall performance on the course final test and see which learners are passing or retrying.",
+      "noQuizTitle": "No training quiz yet",
+      "noQuizDescription": "Add a training quiz to this chapter before learner quiz analytics can appear here.",
+      "noFinalTestTitle": "No final test yet",
+      "noFinalTestDescription": "Create a final test for this course to unlock final test analytics.",
+      "openQuizEditor": "Open quiz editor",
+      "openFinalTestEditor": "Open final test editor",
+      "chapterLabel": "Chapter {{index}}"
+    },
     "chapters": {
       "title": "Chapters",
       "description": "Build the course structure here first. We will add subchapters and lesson content right after this step.",
@@ -565,9 +626,9 @@
   },
   "courseActions": {
     "preview": "Preview",
+    "analytics": "View analytics",
     "publish": "Publish",
     "moveToDraft": "Move to draft",
-    "archive": "Archive",
     "delete": "Delete",
     "working": "Working...",
     "statusUpdated": "Course status updated.",
@@ -579,8 +640,7 @@
   "metrics": {
     "totalCourses": "Total courses",
     "published": "Published",
-    "drafts": "Drafts",
-    "archived": "Archived"
+    "drafts": "Drafts"
   },
   "dashboard": {
     "toolbarLabel": "Admin actions",

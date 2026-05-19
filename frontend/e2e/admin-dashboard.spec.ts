@@ -20,7 +20,6 @@ test.describe('Admin dashboard', () => {
           totalCourses: 1,
           publishedCourses: 1,
           draftCourses: 0,
-          archivedCourses: 0,
         }),
       });
     });

@@ -7,6 +7,9 @@ import { PedagogicalContent } from '../entities/pedagogical-content.entity';
 import { Progress } from '../entities/progress.entity';
 import { Favorite } from '../entities/favorite.entity';
 import { Author } from '../entities/author.entity';
+import { User } from '../entities/user.entity';
+import { Quiz } from '../entities/quiz.entity';
+import { QuizAttempt } from '../entities/quiz-attempt.entity';
 import { CourseService } from './services/course.service';
 import { CourseController } from './controllers/course.controller';
 import { ChapterService } from './services/chapters.service';
@@ -20,6 +23,7 @@ import { ProgressController } from './controllers/progress.controller';
 import { FavoriteService } from './services/favorite.service';
 import { FavoriteController } from './controllers/favorite.controller';
 import { AdminRoleGuard } from '../auth/guards/admin-role.guard';
+import { AdminOrCreatorRoleGuard } from '../auth/guards/admin-or-creator-role.guard';
 import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
@@ -33,6 +37,9 @@ import { NotificationsModule } from '../notifications/notifications.module';
       Progress,
       Favorite,
       Author,
+      User,
+      Quiz,
+      QuizAttempt,
     ]),
   ],
   providers: [
@@ -43,6 +50,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     ProgressService,
     FavoriteService,
     AdminRoleGuard,
+    AdminOrCreatorRoleGuard,
   ],
   controllers: [
     CourseController,

@@ -49,6 +49,12 @@ export class Author {
   })
   photo: string | null;
 
+  @Column({
+    type: 'int',
+    nullable: true,
+  })
+  ownerUserId: number | null;
+
   @CreateDateColumn()
   createdAt: Date;
 

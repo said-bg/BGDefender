@@ -35,21 +35,44 @@ export function useLoginForm() {
   const [form, setForm] = useState<LoginFormState>(initialForm);
   const [errors, dispatch] = useReducer(errorsReducer, {});
 
+  const getDefaultRedirectPath = (role: UserRole) => {
+    if (role === UserRole.ADMIN) {
+      return '/admin';
+    }
+
+    return '/';
+  };
+
   const getSafeRedirectPath = (requestedPath: string | null, role: UserRole) => {
     if (!requestedPath || requestedPath === '/') {
-      return role === UserRole.ADMIN ? '/admin' : '/';
+      return getDefaultRedirectPath(role);
     }
 
     if (!requestedPath.startsWith('/')) {
-      return role === UserRole.ADMIN ? '/admin' : '/';
+      return getDefaultRedirectPath(role);
     }
 
     if (requestedPath === '/unauthorized') {
-      return role === UserRole.ADMIN ? '/admin' : '/';
+      return getDefaultRedirectPath(role);
     }
 
-    if (requestedPath.startsWith('/admin') && role !== UserRole.ADMIN) {
-      return '/';
+    const creatorAdminPaths = ['/admin/courses', '/admin/authors'];
+    const canCreatorAccessAdminPath =
+      role === UserRole.CREATOR &&
+      creatorAdminPaths.some(
+        (path) => requestedPath === path || requestedPath.startsWith(`${path}/`),
+      );
+
+    if (
+      requestedPath.startsWith('/admin') &&
+      role !== UserRole.ADMIN &&
+      !canCreatorAccessAdminPath
+    ) {
+      return getDefaultRedirectPath(role);
+    }
+
+    if (requestedPath.startsWith('/creator') && role !== UserRole.CREATOR) {
+      return getDefaultRedirectPath(role);
     }
 
     if (

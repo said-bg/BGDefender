@@ -5,9 +5,12 @@ export interface Course {
   descriptionEn: string;
   descriptionFi: string;
   level: 'free' | 'premium';
-  status: string;
+  status: 'draft' | 'published';
   estimatedDuration: number;
   coverImage: string;
+  ownerUserId?: number | null;
+  owner?: CourseOwnerSummary | null;
+  learningSummary?: CourseLearningSummary | null;
   authors: Author[];
   finalTests?: FinalTestSummary[];
   chapters: Chapter[];
@@ -15,9 +18,17 @@ export interface Course {
   updatedAt: string;
 }
 
+export interface CourseOwnerSummary {
+  id: number;
+  email: string;
+  firstName: string | null;
+  lastName: string | null;
+}
+
 export interface Author {
   id: string;
   name: string;
+  ownerUserId?: number | null;
   roleEn?: string;
   roleFi?: string;
   biographyEn?: string;
@@ -318,8 +329,17 @@ export interface AdminCourseSummary {
   totalCourses: number;
   publishedCourses: number;
   draftCourses: number;
-  archivedCourses: number;
 }
+
+export interface CourseLearningSummary {
+  startedLearners: number;
+  completedLearners: number;
+  averageProgress: number | null;
+  finalTestAttempts: number;
+  finalTestPassRate: number | null;
+}
+
+export type CourseManagementScope = 'mine' | 'review';
 
 export interface CreateCourseRequest {
   titleEn: string;

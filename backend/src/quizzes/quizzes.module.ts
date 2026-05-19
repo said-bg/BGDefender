@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminRoleGuard } from '../auth/guards/admin-role.guard';
+import { AdminOrCreatorRoleGuard } from '../auth/guards/admin-or-creator-role.guard';
 import { CertificatesModule } from '../certificates/certificates.module';
+import { CoursesModule } from '../courses/courses.module';
 import { Chapter } from '../entities/chapter.entity';
 import { Course } from '../entities/course.entity';
 import { Progress } from '../entities/progress.entity';
@@ -17,6 +19,7 @@ import { QuizzesService } from './services/quizzes.service';
 @Module({
   imports: [
     CertificatesModule,
+    CoursesModule,
     TypeOrmModule.forFeature([
       Chapter,
       Course,
@@ -28,7 +31,7 @@ import { QuizzesService } from './services/quizzes.service';
       QuizAttemptAnswer,
     ]),
   ],
-  providers: [QuizzesService, AdminRoleGuard],
+  providers: [QuizzesService, AdminRoleGuard, AdminOrCreatorRoleGuard],
   controllers: [QuizzesController, FinalTestsController],
   exports: [QuizzesService],
 })

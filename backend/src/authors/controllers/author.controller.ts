@@ -21,11 +21,13 @@ import { diskStorage } from 'multer';
 import { mkdirSync } from 'fs';
 import { join } from 'path';
 import type { Request } from 'express';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { AuthorService } from '../services/author.service';
 import { CreateAuthorDto } from '../dto/create-author.dto';
 import { UpdateAuthorDto } from '../dto/update-author.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
+import { AdminOrCreatorRoleGuard } from '../../auth/guards/admin-or-creator-role.guard';
+import type { SafeUser } from '../../auth/types/safe-user.type';
 import { resolveLanguage } from '../../config/request-language';
 import {
   buildSafeUploadedFilename,
@@ -61,7 +63,7 @@ export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
   @Post('admin/upload-photo')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -168,19 +170,25 @@ export class AuthorController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
-  async create(@Body() createAuthorDto: CreateAuthorDto) {
-    return await this.authorService.create(createAuthorDto);
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
+  async create(
+    @Body() createAuthorDto: CreateAuthorDto,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    return await this.authorService.create(createAuthorDto, currentUser);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   async findAll(
     @Query('limit') limit: string = '10',
     @Query('offset') offset: string = '0',
+    @CurrentUser() currentUser: SafeUser,
   ) {
     const parsedLimit = parseInt(limit, 10) || 10;
     const parsedOffset = parseInt(offset, 10) || 0;
     const [data, count] = await this.authorService.findAll(
+      currentUser,
       parsedLimit,
       parsedOffset,
     );
@@ -188,23 +196,31 @@ export class AuthorController {
   }
 
   @Get(':id')
-  async findById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.authorService.findById(id);
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
+  async findById(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    return await this.authorService.findById(id, currentUser);
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateAuthorDto: UpdateAuthorDto,
+    @CurrentUser() currentUser: SafeUser,
   ) {
-    return await this.authorService.update(id, updateAuthorDto);
+    return await this.authorService.update(id, updateAuthorDto, currentUser);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   @HttpCode(204)
-  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    await this.authorService.delete(id);
+  async delete(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    await this.authorService.delete(id, currentUser);
   }
 }

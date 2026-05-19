@@ -30,9 +30,11 @@ CREATE TABLE `authors` (
   `biographyEn` text,
   `biographyFi` text,
   `photo` varchar(255) DEFAULT NULL,
+  `ownerUserId` int DEFAULT NULL,
   `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_authors_owner_user` (`ownerUserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -162,12 +164,14 @@ CREATE TABLE `courses` (
   `descriptionEn` text NOT NULL,
   `descriptionFi` text NOT NULL,
   `level` enum('free','premium') NOT NULL DEFAULT 'free',
-  `status` enum('draft','published','archived') NOT NULL DEFAULT 'draft',
+  `status` enum('draft','published') NOT NULL DEFAULT 'draft',
   `estimatedDuration` int DEFAULT NULL,
   `coverImage` varchar(255) DEFAULT NULL,
+  `ownerUserId` int DEFAULT NULL,
   `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `idx_courses_owner_user` (`ownerUserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

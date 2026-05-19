@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import type { Course } from '@/services/course';
 import { UserRole } from '@/types/api';
 import { buildCoursePreviewHref } from './coursePreview.utils';
 import formStyles from './EditCourseForm.module.css';
@@ -12,6 +13,7 @@ import sharedStyles from './EditCoursePage.module.css';
 import shellStyles from './EditCourseShell.module.css';
 
 export type EditCourseSection =
+  | 'analytics'
   | 'details'
   | 'structure'
   | 'content'
@@ -22,6 +24,10 @@ export const getEditCourseHref = (
   courseId: string,
   section: EditCourseSection,
 ) => {
+  if (section === 'analytics') {
+    return `/admin/courses/${courseId}/analytics`;
+  }
+
   if (section === 'structure') {
     return `/admin/courses/${courseId}/edit/structure`;
   }
@@ -51,6 +57,7 @@ type EditCourseShellProps = {
   section: EditCourseSection;
   title: string;
   subtitle: string;
+  course?: Course | null;
   courseTitle?: string;
   actions?: ReactNode;
   previewHref?: string;
@@ -64,7 +71,7 @@ export function EditCourseProtected({
   children: ReactNode;
 }) {
   return (
-    <ProtectedRoute requiredRole={[UserRole.ADMIN]}>
+    <ProtectedRoute requiredRole={[UserRole.ADMIN, UserRole.CREATOR]}>
       {children}
     </ProtectedRoute>
   );
@@ -75,6 +82,7 @@ export function EditCourseShell({
   section,
   title,
   subtitle,
+  course,
   courseTitle,
   actions,
   previewHref = buildCoursePreviewHref(courseId, {
@@ -84,8 +92,23 @@ export function EditCourseShell({
   children,
 }: EditCourseShellProps) {
   const { t } = useTranslation('admin');
+  const ownerName = course?.owner
+    ? `${course.owner.firstName || ''} ${course.owner.lastName || ''}`.trim() ||
+      course.owner.email
+    : null;
+  const learningSummary = course?.learningSummary ?? null;
+  const hasLearningSummary =
+    learningSummary &&
+    (learningSummary.startedLearners > 0 ||
+      learningSummary.completedLearners > 0 ||
+      learningSummary.averageProgress !== null ||
+      learningSummary.finalTestAttempts > 0);
 
   const tabs: Array<{ key: EditCourseSection; label: string }> = [
+    {
+      key: 'analytics',
+      label: t('edit.tabs.analytics'),
+    },
     {
       key: 'details',
       label: t('edit.tabs.details'),
@@ -119,6 +142,53 @@ export function EditCourseShell({
           <h1 className={shellStyles.title}>{title}</h1>
           {subtitle ? <p className={shellStyles.subtitle}>{subtitle}</p> : null}
           {courseTitle ? <p className={sharedStyles.helperText}>{courseTitle}</p> : null}
+          {ownerName || learningSummary ? (
+            <div className={shellStyles.contextChips}>
+              {ownerName ? (
+                <span className={shellStyles.contextChip}>
+                  {t('reviewOwnerLabel', { owner: ownerName })}
+                </span>
+              ) : null}
+
+              {learningSummary ? (
+                hasLearningSummary ? (
+                  <>
+                    <span className={shellStyles.contextChip}>
+                      {t('courseLearning.startedLearners', {
+                        count: learningSummary.startedLearners,
+                      })}
+                    </span>
+                    <span className={shellStyles.contextChip}>
+                      {t('courseLearning.completedLearners', {
+                        count: learningSummary.completedLearners,
+                      })}
+                    </span>
+                    <span className={shellStyles.contextChip}>
+                      {t('courseLearning.averageProgress', {
+                        value:
+                          learningSummary.averageProgress === null
+                            ? t('courseLearning.noAverageProgress')
+                            : `${learningSummary.averageProgress}%`,
+                      })}
+                    </span>
+                    <span className={shellStyles.contextChip}>
+                      {t('courseLearning.finalTestPassRate', {
+                        value:
+                          learningSummary.finalTestPassRate === null
+                            ? t('courseLearning.noFinalTestPassRate')
+                            : `${learningSummary.finalTestPassRate}%`,
+                        count: learningSummary.finalTestAttempts,
+                      })}
+                    </span>
+                  </>
+                ) : (
+                  <span className={shellStyles.contextChip}>
+                    {t('courseLearning.empty')}
+                  </span>
+                )
+              ) : null}
+            </div>
+          ) : null}
 
           <div className={shellStyles.sectionNavRow}>
             <nav className={shellStyles.sectionNav} aria-label={t('edit.courseSection')}>

@@ -44,7 +44,6 @@ test.describe('Admin courses', () => {
           totalCourses: 1,
           publishedCourses: 0,
           draftCourses: 1,
-          archivedCourses: 0,
         }),
       });
     });

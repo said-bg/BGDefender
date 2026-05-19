@@ -9,10 +9,9 @@ export type LocalizedAdminCourse = Course & {
   authorNames: string;
 };
 
-const statusSummaryKeys: Record<'draft' | 'published' | 'archived', keyof AdminCourseSummary> = {
+const statusSummaryKeys: Record<'draft' | 'published', keyof AdminCourseSummary> = {
   draft: 'draftCourses',
   published: 'publishedCourses',
-  archived: 'draftCourses',
 };
 
 export const toLocalizedCourse = (course: Course, language: string): LocalizedAdminCourse => {
@@ -34,8 +33,8 @@ export const toLocalizedCourse = (course: Course, language: string): LocalizedAd
 
 export const updateSummaryForStatusChange = (
   summary: AdminCourseSummary | null,
-  previousStatus: 'draft' | 'published' | 'archived',
-  nextStatus: 'draft' | 'published' | 'archived',
+  previousStatus: 'draft' | 'published',
+  nextStatus: 'draft' | 'published',
 ) => {
   if (!summary || previousStatus === nextStatus) {
     return summary;
@@ -53,7 +52,7 @@ export const updateSummaryForStatusChange = (
 
 export const updateSummaryForDelete = (
   summary: AdminCourseSummary | null,
-  deletedStatus: 'draft' | 'published' | 'archived',
+  deletedStatus: 'draft' | 'published',
 ) => {
   if (!summary) {
     return summary;

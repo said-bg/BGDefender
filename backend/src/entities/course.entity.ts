@@ -20,7 +20,6 @@ export enum CourseLevel {
 export enum CourseStatus {
   DRAFT = 'draft',
   PUBLISHED = 'published',
-  ARCHIVED = 'archived',
 }
 
 @Entity('courses')
@@ -75,6 +74,12 @@ export class Course {
     nullable: true,
   })
   coverImage: string | null;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+  })
+  ownerUserId: number | null;
 
   @ManyToMany(() => Author)
   @JoinTable({

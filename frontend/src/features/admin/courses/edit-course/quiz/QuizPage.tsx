@@ -65,6 +65,7 @@ function QuizPageContent() {
     <EditCourseShell
       courseId={quizPage.courseId}
       section="quiz"
+      course={quizPage.course}
       title={t('edit.tabs.quiz')}
       subtitle={t('edit.quiz.subtitle')}
       courseTitle={quizPage.localizedCourseTitle}

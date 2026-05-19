@@ -1,7 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { useAuth } from '@/hooks';
+import type { CourseManagementScope } from '@/services/course';
 import { UserRole } from '@/types/api';
 import CourseMetrics from './CourseMetrics';
 import CoursesSection from './CoursesSection';
@@ -10,13 +14,24 @@ import useAdminCourses from './useAdminCourses';
 
 export default function AdminCoursesPage() {
   return (
-    <ProtectedRoute requiredRole={[UserRole.ADMIN]}>
+    <ProtectedRoute requiredRole={[UserRole.ADMIN, UserRole.CREATOR]}>
       <AdminCoursesPageContent />
     </ProtectedRoute>
   );
 }
 
 function AdminCoursesPageContent() {
+  const { user } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const effectiveScope: CourseManagementScope =
+    user?.role === UserRole.ADMIN && searchParams.get('scope') === 'review'
+      ? 'review'
+      : 'mine';
+  const backHref = user?.role === UserRole.ADMIN ? '/admin' : '/creator';
+  const isReviewScope =
+    user?.role === UserRole.ADMIN && effectiveScope === 'review';
   const {
     actionError,
     actionMessage,
@@ -31,21 +46,70 @@ function AdminCoursesPageContent() {
     localizedCourses,
     summary,
     t,
-  } = useAdminCourses();
+  } = useAdminCourses(effectiveScope);
+
+  const scopeTabs = useMemo(
+    () => [
+      {
+        key: 'mine' as const,
+        label: t('courseScopes.mine'),
+        active: effectiveScope === 'mine',
+      },
+      {
+        key: 'review' as const,
+        label: t('courseScopes.review'),
+        active: effectiveScope === 'review',
+      },
+    ],
+    [effectiveScope, t],
+  );
+
+  const setScope = (scope: CourseManagementScope) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (scope === 'review') {
+      params.set('scope', 'review');
+    } else {
+      params.delete('scope');
+    }
+
+    const nextQuery = params.toString();
+    router.replace(nextQuery ? `${pathname}?${nextQuery}` : pathname);
+  };
 
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <Link href="/admin" className={styles.backLink}>
+          <Link href={backHref} className={styles.backLink}>
             {t('backToOverview')}
           </Link>
           <p className={styles.eyebrow}>{t('coursesEyebrow')}</p>
-          <h1 className={styles.title}>{t('coursesTitle')}</h1>
-          <p className={styles.subtitle}>{t('coursesSubtitle')}</p>
+          <h1 className={styles.title}>
+            {t(isReviewScope ? 'reviewCoursesTitle' : 'myCoursesTitle')}
+          </h1>
+          <p className={styles.subtitle}>
+            {t(isReviewScope ? 'reviewCoursesSubtitle' : 'myCoursesSubtitle')}
+          </p>
         </div>
 
         <div className={styles.heroActions}>
+          {user?.role === UserRole.ADMIN ? (
+            <div className={styles.scopeTabs} aria-label={t('courseScopes.label')}>
+              {scopeTabs.map((scopeTab) => (
+                <button
+                  key={scopeTab.key}
+                  type="button"
+                  className={`${styles.scopeTab} ${
+                    scopeTab.active ? styles.scopeTabActive : ''
+                  }`}
+                  onClick={() => setScope(scopeTab.key)}
+                >
+                  {scopeTab.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
           <Link href="/admin/courses/new" className={styles.primaryAction}>
             {t('createCourse')}
           </Link>
@@ -59,6 +123,14 @@ function AdminCoursesPageContent() {
         actionMessage={actionMessage}
         actingCourseId={actingCourseId}
         courses={localizedCourses}
+        emptyDescription={t(
+          isReviewScope
+            ? 'emptyReviewCoursesDescription'
+            : 'emptyMyCoursesDescription',
+        )}
+        emptyTitle={t(
+          isReviewScope ? 'emptyReviewCoursesTitle' : 'emptyMyCoursesTitle',
+        )}
         error={error}
         formatLevel={formatLevel}
         formatStatus={formatStatus}
@@ -66,6 +138,16 @@ function AdminCoursesPageContent() {
         loading={loading}
         onDelete={(course) => void handleDeleteCourse(course)}
         onStatusChange={(course, nextStatus) => void handleStatusChange(course, nextStatus)}
+        showLearningSummary={!isReviewScope}
+        sectionDescription={t(
+          isReviewScope
+            ? 'reviewCoursesListDescription'
+            : 'myCoursesListDescription',
+        )}
+        sectionTitle={t(
+          isReviewScope ? 'reviewCoursesListTitle' : 'myCoursesListTitle',
+        )}
+        showOwner={isReviewScope}
         t={t}
       />
     </div>

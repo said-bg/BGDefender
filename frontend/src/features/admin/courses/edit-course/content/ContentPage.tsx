@@ -54,6 +54,7 @@ function EditCourseContentInner() {
     <EditCourseShell
       courseId={courseId}
       section="content"
+      course={studio.course}
       title={t('edit.tabs.content')}
       subtitle={t('edit.contentBlocks.workspaceSubtitle')}
       courseTitle={studio.localizedCourseTitle}

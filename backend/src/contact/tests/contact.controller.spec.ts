@@ -59,10 +59,7 @@ describe('ContactController', () => {
 
     mockEmailService.sendContactEmail.mockResolvedValue(undefined);
 
-    const result = await controller.submitContactRequest(
-      dto,
-      'fi-FI,fi;q=0.9',
-    );
+    const result = await controller.submitContactRequest(dto, 'fi-FI,fi;q=0.9');
 
     expect(mockEmailService.sendContactEmail).toHaveBeenCalledWith({
       ...dto,

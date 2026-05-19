@@ -20,13 +20,16 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CourseService } from '../services/course.service';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { AdminOrCreatorRoleGuard } from '../../auth/guards/admin-or-creator-role.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { AdminRoleGuard } from '../../auth/guards/admin-role.guard';
 import { diskStorage } from 'multer';
 import { join } from 'path';
 import { mkdirSync } from 'fs';
 import type { Request } from 'express';
+import type { SafeUser } from '../../auth/types/safe-user.type';
 import { resolveLanguage } from '../../config/request-language';
+import type { CourseManagementScope } from '../services/course.service';
 import {
   buildSafeUploadedFilename,
   courseMediaUploadExtensions,
@@ -69,12 +72,17 @@ type FilenameCallback = (error: Error | null, filename: string) => void;
 type DestinationCallback = (error: Error | null, destination: string) => void;
 type FilterCallback = (error: Error | null, acceptFile: boolean) => void;
 
+const resolveCourseManagementScope = (
+  scope: string | undefined,
+): CourseManagementScope =>
+  scope === 'review' || scope === 'all' ? 'review' : 'mine';
+
 @Controller('courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Post('admin/upload-cover')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -181,7 +189,7 @@ export class CourseController {
   }
 
   @Post('admin/upload-media')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -291,36 +299,77 @@ export class CourseController {
   }
 
   @Get('admin/summary')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
-  async getAdminSummary() {
-    return await this.courseService.getAdminSummary();
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
+  async getAdminSummary(
+    @Query('scope') scope: string | undefined,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    return await this.courseService.getAdminSummary(
+      currentUser,
+      resolveCourseManagementScope(scope),
+    );
+  }
+
+  @Get('admin/learning-summary')
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
+  async getLearningSummary(
+    @Query('scope') scope: string | undefined,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    return await this.courseService.getLearningSummary(
+      currentUser,
+      resolveCourseManagementScope(scope),
+    );
   }
 
   @Get('admin/list')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   async findAllForAdmin(
     @Query('limit') limit: string = '20',
     @Query('offset') offset: string = '0',
+    @Query('scope') scope: string | undefined,
+    @CurrentUser() currentUser: SafeUser,
   ) {
     const parsedLimit = parseInt(limit, 10) || 20;
     const parsedOffset = parseInt(offset, 10) || 0;
     const [data, count] = await this.courseService.findAllForAdmin(
       parsedLimit,
       parsedOffset,
+      currentUser,
+      resolveCourseManagementScope(scope),
     );
     return { data, count };
   }
 
   @Get('admin/:id')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
-  async findByIdForAdmin(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.courseService.findByIdForAdmin(id);
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
+  async findByIdForAdmin(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    return await this.courseService.findByIdForAdmin(id, currentUser);
+  }
+
+  @Get('admin/:id/authors')
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
+  async findManageableAuthors(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    const data = await this.courseService.findManageableAuthors(id, currentUser);
+    return {
+      data,
+      count: data.length,
+    };
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
-  async create(@Body() createCourseDto: CreateCourseDto) {
-    return await this.courseService.create(createCourseDto);
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
+  async create(
+    @Body() createCourseDto: CreateCourseDto,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    return await this.courseService.create(createCourseDto, currentUser);
   }
 
   @Get()
@@ -343,18 +392,22 @@ export class CourseController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   async update(
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateCourseDto: UpdateCourseDto,
+    @CurrentUser() currentUser: SafeUser,
   ) {
-    return await this.courseService.update(id, updateCourseDto);
+    return await this.courseService.update(id, updateCourseDto, currentUser);
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, AdminRoleGuard)
+  @UseGuards(JwtAuthGuard, AdminOrCreatorRoleGuard)
   @HttpCode(204)
-  async delete(@Param('id', new ParseUUIDPipe()) id: string) {
-    await this.courseService.delete(id);
+  async delete(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: SafeUser,
+  ) {
+    await this.courseService.delete(id, currentUser);
   }
 }

@@ -20,7 +20,11 @@ export class ContactController {
   @Post()
   @HttpCode(HttpStatus.OK)
   @UseGuards(RateLimitGuard)
-  @RateLimit({ keyPrefix: 'contact:submit', maxRequests: 3, windowMs: 15 * 60_000 })
+  @RateLimit({
+    keyPrefix: 'contact:submit',
+    maxRequests: 3,
+    windowMs: 15 * 60_000,
+  })
   async submitContactRequest(
     @Body() contactRequestDto: ContactRequestDto,
     @Headers('accept-language') acceptLanguage?: string,

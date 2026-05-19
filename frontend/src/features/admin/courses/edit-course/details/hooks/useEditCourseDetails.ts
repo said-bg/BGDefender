@@ -151,6 +151,7 @@ export function useEditCourseDetails({
   return {
     authors,
     authorsError,
+    course,
     coverUploadError,
     form,
     imageMode,

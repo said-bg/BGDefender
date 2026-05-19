@@ -50,7 +50,7 @@ Use:
 
 Before running in production, copy it to:
 - backend/.env
-
+ 
 Then fill in the real production values:
 - DATABASE_HOST
 - DATABASE_PORT
@@ -96,6 +96,13 @@ Demo users/courses are not included in the SQL dump.
 Instead, demo data is created by the backend seed on first launch when:
 - SEED_ON_BOOT=true
 
+Migration workflow for updates:
+- SQL migrations are stored in:
+  backend/migrations/
+- When a release includes database changes, run the new migration file(s) on the
+  target database before deploying the updated backend.
+- Apply migration files in numeric order.
+
 
 6. Install Dependencies
 
@@ -115,6 +122,9 @@ docker compose up -d
 This docker-compose file is mainly used for the MySQL database service.
 The database values in docker-compose.yml can be adjusted on the target server if different credentials or container settings are preferred.
 If they change the database name, username, password, or host in docker-compose.yml, they must also use matching values in backend/.env.
+
+
+
 
 
 8. Build

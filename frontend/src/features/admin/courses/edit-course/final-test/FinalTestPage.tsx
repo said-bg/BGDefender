@@ -62,6 +62,7 @@ function FinalTestPageContent() {
     <EditCourseShell
       courseId={finalTestPage.courseId}
       section="final-test"
+      course={finalTestPage.course}
       title={t('edit.tabs.finalTest')}
       subtitle={t('edit.finalTest.subtitle')}
       courseTitle={finalTestPage.localizedCourseTitle}

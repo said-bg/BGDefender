@@ -16,6 +16,10 @@ export const Navbar = () => {
   const { t, i18n } = useTranslation('navbar');
   const { isAuthenticated, logout, user } = useAuth();
   const isAdmin = user?.role === UserRole.ADMIN;
+  const isCreator = user?.role === UserRole.CREATOR;
+  const showManagementLink = isAuthenticated && (isAdmin || isCreator);
+  const managementHref = isAdmin ? '/admin' : '/creator';
+  const managementLabel = isAdmin ? t('admin') : t('studio');
   const homeHref = isAdmin ? '/admin' : '/';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -83,9 +87,7 @@ export const Navbar = () => {
 
   const mobileNavigationLinks = useMemo(() => {
     if (isAdmin) {
-      return [
-        { href: '/admin', label: t('admin') },
-      ];
+      return [{ href: '/admin', label: t('admin') }];
     }
 
     const links = [{ href: '/', label: t('home') }];
@@ -96,12 +98,16 @@ export const Navbar = () => {
         { href: '/favorites', label: t('favorites') },
         { href: '/contact', label: t('contact') },
       );
+
+      if (showManagementLink) {
+        links.push({ href: managementHref, label: managementLabel });
+      }
     } else {
       links.push({ href: '/contact', label: t('contact') });
     }
 
     return links;
-  }, [isAdmin, isAuthenticated, t]);
+  }, [isAdmin, isAuthenticated, managementHref, managementLabel, showManagementLink, t]);
 
   const mobileAccountLinks = useMemo(() => {
     if (!isAuthenticated || !user) {
@@ -110,8 +116,14 @@ export const Navbar = () => {
 
     const links = [{ href: '/account', label: t('profile') }];
 
+    if (user.role === UserRole.ADMIN || user.role === UserRole.CREATOR) {
+      links.unshift({
+        href: user.role === UserRole.ADMIN ? '/admin' : '/creator',
+        label: user.role === UserRole.ADMIN ? t('admin') : t('studio'),
+      });
+    }
+
     if (user.role === UserRole.ADMIN) {
-      links.unshift({ href: '/admin', label: t('admin') });
       return links;
     }
 
@@ -153,13 +165,15 @@ export const Navbar = () => {
 
           <div className={styles.desktopLinks}>
             <NavbarLinks
-              adminLabel={t('admin')}
               contactLabel={t('contact')}
               favoritesLabel={t('favorites')}
               homeLabel={t('home')}
               isAdmin={isAdmin}
               isAuthenticated={isAuthenticated}
+              managementHref={managementHref}
+              managementLabel={managementLabel}
               myCoursesLabel={t('myCourses')}
+              showManagementLink={showManagementLink}
             />
           </div>
         </div>
@@ -200,6 +214,7 @@ export const Navbar = () => {
                     premiumBadge: t('badges.premium'),
                     profile: t('profile'),
                     resources: t('resources'),
+                    studio: t('studio'),
                     userBadge: t('badges.user'),
                   }}
                 />

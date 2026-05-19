@@ -85,7 +85,7 @@ export class QuizzesService {
   ): Promise<AdminQuizView | LearnerQuizView | null> {
     await findChapterOrFail(this.dependencies, courseId, chapterId);
 
-    if (currentUser.role === UserRole.ADMIN) {
+    if (await this.isCourseManager(courseId, currentUser)) {
       return getChapterQuizForAdmin(this.dependencies, chapterId);
     }
     return getChapterQuizForLearner(
@@ -109,7 +109,7 @@ export class QuizzesService {
   ): Promise<AdminFinalTestView | LearnerFinalTestView | null> {
     await findCourseOrFail(this.dependencies, courseId);
 
-    if (currentUser.role === UserRole.ADMIN) {
+    if (await this.isCourseManager(courseId, currentUser)) {
       return getCourseFinalTestForAdmin(this.dependencies, courseId);
     }
     return getCourseFinalTestForLearner(
@@ -248,5 +248,24 @@ export class QuizzesService {
       dto,
       language,
     );
+  }
+
+  private async isCourseManager(
+    courseId: string,
+    currentUser: SafeUser,
+  ): Promise<boolean> {
+    if (currentUser.role === UserRole.ADMIN) {
+      return true;
+    }
+
+    if (currentUser.role !== UserRole.CREATOR) {
+      return false;
+    }
+
+    const course = await this.courseRepository.findOne({
+      where: { id: courseId },
+    });
+
+    return course?.ownerUserId === currentUser.id;
   }
 }

@@ -1,10 +1,12 @@
 import { apiClient } from '../api';
 import type {
   AdminCourseSummary,
+  CourseLearningSummary,
   AdminChapterQuiz,
   AdminFinalTestAnalytics,
   AdminQuizAnalytics,
   AdminCourseFinalTest,
+  CourseManagementScope,
   Chapter,
   Course,
   CoursesResponse,
@@ -71,14 +73,34 @@ export const courseService = {
     return response.data.filter((course) => course.level === 'premium');
   },
 
-  async getAdminSummary(): Promise<AdminCourseSummary> {
-    const response = await apiClient.get<AdminCourseSummary>('/courses/admin/summary');
+  async getAdminSummary(
+    scope: CourseManagementScope = 'mine',
+  ): Promise<AdminCourseSummary> {
+    const response = await apiClient.get<AdminCourseSummary>('/courses/admin/summary', {
+      params: { scope },
+    });
     return response.data;
   },
 
-  async getAdminCourses(limit = 20, offset = 0): Promise<CoursesResponse> {
+  async getAdminLearningSummary(
+    scope: CourseManagementScope = 'mine',
+  ): Promise<CourseLearningSummary> {
+    const response = await apiClient.get<CourseLearningSummary>(
+      '/courses/admin/learning-summary',
+      {
+        params: { scope },
+      },
+    );
+    return response.data;
+  },
+
+  async getAdminCourses(
+    limit = 20,
+    offset = 0,
+    scope: CourseManagementScope = 'mine',
+  ): Promise<CoursesResponse> {
     const response = await apiClient.get<CoursesResponse>('/courses/admin/list', {
-      params: { limit, offset },
+      params: { limit, offset, scope },
     });
     return response.data;
   },

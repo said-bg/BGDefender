@@ -162,7 +162,8 @@ export class EmailService {
       process.env.SMTP_FROM ??
       process.env.SMTP_USER ??
       'noreply@bgdefender.com';
-    const recipientEmail = process.env.CONTACT_EMAIL ?? 'support@bgdefender.com';
+    const recipientEmail =
+      process.env.CONTACT_EMAIL ?? 'support@bgdefender.com';
 
     const requestTypeLabels: Record<
       string,

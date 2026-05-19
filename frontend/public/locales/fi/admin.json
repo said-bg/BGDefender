@@ -17,6 +17,39 @@
   "emptyCoursesTitle": "Kursseja ei ole vielä",
   "emptyCoursesDescription": "Kun kursseja on luotu, ne näkyvät täällä ylläpitäjän tarkistettavina.",
   "createCourse": "Luo kurssi",
+  "myCoursesTitle": "Omat kurssit",
+  "myCoursesSubtitle": "Kayta tata paatyotilanasi niille kursseille, joita hallitset itse suoraan.",
+  "reviewCoursesTitle": "Tarkista creator-kurssit",
+  "reviewCoursesSubtitle": "Tarkista creatorien laajempi kurssikatalogi erillisessa nakymassa aina kun tarvitset admin-valvontaa.",
+  "myCoursesListTitle": "Oma kurssikirjasto",
+  "myCoursesListDescription": "Kurssit, joita hallitset, luonnostelet, julkaiset ja yllapidat itse.",
+  "reviewCoursesListTitle": "Tarkistusjono",
+  "reviewCoursesListDescription": "Laajempi vain adminille tarkoitettu nakyma creatorien kursseista, jotta voit tarkistaa etenemisen ja puuttua tarvittaessa.",
+  "emptyMyCoursesTitle": "Kurssikirjastossasi ei ole viela kursseja",
+  "emptyMyCoursesDescription": "Luo ensimmainen kurssisi, niin se ilmestyy tanne paatyoskentelytilaasi.",
+  "emptyReviewCoursesTitle": "Tarkistettavia creator-kursseja ei ole viela",
+  "emptyReviewCoursesDescription": "Creatorien omistamat kurssit ilmestyvat tanne heti kun he alkavat rakentaa niita.",
+  "creatorDashboard": {
+    "eyebrow": "Creator Studio",
+    "welcomeTitle": "Tervetuloa takaisin, {{name}}",
+    "subtitle": "Hallitse omia kurssejasi, luonnoksiasi ja tekijaprofiilejasi yhdesta selkeasta studio-tyotilasta.",
+    "toolbarLabel": "Creator Studion toiminnot",
+    "metrics": {
+      "startedLearners": "Aloittaneet oppijat",
+      "startedLearnersHint": "Yksilolliset oppijat, jotka ovat aloittaneet yhden kursseistasi.",
+      "completedLearners": "Kurssin paattaneet oppijat",
+      "completedLearnersHint": "Yksilolliset oppijat, jotka saavuttivat tayden suoritusasteen kurssialueellasi.",
+      "averageProgress": "Keskimaarainen eteneminen",
+      "averageProgressHint": "Tallennetun oppijaprogressin keskimaarainen suoritusprosentti.",
+      "finalTestPassRate": "Lopputestin lapaisyprosentti",
+      "finalTestPassRateHint": "{{count}} lopputestiyritysta tallennettu."
+    }
+  },
+  "courseScopes": {
+    "label": "Kurssinakyma",
+    "mine": "Omat kurssit",
+    "review": "Tarkista kurssit"
+  },
   "editCourse": "Muokkaa kurssia",
   "loading": "Ladataan ylläpitotietoja...",
   "failedToLoad": "Ylläpitotietojen lataaminen epäonnistui.",
@@ -29,14 +62,24 @@
   "updatedLabel": "Päivitetty",
   "authorsCount": "tekijää",
   "chaptersCount": "lukua",
+  "reviewOwnerLabel": "Luonut: {{owner}}",
+  "reviewOwnerUnknown": "Tuntematon omistaja",
+  "courseLearning": {
+    "startedLearners": "{{count}} aloittanut",
+    "completedLearners": "{{count}} suorittanut loppuun",
+    "averageProgress": "Keskimaarainen eteneminen: {{value}}",
+    "finalTestPassRate": "Lopputestin lapaisyprosentti: {{value}} ({{count}} yritysta)",
+    "noAverageProgress": "Ei tarpeeksi dataa",
+    "noFinalTestPassRate": "Ei yrityksia viela",
+    "empty": "Oppija-aktiivisuutta ei ole viela tallennettu."
+  },
   "levels": {
     "free": "Ilmainen",
     "premium": "Premium"
   },
   "status": {
     "draft": "Luonnos",
-    "published": "Julkaistu",
-    "archived": "Arkistoitu"
+    "published": "Julkaistu"
   },
   "create": {
     "backToCourses": "Takaisin kurssien hallintaan",
@@ -86,6 +129,7 @@
     "title": "Muokkaa kurssia",
     "subtitle": "Päivitä kurssin perusrakenne ennen lukujen, alalukujen ja sisällön muokkaamista.",
     "tabs": {
+      "analytics": "Analytiikka",
       "details": "Kurssin tiedot",
       "structure": "Rakenne",
       "content": "Sisältö",
@@ -101,6 +145,23 @@
     "saving": "Tallennetaan muutoksia...",
     "preview": "Esikatsele kurssia",
     "submit": "Tallenna muutokset",
+    "analytics": {
+      "title": "Kurssianalytiikka",
+      "subtitle": "Tarkastele oppijoiden etenemistä, lukukohtaisten visojen aktiivisuutta ja lopputestin suoriutumista tämän kurssin osalta.",
+      "overviewTitle": "Kurssin yleiskuva",
+      "overviewDescription": "Nopea näkymä siihen, miten oppijat etenevät tämän kurssin kokonaisuudessa.",
+      "trainingQuizTitle": "Lukukohtainen visa-analytiikka",
+      "trainingQuizDescription": "Tarkastele oppijoiden yrityksiä luku luvulta ja huomaa, missä kurssi on helppo, epäselvä tai liian vaikea.",
+      "finalTestTitle": "Lopputestianalytiikka",
+      "finalTestDescription": "Tarkastele lopputestin kokonaissuoriutumista ja katso ketkä pääsevät läpi tai yrittävät uudelleen.",
+      "noQuizTitle": "Harjoitusvisaa ei ole vielä",
+      "noQuizDescription": "Lisää harjoitusvisa tähän lukuun ennen kuin oppijoiden visa-analytiikka voi ilmestyä tänne.",
+      "noFinalTestTitle": "Lopputestiä ei ole vielä",
+      "noFinalTestDescription": "Luo lopputesti tälle kurssille avataksesi lopputestianalytiikan.",
+      "openQuizEditor": "Avaa visaeditori",
+      "openFinalTestEditor": "Avaa lopputestieditori",
+      "chapterLabel": "Luku {{index}}"
+    },
     "chapters": {
       "title": "Luvut",
       "description": "Rakenna kurssin rakenne ensin täällä. Alaluvut ja oppituntisisällöt lisätään heti tämän vaiheen jälkeen.",
@@ -565,9 +626,9 @@
   },
   "courseActions": {
     "preview": "Esikatsele",
+    "analytics": "Näytä analytiikka",
     "publish": "Julkaise",
     "moveToDraft": "Siirrä luonnokseksi",
-    "archive": "Arkistoi",
     "delete": "Poista",
     "working": "Käsitellään...",
     "statusUpdated": "Kurssin tila päivitetty.",
@@ -579,8 +640,7 @@
   "metrics": {
     "totalCourses": "Kurssit yhteensä",
     "published": "Julkaistut",
-    "drafts": "Luonnokset",
-    "archived": "Arkistoidut"
+    "drafts": "Luonnokset"
   },
   "dashboard": {
     "toolbarLabel": "Ylläpitotoiminnot",
