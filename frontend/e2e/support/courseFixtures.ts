@@ -12,7 +12,7 @@ const buildApiRoute = buildApiPattern;
 export type MockUser = {
   id: number;
   email: string;
-  role: 'USER' | 'ADMIN';
+  role: 'USER' | 'ADMIN' | 'CREATOR';
   plan: 'FREE' | 'PREMIUM';
   isActive: boolean;
   createdAt: string;
@@ -88,6 +88,13 @@ export const adminUser: MockUser = {
   id: 12,
   email: 'admin@example.com',
   role: 'ADMIN',
+};
+
+export const creatorUser: MockUser = {
+  ...premiumUser,
+  id: 13,
+  email: 'creator@example.com',
+  role: 'CREATOR',
 };
 
 export const createCourse = (level: 'free' | 'premium'): MockCourse => ({

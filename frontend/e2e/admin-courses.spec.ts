@@ -8,7 +8,7 @@ import {
 const AUTHORS_ROUTE = /\/api\/authors(?:\?.*)?$/;
 const COURSES_ROUTE = /\/api\/courses$/;
 const ADMIN_COURSES_LIST_ROUTE = /\/api\/courses\/admin\/list(?:\?.*)?$/;
-const ADMIN_COURSES_SUMMARY_ROUTE = /\/api\/courses\/admin\/summary$/;
+const ADMIN_COURSES_SUMMARY_ROUTE = /\/api\/courses\/admin\/summary(?:\?.*)?$/;
 
 const authors = [
   {
@@ -62,7 +62,10 @@ test.describe('Admin courses', () => {
     await page.goto('/admin/courses', { waitUntil: 'networkidle' });
 
     await expect(
-      page.getByRole('heading', { name: /manage courses/i }),
+      page.getByRole('heading', { name: /my courses/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /review courses/i }),
     ).toBeVisible();
     await expect(page.getByText('Blue Team Basics')).toBeVisible();
     await expect(page.getByRole('link', { name: /create course/i })).toBeVisible();
