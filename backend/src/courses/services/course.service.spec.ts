@@ -72,6 +72,8 @@ const createAuthor = (
 const createCourse = (overrides: Partial<Course> = {}): Course =>
   ({
     id: 'course-1',
+    slugEn: 'course-en',
+    slugFi: 'course-fi',
     titleEn: 'Course EN',
     titleFi: 'Course FI',
     descriptionEn: 'Description EN',
@@ -297,6 +299,8 @@ describe('CourseService', () => {
 
       // Only course fields should be sent to create because author ids are resolved separately.
       expect(courseRepository.create).toHaveBeenCalledWith({
+        slugEn: 'course-en',
+        slugFi: 'course-fi',
         titleEn: dto.titleEn,
         titleFi: dto.titleFi,
         descriptionEn: dto.descriptionEn,
@@ -389,6 +393,28 @@ describe('CourseService', () => {
       expect(courseRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           ownerUserId: creatorUser.id,
+        }),
+      );
+    });
+
+    it('adds a numeric suffix when the generated slug is already taken', async () => {
+      const dto = createCourseDto();
+      const createdCourse = createCourse({
+        slugEn: 'course-en-2',
+      });
+
+      courseRepository.findOne
+        .mockResolvedValueOnce(createCourse({ id: 'existing-course' }))
+        .mockResolvedValueOnce(null);
+      courseRepository.create.mockReturnValue(createdCourse);
+      courseRepository.save.mockResolvedValue(createdCourse);
+
+      await service.create(dto, adminUser);
+
+      expect(courseRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          slugEn: 'course-en-2',
+          slugFi: 'course-fi',
         }),
       );
     });
@@ -771,7 +797,51 @@ describe('CourseService', () => {
         ),
       ).toEqual(['content-1', 'content-2']);
       expect(courseRepository.findOne).toHaveBeenCalledWith({
-        where: { id: 'course-1', status: CourseStatus.PUBLISHED },
+        where: [
+          { id: 'course-1', status: CourseStatus.PUBLISHED },
+          { slugEn: 'course-1', status: CourseStatus.PUBLISHED },
+          { slugFi: 'course-1', status: CourseStatus.PUBLISHED },
+        ],
+        relations: [
+          'authors',
+          'finalTests',
+          'chapters',
+          'chapters.trainingQuiz',
+          'chapters.subChapters',
+          'chapters.subChapters.pedagogicalContents',
+        ],
+      });
+    });
+
+    it('finds published courses by slug as well as by id', async () => {
+      courseRepository.findOne.mockResolvedValue(
+        createCourse({
+          slugEn: 'incident-response-forensics',
+          slugFi: 'poikkeamiin-vastaaminen-ja-digitaalinen-forensiikka',
+        }),
+      );
+
+      const course = await service.findById('incident-response-forensics');
+
+      expect(course.slugEn).toBe('incident-response-forensics');
+      expect(course.slugFi).toBe(
+        'poikkeamiin-vastaaminen-ja-digitaalinen-forensiikka',
+      );
+      expect(courseRepository.findOne).toHaveBeenCalledWith({
+        where: [
+          {
+            id: 'incident-response-forensics',
+            status: CourseStatus.PUBLISHED,
+          },
+          {
+            slugEn: 'incident-response-forensics',
+            status: CourseStatus.PUBLISHED,
+          },
+          {
+            slugFi: 'incident-response-forensics',
+            status: CourseStatus.PUBLISHED,
+          },
+        ],
         relations: [
           'authors',
           'finalTests',
@@ -852,13 +922,19 @@ describe('CourseService', () => {
       const savedCourse = createCourse({
         status: CourseStatus.PUBLISHED,
         titleEn: 'Updated Course EN',
+        titleFi: 'Paivitetty kurssi',
+        slugEn: 'updated-course-en',
+        slugFi: 'paivitetty-kurssi',
       });
       const dto: UpdateCourseDto = {
         titleEn: 'Updated Course EN',
+        titleFi: 'Paivitetty kurssi',
         status: CourseStatus.PUBLISHED,
       };
 
-      courseRepository.findOne.mockResolvedValue(existingCourse);
+      courseRepository.findOne
+        .mockResolvedValueOnce(existingCourse)
+        .mockResolvedValueOnce(null);
       courseRepository.save.mockResolvedValue(savedCourse);
 
       const result = await service.update(existingCourse.id, dto, adminUser);
@@ -866,6 +942,8 @@ describe('CourseService', () => {
       expect(courseRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
           id: existingCourse.id,
+          slugEn: 'updated-course-en',
+          slugFi: 'paivitetty-kurssi',
           titleEn: 'Updated Course EN',
           status: CourseStatus.PUBLISHED,
         }),

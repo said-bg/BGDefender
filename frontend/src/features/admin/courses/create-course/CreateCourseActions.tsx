@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from './CreateCoursePage.module.css';
 
 interface CreateCourseActionsProps {
+  cancelHref: string;
   isSubmitting: boolean;
   submitError: string | null;
   submitMessage: string | null;
@@ -9,6 +10,7 @@ interface CreateCourseActionsProps {
 }
 
 export default function CreateCourseActions({
+  cancelHref,
   isSubmitting,
   submitError,
   submitMessage,
@@ -20,7 +22,7 @@ export default function CreateCourseActions({
       {submitError ? <p className={styles.errorMessage}>{submitError}</p> : null}
 
       <div className={styles.actions}>
-        <Link href="/admin/courses" className={styles.secondaryAction}>
+        <Link href={cancelHref} className={styles.secondaryAction}>
           {t('common.cancel')}
         </Link>
         <button type="submit" className={styles.primaryAction} disabled={isSubmitting}>

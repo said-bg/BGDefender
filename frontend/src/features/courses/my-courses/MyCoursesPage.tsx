@@ -5,13 +5,15 @@ import { useTranslation } from 'react-i18next';
 import styles from './MyCoursesPage.module.css';
 import { ProtectedRoute } from '@/components/auth';
 import { useAuth } from '@/hooks';
-import type { Course } from '@/services/course';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
+import { buildPublicCoursePath, type Course } from '@/services/course';
 import CourseProgressCard from '@/features/courses/components/CourseProgressCard';
 import { UserRole } from '@/types/api';
 import useMyCoursesPage from './useMyCoursesPage';
 
 function MyCoursesPageContent() {
   const { i18n, t } = useTranslation('courses');
+  const activeLocale = normalizeLocale(i18n.language);
   const { isAuthenticated, isInitialized } = useAuth();
   const { activeFilter, filteredCourses, setActiveFilter, state, summary } = useMyCoursesPage(
     isInitialized,
@@ -77,7 +79,7 @@ function MyCoursesPageContent() {
             <p className={styles.emptyDescription}>
               {t('myCourses.emptyDescription')}
             </p>
-            <Link href="/" className={styles.emptyAction}>
+            <Link href={localizePathname('/', activeLocale)} className={styles.emptyAction}>
               {t('myCourses.browseCourses')}
             </Link>
           </div>
@@ -93,7 +95,7 @@ function MyCoursesPageContent() {
                 badgeVariant={course.completed ? 'completed' : 'active'}
                 chaptersLabel={t('page.chapters')}
                 course={course}
-                href={`/courses/${course.id}`}
+                href={buildPublicCoursePath(course, i18n.language)}
                 itemsLabel={t('page.items')}
                 priority={index === 0}
                 progressLabel={t('page.progress')}

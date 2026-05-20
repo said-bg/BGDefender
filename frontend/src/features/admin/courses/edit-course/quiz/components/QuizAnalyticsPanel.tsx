@@ -1,6 +1,7 @@
 'use client';
 
 import type { TFunction } from 'i18next';
+import { formatSiteDate } from '@/lib/datetime';
 import type { AdminFinalTestAnalytics, AdminQuizAnalytics } from '@/services/course';
 
 type QuizAnalyticsPanelProps = {
@@ -26,10 +27,10 @@ const formatDate = (value: string | null, language: string) => {
     return '-';
   }
 
-  return new Intl.DateTimeFormat(language.startsWith('fi') ? 'fi-FI' : 'en-GB', {
+  return formatSiteDate(value, language, {
     dateStyle: 'medium',
     timeStyle: 'short',
-  }).format(new Date(value));
+  });
 };
 
 export default function QuizAnalyticsPanel({

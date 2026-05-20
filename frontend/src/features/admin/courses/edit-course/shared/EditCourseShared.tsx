@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from '@/lib/locale';
 import type { Course } from '@/services/course';
 import { UserRole } from '@/types/api';
 import { buildCoursePreviewHref } from './coursePreview.utils';
@@ -85,13 +86,18 @@ export function EditCourseShell({
   course,
   courseTitle,
   actions,
-  previewHref = buildCoursePreviewHref(courseId, {
-    returnTo: getEditCourseHref(courseId, section),
-  }),
+  previewHref,
   wide = false,
   children,
 }: EditCourseShellProps) {
   const { t } = useTranslation('admin');
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
+  const resolvedPreviewHref =
+    previewHref ??
+    buildCoursePreviewHref(courseId, {
+      returnTo: localizePathname(getEditCourseHref(courseId, section), activeLocale),
+    });
   const ownerName = course?.owner
     ? `${course.owner.firstName || ''} ${course.owner.lastName || ''}`.trim() ||
       course.owner.email
@@ -135,7 +141,10 @@ export function EditCourseShell({
     <div className={`${shellStyles.page} ${wide ? shellStyles.pageWide : ''}`}>
       <section className={shellStyles.hero}>
         <div className={shellStyles.heroCopy}>
-          <Link href="/admin/courses" className={shellStyles.backLink}>
+          <Link
+            href={localizePathname('/admin/courses', activeLocale)}
+            className={shellStyles.backLink}
+          >
             {t('edit.backToCourses')}
           </Link>
           <p className={shellStyles.eyebrow}>{t('edit.eyebrow')}</p>
@@ -195,7 +204,7 @@ export function EditCourseShell({
               {tabs.map((tab) => (
                 <Link
                   key={tab.key}
-                  href={getEditCourseHref(courseId, tab.key)}
+                  href={localizePathname(getEditCourseHref(courseId, tab.key), activeLocale)}
                   className={`${shellStyles.sectionNavLink} ${
                     section === tab.key ? shellStyles.sectionNavLinkActive : ''
                   }`}
@@ -207,7 +216,7 @@ export function EditCourseShell({
 
             <div className={shellStyles.sectionActions}>
               <Link
-                href={previewHref}
+                href={resolvedPreviewHref}
                 className={`${shellStyles.sectionNavLink} ${shellStyles.previewLink}`}
               >
                 {t('edit.preview')}
@@ -238,13 +247,18 @@ export function EditCourseLoadingState() {
 
 export function EditCourseErrorState({ message }: { message: string }) {
   const { t } = useTranslation('admin');
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
 
   return (
     <div className={shellStyles.page}>
       <section className={formStyles.formCard}>
         <p className={sharedStyles.errorMessage}>{message}</p>
         <div className={sharedStyles.actions}>
-          <Link href="/admin/courses" className={sharedStyles.secondaryAction}>
+          <Link
+            href={localizePathname('/admin/courses', activeLocale)}
+            className={sharedStyles.secondaryAction}
+          >
             {t('backToOverview')}
           </Link>
         </div>

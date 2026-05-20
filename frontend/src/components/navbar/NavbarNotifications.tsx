@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import notificationService from '@/services/notifications';
 import { NotificationRecord } from '@/types/api';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import {
   formatNotificationTimestamp,
   getNotificationBody,
@@ -26,6 +27,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
   const [isClearingAll, setIsClearingAll] = useState(false);
   const [notifications, setNotifications] = useState<NotificationRecord[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   const hasUnreadNotifications = unreadCount > 0;
@@ -49,6 +51,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
 
   const loadNotifications = async () => {
     setIsLoading(true);
+    setFeedbackMessage(null);
 
     try {
       const response = await notificationService.getMyNotifications();
@@ -56,6 +59,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
       setUnreadCount(response.unreadCount);
     } catch (error) {
       console.error('Failed to load notifications:', error);
+      setFeedbackMessage(t('notifications.loadFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +94,8 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
         }}
         aria-label={t('notifications.trigger')}
         aria-controls={isOpen ? menuId : undefined}
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
       >
         <span className={styles.bellIcon} aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" focusable="false">
@@ -112,6 +118,8 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
           id={menuId}
           className={styles.menu}
           aria-label={t('notifications.title')}
+          role="dialog"
+          aria-modal="false"
         >
           <div className={styles.menuHeader}>
             <p className={styles.menuTitle}>
@@ -127,6 +135,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
 
                   try {
                     await notificationService.markAllAsRead();
+                    setFeedbackMessage(null);
                     setNotifications((current) =>
                       current.map((notification) => ({
                         ...notification,
@@ -137,6 +146,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
                     setUnreadCount(0);
                   } catch (error) {
                     console.error('Failed to mark all notifications as read:', error);
+                    setFeedbackMessage(t('notifications.markAllReadFailed'));
                   } finally {
                     setIsMarkingAll(false);
                   }
@@ -153,10 +163,12 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
 
                   try {
                     await notificationService.clearAll();
+                    setFeedbackMessage(null);
                     setNotifications([]);
                     setUnreadCount(0);
                   } catch (error) {
                     console.error('Failed to clear notifications:', error);
+                    setFeedbackMessage(t('notifications.clearAllFailed'));
                   } finally {
                     setIsClearingAll(false);
                   }
@@ -176,12 +188,17 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
           </div>
 
           <div className={styles.menuBody}>
+            {feedbackMessage ? (
+              <p className={styles.errorState} role="alert">
+                {feedbackMessage}
+              </p>
+            ) : null}
             {isLoading ? (
-              <p className={styles.loadingState}>
+              <p className={styles.loadingState} role="status" aria-live="polite">
                 {t('notifications.loading')}
               </p>
             ) : notifications.length === 0 ? (
-              <p className={styles.emptyState}>
+              <p className={styles.emptyState} role="status" aria-live="polite">
                 {t('notifications.empty')}
               </p>
             ) : (
@@ -197,6 +214,7 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
                         if (!notification.isRead) {
                           try {
                             await notificationService.markAsRead(notification.id);
+                            setFeedbackMessage(null);
                             setNotifications((current) =>
                               current.map((currentNotification) =>
                                 currentNotification.id === notification.id
@@ -212,13 +230,16 @@ export default function NavbarNotifications({ visible }: NavbarNotificationsProp
                             setUnreadCount((current) => Math.max(0, current - 1));
                           } catch (error) {
                             console.error('Failed to mark notification as read:', error);
+                            setFeedbackMessage(t('notifications.markReadFailed'));
                           }
                         }
 
                         setIsOpen(false);
 
                         if (notification.link) {
-                          router.push(notification.link);
+                          router.push(
+                            localizePathname(notification.link, normalizeLocale(i18n.language)),
+                          );
                         }
                       }}
                     >

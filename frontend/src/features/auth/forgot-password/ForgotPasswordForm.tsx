@@ -1,13 +1,23 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import sharedStyles from '../AuthFormShared.module.css';
 import styles from './ForgotPassword.module.css';
 import { useForgotPasswordForm } from './useForgotPasswordForm';
 
 export function ForgotPasswordForm() {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const { errors, form, handleChange, handleSubmit, isLoading, success, t } =
     useForgotPasswordForm();
+  const emailErrorId = errors.email ? 'forgot-password-email-error' : undefined;
+  const formErrorId = errors.form && !success ? 'forgot-password-form-error' : undefined;
 
   return (
     <div className={sharedStyles.container}>
@@ -18,14 +28,22 @@ export function ForgotPasswordForm() {
         </div>
 
         {success && (
-          <div className={styles.successMessage}>{t('forgotPassword.successMessage')}</div>
+          <div className={styles.successMessage} role="status" aria-live="polite">
+            {t('forgotPassword.successMessage')}
+          </div>
         )}
 
         {errors.form && !success && (
-          <div className={sharedStyles.errorMessage}>{errors.form}</div>
+          <div id={formErrorId} className={sharedStyles.errorMessage} role="alert">
+            {errors.form}
+          </div>
         )}
 
-        {!success && <div className={styles.infoMessage}>{t('forgotPassword.infoMessage')}</div>}
+        {!success && (
+          <div className={styles.infoMessage} role="status" aria-live="polite">
+            {t('forgotPassword.infoMessage')}
+          </div>
+        )}
 
         {!success ? (
           <form className={sharedStyles.form} onSubmit={handleSubmit}>
@@ -43,9 +61,13 @@ export function ForgotPasswordForm() {
                 value={form.email}
                 onChange={handleChange}
                 disabled={isLoading}
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={emailErrorId}
               />
               {errors.email && (
-                <span className={sharedStyles.fieldError}>{errors.email}</span>
+                <span id={emailErrorId} className={sharedStyles.fieldError} role="alert">
+                  {errors.email}
+                </span>
               )}
             </div>
 
@@ -63,7 +85,10 @@ export function ForgotPasswordForm() {
         ) : null}
 
         <div className={sharedStyles.footer}>
-          <Link href="/login" className={sharedStyles.footerLink}>
+          <Link
+            href={localizePathname('/login', activeLocale)}
+            className={sharedStyles.footerLink}
+          >
             {t('forgotPassword.backToLogin')}
           </Link>
         </div>

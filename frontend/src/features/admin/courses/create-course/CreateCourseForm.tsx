@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import AuthorsField from './AuthorsField';
 import CourseSettingsFields from './CourseSettingsFields';
 import CourseTextFields from './CourseTextFields';
@@ -13,6 +14,9 @@ import useCreateCourse from './useCreateCourse';
 
 export default function CreateCourseForm() {
   const { t, i18n } = useTranslation('admin');
+  const activeLocale = normalizeLocale(i18n.language);
+  const backToCoursesHref = localizePathname('/admin/courses', activeLocale);
+  const manageAuthorsHref = localizePathname('/admin/authors', activeLocale);
   const {
     authors,
     authorsError,
@@ -42,7 +46,7 @@ export default function CreateCourseForm() {
     <div className={shellStyles.page}>
       <section className={shellStyles.hero}>
         <div className={shellStyles.heroCopy}>
-          <Link href="/admin/courses" className={shellStyles.backLink}>
+          <Link href={backToCoursesHref} className={shellStyles.backLink}>
             {t('create.backToCourses')}
           </Link>
           <p className={shellStyles.eyebrow}>
@@ -88,12 +92,14 @@ export default function CreateCourseForm() {
             authorIds={form.authorIds}
             i18nLanguage={i18n.language}
             loadingAuthors={loadingAuthors}
+            manageAuthorsHref={manageAuthorsHref}
             selectedAuthors={selectedAuthors}
             onToggleAuthor={toggleAuthor}
             t={t}
           />
 
           <CreateCourseActions
+            cancelHref={backToCoursesHref}
             isSubmitting={isSubmitting}
             submitError={submitError}
             submitMessage={submitMessage}

@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import type { TFunction } from 'i18next';
+import {
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import { NavigationItem, ViewState } from '../courseDetail.utils';
 import styles from './CourseContentNavigation.module.css';
 
@@ -28,12 +32,27 @@ export default function CourseContentNavigation({
   t,
 }: CourseContentNavigationProps) {
   const [isCompletionOpen, setIsCompletionOpen] = useState(false);
-  const loginHref =
+  const loginHref = (() => {
+    if (typeof window === 'undefined') {
+      return '/login';
+    }
+
+    const pathnameLocale = getLocaleFromPathname(window.location.pathname);
+    const loginPath = pathnameLocale
+      ? localizePathname('/login', pathnameLocale)
+      : '/login';
+
+    return `${loginPath}?redirect=${encodeURIComponent(
+      `${window.location.pathname}${window.location.search}`,
+    )}`;
+  })();
+  const homeHref =
     typeof window === 'undefined'
-      ? '/login'
-      : `/login?redirect=${encodeURIComponent(
-          `${window.location.pathname}${window.location.search}`,
-        )}`;
+      ? '/'
+      : (() => {
+          const pathnameLocale = getLocaleFromPathname(window.location.pathname);
+          return pathnameLocale ? localizePathname('/', pathnameLocale) : '/';
+        })();
 
   const handleNavigate = (item: NavigationItem | null) => {
     if (!item) {
@@ -139,7 +158,7 @@ export default function CourseContentNavigation({
                 {t('detail.close')}
               </button>
               <Link
-                href="/"
+                href={homeHref}
                 className={`${styles.navigationButton} ${styles.navigationButtonPrimary}`}
                 onClick={() => setIsCompletionOpen(false)}
               >

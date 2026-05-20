@@ -31,8 +31,12 @@ jest.mock('react-i18next', () => ({
         'notifications.trigger': 'Notifications',
         'notifications.title': 'Notifications',
         'notifications.markAllRead': 'Mark all as read',
+        'notifications.markAllReadFailed': 'Failed to mark notifications as read.',
         'notifications.clearAll': 'Clear all',
+        'notifications.clearAllFailed': 'Failed to clear notifications.',
         'notifications.loading': 'Loading notifications...',
+        'notifications.loadFailed': 'Failed to load notifications.',
+        'notifications.markReadFailed': 'Failed to update this notification.',
         'notifications.empty':
           'No notifications yet. New course updates and learner alerts will appear here.',
         'notifications.resourceSharedTitle': 'New resource shared',
@@ -88,5 +92,20 @@ describe('NavbarNotifications', () => {
     expect(
       screen.getByText('"Security checklist" has been shared with you.'),
     ).toBeInTheDocument();
+  });
+
+  it('shows a visible feedback message when loading notifications fails', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    mockGetMyNotifications.mockRejectedValue(new Error('boom'));
+
+    render(<NavbarNotifications visible />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Notifications' }));
+
+    expect(
+      await screen.findByText('Failed to load notifications.'),
+    ).toBeInTheDocument();
+
+    consoleErrorSpy.mockRestore();
   });
 });

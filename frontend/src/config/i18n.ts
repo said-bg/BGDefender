@@ -70,8 +70,9 @@ void i18n
       useSuspense: false,
     },
     detection: {
-      order: ['localStorage'],
-      caches: ['localStorage'],
+      order: ['htmlTag', 'cookie', 'localStorage'],
+      caches: ['localStorage', 'cookie'],
+      lookupCookie: 'bgd_locale',
     },
   });
 

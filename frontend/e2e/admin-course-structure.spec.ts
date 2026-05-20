@@ -68,7 +68,7 @@ test.describe('Admin course structure', () => {
       });
     });
 
-    await page.goto(`/admin/courses/${COURSE_ID}/edit/structure`, {
+    await page.goto(`/en/admin/courses/${COURSE_ID}/edit/structure`, {
       waitUntil: 'networkidle',
     });
 
@@ -141,7 +141,7 @@ test.describe('Admin course structure', () => {
       });
     });
 
-    await page.goto(`/admin/courses/${COURSE_ID}/edit/structure`, {
+    await page.goto(`/en/admin/courses/${COURSE_ID}/edit/structure`, {
       waitUntil: 'networkidle',
     });
 

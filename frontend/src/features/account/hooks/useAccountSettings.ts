@@ -19,6 +19,7 @@ export function useAccountSettings() {
   const { t: tAccount } = useTranslation('account');
   const { t: tNavbar } = useTranslation('navbar');
   const { t: tAuth } = useTranslation('auth');
+  const { i18n } = useTranslation();
   const { user, updateProfile, changePassword } = useAuth();
   const [activeSection, setActiveSection] = useState<AccountSection>('profile');
   const [profileForm, setProfileForm] = useState<ProfileFormState>({
@@ -68,7 +69,7 @@ export function useAccountSettings() {
     return getAccountRoleLabel(user, tNavbar);
   }, [tNavbar, user]);
 
-  const joinedAt = useMemo(() => getAccountJoinedAt(user), [user]);
+  const joinedAt = useMemo(() => getAccountJoinedAt(user, i18n.language), [i18n.language, user]);
 
   const planToneClass = user?.plan === UserPlan.PREMIUM ? styles.premiumTone : styles.freeTone;
   const roleToneClass = !user

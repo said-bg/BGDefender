@@ -2,7 +2,14 @@
 
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { formatSiteDate } from '@/lib/datetime';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import { ResourceSource, ResourceType, UserRole } from '@/types/api';
 import { getAdminResourceUserLabel } from './adminResources.utils';
 import styles from './AdminResourcesPage.module.css';
@@ -17,6 +24,8 @@ export default function AdminResourcesPage() {
 }
 
 function AdminResourcesPageContent() {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const formCardRef = useRef<HTMLElement | null>(null);
   const [matchedPanelHeight, setMatchedPanelHeight] = useState<number | null>(null);
   const {
@@ -90,7 +99,10 @@ function AdminResourcesPageContent() {
     <div className={styles.page}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <Link href="/admin" className={styles.backLink}>
+          <Link
+            href={localizePathname('/admin', activeLocale)}
+            className={styles.backLink}
+          >
             {t('backToOverview')}
           </Link>
           <p className={styles.eyebrow}>
@@ -371,7 +383,11 @@ function AdminResourcesPageContent() {
                     </span>
                     <span>
                       {t('resources.createdLabel')}:{' '}
-                      {new Date(resource.createdAt).toLocaleDateString()}
+                      {formatSiteDate(resource.createdAt, activeLocale, {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      })}
                     </span>
                     {resource.filename ? <span>{resource.filename}</span> : null}
                   </div>

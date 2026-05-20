@@ -3,6 +3,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import { useModalStore } from '@/store/modalStore';
 import { handleAuthError } from '@/utils/apiError';
 import { validateEmail, validatePassword } from '@/utils/validation';
@@ -33,6 +34,7 @@ const initialForm: RegisterFormState = {
 export function useRegisterForm() {
   const router = useRouter();
   const { t, i18n } = useTranslation('auth');
+  const activeLocale = normalizeLocale(i18n.language);
   const { register, isLoading, error: authError, setError } = useAuth();
   const { showModal, closeModal } = useModalStore();
   const [form, setForm] = useState<RegisterFormState>(initialForm);
@@ -119,7 +121,7 @@ export function useRegisterForm() {
 
       setTimeout(() => {
         closeModal(modalId);
-        router.replace('/login');
+        router.replace(localizePathname('/login', activeLocale));
       }, 1000);
 
       setForm(initialForm);

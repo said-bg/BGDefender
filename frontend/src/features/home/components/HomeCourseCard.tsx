@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import CourseCover from '@/components/course-cover/CourseCover';
+import { buildPublicCoursePath } from '@/services/course';
 import type { HomeCourse } from '../lib/home.types';
 import styles from './HomeCourseCard.module.css';
 
@@ -18,11 +20,13 @@ export default function HomeCourseCard({
   priority,
   t,
 }: HomeCourseCardProps) {
+  const { i18n } = useTranslation();
   const badgeLabel = course.level === 'premium' ? t('page.badgePremium') : t('page.badgeFree');
+  const courseHref = buildPublicCoursePath(course, i18n.language);
 
   return (
     <article className={styles.card}>
-      <Link href={`/courses/${course.id}`} scroll className={styles.cardLink}>
+      <Link href={courseHref} scroll className={styles.cardLink}>
         <div className={styles.cardHero}>
           <CourseCover
             src={course.coverImage}

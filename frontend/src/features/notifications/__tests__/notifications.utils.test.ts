@@ -49,6 +49,7 @@ describe('notifications.utils', () => {
   it('formats timestamps for display', () => {
     const formatted = formatNotificationTimestamp('2026-04-10T10:30:00.000Z', 'en');
 
+    expect(formatted).toContain('13:30');
     expect(formatted).toMatch(/10 Apr|Apr 10/);
   });
 });

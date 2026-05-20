@@ -56,7 +56,7 @@ test.describe('Admin course content', () => {
 
   // Verifies the content editor can open a course with an existing chapter/subchapter.
   test('shows the content editor for the selected subchapter', async ({ page }) => {
-    await page.goto(`/admin/courses/${COURSE_ID}/edit/content`, {
+    await page.goto(`/en/admin/courses/${COURSE_ID}/edit/content`, {
       waitUntil: 'networkidle',
     });
 
@@ -84,7 +84,7 @@ test.describe('Admin course content', () => {
       });
     });
 
-    await page.goto(`/admin/courses/${COURSE_ID}/edit/content`, {
+    await page.goto(`/en/admin/courses/${COURSE_ID}/edit/content`, {
       waitUntil: 'networkidle',
     });
 

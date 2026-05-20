@@ -4,6 +4,7 @@ import type { Request } from 'express';
 import type { SafeUser } from '../../auth/types/safe-user.type';
 import { ResourcesController } from '../controllers/resources.controller';
 import { ResourcesService } from '../services/resources.service';
+import * as uploadSecurityUtils from '../../security/upload-security.utils';
 
 describe('ResourcesController', () => {
   let controller: ResourcesController;
@@ -33,6 +34,12 @@ describe('ResourcesController', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    jest
+      .spyOn(uploadSecurityUtils, 'matchesDeclaredFileSignature')
+      .mockReturnValue(true);
+    jest
+      .spyOn(uploadSecurityUtils, 'removeUploadedFile')
+      .mockImplementation(() => undefined);
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ResourcesController],
@@ -153,6 +160,14 @@ describe('ResourcesController', () => {
       'fi',
     );
     expect(response.setHeader).toHaveBeenCalledWith(
+      'Cache-Control',
+      'no-store',
+    );
+    expect(response.setHeader).toHaveBeenCalledWith(
+      'X-Content-Type-Options',
+      'nosniff',
+    );
+    expect(response.setHeader).toHaveBeenCalledWith(
       'Content-Type',
       'application/pdf',
     );
@@ -203,6 +218,30 @@ describe('ResourcesController', () => {
       filename: 'security-guide.pdf',
       mimeType: 'application/pdf',
     });
+  });
+
+  it('rejects uploaded resources whose content does not match the declared mime type', () => {
+    jest
+      .spyOn(uploadSecurityUtils, 'matchesDeclaredFileSignature')
+      .mockReturnValue(false);
+
+    const file = {
+      path: 'C:\\workspace\\uploads\\resources\\security-guide.pdf',
+      filename: 'security-guide.pdf',
+      mimetype: 'application/pdf',
+    };
+    const request = {
+      headers: {},
+      protocol: 'https',
+      get: jest.fn().mockReturnValue('bgdefender.local'),
+    } as unknown as Request;
+
+    expect(() => controller.uploadResource(file, request)).toThrow(
+      'Uploaded resource content does not match an allowed file format',
+    );
+    expect(uploadSecurityUtils.removeUploadedFile).toHaveBeenCalledWith(
+      file.path,
+    );
   });
 
   it('throws when the uploaded file cannot be converted to a public url', () => {

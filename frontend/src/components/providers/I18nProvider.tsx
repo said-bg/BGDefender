@@ -3,31 +3,27 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/config/i18n';
+import type { AppLocale } from '@/lib/locale';
+import { DEFAULT_LOCALE } from '@/lib/locale';
+import { setLocalePreference } from '@/lib/localePreference';
 
 interface I18nProviderProps {
   children: ReactNode;
+  initialLanguage: AppLocale;
 }
-
-const DEFAULT_LANGUAGE = 'fi';
-const SUPPORTED_LANGUAGES = ['fi', 'en'];
 
 /**
  * i18n Provider Component
  * Wraps the app with i18next configuration
  */
-export const I18nProvider = ({ children }: I18nProviderProps) => {
+export const I18nProvider = ({ children, initialLanguage }: I18nProviderProps) => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const initializeLanguage = async () => {
-      const savedLanguage = window.localStorage.getItem('i18nextLng');
-      const activeLanguage = SUPPORTED_LANGUAGES.includes(savedLanguage || '')
-        ? savedLanguage!
-        : DEFAULT_LANGUAGE;
+      const activeLanguage = initialLanguage || DEFAULT_LOCALE;
 
-      if (savedLanguage !== activeLanguage) {
-        window.localStorage.setItem('i18nextLng', activeLanguage);
-      }
+      setLocalePreference(activeLanguage);
 
       if (i18n.language !== activeLanguage) {
         await i18n.changeLanguage(activeLanguage);
@@ -37,7 +33,7 @@ export const I18nProvider = ({ children }: I18nProviderProps) => {
     };
 
     void initializeLanguage();
-  }, []);
+  }, [initialLanguage]);
 
   if (!isReady) {
     return null;

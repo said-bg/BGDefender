@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { resetPassword } from '@/services/auth';
 import { useAuth } from '@/hooks';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import { useModalStore } from '@/store/modalStore';
 import { handleAuthError } from '@/utils/apiError';
 import { validatePassword } from '@/utils/validation';
@@ -33,6 +34,7 @@ export function useResetPasswordForm() {
   const hasShownInvalidModal = useRef(false);
   const token = searchParams.get('token');
   const langParam = searchParams.get('lang');
+  const activeLocale = normalizeLocale(langParam ?? i18n.language);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -62,11 +64,11 @@ export function useResetPasswordForm() {
         message: t('alerts.invalidResetLinkMessage'),
         confirmLabel: t('alerts.requestNewResetLink'),
         cancelLabel: t('alerts.cancel'),
-        onConfirm: () => router.push('/forgot-password'),
-        onCancel: () => router.push('/login'),
+        onConfirm: () => router.push(localizePathname('/forgot-password', activeLocale)),
+        onCancel: () => router.push(localizePathname('/login', activeLocale)),
       });
     }
-  }, [token, t, showModal, router]);
+  }, [activeLocale, token, t, showModal, router]);
 
   const passwordValidation = validatePassword(newPassword);
   const isConfirmPasswordValid = newPassword === confirmPassword && confirmPassword !== '';
@@ -131,7 +133,7 @@ export function useResetPasswordForm() {
 
       setTimeout(() => {
         closeModal(modalId);
-        router.push('/login');
+        router.push(localizePathname('/login', activeLocale));
       }, 1000);
     } catch (error) {
       const errorMessage = handleAuthError(error, 'resetPassword.failed', t);
@@ -143,7 +145,8 @@ export function useResetPasswordForm() {
           title: t('alerts.invalidResetLink'),
           message: t('alerts.invalidResetLinkMessage'),
           confirmLabel: t('alerts.requestNewResetLink'),
-          onConfirm: () => router.replace('/forgot-password'),
+          onConfirm: () =>
+            router.replace(localizePathname('/forgot-password', activeLocale)),
         });
       } else if (isSamePasswordError(errorMessage)) {
         setFormError('');

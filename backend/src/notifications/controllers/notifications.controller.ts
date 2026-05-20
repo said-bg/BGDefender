@@ -15,6 +15,16 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import type { SafeUser } from '../../auth/types/safe-user.type';
 import { NotificationsService } from '../services/notifications.service';
 
+const clampNotificationLimit = (limit: string): number => {
+  const parsedLimit = Number.parseInt(limit, 10);
+
+  if (Number.isNaN(parsedLimit)) {
+    return 8;
+  }
+
+  return Math.min(Math.max(parsedLimit, 1), 50);
+};
+
 @Controller('notifications')
 @UseGuards(JwtAuthGuard)
 export class NotificationsController {
@@ -25,11 +35,9 @@ export class NotificationsController {
     @CurrentUser() currentUser: SafeUser,
     @Query('limit') limit = '8',
   ) {
-    const parsedLimit = Number.parseInt(limit, 10);
-
     return this.notificationsService.listMyNotifications(
       currentUser.id,
-      Number.isNaN(parsedLimit) ? 8 : parsedLimit,
+      clampNotificationLimit(limit),
     );
   }
 

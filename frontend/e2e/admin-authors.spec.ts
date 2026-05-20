@@ -35,7 +35,7 @@ test.describe('Admin authors', () => {
       });
     });
 
-    await page.goto('/admin/authors', { waitUntil: 'networkidle' });
+    await page.goto('/en/admin/authors', { waitUntil: 'networkidle' });
 
     await expect(
       page.getByRole('heading', { name: /manage authors/i }),
@@ -74,7 +74,7 @@ test.describe('Admin authors', () => {
       });
     });
 
-    await page.goto('/admin/authors', { waitUntil: 'networkidle' });
+    await page.goto('/en/admin/authors', { waitUntil: 'networkidle' });
 
     await page.getByLabel('Name').fill('  Dana Scully  ');
     await page.getByLabel(/Role \(English\)/i).fill('  Incident Responder  ');

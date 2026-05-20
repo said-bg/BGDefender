@@ -4,13 +4,15 @@ import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import styles from './FavoritesPage.module.css';
 import { ProtectedRoute } from '@/components/auth';
-import type { Course } from '@/services/course';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
+import { buildPublicCoursePath, type Course } from '@/services/course';
 import CourseProgressCard from '@/features/courses/components/CourseProgressCard';
 import { UserRole } from '@/types/api';
 import useFavoritesPage from './useFavoritesPage';
 
 function FavoritesPageContent() {
   const { i18n, t } = useTranslation('courses');
+  const activeLocale = normalizeLocale(i18n.language);
   const { error, favoriteCourses, loading, toggleFavorite } = useFavoritesPage(
     t('favorites.failedToLoad'),
   );
@@ -43,7 +45,7 @@ function FavoritesPageContent() {
             <p className={styles.emptyDescription}>
               {t('favorites.emptyDescription')}
             </p>
-            <Link href="/" className={styles.emptyAction}>
+            <Link href={localizePathname('/', activeLocale)} className={styles.emptyAction}>
               {t('favorites.browseCourses')}
             </Link>
           </div>
@@ -60,7 +62,7 @@ function FavoritesPageContent() {
                 chaptersLabel={t('page.chapters')}
                 course={course}
                 description={i18n.language === 'fi' ? course.descriptionFi : course.descriptionEn}
-                href={`/courses/${course.id}`}
+                href={buildPublicCoursePath(course, i18n.language)}
                 itemsLabel={t('page.items')}
                 onRemove={() => void toggleFavorite(course.id)}
                 priority={index === 0}

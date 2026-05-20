@@ -12,6 +12,7 @@ import {
 const favoriteCourse = {
   ...createCourse('free'),
   id: 'favorite-course',
+  slug: 'malware-analysis-starter',
   titleEn: 'Malware Analysis Starter',
   titleFi: 'Haittaohjelma-analyysin alkeet',
   descriptionEn: 'A compact course to sharpen practical analysis habits.',
@@ -100,7 +101,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.goto('/favorites', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/favorites', { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: 'Favorites' })).toBeVisible();
     await expect(page.getByText('Malware Analysis Starter')).toBeVisible();
@@ -128,7 +129,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.route(buildApiPattern('/courses/favorite-course'), async (route) => {
+    await page.route(buildApiPattern('/courses/malware-analysis-starter'), async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -218,7 +219,7 @@ test.describe('Favorites - E2E tests', () => {
       });
     });
 
-    await page.goto('/courses/favorite-course', { waitUntil: 'networkidle' });
+    await page.goto('/en/courses/malware-analysis-starter', { waitUntil: 'networkidle' });
 
     await expect(page.getByRole('heading', { name: 'Malware Analysis Starter' })).toBeVisible();
     await Promise.all([
@@ -230,7 +231,7 @@ test.describe('Favorites - E2E tests', () => {
       page.getByRole('button', { name: 'Add to favorites' }).click(),
     ]);
 
-    await page.goto('/favorites', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/favorites', { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: 'Favorites', exact: true })).toBeVisible();
     await expect(page.getByText('Malware Analysis Starter')).toBeVisible();

@@ -2,9 +2,14 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks';
+import type { AppLocale } from '@/lib/locale';
+import { localizePathname } from '@/lib/locale';
+import { setLocalePreference } from '@/lib/localePreference';
+import { markManualLogoutInProgress } from '@/services/api/jwtInterceptor';
 import { UserRole } from '@/types/api';
 import NavbarAccountMenu from './NavbarAccountMenu';
 import NavbarLanguageSwitcher from './NavbarLanguageSwitcher';
@@ -15,20 +20,28 @@ import styles from './Navbar.module.css';
 export const Navbar = () => {
   const { t, i18n } = useTranslation('navbar');
   const { isAuthenticated, logout, user } = useAuth();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const isAdmin = user?.role === UserRole.ADMIN;
   const isCreator = user?.role === UserRole.CREATOR;
   const showManagementLink = isAuthenticated && (isAdmin || isCreator);
-  const managementHref = isAdmin ? '/admin' : '/creator';
+  const currentPathname = pathname || '/';
+  const currentSearch = searchParams.toString();
+  const activeLocale = (i18n.language.split('-')[0] || 'fi') as AppLocale;
+  const localizedHref = (targetPath: string) => localizePathname(targetPath, activeLocale);
+  const managementHref = localizedHref(isAdmin ? '/admin' : '/creator');
   const managementLabel = isAdmin ? t('admin') : t('studio');
-  const homeHref = isAdmin ? '/admin' : '/';
+  const homeHref = localizedHref(isAdmin ? '/admin' : '/');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const changeLanguage = (lang: 'en' | 'fi') => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('i18nextLng', lang);
-    }
-
+  const changeLanguage = (lang: AppLocale) => {
+    setLocalePreference(lang);
     void i18n.changeLanguage(lang);
+
+    const nextPathname = localizePathname(currentPathname, lang);
+    const nextUrl = currentSearch ? `${nextPathname}?${currentSearch}` : nextPathname;
+    router.replace(nextUrl);
   };
 
   useEffect(() => {
@@ -85,64 +98,67 @@ export const Navbar = () => {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  const mobileNavigationLinks = useMemo(() => {
+  const mobileNavigationLinks = (() => {
     if (isAdmin) {
-      return [{ href: '/admin', label: t('admin') }];
+      return [{ href: localizePathname('/admin', activeLocale), label: t('admin') }];
     }
 
-    const links = [{ href: '/', label: t('home') }];
+    const links = [{ href: localizePathname('/', activeLocale), label: t('home') }];
 
     if (isAuthenticated) {
       links.push(
-        { href: '/my-courses', label: t('myCourses') },
-        { href: '/favorites', label: t('favorites') },
-        { href: '/contact', label: t('contact') },
+        { href: localizePathname('/my-courses', activeLocale), label: t('myCourses') },
+        { href: localizePathname('/favorites', activeLocale), label: t('favorites') },
+        { href: localizePathname('/contact', activeLocale), label: t('contact') },
       );
 
       if (showManagementLink) {
         links.push({ href: managementHref, label: managementLabel });
       }
     } else {
-      links.push({ href: '/contact', label: t('contact') });
+      links.push({ href: localizePathname('/contact', activeLocale), label: t('contact') });
     }
 
     return links;
-  }, [isAdmin, isAuthenticated, managementHref, managementLabel, showManagementLink, t]);
+  })();
 
-  const mobileAccountLinks = useMemo(() => {
+  const mobileAccountLinks = (() => {
     if (!isAuthenticated || !user) {
       return [];
     }
 
-    const links = [{ href: '/account', label: t('profile') }];
+    const localizedLinks = [
+      { href: localizePathname('/account', activeLocale), label: t('profile') },
+    ];
 
     if (user.role === UserRole.ADMIN || user.role === UserRole.CREATOR) {
-      links.unshift({
-        href: user.role === UserRole.ADMIN ? '/admin' : '/creator',
+      localizedLinks.unshift({
+        href: localizePathname(
+          user.role === UserRole.ADMIN ? '/admin' : '/creator',
+          activeLocale,
+        ),
         label: user.role === UserRole.ADMIN ? t('admin') : t('studio'),
       });
     }
 
     if (user.role === UserRole.ADMIN) {
-      return links;
+      return localizedLinks;
     }
 
-    links.push(
-      { href: '/resources', label: t('resources') },
-      { href: '/certificates', label: t('certificates') },
+    localizedLinks.push(
+      { href: localizePathname('/resources', activeLocale), label: t('resources') },
+      { href: localizePathname('/certificates', activeLocale), label: t('certificates') },
     );
 
-    return links;
-  }, [isAuthenticated, t, user]);
+    return localizedLinks;
+  })();
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
   const handleLogout = () => {
     closeMobileMenu();
+    markManualLogoutInProgress();
     logout('/');
-
-    if (typeof window !== 'undefined') {
-      window.location.href = '/';
-    }
+    router.replace(localizedHref('/'));
   };
 
   return (
@@ -166,12 +182,16 @@ export const Navbar = () => {
           <div className={styles.desktopLinks}>
             <NavbarLinks
               contactLabel={t('contact')}
+              contactHref={localizedHref('/contact')}
               favoritesLabel={t('favorites')}
+              favoritesHref={localizedHref('/favorites')}
+              homeHref={localizedHref('/')}
               homeLabel={t('home')}
               isAdmin={isAdmin}
               isAuthenticated={isAuthenticated}
               managementHref={managementHref}
               managementLabel={managementLabel}
+              myCoursesHref={localizedHref('/my-courses')}
               myCoursesLabel={t('myCourses')}
               showManagementLink={showManagementLink}
             />
@@ -202,6 +222,7 @@ export const Navbar = () => {
             <div className={styles.authSection}>
               {isAuthenticated && user ? (
                 <NavbarAccountMenu
+                  localizedPath={localizedHref}
                   user={user}
                   logout={handleLogout}
                   labels={{
@@ -220,10 +241,10 @@ export const Navbar = () => {
                 />
               ) : (
                 <>
-                  <Link href="/login" className={styles.loginBtn}>
+                  <Link href={localizedHref('/login')} className={styles.loginBtn}>
                     {t('login')}
                   </Link>
-                  <Link href="/register" className={styles.registerBtn}>
+                  <Link href={localizedHref('/register')} className={styles.registerBtn}>
                     {t('register')}
                   </Link>
                 </>
@@ -336,14 +357,14 @@ export const Navbar = () => {
             <p className={styles.mobileMenuLabel}>{t('accountSection')}</p>
             <div className={styles.mobileAuthActions}>
               <Link
-                href="/login"
+                href={localizedHref('/login')}
                 className={styles.mobileSecondaryAction}
                 onClick={closeMobileMenu}
               >
                 {t('login')}
               </Link>
               <Link
-                href="/register"
+                href={localizedHref('/register')}
                 className={styles.mobilePrimaryAction}
                 onClick={closeMobileMenu}
               >

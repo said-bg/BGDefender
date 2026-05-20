@@ -3,6 +3,7 @@ import type { TranslationFn } from '@/types/i18n';
 import sharedStyles from '../../shared/EditCoursePage.module.css';
 
 type CourseDetailsActionsProps = {
+  cancelHref: string;
   isSubmitting: boolean;
   submitError: string | null;
   submitMessage: string | null;
@@ -10,6 +11,7 @@ type CourseDetailsActionsProps = {
 };
 
 export default function CourseDetailsActions({
+  cancelHref,
   isSubmitting,
   submitError,
   submitMessage,
@@ -21,7 +23,7 @@ export default function CourseDetailsActions({
       {submitError ? <p className={sharedStyles.errorMessage}>{submitError}</p> : null}
 
       <div className={sharedStyles.actions}>
-        <Link href="/admin/courses" className={sharedStyles.secondaryAction}>
+        <Link href={cancelHref} className={sharedStyles.secondaryAction}>
           {t('common.cancel')}
         </Link>
         <button type="submit" className={sharedStyles.primaryAction} disabled={isSubmitting}>

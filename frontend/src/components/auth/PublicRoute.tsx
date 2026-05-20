@@ -12,8 +12,9 @@
 'use client';
 
 import { useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks';
+import { getLocaleFromPathname, localizePathname, DEFAULT_LOCALE } from '@/lib/locale';
 import { AuthPageLoader } from './AuthPageLoader';
 
 interface PublicRouteProps {
@@ -27,7 +28,9 @@ interface PublicRouteProps {
  */
 export function PublicRoute({ children, fallback }: PublicRouteProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { isAuthenticated, isInitialized } = useAuth();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
 
   useEffect(() => {
     // Still initializing auth - wait
@@ -37,10 +40,10 @@ export function PublicRoute({ children, fallback }: PublicRouteProps) {
 
     // Initialized and authenticated - redirect to the main catalogue
     if (isAuthenticated) {
-      router.replace('/');
+      router.replace(localizePathname('/', activeLocale));
       return;
     }
-  }, [isAuthenticated, isInitialized, router]);
+  }, [activeLocale, isAuthenticated, isInitialized, router]);
 
   // Show loading state while initializing
   if (!isInitialized) {

@@ -59,7 +59,7 @@ test.describe('Admin courses', () => {
 
   // Verifies that the course list can load through the protected admin route.
   test('shows the admin course library', async ({ page }) => {
-    await page.goto('/admin/courses', { waitUntil: 'networkidle' });
+    await page.goto('/en/admin/courses', { waitUntil: 'networkidle' });
 
     await expect(
       page.getByRole('heading', { name: /my courses/i }),
@@ -98,7 +98,7 @@ test.describe('Admin courses', () => {
       await route.fallback();
     });
 
-    await page.goto('/admin/courses/new', { waitUntil: 'networkidle' });
+    await page.goto('/en/admin/courses/new', { waitUntil: 'networkidle' });
 
     await page.getByLabel(/Title \(English\)/i).fill('  Threat Hunting Basics  ');
     await page.getByLabel(/Title \(Finnish\)/i).fill('  Uhkametsästyksen perusteet  ');

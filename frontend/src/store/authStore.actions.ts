@@ -1,12 +1,10 @@
 import { StateCreator } from 'zustand';
 import * as authService from '@/services/auth';
-import { getToken } from '@/services/utils/tokenStorage';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { AuthState } from './authStore.types';
 
 export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
   user: null,
-  token: null,
   isLoading: false,
   isAuthenticated: false,
   isInitialized: false,
@@ -15,13 +13,6 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
 
   setUser: (user) => {
     set({ user });
-  },
-
-  setToken: (token) => {
-    set({
-      token,
-      isAuthenticated: Boolean(token),
-    });
   },
 
   setLoading: (isLoading) => {
@@ -48,7 +39,6 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
 
       set({
         user: response.user,
-        token: response.accessToken,
         isAuthenticated: true,
         isLoading: false,
         postLogoutRedirectPath: null,
@@ -123,7 +113,6 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
 
     set({
       user: null,
-      token: null,
       isAuthenticated: false,
       postLogoutRedirectPath: redirectPath,
       error: null,
@@ -145,7 +134,6 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
     } catch (err) {
       set({
         user: null,
-        token: null,
         isAuthenticated: false,
         isLoading: false,
         error: getApiErrorMessage(err, 'Failed to fetch user'),
@@ -159,27 +147,11 @@ export const createAuthStore: StateCreator<AuthState> = (set, get) => ({
     set({ isLoading: true });
 
     try {
-      const token = getToken();
-
-      if (!token) {
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-          isLoading: false,
-          postLogoutRedirectPath: null,
-          isInitialized: true,
-        });
-        return;
-      }
-
-      set({ token, isAuthenticated: true });
       await get().fetchCurrentUser();
       set({ isInitialized: true });
     } catch {
       set({
         user: null,
-        token: null,
         isAuthenticated: false,
         isLoading: false,
         postLogoutRedirectPath: null,

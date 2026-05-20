@@ -14,7 +14,6 @@ export const useAuth = () => {
     useShallow((state) => ({
       // State
       user: state.user,
-      token: state.token,
       isLoading: state.isLoading,
       isAuthenticated: state.isAuthenticated,
       isInitialized: state.isInitialized,

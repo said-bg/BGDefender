@@ -82,6 +82,7 @@ jest.mock('../components/HomeCollectionsSection', () => ({
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
+    i18n: { language: 'en' },
     t: (key: string, options?: { name?: string }) => {
       const values: Record<string, string> = {
         'page.heroTitle': 'Master Cybersecurity Skills for the Real World',

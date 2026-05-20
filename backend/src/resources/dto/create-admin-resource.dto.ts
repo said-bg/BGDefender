@@ -4,10 +4,13 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUrl,
+  Matches,
   MaxLength,
   Min,
 } from 'class-validator';
 import { ResourceType } from '../../entities/resource.entity';
+import { safeResourceUploadUrlPattern } from '../../security/upload-security.utils';
 
 const trimString = ({ value }: { value: unknown }): unknown =>
   typeof value === 'string' ? value.trim() : value;
@@ -33,6 +36,10 @@ export class CreateAdminResourceDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(2048)
+  @Matches(safeResourceUploadUrlPattern, {
+    message: 'fileUrl must point to a trusted uploaded resource path',
+  })
   fileUrl?: string;
 
   @IsOptional()
@@ -44,7 +51,11 @@ export class CreateAdminResourceDto {
   mimeType?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl({
+    require_protocol: true,
+    protocols: ['http', 'https'],
+  })
+  @MaxLength(2048)
   linkUrl?: string;
 
   @Transform(toNumber)

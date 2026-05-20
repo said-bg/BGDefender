@@ -53,8 +53,8 @@ export const courseService = {
     return response.data;
   },
 
-  async getCourseById(id: string): Promise<Course> {
-    const response = await apiClient.get<Course>(`/courses/${id}`);
+  async getCourseById(identifier: string): Promise<Course> {
+    const response = await apiClient.get<Course>(`/courses/${identifier}`);
     return response.data;
   },
 

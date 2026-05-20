@@ -12,6 +12,9 @@ import {
 } from './support/courseFixtures';
 
 test.describe('Course detail - E2E tests', () => {
+  const getCoursePath = (course: ReturnType<typeof createCourse>) =>
+    `/en/courses/${course.slug ?? course.id}`;
+
   test.beforeEach(async ({ page }) => {
     await setEnglishLanguage(page);
   });
@@ -22,7 +25,7 @@ test.describe('Course detail - E2E tests', () => {
     const course = createCourse('free');
     await mockCourseDetail(page, course);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(getCoursePath(course), { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: course.titleEn })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Overview' })).toBeVisible();
@@ -37,7 +40,10 @@ test.describe('Course detail - E2E tests', () => {
     ).toBeVisible();
     await expect(
       page.getByRole('main').getByRole('link', { name: 'login', exact: true }),
-    ).toHaveAttribute('href', `/login?redirect=%2Fcourses%2F${course.id}`);
+    ).toHaveAttribute(
+      'href',
+      `/en/login?redirect=%2Fen%2Fcourses%2F${course.slug ?? course.id}`,
+    );
   });
 
   test('free user can access free course content and navigate with next', async ({ page }) => {
@@ -47,7 +53,7 @@ test.describe('Course detail - E2E tests', () => {
     await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(getCoursePath(course), { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('main').getByRole('button', { name: 'Next', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Introduction' })).toBeVisible();
@@ -65,7 +71,7 @@ test.describe('Course detail - E2E tests', () => {
     await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(getCoursePath(course), { waitUntil: 'domcontentloaded' });
 
     // The outline can be hidden to give long lessons more reading space.
     await page.getByRole('button', { name: /hide course outline/i }).click();
@@ -83,7 +89,7 @@ test.describe('Course detail - E2E tests', () => {
     await mockCertificates(page);
     await mockCourseDetail(page, course, freeUser);
 
-    await page.goto(`/courses/${course.id}`, { waitUntil: 'domcontentloaded' });
+    await page.goto(getCoursePath(course), { waitUntil: 'domcontentloaded' });
 
     await page.getByRole('button', { name: /introduction/i }).click();
 
@@ -107,7 +113,7 @@ test.describe('Course detail - E2E tests', () => {
           response.url().includes(`/progress/me/course/${course.id}`) &&
           response.request().method() === 'GET',
       ),
-      page.goto(`/courses/${course.id}?resume=1`, { waitUntil: 'domcontentloaded' }),
+      page.goto(`${getCoursePath(course)}?resume=1`, { waitUntil: 'domcontentloaded' }),
     ]);
 
     await page.getByRole('main').getByRole('button', { name: 'Next', exact: true }).click();
@@ -137,7 +143,9 @@ test.describe('Course detail - E2E tests', () => {
       updatedAt: '2026-01-02T00:00:00.000Z',
     });
 
-    await page.goto(`/courses/${course.id}?resume=1`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${getCoursePath(course)}?resume=1`, {
+      waitUntil: 'domcontentloaded',
+    });
 
     await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();
     await expect(page.getByRole('main').getByText('free content paragraph 1.')).toBeVisible();
@@ -216,7 +224,7 @@ test.describe('Course detail - E2E tests', () => {
           response.url().includes(`/progress/me/course/${course.id}`) &&
           response.request().method() === 'GET',
       ),
-      page.goto(`/courses/${course.id}?resume=1`, { waitUntil: 'domcontentloaded' }),
+      page.goto(`${getCoursePath(course)}?resume=1`, { waitUntil: 'domcontentloaded' }),
     ]);
 
     await expect(page.getByRole('heading', { name: 'First Lesson' })).toBeVisible();

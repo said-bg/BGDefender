@@ -1,41 +1,48 @@
-import type { Metadata } from "next";
-import { Source_Sans_3 } from "next/font/google";
-import AppFooter from "@/components/footer/AppFooter";
-import { AuthProvider, I18nProvider } from "@/components/providers";
-import { Navbar } from "@/components/navbar/Navbar";
-import { ModalContainer } from "@/components/modal-container/ModalContainer";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { headers } from 'next/headers';
+import AppFooter from '@/components/footer/AppFooter';
+import { AuthProvider, I18nProvider } from '@/components/providers';
+import { Navbar } from '@/components/navbar/Navbar';
+import { ModalContainer } from '@/components/modal-container/ModalContainer';
+import {
+  buildRouteMetadata,
+  DEFAULT_LOCALE,
+  normalizeLocale,
+} from '@/lib/locale';
+import './globals.css';
 
-const sourceSans = Source_Sans_3({
-  subsets: ["latin"],
-  variable: "--font-source-sans",
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const headerList = await headers();
+  const locale = normalizeLocale(headerList.get('x-current-locale') ?? DEFAULT_LOCALE);
+  const pathname = headerList.get('x-current-path') ?? `/${locale}`;
 
-export const metadata: Metadata = {
-  title: "Defender Academy",
-  description: "Learn cybersecurity online with BG Defender",
-  icons: {
-    icon: [
-      {
-        url: "/assets/images/bgdefender.jpeg",
-        type: "image/jpeg",
-      },
-    ],
-    shortcut: ["/assets/images/bgdefender.jpeg"],
-    apple: ["/assets/images/bgdefender.jpeg"],
-  },
-};
+  return {
+    ...buildRouteMetadata(locale, pathname),
+    icons: {
+      icon: [
+        {
+          url: '/assets/images/bgdefender.jpeg',
+          type: 'image/jpeg',
+        },
+      ],
+      shortcut: ['/assets/images/bgdefender.jpeg'],
+      apple: ['/assets/images/bgdefender.jpeg'],
+    },
+  };
+}
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = await headers();
+  const locale = normalizeLocale(headerList.get('x-current-locale') ?? DEFAULT_LOCALE);
+
   return (
-    <html lang="fi">
-      <body className={sourceSans.variable}>
-        <I18nProvider>
+    <html lang={locale}>
+      <body>
+        <I18nProvider initialLanguage={locale}>
           <AuthProvider>
             <Navbar />
             {children}

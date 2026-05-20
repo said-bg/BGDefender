@@ -29,6 +29,22 @@ export class Course {
 
   @Column({
     type: 'varchar',
+    length: 220,
+    unique: true,
+    nullable: true,
+  })
+  slugEn: string | null;
+
+  @Column({
+    type: 'varchar',
+    length: 220,
+    unique: true,
+    nullable: true,
+  })
+  slugFi: string | null;
+
+  @Column({
+    type: 'varchar',
     length: 200,
   })
   titleEn: string;

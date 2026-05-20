@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from '@/lib/locale';
 import styles from './AdminCollectionsHero.module.css';
 
 type CollectionsTranslate = (
@@ -15,10 +17,13 @@ type AdminCollectionsHeroProps = {
 export default function AdminCollectionsHero({
   t,
 }: AdminCollectionsHeroProps) {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
+
   return (
     <section className={styles.hero}>
       <div className={styles.heroCopy}>
-        <Link href="/admin" className={styles.backLink}>
+        <Link href={localizePathname('/admin', activeLocale)} className={styles.backLink}>
           {t('backToOverview')}
         </Link>
         <p className={styles.eyebrow}>

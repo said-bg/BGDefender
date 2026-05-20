@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { buildApiPattern, mockCertificates, mockNotifications } from './support/courseFixtures';
 
-const TOKEN_KEY = 'bg_defender_token';
-
 const accountUser = {
   id: 21,
   email: 'said@example.com',
@@ -21,10 +19,9 @@ test.describe('Account page - E2E tests', () => {
   test('authenticated user can open the account page from the navbar', async ({
     page,
   }) => {
-    await page.addInitScript(([tokenKey]) => {
-      window.localStorage.setItem(tokenKey, 'mock-token');
+    await page.addInitScript(() => {
       window.localStorage.setItem('i18nextLng', 'en');
-    }, [TOKEN_KEY]);
+    });
 
     await mockNotifications(page);
     await mockCertificates(page);
@@ -61,7 +58,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/en', { waitUntil: 'networkidle' });
 
     const profileButton = page.getByRole('button', { name: 'Profile' });
     await expect(profileButton).toBeVisible();
@@ -80,10 +77,9 @@ test.describe('Account page - E2E tests', () => {
   }) => {
     let currentUser = { ...accountUser };
 
-    await page.addInitScript(([tokenKey]) => {
-      window.localStorage.setItem(tokenKey, 'mock-token');
+    await page.addInitScript(() => {
       window.localStorage.setItem('i18nextLng', 'en');
-    }, [TOKEN_KEY]);
+    });
 
     await mockNotifications(page);
     await mockCertificates(page);
@@ -131,7 +127,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/account', { waitUntil: 'networkidle' });
+    await page.goto('/en/account', { waitUntil: 'networkidle' });
     await expect(page.getByRole('heading', { name: 'Said Ait' })).toBeVisible();
 
     await page.getByLabel('First name').fill('Said');
@@ -174,10 +170,9 @@ test.describe('Account page - E2E tests', () => {
   }) => {
     let changePasswordRequests = 0;
 
-    await page.addInitScript(([tokenKey]) => {
-      window.localStorage.setItem(tokenKey, 'mock-token');
+    await page.addInitScript(() => {
       window.localStorage.setItem('i18nextLng', 'en');
-    }, [TOKEN_KEY]);
+    });
 
     await mockNotifications(page);
     await mockCertificates(page);
@@ -201,7 +196,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/account', { waitUntil: 'networkidle' });
+    await page.goto('/en/account', { waitUntil: 'networkidle' });
     await expect(page.getByRole('heading', { name: 'Said Ait' })).toBeVisible();
     await page.getByRole('button', { name: 'Security' }).click();
 
@@ -230,10 +225,9 @@ test.describe('Account page - E2E tests', () => {
   test('security form shows the current password error without logging the user out', async ({
     page,
   }) => {
-    await page.addInitScript(([tokenKey]) => {
-      window.localStorage.setItem(tokenKey, 'mock-token');
+    await page.addInitScript(() => {
       window.localStorage.setItem('i18nextLng', 'en');
-    }, [TOKEN_KEY]);
+    });
 
     await mockNotifications(page);
     await mockCertificates(page);
@@ -258,7 +252,7 @@ test.describe('Account page - E2E tests', () => {
       });
     });
 
-    await page.goto('/account', { waitUntil: 'networkidle' });
+    await page.goto('/en/account', { waitUntil: 'networkidle' });
     await expect(page.getByRole('heading', { name: 'Said Ait' })).toBeVisible();
     await page.getByRole('button', { name: 'Security' }).click();
 

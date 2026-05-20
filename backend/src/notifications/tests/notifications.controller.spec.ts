@@ -70,6 +70,20 @@ describe('NotificationsController', () => {
     );
   });
 
+  it('clamps oversized notification limits to a safe maximum', async () => {
+    notificationsService.listMyNotifications.mockResolvedValue({
+      data: [],
+      unreadCount: 0,
+    });
+
+    await controller.listMyNotifications(currentUser, '999');
+
+    expect(notificationsService.listMyNotifications).toHaveBeenCalledWith(
+      currentUser.id,
+      50,
+    );
+  });
+
   it('delegates single-notification reads', async () => {
     notificationsService.markAsRead.mockResolvedValue(undefined);
 

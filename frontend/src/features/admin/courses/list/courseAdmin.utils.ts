@@ -1,4 +1,5 @@
 import { AdminCourseSummary, Course } from '@/services/course';
+import { formatSiteDate } from '@/lib/datetime';
 import type { TranslationFn } from '@/types/i18n';
 
 export type LocalizedAdminCourse = Course & {
@@ -80,7 +81,7 @@ export const formatAdminCourseStatus = (status: Course['status'], t: Translation
 };
 
 export const formatAdminUpdatedAt = (updatedAt: string, language: string) =>
-  new Date(updatedAt).toLocaleDateString(language === 'fi' ? 'fi-FI' : 'en-US', {
+  formatSiteDate(updatedAt, language, {
     day: '2-digit',
     month: 'short',
     year: 'numeric',

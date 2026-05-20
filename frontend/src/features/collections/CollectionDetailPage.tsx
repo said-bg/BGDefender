@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import HomeCourseCard from '@/features/home/components/HomeCourseCard';
 import type { HomeCourse } from '@/features/home/lib/home.types';
 import collectionService from '@/services/collections';
@@ -160,7 +161,10 @@ export default function CollectionDetailPage() {
   return (
     <div className={styles.container}>
       <section className={styles.shell}>
-        <Link href="/" className={styles.backLink}>
+        <Link
+          href={localizePathname('/', normalizeLocale(i18n.language))}
+          className={styles.backLink}
+        >
           {t('collectionDetail.back')}
         </Link>
 

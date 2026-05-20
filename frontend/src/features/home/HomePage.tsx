@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import HomeCollectionsSection from './components/HomeCollectionsSection';
 import HomeCourseRail from './components/HomeCourseRail';
 import HomeHero from './components/HomeHero';
@@ -8,7 +9,8 @@ import useHomeCourses from './hooks/useHomeCourses';
 import styles from './HomePage.module.css';
 
 export default function HomePage() {
-  const { t } = useTranslation('courses');
+  const { i18n, t } = useTranslation('courses');
+  const activeLocale = normalizeLocale(i18n.language);
   const {
     courses,
     getCollectionTitle,
@@ -54,16 +56,22 @@ export default function HomePage() {
       : t('page.welcomeDescription')
     : t('page.heroDescription');
   const heroActions = isLearnerHome
-    ? [
+      ? [
         {
-          href: visibleInProgressCourses.length > 0 ? '/my-courses' : '#free-courses',
+          href:
+            visibleInProgressCourses.length > 0
+              ? localizePathname('/my-courses', activeLocale)
+              : '#free-courses',
           label:
             visibleInProgressCourses.length > 0
               ? t('page.resumeLearning')
               : t('page.exploreCourses'),
         },
         {
-          href: hasIncompleteProfile ? '/account' : '/certificates',
+          href: localizePathname(
+            hasIncompleteProfile ? '/account' : '/certificates',
+            activeLocale,
+          ),
           label: hasIncompleteProfile
             ? t('page.completeProfileCta')
             : t('page.viewCertificatesCta'),
@@ -113,7 +121,7 @@ export default function HomePage() {
           title={t('page.continueLearning')}
           description={t('page.continueLearningDescription')}
           emptyLabel={t('page.noCoursesAvailable')}
-          viewAllHref="/my-courses"
+          viewAllHref={localizePathname('/my-courses', activeLocale)}
           viewAllLabel={t('page.viewAllMyCourses')}
           getCourseDescription={getCardDescription}
           getCourseTitle={getTitle}

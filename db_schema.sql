@@ -159,6 +159,8 @@ DROP TABLE IF EXISTS `courses`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `courses` (
   `id` varchar(36) NOT NULL,
+  `slugEn` varchar(220) NOT NULL,
+  `slugFi` varchar(220) NOT NULL,
   `titleEn` varchar(200) NOT NULL,
   `titleFi` varchar(200) NOT NULL,
   `descriptionEn` text NOT NULL,
@@ -171,6 +173,8 @@ CREATE TABLE `courses` (
   `createdAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `updatedAt` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_courses_slug_en_unique` (`slugEn`),
+  UNIQUE KEY `idx_courses_slug_fi_unique` (`slugFi`),
   KEY `idx_courses_owner_user` (`ownerUserId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

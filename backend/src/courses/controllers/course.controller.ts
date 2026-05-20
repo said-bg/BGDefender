@@ -77,6 +77,20 @@ const resolveCourseManagementScope = (
 ): CourseManagementScope =>
   scope === 'review' || scope === 'all' ? 'review' : 'mine';
 
+const clampPaginationValue = (
+  rawValue: string | undefined,
+  fallback: number,
+  max: number,
+): number => {
+  const parsedValue = Number.parseInt(rawValue ?? '', 10);
+
+  if (Number.isNaN(parsedValue)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(parsedValue, 0), max);
+};
+
 @Controller('courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
@@ -330,8 +344,8 @@ export class CourseController {
     @Query('scope') scope: string | undefined,
     @CurrentUser() currentUser: SafeUser,
   ) {
-    const parsedLimit = parseInt(limit, 10) || 20;
-    const parsedOffset = parseInt(offset, 10) || 0;
+    const parsedLimit = clampPaginationValue(limit, 20, 100);
+    const parsedOffset = clampPaginationValue(offset, 0, 10_000);
     const [data, count] = await this.courseService.findAllForAdmin(
       parsedLimit,
       parsedOffset,
@@ -377,8 +391,8 @@ export class CourseController {
     @Query('limit') limit: string = '10',
     @Query('offset') offset: string = '0',
   ) {
-    const parsedLimit = parseInt(limit, 10) || 10;
-    const parsedOffset = parseInt(offset, 10) || 0;
+    const parsedLimit = clampPaginationValue(limit, 10, 100);
+    const parsedOffset = clampPaginationValue(offset, 0, 10_000);
     const [data, count] = await this.courseService.findAll(
       parsedLimit,
       parsedOffset,
@@ -386,9 +400,9 @@ export class CourseController {
     return { data, count };
   }
 
-  @Get(':id')
-  async findById(@Param('id', new ParseUUIDPipe()) id: string) {
-    return await this.courseService.findById(id);
+  @Get(':identifier')
+  async findById(@Param('identifier') identifier: string) {
+    return await this.courseService.findById(identifier);
   }
 
   @Put(':id')

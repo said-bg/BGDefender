@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import { Trans } from 'react-i18next';
 import type { TFunction } from 'i18next';
+import {
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import styles from './CourseLockedPanel.module.css';
 
 type AccessState = 'public' | 'checking' | 'login_required' | 'premium_required' | 'granted';
@@ -11,12 +15,20 @@ interface CourseLockedPanelProps {
 }
 
 export default function CourseLockedPanel({ accessState, t }: CourseLockedPanelProps) {
-  const loginHref =
-    typeof window === 'undefined'
-      ? '/login'
-      : `/login?redirect=${encodeURIComponent(
-          `${window.location.pathname}${window.location.search}`,
-        )}`;
+  const loginHref = (() => {
+    if (typeof window === 'undefined') {
+      return '/login';
+    }
+
+    const pathnameLocale = getLocaleFromPathname(window.location.pathname);
+    const loginPath = pathnameLocale
+      ? localizePathname('/login', pathnameLocale)
+      : '/login';
+
+    return `${loginPath}?redirect=${encodeURIComponent(
+      `${window.location.pathname}${window.location.search}`,
+    )}`;
+  })();
 
   return (
     <div className={styles.lockedPanel}>

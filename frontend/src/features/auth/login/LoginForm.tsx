@@ -1,13 +1,24 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import sharedStyles from '../AuthFormShared.module.css';
 import styles from './Login.module.css';
 import { useLoginForm } from './useLoginForm';
 
 export function LoginForm() {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const { displayedFormError, errors, form, handleChange, handleSubmit, isLoading, t } =
     useLoginForm();
+  const emailErrorId = errors.email ? 'login-email-error' : undefined;
+  const passwordErrorId = errors.password ? 'login-password-error' : undefined;
+  const formErrorId = displayedFormError ? 'login-form-error' : undefined;
 
   return (
     <div className={sharedStyles.container}>
@@ -18,7 +29,9 @@ export function LoginForm() {
         </div>
 
         {displayedFormError && (
-          <div className={sharedStyles.errorMessage}>{displayedFormError}</div>
+          <div id={formErrorId} className={sharedStyles.errorMessage} role="alert">
+            {displayedFormError}
+          </div>
         )}
 
         <form className={sharedStyles.form} onSubmit={handleSubmit}>
@@ -36,8 +49,14 @@ export function LoginForm() {
               value={form.email}
               onChange={handleChange}
               disabled={isLoading}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={emailErrorId}
             />
-            {errors.email && <span className={sharedStyles.fieldError}>{errors.email}</span>}
+            {errors.email && (
+              <span id={emailErrorId} className={sharedStyles.fieldError} role="alert">
+                {errors.email}
+              </span>
+            )}
           </div>
 
           <div className={sharedStyles.formGroup}>
@@ -54,9 +73,13 @@ export function LoginForm() {
               value={form.password}
               onChange={handleChange}
               disabled={isLoading}
+              aria-invalid={Boolean(errors.password)}
+              aria-describedby={passwordErrorId}
             />
             {errors.password && (
-              <span className={sharedStyles.fieldError}>{errors.password}</span>
+              <span id={passwordErrorId} className={sharedStyles.fieldError} role="alert">
+                {errors.password}
+              </span>
             )}
           </div>
 
@@ -74,13 +97,19 @@ export function LoginForm() {
 
         <div className={sharedStyles.footer}>
           <div className={styles.footerLinks}>
-            <Link href="/forgot-password" className={sharedStyles.footerLink}>
+            <Link
+              href={localizePathname('/forgot-password', activeLocale)}
+              className={sharedStyles.footerLink}
+            >
               {t('login.forgotPassword')}
             </Link>
 
             <div className={styles.footerLinksRow}>
               <span>{t('login.noAccount')}</span>
-              <Link href="/register" className={sharedStyles.footerLink}>
+              <Link
+                href={localizePathname('/register', activeLocale)}
+                className={sharedStyles.footerLink}
+              >
                 {t('login.signup')}
               </Link>
             </div>

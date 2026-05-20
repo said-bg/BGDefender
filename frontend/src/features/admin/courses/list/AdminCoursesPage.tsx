@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/hooks';
+import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from '@/lib/locale';
 import type { CourseManagementScope } from '@/services/course';
 import { UserRole } from '@/types/api';
 import CourseMetrics from './CourseMetrics';
@@ -25,11 +26,15 @@ function AdminCoursesPageContent() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const effectiveScope: CourseManagementScope =
     user?.role === UserRole.ADMIN && searchParams.get('scope') === 'review'
       ? 'review'
       : 'mine';
-  const backHref = user?.role === UserRole.ADMIN ? '/admin' : '/creator';
+  const backHref = localizePathname(
+    user?.role === UserRole.ADMIN ? '/admin' : '/creator',
+    activeLocale,
+  );
   const isReviewScope =
     user?.role === UserRole.ADMIN && effectiveScope === 'review';
   const {
@@ -104,13 +109,17 @@ function AdminCoursesPageContent() {
                     scopeTab.active ? styles.scopeTabActive : ''
                   }`}
                   onClick={() => setScope(scopeTab.key)}
+                  aria-pressed={scopeTab.active}
                 >
                   {scopeTab.label}
                 </button>
               ))}
             </div>
           ) : null}
-          <Link href="/admin/courses/new" className={styles.primaryAction}>
+          <Link
+            href={localizePathname('/admin/courses/new', activeLocale)}
+            className={styles.primaryAction}
+          >
             {t('createCourse')}
           </Link>
         </div>
@@ -149,6 +158,7 @@ function AdminCoursesPageContent() {
         )}
         showOwner={isReviewScope}
         t={t}
+        activeLocale={activeLocale}
       />
     </div>
   );

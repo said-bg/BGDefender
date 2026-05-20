@@ -17,6 +17,7 @@ export default function AdminDashboardActivity({
 }: AdminDashboardActivityProps) {
   const items = courses.slice(0, 3);
   const [isOpen, setIsOpen] = useState(true);
+  const activityPanelId = 'admin-dashboard-activity-panel';
   const summaryLabel =
     items.length > 0
       ? t('dashboard.activitySummary', { count: items.length })
@@ -34,6 +35,7 @@ export default function AdminDashboardActivity({
           className={styles.toggleButton}
           onClick={() => setIsOpen((previous) => !previous)}
           aria-expanded={isOpen}
+          aria-controls={activityPanelId}
         >
           {isOpen
             ? t('dashboard.collapseActivity')
@@ -44,14 +46,15 @@ export default function AdminDashboardActivity({
       {!isOpen ? <p className={styles.collapsedSummary}>{summaryLabel}</p> : null}
 
       {isOpen ? (
-        <div className={styles.list}>
+        <div id={activityPanelId} className={styles.list}>
           {items.length > 0 ? (
             items.map((course) => (
               <article key={course.id} className={styles.item}>
                 <div className={styles.itemMain}>
                   <p className={styles.itemTitle}>{getCourseTitle(course, language)}</p>
                   <p className={styles.itemMeta}>
-                    {formatCourseStatus(course.status, t)} - {formatUpdatedAt(course.updatedAt)}
+                    {formatCourseStatus(course.status, t)} -{' '}
+                    {formatUpdatedAt(course.updatedAt, language)}
                   </p>
                 </div>
                 <div className={styles.itemCounts}>

@@ -37,6 +37,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
       username: this.configService.getOrThrow('DATABASE_USERNAME'),
       password: this.configService.getOrThrow('DATABASE_PASSWORD'),
       database: this.configService.getOrThrow('DATABASE_NAME'),
+      timezone: 'Z',
       entities: [
         User,
         PasswordResetToken,

@@ -30,7 +30,7 @@ export async function notifyCoursePublished(
       courseId: course.id,
       courseTitleEnSnapshot: course.titleEn,
       courseTitleFiSnapshot: course.titleFi,
-      link: `/courses/${course.id}`,
+      link: `/courses/${course.slugEn ?? course.id}`,
     }),
   );
 

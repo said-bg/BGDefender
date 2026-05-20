@@ -6,6 +6,27 @@ import { AuthService } from '../services/auth.service';
 import { SafeUser } from '../types/safe-user.type';
 import { JwtPayload } from '../types/jwt-payload.interface';
 
+const AUTH_COOKIE_NAME = 'bg_defender_auth';
+
+const extractJwtFromCookie = (request: { headers?: { cookie?: string } }) => {
+  const cookieHeader = request?.headers?.cookie;
+
+  if (!cookieHeader) {
+    return null;
+  }
+
+  const authCookie = cookieHeader
+    .split(';')
+    .map((cookie) => cookie.trim())
+    .find((cookie) => cookie.startsWith(`${AUTH_COOKIE_NAME}=`));
+
+  if (!authCookie) {
+    return null;
+  }
+
+  return decodeURIComponent(authCookie.split('=').slice(1).join('='));
+};
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -13,7 +34,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly authService: AuthService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        extractJwtFromCookie,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.getOrThrow<string>('JWT_SECRET'),
     });

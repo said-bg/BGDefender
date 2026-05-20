@@ -19,6 +19,11 @@
 import { useEffect, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks';
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import { AuthPageLoader } from './AuthPageLoader';
 
 interface ProtectedRouteProps {
@@ -39,6 +44,12 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const pathnameLocale = getLocaleFromPathname(pathname || '/');
+  const activeLocale = pathnameLocale ?? DEFAULT_LOCALE;
+  const loginPath = pathnameLocale ? localizePathname('/login', activeLocale) : '/login';
+  const unauthorizedPath = pathnameLocale
+    ? localizePathname(unauthorizedRedirect, activeLocale)
+    : unauthorizedRedirect;
   const {
     clearPostLogoutRedirectPath,
     isAuthenticated,
@@ -62,17 +73,19 @@ export function ProtectedRoute({
         return;
       }
 
-      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
+      router.replace(`${loginPath}?redirect=${encodeURIComponent(pathname)}`);
       return;
     }
 
     // Check role if required
     if (requiredRole && user && !requiredRole.includes(user.role)) {
-      router.replace(unauthorizedRedirect);
+      router.replace(unauthorizedPath);
       return;
     }
   }, [
+    activeLocale,
     clearPostLogoutRedirectPath,
+    loginPath,
     isAuthenticated,
     isInitialized,
     pathname,
@@ -80,6 +93,7 @@ export function ProtectedRoute({
     requiredRole,
     router,
     unauthorizedRedirect,
+    unauthorizedPath,
     user,
   ]);
 

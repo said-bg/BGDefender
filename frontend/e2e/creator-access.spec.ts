@@ -59,12 +59,12 @@ test.describe('Creator access', () => {
   test('lets creators access their studio and shared management pages', async ({
     page,
   }) => {
-    await page.goto('/creator', { waitUntil: 'networkidle' });
+    await page.goto('/en/creator', { waitUntil: 'networkidle' });
     await expect(
       page.getByRole('heading', { name: /welcome back, creator/i }),
     ).toBeVisible();
 
-    await page.goto('/admin/courses', { waitUntil: 'networkidle' });
+    await page.goto('/en/admin/courses', { waitUntil: 'networkidle' });
     await expect(
       page.getByRole('heading', { name: /my courses/i }),
     ).toBeVisible();
@@ -73,7 +73,7 @@ test.describe('Creator access', () => {
     ).toHaveCount(0);
     await expect(page.getByText('Red Team Advanced')).toBeVisible();
 
-    await page.goto('/admin/authors', { waitUntil: 'networkidle' });
+    await page.goto('/en/admin/authors', { waitUntil: 'networkidle' });
     await expect(
       page.getByRole('heading', { name: /manage authors/i }),
     ).toBeVisible();
@@ -81,12 +81,12 @@ test.describe('Creator access', () => {
   });
 
   test('blocks creators from admin-only surfaces', async ({ page }) => {
-    await page.goto('/admin', { waitUntil: 'networkidle' });
-    await expect(page).toHaveURL(/\/unauthorized$/);
+    await page.goto('/en/admin', { waitUntil: 'networkidle' });
+    await expect(page).toHaveURL(/\/en\/unauthorized$/);
     await expect(page.getByRole('heading', { name: /access denied/i })).toBeVisible();
 
-    await page.goto('/admin/users', { waitUntil: 'networkidle' });
-    await expect(page).toHaveURL(/\/unauthorized$/);
+    await page.goto('/en/admin/users', { waitUntil: 'networkidle' });
+    await expect(page).toHaveURL(/\/en\/unauthorized$/);
     await expect(page.getByRole('heading', { name: /access denied/i })).toBeVisible();
   });
 });

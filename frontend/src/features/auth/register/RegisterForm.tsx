@@ -1,14 +1,28 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import sharedStyles from '../AuthFormShared.module.css';
 import PasswordRequirements from './PasswordRequirements';
 import { useRegisterForm } from './useRegisterForm';
 
 export function RegisterForm() {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const { authError, errors, form, handleChange, handleSubmit, isLoading, t } =
     useRegisterForm();
   const displayedFormError = errors.form || authError;
+  const emailErrorId = errors.email ? 'register-email-error' : undefined;
+  const passwordErrorId = errors.password ? 'register-password-error' : undefined;
+  const confirmPasswordErrorId = errors.confirmPassword
+    ? 'register-confirm-password-error'
+    : undefined;
+  const formErrorId = displayedFormError ? 'register-form-error' : undefined;
 
   return (
     <div className={sharedStyles.container}>
@@ -19,7 +33,9 @@ export function RegisterForm() {
         </div>
 
         {displayedFormError ? (
-          <div className={sharedStyles.errorMessage}>x {displayedFormError}</div>
+          <div id={formErrorId} className={sharedStyles.errorMessage} role="alert">
+            {displayedFormError}
+          </div>
         ) : null}
 
         <form className={sharedStyles.form} onSubmit={handleSubmit}>
@@ -37,9 +53,13 @@ export function RegisterForm() {
               value={form.email}
               onChange={handleChange}
               disabled={isLoading}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={emailErrorId}
             />
             {errors.email ? (
-              <span className={sharedStyles.fieldError}>{errors.email}</span>
+              <span id={emailErrorId} className={sharedStyles.fieldError} role="alert">
+                {errors.email}
+              </span>
             ) : null}
           </div>
 
@@ -57,9 +77,13 @@ export function RegisterForm() {
               value={form.password}
               onChange={handleChange}
               disabled={isLoading}
+              aria-invalid={Boolean(errors.password)}
+              aria-describedby={passwordErrorId}
             />
             {errors.password ? (
-              <span className={sharedStyles.fieldError}>{errors.password}</span>
+              <span id={passwordErrorId} className={sharedStyles.fieldError} role="alert">
+                {errors.password}
+              </span>
             ) : null}
             <PasswordRequirements
               password={form.password}
@@ -83,9 +107,17 @@ export function RegisterForm() {
               value={form.confirmPassword}
               onChange={handleChange}
               disabled={isLoading}
+              aria-invalid={Boolean(errors.confirmPassword)}
+              aria-describedby={confirmPasswordErrorId}
             />
             {errors.confirmPassword ? (
-              <span className={sharedStyles.fieldError}>{errors.confirmPassword}</span>
+              <span
+                id={confirmPasswordErrorId}
+                className={sharedStyles.fieldError}
+                role="alert"
+              >
+                {errors.confirmPassword}
+              </span>
             ) : null}
           </div>
 
@@ -103,7 +135,10 @@ export function RegisterForm() {
 
         <div className={sharedStyles.footer}>
           {t('register.footer')}{' '}
-          <Link href="/login" className={sharedStyles.footerLink}>
+          <Link
+            href={localizePathname('/login', activeLocale)}
+            className={sharedStyles.footerLink}
+          >
             {t('register.footerLink')}
           </Link>
         </div>

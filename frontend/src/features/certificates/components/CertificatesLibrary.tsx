@@ -1,5 +1,6 @@
 'use client';
 
+import { formatSiteDate } from '@/lib/datetime';
 import { CertificateStatus, type CertificateRecord } from '@/types/api';
 import styles from './CertificatesLibrary.module.css';
 
@@ -65,7 +66,11 @@ export default function CertificatesLibrary({
               <p className={styles.certificateMeta}>
                 {certificate.issuedAt
                   ? t('issuedOn', {
-                      date: new Date(certificate.issuedAt).toLocaleDateString(),
+                      date: formatSiteDate(certificate.issuedAt, language, {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                      }),
                     })
                   : t('pendingMeta')}
               </p>

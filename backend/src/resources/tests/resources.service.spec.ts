@@ -19,6 +19,8 @@ import { CreateAdminResourceDto } from '../dto/create-admin-resource.dto';
 import { CreateMyResourceDto } from '../dto/create-my-resource.dto';
 import { ListResourcesDto } from '../dto/list-resources.dto';
 import { ResourcesService } from '../services/resources.service';
+import { validate } from 'class-validator';
+import { plainToInstance } from 'class-transformer';
 
 type MockResourceRepository = Pick<
   Repository<Resource>,
@@ -162,6 +164,34 @@ describe('ResourcesService', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('resource dto validation hardening', () => {
+    it('rejects arbitrary file urls outside trusted upload paths', async () => {
+      const dto = plainToInstance(CreateAdminResourceDto, {
+        title: 'Policy',
+        type: ResourceType.FILE,
+        fileUrl: 'https://evil.example.com/malware.pdf',
+        assignedUserId: 7,
+      });
+
+      const errors = await validate(dto);
+
+      expect(errors.some((error) => error.property === 'fileUrl')).toBe(true);
+    });
+
+    it('rejects non-http(s) link urls', async () => {
+      const dto = plainToInstance(CreateAdminResourceDto, {
+        title: 'Policy',
+        type: ResourceType.LINK,
+        linkUrl: 'javascript:alert(1)',
+        assignedUserId: 7,
+      });
+
+      const errors = await validate(dto);
+
+      expect(errors.some((error) => error.property === 'linkUrl')).toBe(true);
+    });
   });
 
   describe('listAdminResources', () => {

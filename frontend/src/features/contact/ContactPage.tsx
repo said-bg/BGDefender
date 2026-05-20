@@ -64,6 +64,10 @@ export default function ContactPage() {
 
   const activeRequestType =
     requestTypes.find((type) => type.id === requestType) ?? requestTypes[0];
+  const nameErrorId = errors.name ? 'contact-name-error' : undefined;
+  const emailErrorId = errors.email ? 'contact-email-error' : undefined;
+  const messageErrorId = errors.message ? 'contact-message-error' : undefined;
+  const formErrorId = errors.form ? 'contact-form-error' : undefined;
 
   const updateField = (field: keyof ContactFormState, value: string) => {
     setFormState((previous) => ({
@@ -146,10 +150,16 @@ export default function ContactPage() {
 
         <article id="contact-form" className={styles.formPanel}>
           {successMessage ? (
-            <div className={styles.successMessage}>{successMessage}</div>
+            <div className={styles.successMessage} role="status" aria-live="polite">
+              {successMessage}
+            </div>
           ) : null}
 
-          {errors.form ? <div className={styles.errorMessage}>{errors.form}</div> : null}
+          {errors.form ? (
+            <div id={formErrorId} className={styles.errorMessage} role="alert">
+              {errors.form}
+            </div>
+          ) : null}
 
           <form onSubmit={handleSubmit} noValidate>
             <div className={styles.topicBlock}>
@@ -178,40 +188,59 @@ export default function ContactPage() {
                 <span className={styles.fieldLabel}>{t('fields.name')}</span>
                 <input
                   type="text"
+                  autoComplete="name"
                   value={formState.name}
                   onChange={(event) => updateField('name', event.target.value)}
                   placeholder={t('fields.namePlaceholder')}
                   className={styles.input}
                   disabled={isSending}
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={nameErrorId}
                 />
-                {errors.name ? <span className={styles.fieldError}>{errors.name}</span> : null}
+                {errors.name ? (
+                  <span id={nameErrorId} className={styles.fieldError} role="alert">
+                    {errors.name}
+                  </span>
+                ) : null}
               </label>
 
               <label className={styles.field}>
                 <span className={styles.fieldLabel}>{t('fields.email')}</span>
                 <input
                   type="email"
+                  autoComplete="email"
                   value={formState.email}
                   onChange={(event) => updateField('email', event.target.value)}
                   placeholder={t('fields.emailPlaceholder')}
                   className={styles.input}
                   disabled={isSending}
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={emailErrorId}
                 />
-                {errors.email ? <span className={styles.fieldError}>{errors.email}</span> : null}
+                {errors.email ? (
+                  <span id={emailErrorId} className={styles.fieldError} role="alert">
+                    {errors.email}
+                  </span>
+                ) : null}
               </label>
 
               <label className={`${styles.field} ${styles.fieldFull}`}>
                 <span className={styles.fieldLabel}>{t('fields.message')}</span>
                 <textarea
+                  autoComplete="off"
                   value={formState.message}
                   onChange={(event) => updateField('message', event.target.value)}
                   placeholder={t('fields.messagePlaceholder')}
                   className={`${styles.input} ${styles.textarea}`}
                   rows={8}
                   disabled={isSending}
+                  aria-invalid={Boolean(errors.message)}
+                  aria-describedby={messageErrorId}
                 />
                 {errors.message ? (
-                  <span className={styles.fieldError}>{errors.message}</span>
+                  <span id={messageErrorId} className={styles.fieldError} role="alert">
+                    {errors.message}
+                  </span>
                 ) : null}
               </label>
             </div>

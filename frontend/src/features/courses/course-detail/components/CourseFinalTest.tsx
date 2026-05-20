@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from '@/lib/locale';
 import courseService, {
   AdminCourseFinalTest,
   LearnerCourseFinalTest,
@@ -78,6 +80,7 @@ export default function CourseFinalTest({
   previewMode = false,
 }: CourseFinalTestProps) {
   const { t } = useTranslation('courses');
+  const pathname = usePathname();
   const finalTestCardRef = useRef<HTMLElement | null>(null);
   const [finalTest, setFinalTest] = useState<LearnerCourseFinalTest | null>(null);
   const [loading, setLoading] = useState(enabled);
@@ -160,6 +163,7 @@ export default function CourseFinalTest({
     [reviewAnswers],
   );
   const isUnlockedForPreview = previewMode || finalTest?.isUnlocked;
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
 
   const updateAnswer = (question: QuizQuestion, optionId: string, checked: boolean) => {
     setSelectedAnswers((previous) => {
@@ -364,7 +368,10 @@ export default function CourseFinalTest({
                 {t('detail.certificatePendingDescription')}
               </p>
               <div className={styles.quizActions}>
-                <Link href="/account" className={styles.secondaryAction}>
+                <Link
+                  href={localizePathname('/account', activeLocale)}
+                  className={styles.secondaryAction}
+                >
                   {t('detail.completeProfile')}
                 </Link>
               </div>
@@ -380,7 +387,10 @@ export default function CourseFinalTest({
                 {t('detail.certificateIssuedDescription')}
               </p>
               <div className={styles.quizActions}>
-                <Link href="/certificates" className={styles.secondaryAction}>
+                <Link
+                  href={localizePathname('/certificates', activeLocale)}
+                  className={styles.secondaryAction}
+                >
                   {t('detail.viewCertificate')}
                 </Link>
               </div>

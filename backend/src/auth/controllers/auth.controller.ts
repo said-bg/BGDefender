@@ -8,7 +8,10 @@ import {
   HttpCode,
   HttpStatus,
   Headers,
+  Res,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import type { Response } from 'express';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
@@ -25,13 +28,29 @@ import { resolveLanguage } from '../../config/request-language';
 import { RateLimit } from '../../security/rate-limit.decorator';
 import { RateLimitGuard } from '../../security/rate-limit.guard';
 
+const AUTH_COOKIE_NAME = 'bg_defender_auth';
+const AUTH_COOKIE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly emailService: EmailService,
     private readonly passwordTokenService: PasswordTokenService,
+    private readonly configService: ConfigService,
   ) {}
+
+  private getAuthCookieOptions() {
+    const isProduction = this.configService.get('NODE_ENV') === 'production';
+
+    return {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'strict' as const,
+      path: '/',
+      maxAge: AUTH_COOKIE_MAX_AGE_MS,
+    };
+  }
 
   @Post('register')
   @UseGuards(RateLimitGuard)
@@ -50,10 +69,32 @@ export class AuthController {
   @RateLimit({ keyPrefix: 'auth:login', maxRequests: 5, windowMs: 60_000 })
   async login(
     @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) response: Response,
     @Headers('accept-language') acceptLanguage?: string,
-  ): Promise<{ accessToken: string; user: SafeUser }> {
+  ): Promise<{ user: SafeUser }> {
     const language = resolveLanguage(acceptLanguage);
-    return this.authService.login(loginDto, language);
+    const result = await this.authService.login(loginDto, language);
+
+    response.cookie(
+      AUTH_COOKIE_NAME,
+      result.accessToken,
+      this.getAuthCookieOptions(),
+    );
+
+    return { user: result.user };
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) response: Response): { message: string } {
+    response.clearCookie(AUTH_COOKIE_NAME, {
+      ...this.getAuthCookieOptions(),
+      maxAge: undefined,
+    });
+
+    return {
+      message: 'Logged out successfully',
+    };
   }
 
   @Get('me')
@@ -155,6 +196,12 @@ export class AuthController {
   @Post('change-password')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RateLimitGuard)
+  @RateLimit({
+    keyPrefix: 'auth:change-password',
+    maxRequests: 5,
+    windowMs: 15 * 60_000,
+  })
   async changePassword(
     @CurrentUser() user: SafeUser,
     @Body() changePasswordDto: ChangePasswordDto,

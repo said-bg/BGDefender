@@ -1,4 +1,5 @@
 import { User, UserPlan, UserRole } from '@/types/api';
+import { formatSiteDate } from '@/lib/datetime';
 import type { PasswordCheck } from './account.types';
 
 const PASSWORD_MIN_LENGTH = 8;
@@ -52,12 +53,16 @@ export const getAccountRoleLabel = (user: User | null, tNavbar: AccountTranslati
   return tNavbar('badges.user');
 };
 
-export const getAccountJoinedAt = (user: User | null) => {
+export const getAccountJoinedAt = (user: User | null, language = 'fi') => {
   if (!user?.createdAt) {
     return '-';
   }
 
-  return new Date(user.createdAt).toLocaleDateString();
+  return formatSiteDate(user.createdAt, language, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  });
 };
 
 export const validatePasswordChange = ({

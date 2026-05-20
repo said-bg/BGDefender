@@ -1,8 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import { buildApiPattern } from './support/courseFixtures';
+import { buildApiPattern, setEnglishLanguage } from './support/courseFixtures';
 
-const TOKEN_KEY = 'bg_defender_token';
 const LOCAL_COVER_IMAGE = '/assets/images/BGLOGO.png';
 
 const freeUser = {
@@ -76,10 +75,7 @@ test.describe('Home progression - E2E tests', () => {
   test('authenticated user sees continue learning with saved progress', async ({
     page,
   }) => {
-    await page.addInitScript(([tokenKey]) => {
-      window.localStorage.setItem(tokenKey, 'mock-token');
-      window.localStorage.setItem('i18nextLng', 'en');
-    }, [TOKEN_KEY]);
+    await setEnglishLanguage(page);
 
     await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
@@ -152,7 +148,7 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en', { waitUntil: 'domcontentloaded' });
 
     const continueSection = page
       .locator('section')
@@ -175,10 +171,7 @@ test.describe('Home progression - E2E tests', () => {
   test('completed courses are excluded from continue learning on the home page', async ({
     page,
   }) => {
-    await page.addInitScript(([tokenKey]) => {
-      window.localStorage.setItem(tokenKey, 'mock-token');
-      window.localStorage.setItem('i18nextLng', 'en');
-    }, [TOKEN_KEY]);
+    await setEnglishLanguage(page);
 
     await page.route(buildApiPattern('/auth/me'), async (route) => {
       await route.fulfill({
@@ -251,7 +244,7 @@ test.describe('Home progression - E2E tests', () => {
       });
     });
 
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en', { waitUntil: 'domcontentloaded' });
 
     await expect(
       page.getByRole('heading', { name: 'Continue Learning' }),

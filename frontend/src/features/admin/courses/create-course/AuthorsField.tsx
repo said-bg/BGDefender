@@ -11,6 +11,7 @@ type AuthorsFieldProps = {
   authorIds: string[];
   i18nLanguage: string;
   loadingAuthors: boolean;
+  manageAuthorsHref: string;
   selectedAuthors: Author[];
   onToggleAuthor: (authorId: string) => void;
   t: (key: string, options?: Record<string, unknown>) => string;
@@ -22,6 +23,7 @@ export default function AuthorsField({
   authorIds,
   i18nLanguage,
   loadingAuthors,
+  manageAuthorsHref,
   selectedAuthors,
   onToggleAuthor,
   t,
@@ -32,7 +34,7 @@ export default function AuthorsField({
         <span className={detailStyles.fieldLabel}>
           {t('create.authors')}
         </span>
-        <Link href="/admin/authors" className={detailStyles.inlineLink}>
+        <Link href={manageAuthorsHref} className={detailStyles.inlineLink}>
           {t('manageAuthors')}
         </Link>
       </div>

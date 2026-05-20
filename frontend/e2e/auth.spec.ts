@@ -27,6 +27,7 @@ test.describe('Authentication - E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       window.localStorage.setItem('i18nextLng', 'en');
+      document.cookie = 'bgd_locale=en; path=/';
     });
 
     await page.route(buildApiPattern('/auth/me'), async (route) => {
@@ -65,7 +66,7 @@ test.describe('Authentication - E2E Tests', () => {
       });
     });
 
-    await page.goto('/register', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/register', { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/create account/i);
 
     // Fill form
@@ -75,26 +76,26 @@ test.describe('Authentication - E2E Tests', () => {
 
     // Submit and verify redirect to login
     await page.getByRole('button', { name: /create account/i }).click();
-    await page.waitForURL(/.*\/login/, { timeout: 10000 });
-    expect(page.url()).toContain('/login');
+    await page.waitForURL(/.*\/en\/login/, { timeout: 10000 });
+    expect(page.url()).toContain('/en/login');
   });
 
   /**
    * Test 2: Redirect unauthenticated user to login
    * 
    * Verifies:
-   * - Without auth token, accessing /my-courses redirects to /auth/login
+   * - Without an authenticated session, accessing /my-courses redirects to /auth/login
    * - Maintains redirect parameter if present
    */
   test('should redirect unauthenticated user to login when accessing protected route', async ({ page }) => {
     // Try to access the protected courses page without auth.
-    await page.goto('/my-courses', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/my-courses', { waitUntil: 'domcontentloaded' });
 
     // ProtectedRoute redirects on the client once auth finishes initializing.
-    await page.waitForURL(/\/login\?redirect=/, { timeout: 10000 });
+    await page.waitForURL(/\/en\/login\?redirect=/, { timeout: 10000 });
 
     // Should be redirected to login
-    expect(page.url()).toContain('/login');
+    expect(page.url()).toContain('/en/login');
 
     // Verify login page is visible (title is "Welcome Back")
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/welcome back/i);
@@ -112,7 +113,7 @@ test.describe('Authentication - E2E Tests', () => {
    * - Has signup link
    */
   test('should have proper login page structure', async ({ page }) => {
-    await page.goto('/login', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/login', { waitUntil: 'domcontentloaded' });
 
     // Verify title and form structure
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/welcome back/i);
@@ -145,7 +146,7 @@ test.describe('Authentication - E2E Tests', () => {
    * - Has login link for existing users
    */
   test('should have proper register page structure', async ({ page }) => {
-    await page.goto('/register', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/register', { waitUntil: 'domcontentloaded' });
 
     // Verify title and form structure
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/create account/i);
@@ -176,7 +177,7 @@ test.describe('Authentication - E2E Tests', () => {
    * - Submitting with non-matching passwords shows error
    */
   test('should display validation errors on invalid input', async ({ page }) => {
-    await page.goto('/register', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/register', { waitUntil: 'domcontentloaded' });
 
     // Test 1: Submit empty form should show errors
     await page.getByRole('button', { name: /create account/i }).click();
@@ -220,7 +221,7 @@ test.describe('Authentication - E2E Tests', () => {
       });
     });
 
-    await page.goto('/login', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/login', { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { level: 1, name: /welcome back/i })).toBeVisible();
 
     await page.locator('input[name="email"]').fill('wrong@example.com');

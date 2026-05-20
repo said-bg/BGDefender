@@ -1,7 +1,6 @@
 import type { Page } from '@playwright/test';
 
 export const API_BASE = 'http://localhost:3001/api';
-export const TOKEN_KEY = 'bg_defender_token';
 export const LOCAL_COVER_IMAGE = '/assets/images/BGLOGO.png';
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -21,6 +20,7 @@ export type MockUser = {
 
 export type MockCourse = {
   id: string;
+  slug?: string;
   titleEn: string;
   titleFi: string;
   descriptionEn: string;
@@ -99,6 +99,10 @@ export const creatorUser: MockUser = {
 
 export const createCourse = (level: 'free' | 'premium'): MockCourse => ({
   id: `course-${level}`,
+  slug:
+    level === 'free'
+      ? 'blue-team-basics'
+      : 'red-team-advanced',
   titleEn: level === 'free' ? 'Blue Team Basics' : 'Red Team Advanced',
   titleFi: level === 'free' ? 'Blue Team Perusteet' : 'Red Team Edistynyt',
   descriptionEn: `Public overview for the ${level} course.`,
@@ -154,14 +158,15 @@ export const createCourse = (level: 'free' | 'premium'): MockCourse => ({
 export async function setEnglishLanguage(page: Page) {
   await page.addInitScript(() => {
     window.localStorage.setItem('i18nextLng', 'en');
+    document.cookie = 'bgd_locale=en; path=/';
   });
 }
 
 export async function setAuthenticatedUser(page: Page) {
-  await page.addInitScript(([tokenKey]) => {
-    window.localStorage.setItem(tokenKey, 'mock-token');
+  await page.addInitScript(() => {
     window.localStorage.setItem('i18nextLng', 'en');
-  }, [TOKEN_KEY]);
+    document.cookie = 'bgd_locale=en; path=/';
+  });
 }
 
 export async function mockNotifications(page: Page, notifications: Record<string, unknown>[] = []) {
@@ -219,13 +224,17 @@ export async function mockCourseDetail(
   user?: MockUser,
   storedProgress: Record<string, unknown> | null = null,
 ) {
-  await page.route(buildApiRoute(`/courses/${course.id}`), async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(course),
+  const courseIdentifiers = [...new Set([course.id, course.slug].filter(Boolean))];
+
+  for (const identifier of courseIdentifiers) {
+    await page.route(buildApiRoute(`/courses/${identifier}`), async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(course),
+      });
     });
-  });
+  }
 
   await mockAuthMe(page, user);
 

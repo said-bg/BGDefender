@@ -4,7 +4,6 @@
  */
 
 import apiClient from '../api/apiClient';
-import { setToken, removeToken } from '../utils/tokenStorage';
 import i18n from '@/config/i18n';
 import {
   RegisterRequest,
@@ -48,8 +47,8 @@ export const register = async (data: RegisterRequest): Promise<RegisterResponse>
 };
 
 /**
- * Login user and get JWT token
- * Automatically saves token to localStorage
+ * Login user and get authenticated user
+ * The JWT is stored in an httpOnly cookie by the backend
  * Sends Accept-Language header for localized error messages
  */
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
@@ -62,11 +61,6 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
       },
     }
   );
-
-  // Save token to localStorage
-  if (response.data.accessToken) {
-    setToken(response.data.accessToken);
-  }
 
   return response.data;
 };
@@ -145,10 +139,10 @@ export const changePassword = async (
 
 /**
  * Logout user
- * Removes token from localStorage
+ * Clears the server-side auth cookie
  */
 export const logout = (): void => {
-  removeToken();
+  void apiClient.post('/auth/logout').catch(() => undefined);
 };
 
 const authServiceExports = {

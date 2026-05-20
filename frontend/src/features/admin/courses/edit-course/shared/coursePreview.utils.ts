@@ -1,3 +1,9 @@
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
+
 export type AdminCoursePreviewTarget =
   | { type: 'overview' }
   | { type: 'chapter'; chapterId: string }
@@ -16,6 +22,17 @@ export const buildCoursePreviewHref = (
   courseId: string,
   options: BuildCoursePreviewHrefOptions = {},
 ) => {
+  const previewPath = (() => {
+    const pathname = `/courses/${courseId}`;
+
+    if (typeof window === 'undefined') {
+      return pathname;
+    }
+
+    const activeLocale =
+      getLocaleFromPathname(window.location.pathname) ?? DEFAULT_LOCALE;
+    return localizePathname(pathname, activeLocale);
+  })();
   const params = new URLSearchParams();
   const target = options.target ?? { type: 'overview' };
 
@@ -45,5 +62,5 @@ export const buildCoursePreviewHref = (
     params.set('sidebar', options.sidebarMode);
   }
 
-  return `/courses/${courseId}?${params.toString()}`;
+  return `${previewPath}?${params.toString()}`;
 };

@@ -1,8 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import { UserPlan, UserRole } from '@/types/api';
 import useAdminUsers from './useAdminUsers';
 import styles from './AdminUsersPage.module.css';
@@ -17,6 +23,8 @@ export default function AdminUsersPage() {
 
 function AdminUsersPageContent() {
   const { t, i18n } = useTranslation('admin');
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const {
     actingUserId,
     canManagePlan,
@@ -41,7 +49,10 @@ function AdminUsersPageContent() {
     <div className={`${styles.page} ${i18n.language === 'fi' ? styles.pageFi : ''}`}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <Link href="/admin" className={styles.backLink}>
+          <Link
+            href={localizePathname('/admin', activeLocale)}
+            className={styles.backLink}
+          >
             {t('backToOverview')}
           </Link>
           <p className={styles.eyebrow}>

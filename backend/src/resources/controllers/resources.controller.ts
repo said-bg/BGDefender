@@ -32,6 +32,8 @@ import { ListResourcesDto } from '../dto/list-resources.dto';
 import { ResourcesService } from '../services/resources.service';
 import {
   buildSafeUploadedFilename,
+  matchesDeclaredFileSignature,
+  removeUploadedFile,
   resourceUploadExtensions,
 } from '../../security/upload-security.utils';
 
@@ -134,6 +136,8 @@ export class ResourcesController {
       resolveLanguage(acceptLanguage),
     );
 
+    response.setHeader('Cache-Control', 'no-store');
+    response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Content-Type', download.mimeType);
     return response.download(download.filePath, download.filename);
   }
@@ -224,6 +228,15 @@ export class ResourcesController {
         language === 'fi'
           ? 'Resurssitiedosto vaaditaan'
           : 'A resource file is required',
+      );
+    }
+
+    if (!matchesDeclaredFileSignature(file.path, file.mimetype)) {
+      removeUploadedFile(file.path);
+      throw new BadRequestException(
+        language === 'fi'
+          ? 'Ladatun resurssitiedoston sisalto ei vastaa sallittua tiedostomuotoa'
+          : 'Uploaded resource content does not match an allowed file format',
       );
     }
 

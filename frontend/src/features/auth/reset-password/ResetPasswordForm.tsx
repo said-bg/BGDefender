@@ -7,6 +7,10 @@ import { useResetPasswordForm } from './useResetPasswordForm';
 
 export function ResetPasswordForm() {
   const reset = useResetPasswordForm();
+  const formErrorId = reset.formError ? 'reset-password-form-error' : undefined;
+  const confirmPasswordErrorId = reset.fieldErrors.confirmPassword
+    ? 'reset-password-confirm-password-error'
+    : undefined;
 
   if (!reset.token) {
     return null;
@@ -21,7 +25,9 @@ export function ResetPasswordForm() {
         </div>
 
         {reset.formError ? (
-          <div className={sharedStyles.errorMessage}>{reset.formError}</div>
+          <div id={formErrorId} className={sharedStyles.errorMessage} role="alert">
+            {reset.formError}
+          </div>
         ) : null}
 
         <form onSubmit={reset.handleSubmit} className={sharedStyles.form}>
@@ -38,6 +44,7 @@ export function ResetPasswordForm() {
               disabled={reset.loading}
               placeholder={reset.t('resetPassword.newPasswordPlaceholder')}
               autoComplete="new-password"
+              aria-invalid={Boolean(reset.fieldErrors.newPassword)}
             />
             <ResetPasswordRequirements
               errors={reset.fieldErrors.newPassword}
@@ -59,9 +66,15 @@ export function ResetPasswordForm() {
               disabled={reset.loading}
               placeholder={reset.t('resetPassword.confirmPasswordPlaceholder')}
               autoComplete="new-password"
+              aria-invalid={Boolean(reset.fieldErrors.confirmPassword)}
+              aria-describedby={confirmPasswordErrorId}
             />
             {reset.fieldErrors.confirmPassword ? (
-              <div className={sharedStyles.fieldError}>
+              <div
+                id={confirmPasswordErrorId}
+                className={sharedStyles.fieldError}
+                role="alert"
+              >
                 {reset.fieldErrors.confirmPassword}
               </div>
             ) : null}

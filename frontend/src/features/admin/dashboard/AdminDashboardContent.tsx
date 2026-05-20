@@ -20,11 +20,13 @@ export default function AdminDashboardContent() {
 
       {loading ? (
         <section className={styles.section}>
-          <p className={styles.statusMessage}>{t('loading')}</p>
+          <p className={styles.statusMessage} role="status" aria-live="polite">
+            {t('loading')}
+          </p>
         </section>
       ) : error ? (
         <section className={styles.section}>
-          <p className={styles.errorMessage}>{error}</p>
+          <p className={styles.errorMessage} role="alert">{error}</p>
         </section>
       ) : (
         <>

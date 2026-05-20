@@ -1,7 +1,7 @@
 /**
  * Axios API Client
  * Centralized HTTP client for all API calls
- * Includes JWT token management and error handling
+ * Includes shared cookie-based auth and error handling
  */
 
 import axios, { AxiosInstance } from 'axios';
@@ -12,13 +12,14 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/a
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 10000, // 10 seconds
 });
 
-// Request interceptor - adds JWT token to Authorization header
+// Request interceptor - adds shared headers such as Accept-Language
 apiClient.interceptors.request.use(
   requestInterceptor,
   (error) => {

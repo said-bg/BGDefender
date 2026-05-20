@@ -21,11 +21,17 @@ interface NavbarAccountMenuLabels {
 
 interface NavbarAccountMenuProps {
   labels: NavbarAccountMenuLabels;
+  localizedPath: (pathname: string) => string;
   logout: () => void | Promise<void>;
   user: User;
 }
 
-export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccountMenuProps) {
+export default function NavbarAccountMenu({
+  labels,
+  localizedPath,
+  logout,
+  user,
+}: NavbarAccountMenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -77,7 +83,7 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
         ? styles.creatorTone
         : styles.userTone;
   const isStandardUser = user.role === UserRole.USER;
-  const managementHref = user.role === UserRole.ADMIN ? '/admin' : '/creator';
+  const managementHref = localizedPath(user.role === UserRole.ADMIN ? '/admin' : '/creator');
   const managementLabel = user.role === UserRole.ADMIN ? labels.admin : labels.studio;
 
   const closeMenu = () => setIsMenuOpen(false);
@@ -125,16 +131,28 @@ export default function NavbarAccountMenu({ labels, logout, user }: NavbarAccoun
               </Link>
             ) : null}
             {user.role !== UserRole.ADMIN ? (
-              <Link href="/resources" className={styles.dropdownLink} onClick={closeMenu}>
+              <Link
+                href={localizedPath('/resources')}
+                className={styles.dropdownLink}
+                onClick={closeMenu}
+              >
                 {labels.resources}
               </Link>
             ) : null}
             {user.role !== UserRole.ADMIN ? (
-              <Link href="/certificates" className={styles.dropdownLink} onClick={closeMenu}>
+              <Link
+                href={localizedPath('/certificates')}
+                className={styles.dropdownLink}
+                onClick={closeMenu}
+              >
                 {labels.certificates}
               </Link>
             ) : null}
-            <Link href="/account" className={styles.dropdownLink} onClick={closeMenu}>
+            <Link
+              href={localizedPath('/account')}
+              className={styles.dropdownLink}
+              onClick={closeMenu}
+            >
               {labels.profile}
             </Link>
           </div>

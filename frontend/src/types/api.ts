@@ -90,7 +90,6 @@ export interface RegisterResponse {
 }
 
 export interface LoginResponse {
-  accessToken: string;
   user: User;
 }
 

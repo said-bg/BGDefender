@@ -5,8 +5,8 @@
  * Wraps the app to check if user is logged in on page load
  * This is needed for:
  * - Persisting auth after page refresh
- * - Hydrating auth state from localStorage
- * - Checking token validity
+ * - Hydrating auth state from the server session cookie
+ * - Checking whether the current auth cookie still resolves to a valid user
  */
 
 'use client';

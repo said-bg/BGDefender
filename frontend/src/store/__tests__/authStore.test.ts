@@ -1,18 +1,11 @@
 import { useAuthStore } from '../authStore';
 import * as authService from '@/services/auth';
-import * as tokenStorage from '@/services/utils/tokenStorage';
 import { User, UserRole, UserPlan } from '@/types';
 
-// Mock the services
 jest.mock('@/services/auth');
-jest.mock('@/services/utils/tokenStorage');
 
 const mockAuthService = authService as jest.Mocked<typeof authService>;
-const mockTokenStorage = tokenStorage as jest.Mocked<typeof tokenStorage>;
 
-/**
- * Factory to create a mock user with proper types
- */
 const createMockUser = (overrides: Partial<User> = {}): User => ({
   id: 1,
   email: 'test@example.com',
@@ -29,17 +22,15 @@ const createMockUser = (overrides: Partial<User> = {}): User => ({
 
 describe('Auth Store (Zustand)', () => {
   beforeEach(() => {
-    // Reset store state before each test
     useAuthStore.setState({
       user: null,
-      token: null,
       isLoading: false,
       isAuthenticated: false,
       isInitialized: false,
+      postLogoutRedirectPath: null,
       error: null,
     });
 
-    // Clear mocks
     jest.clearAllMocks();
   });
 
@@ -49,21 +40,6 @@ describe('Auth Store (Zustand)', () => {
       useAuthStore.getState().setUser(mockUser);
 
       expect(useAuthStore.getState().user).toEqual(mockUser);
-    });
-
-    it('should set token and update isAuthenticated', () => {
-      useAuthStore.getState().setToken('test-token');
-
-      expect(useAuthStore.getState().token).toBe('test-token');
-      expect(useAuthStore.getState().isAuthenticated).toBe(true);
-    });
-
-    it('should clear token and update isAuthenticated', () => {
-      useAuthStore.getState().setToken('test-token');
-      useAuthStore.getState().setToken(null);
-
-      expect(useAuthStore.getState().token).toBeNull();
-      expect(useAuthStore.getState().isAuthenticated).toBe(false);
     });
 
     it('should set loading state', () => {
@@ -85,18 +61,12 @@ describe('Auth Store (Zustand)', () => {
   describe('login', () => {
     it('should successfully login user', async () => {
       const mockUser = createMockUser();
-      const mockResponse = {
-        user: mockUser,
-        accessToken: 'test-token',
-      };
-
-      mockAuthService.login.mockResolvedValue(mockResponse);
+      mockAuthService.login.mockResolvedValue({ user: mockUser });
 
       await useAuthStore.getState().login('test@example.com', 'Password123');
 
       const state = useAuthStore.getState();
       expect(state.user).toEqual(mockUser);
-      expect(state.token).toBe('test-token');
       expect(state.isAuthenticated).toBe(true);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBeNull();
@@ -107,18 +77,15 @@ describe('Auth Store (Zustand)', () => {
       mockAuthService.login.mockRejectedValue(mockError);
 
       await expect(
-        useAuthStore.getState().login('test@example.com', 'WrongPassword')
+        useAuthStore.getState().login('test@example.com', 'WrongPassword'),
       ).rejects.toThrow();
 
       const state = useAuthStore.getState();
       expect(state.user).toBeNull();
-      expect(state.token).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.isLoading).toBe(false);
       expect(state.error).toBeDefined();
     });
-
-
   });
 
   describe('register', () => {
@@ -130,7 +97,7 @@ describe('Auth Store (Zustand)', () => {
       const state = useAuthStore.getState();
       expect(state.isLoading).toBe(false);
       expect(state.error).toBeNull();
-      expect(state.isAuthenticated).toBe(false); // Register doesn't auto-login
+      expect(state.isAuthenticated).toBe(false);
       expect(mockAuthService.register).toHaveBeenCalledWith({
         email: 'test@example.com',
         password: 'Password123',
@@ -142,7 +109,7 @@ describe('Auth Store (Zustand)', () => {
       mockAuthService.register.mockRejectedValue(mockError);
 
       await expect(
-        useAuthStore.getState().register('test@example.com', 'Password123')
+        useAuthStore.getState().register('test@example.com', 'Password123'),
       ).rejects.toThrow();
 
       const state = useAuthStore.getState();
@@ -153,11 +120,9 @@ describe('Auth Store (Zustand)', () => {
 
   describe('logout', () => {
     it('should clear auth state', () => {
-      // Set initial state
       const mockUser = createMockUser();
       useAuthStore.setState({
         user: mockUser,
-        token: 'test-token',
         isAuthenticated: true,
       });
 
@@ -167,7 +132,6 @@ describe('Auth Store (Zustand)', () => {
 
       const state = useAuthStore.getState();
       expect(state.user).toBeNull();
-      expect(state.token).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.error).toBeNull();
       expect(mockAuthService.logout).toHaveBeenCalled();
@@ -184,7 +148,6 @@ describe('Auth Store (Zustand)', () => {
 
       useAuthStore.setState({
         user: createMockUser(),
-        token: 'test-token',
         isAuthenticated: true,
       });
 
@@ -223,51 +186,32 @@ describe('Auth Store (Zustand)', () => {
   });
 
   describe('initializeAuth', () => {
-    it('should initialize with no token', async () => {
-      mockTokenStorage.getToken.mockReturnValue(null);
-
-      await useAuthStore.getState().initializeAuth();
-
-      const state = useAuthStore.getState();
-      expect(state.user).toBeNull();
-      expect(state.token).toBeNull();
-      expect(state.isAuthenticated).toBe(false);
-      expect(state.isInitialized).toBe(true);
-      expect(state.isLoading).toBe(false);
-      expect(mockAuthService.getMe).not.toHaveBeenCalled();
-    });
-
-    it('should initialize with valid token', async () => {
+    it('should initialize with a valid authenticated session', async () => {
       const mockUser = createMockUser();
-      mockTokenStorage.getToken.mockReturnValue('valid-token');
       mockAuthService.getMe.mockResolvedValue(mockUser);
 
       await useAuthStore.getState().initializeAuth();
 
       const state = useAuthStore.getState();
-      expect(state.token).toBe('valid-token');
       expect(state.user).toEqual(mockUser);
       expect(state.isAuthenticated).toBe(true);
       expect(state.isInitialized).toBe(true);
       expect(state.isLoading).toBe(false);
     });
 
-    it('should handle token validation failure', async () => {
-      mockTokenStorage.getToken.mockReturnValue('invalid-token');
+    it('should initialize to signed-out state when session fetch fails', async () => {
       mockAuthService.getMe.mockRejectedValue(new Error('Unauthorized'));
 
       await useAuthStore.getState().initializeAuth();
 
       const state = useAuthStore.getState();
       expect(state.user).toBeNull();
-      expect(state.token).toBeNull();
       expect(state.isAuthenticated).toBe(false);
       expect(state.isInitialized).toBe(true);
       expect(state.isLoading).toBe(false);
     });
 
-    it('should always set isInitialized even on error', async () => {
-      mockTokenStorage.getToken.mockReturnValue('token');
+    it('should always set isInitialized even on network error', async () => {
       mockAuthService.getMe.mockRejectedValue(new Error('Network error'));
 
       await useAuthStore.getState().initializeAuth();

@@ -1,4 +1,5 @@
 import { UserRole } from '@/types/api';
+import { stripLocaleFromPathname } from '@/lib/locale';
 
 export const getDefaultRedirectPath = (role: UserRole) => {
   if (role === UserRole.ADMIN) {
@@ -17,7 +18,9 @@ export const getSafeRedirectPath = (requestedPath: string | null, role: UserRole
     return getDefaultRedirectPath(role);
   }
 
-  if (requestedPath === '/unauthorized') {
+  const normalizedRequestedPath = stripLocaleFromPathname(requestedPath);
+
+  if (normalizedRequestedPath === '/unauthorized') {
     return getDefaultRedirectPath(role);
   }
 
@@ -25,25 +28,29 @@ export const getSafeRedirectPath = (requestedPath: string | null, role: UserRole
   const canCreatorAccessAdminPath =
     role === UserRole.CREATOR &&
     creatorAdminPaths.some(
-      (path) => requestedPath === path || requestedPath.startsWith(`${path}/`),
+      (path) =>
+        normalizedRequestedPath === path ||
+        normalizedRequestedPath.startsWith(`${path}/`),
     );
 
   if (
-    requestedPath.startsWith('/admin') &&
+    normalizedRequestedPath.startsWith('/admin') &&
     role !== UserRole.ADMIN &&
     !canCreatorAccessAdminPath
   ) {
     return getDefaultRedirectPath(role);
   }
 
-  if (requestedPath.startsWith('/creator') && role !== UserRole.CREATOR) {
+  if (normalizedRequestedPath.startsWith('/creator') && role !== UserRole.CREATOR) {
     return getDefaultRedirectPath(role);
   }
 
   if (
     role === UserRole.ADMIN &&
     ['/favorites', '/my-courses', '/resources', '/certificates'].some(
-      (path) => requestedPath === path || requestedPath.startsWith(`${path}/`),
+      (path) =>
+        normalizedRequestedPath === path ||
+        normalizedRequestedPath.startsWith(`${path}/`),
     )
   ) {
     return '/admin';

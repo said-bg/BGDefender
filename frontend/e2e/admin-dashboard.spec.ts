@@ -34,9 +34,9 @@ test.describe('Admin dashboard', () => {
   });
 
   test('admin lands on the dashboard instead of learner navigation', async ({ page }) => {
-    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.goto('/en', { waitUntil: 'networkidle' });
 
-    await expect(page).toHaveURL(/\/admin$/);
+    await expect(page).toHaveURL(/\/en\/admin$/);
     await expect(page.getByRole('heading', { name: /welcome, /i })).toBeVisible();
     await expect(page.locator('nav').getByRole('link', { name: 'Dashboard' })).toBeVisible();
     await expect(page.locator('nav').getByRole('link', { name: 'Home' })).toHaveCount(0);

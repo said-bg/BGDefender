@@ -4,13 +4,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import authorService from '@/services/authors';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import courseService, { Author, CreateCourseRequest } from '@/services/course';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { CreateCourseFormState, ImageMode, initialCreateCourseFormState } from './types';
 
 export default function useCreateCourse() {
-  const { t } = useTranslation('admin');
+  const { t, i18n } = useTranslation('admin');
   const router = useRouter();
+  const activeLocale = normalizeLocale(i18n.language);
   const [form, setForm] = useState<CreateCourseFormState>(initialCreateCourseFormState);
   const [imageMode, setImageMode] = useState<ImageMode>('url');
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -118,7 +120,7 @@ export default function useCreateCourse() {
       setSubmitMessage(t('create.success'));
       setForm(initialCreateCourseFormState);
       setTimeout(() => {
-        router.push('/admin/courses');
+        router.push(localizePathname('/admin/courses', activeLocale));
       }, 900);
     } catch (error) {
       setSubmitError(

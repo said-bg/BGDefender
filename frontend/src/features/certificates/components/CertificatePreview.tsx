@@ -2,6 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { formatSiteDate } from '@/lib/datetime';
+import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from '@/lib/locale';
 import { CertificateStatus, type CertificateRecord } from '@/types/api';
 import styles from './CertificatePreview.module.css';
 
@@ -22,16 +25,18 @@ export default function CertificatePreview({
   selectedCertificateTitle,
   t,
 }: CertificatePreviewProps) {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const issuedDate = (() => {
     if (!selectedCertificate?.issuedAt) {
       return '-';
     }
 
-    return new Intl.DateTimeFormat(language === 'fi' ? 'fi-FI' : 'en-GB', {
+    return formatSiteDate(selectedCertificate.issuedAt, language, {
       day: '2-digit',
       month: 'long',
       year: 'numeric',
-    }).format(new Date(selectedCertificate.issuedAt));
+    });
   })();
 
   return (
@@ -53,7 +58,10 @@ export default function CertificatePreview({
           <p className={styles.profilePromptCopy}>
             {t('pendingDescription')}
           </p>
-          <Link href="/account" className={styles.profileAction}>
+          <Link
+            href={localizePathname('/account', activeLocale)}
+            className={styles.profileAction}
+          >
             {t('completeProfile')}
           </Link>
         </div>

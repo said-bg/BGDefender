@@ -34,6 +34,9 @@ export const resourceUploadExtensions: Record<string, string> = {
 export const safeAssetUrlPattern =
   /^(https:\/\/[^\s]+|http:\/\/(localhost|127\.0\.0\.1|::1)(:\d+)?\/uploads\/[^\s]+|\/uploads\/[^\s]+|\/assets\/images\/[^\s]+)$/i;
 
+export const safeResourceUploadUrlPattern =
+  /^(http:\/\/(localhost|127\.0\.0\.1|::1)(:\d+)?\/uploads\/resources\/[^\s]+|https:\/\/[^\s]+\/uploads\/resources\/[^\s]+|\/uploads\/resources\/[^\s]+)$/i;
+
 export const sanitizeFilename = (name: string) =>
   name
     .toLowerCase()
@@ -83,6 +86,34 @@ function includesAscii(buffer: Buffer, value: string) {
   return buffer.includes(Buffer.from(value, 'ascii'));
 }
 
+function isZipContainer(buffer: Buffer) {
+  return (
+    startsWithBytes(buffer, [0x50, 0x4b, 0x03, 0x04]) ||
+    startsWithBytes(buffer, [0x50, 0x4b, 0x05, 0x06]) ||
+    startsWithBytes(buffer, [0x50, 0x4b, 0x07, 0x08])
+  );
+}
+
+function isCompoundOfficeDocument(buffer: Buffer) {
+  return startsWithBytes(buffer, [
+    0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1,
+  ]);
+}
+
+function isProbablyText(buffer: Buffer) {
+  if (buffer.length === 0) {
+    return true;
+  }
+
+  for (const byte of buffer) {
+    if (byte === 0x00) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export function matchesDeclaredFileSignature(
   filePath: string,
   mimetype: string,
@@ -110,6 +141,17 @@ export function matchesDeclaredFileSignature(
       );
     case 'application/pdf':
       return header.subarray(0, 5).toString('ascii') === '%PDF-';
+    case 'application/msword':
+    case 'application/vnd.ms-excel':
+    case 'application/vnd.ms-powerpoint':
+      return isCompoundOfficeDocument(header);
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+    case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+    case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+      return isZipContainer(header);
+    case 'text/plain':
+    case 'text/csv':
+      return isProbablyText(header);
     case 'video/mp4':
       return (
         header.subarray(4, 8).toString('ascii') === 'ftyp' &&

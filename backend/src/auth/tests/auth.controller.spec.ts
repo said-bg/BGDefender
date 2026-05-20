@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { AuthController } from '../controllers/auth.controller';
 import { AuthService } from '../services/auth.service';
 import { EmailService } from '../../email/email.service';
@@ -42,6 +43,10 @@ describe('AuthController', () => {
     markAsUsed: jest.fn(),
   };
 
+  const mockConfigService = {
+    get: jest.fn().mockReturnValue('test'),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
@@ -57,6 +62,10 @@ describe('AuthController', () => {
         {
           provide: PasswordTokenService,
           useValue: mockPasswordTokenService,
+        },
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
         },
       ],
     }).compile();
@@ -103,6 +112,12 @@ describe('AuthController', () => {
   });
 
   describe('login', () => {
+    const createMockResponse = () =>
+      ({
+        cookie: jest.fn(),
+        clearCookie: jest.fn(),
+      }) as const;
+
     it('should call authService.login with correct DTO', async () => {
       const loginDto = {
         email: 'test@example.com',
@@ -116,14 +131,23 @@ describe('AuthController', () => {
 
       mockAuthService.login.mockResolvedValue(loginResponse);
 
-      const result = await controller.login(loginDto);
+      const response = createMockResponse();
+      const result = await controller.login(loginDto, response);
 
       expect(mockAuthService.login).toHaveBeenCalledWith(loginDto, 'en');
-      expect(result.accessToken).toBeDefined();
-      expect(result.user).toEqual(mockSafeUser);
+      expect(response.cookie).toHaveBeenCalledWith(
+        'bg_defender_auth',
+        'jwt_token_here',
+        expect.objectContaining({
+          httpOnly: true,
+          sameSite: 'strict',
+          path: '/',
+        }),
+      );
+      expect(result).toEqual({ user: mockSafeUser });
     });
 
-    it('should return accessToken and SafeUser', async () => {
+    it('should return SafeUser without exposing the token', async () => {
       const loginDto = {
         email: 'test@example.com',
         password: 'Password123',
@@ -136,10 +160,32 @@ describe('AuthController', () => {
 
       mockAuthService.login.mockResolvedValue(loginResponse);
 
-      const result = await controller.login(loginDto);
+      const response = createMockResponse();
+      const result = await controller.login(loginDto, response);
 
-      expect(result).toHaveProperty('accessToken');
+      expect(result).not.toHaveProperty('accessToken');
       expect(result.user).not.toHaveProperty('password');
+    });
+  });
+
+  describe('logout', () => {
+    it('should clear the auth cookie', () => {
+      const response = {
+        cookie: jest.fn(),
+        clearCookie: jest.fn(),
+      };
+
+      const result = controller.logout(response as never);
+
+      expect(response.clearCookie).toHaveBeenCalledWith(
+        'bg_defender_auth',
+        expect.objectContaining({
+          httpOnly: true,
+          sameSite: 'strict',
+          path: '/',
+        }),
+      );
+      expect(result).toEqual({ message: 'Logged out successfully' });
     });
   });
 

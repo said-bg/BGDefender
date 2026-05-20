@@ -11,12 +11,14 @@ import { Author } from '@/services/course';
 type CourseDetailsFormProps = {
   authors: Author[];
   authorsError: string | null;
+  cancelHref: string;
   coverUploadError: string | null;
   form: EditCourseFormState;
   imageMode: CoverImageMode;
   isSubmitting: boolean;
   isUploadingCover: boolean;
   language: string;
+  manageAuthorsHref: string;
   onCoverUpload: (file: File) => void | Promise<void>;
   onImageModeChange: (mode: CoverImageMode) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void | Promise<void>;
@@ -32,12 +34,14 @@ type CourseDetailsFormProps = {
 export default function CourseDetailsForm({
   authors,
   authorsError,
+  cancelHref,
   coverUploadError,
   form,
   imageMode,
   isSubmitting,
   isUploadingCover,
   language,
+  manageAuthorsHref,
   onCoverUpload,
   onImageModeChange,
   onSubmit,
@@ -81,6 +85,7 @@ export default function CourseDetailsForm({
           authors={authors}
           authorsError={authorsError}
           language={language}
+          manageAuthorsHref={manageAuthorsHref}
           onToggleAuthor={onToggleAuthor}
           selectedAuthorIds={form.authorIds}
           selectedAuthors={selectedAuthors}
@@ -88,6 +93,7 @@ export default function CourseDetailsForm({
         />
 
         <CourseDetailsActions
+          cancelHref={cancelHref}
           isSubmitting={isSubmitting}
           submitError={submitError}
           submitMessage={submitMessage}

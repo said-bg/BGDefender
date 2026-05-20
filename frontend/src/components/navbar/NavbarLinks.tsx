@@ -6,23 +6,31 @@ import styles from './NavbarLinks.module.css';
 interface NavbarLinksProps {
   contactLabel: string;
   favoritesLabel: string;
+  homeHref: string;
   homeLabel: string;
   isAdmin: boolean;
   isAuthenticated: boolean;
   managementHref?: string;
   managementLabel?: string;
+  myCoursesHref: string;
+  contactHref: string;
+  favoritesHref: string;
   myCoursesLabel: string;
   showManagementLink: boolean;
 }
 
 export default function NavbarLinks({
   contactLabel,
+  contactHref,
+  favoritesHref,
   favoritesLabel,
+  homeHref,
   homeLabel,
   isAdmin,
   isAuthenticated,
   managementHref,
   managementLabel,
+  myCoursesHref,
   myCoursesLabel,
   showManagementLink,
 }: NavbarLinksProps) {
@@ -33,7 +41,7 @@ export default function NavbarLinks({
           {managementLabel ?? homeLabel}
         </Link>
       ) : (
-        <Link href="/" className={styles.navLink}>
+        <Link href={homeHref} className={styles.navLink}>
           {homeLabel}
         </Link>
       )}
@@ -41,13 +49,13 @@ export default function NavbarLinks({
         <>
           {!isAdmin ? (
             <>
-              <Link href="/my-courses" className={styles.navLink}>
+              <Link href={myCoursesHref} className={styles.navLink}>
                 {myCoursesLabel}
               </Link>
-              <Link href="/favorites" className={styles.navLink}>
+              <Link href={favoritesHref} className={styles.navLink}>
                 {favoritesLabel}
               </Link>
-              <Link href="/contact" className={styles.navLink}>
+              <Link href={contactHref} className={styles.navLink}>
                 {contactLabel}
               </Link>
               {showManagementLink && managementHref && managementLabel ? (
@@ -59,7 +67,7 @@ export default function NavbarLinks({
           ) : null}
         </>
       ) : (
-        <Link href="/contact" className={styles.navLink}>
+        <Link href={contactHref} className={styles.navLink}>
           {contactLabel}
         </Link>
       )}

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import CreatorLearningMetrics from '@/features/creator/dashboard/CreatorLearningMetrics';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import {
   EditCourseErrorState,
   EditCourseLoadingState,
@@ -41,6 +42,7 @@ export default function CourseAnalyticsPage() {
 
 function CourseAnalyticsPageContent() {
   const { t, i18n } = useTranslation('admin');
+  const activeLocale = normalizeLocale(i18n.language);
   const analyticsPage = useCourseAnalyticsPage(i18n.language, t);
 
   if (analyticsPage.loadingPage) {
@@ -91,7 +93,10 @@ function CourseAnalyticsPageContent() {
             </div>
 
             <Link
-              href={`/admin/courses/${analyticsPage.courseId}/edit/final-test`}
+              href={localizePathname(
+                `/admin/courses/${analyticsPage.courseId}/edit/final-test`,
+                activeLocale,
+              )}
               className={styles.sectionActionLink}
             >
               {t('edit.analytics.openFinalTestEditor')}
@@ -144,7 +149,10 @@ function CourseAnalyticsPageContent() {
           <div className={styles.chapterList}>
             {analyticsPage.chapterAnalytics.map(({ chapter, analytics }, index) => {
               const trainingQuiz = chapter.trainingQuiz ?? null;
-              const quizEditorHref = `/admin/courses/${analyticsPage.courseId}/edit/quiz?chapter=${chapter.id}`;
+              const quizEditorHref = `${localizePathname(
+                `/admin/courses/${analyticsPage.courseId}/edit/quiz`,
+                activeLocale,
+              )}?chapter=${chapter.id}`;
 
               return (
                 <section key={chapter.id} className={styles.quizAnalyticsCard}>

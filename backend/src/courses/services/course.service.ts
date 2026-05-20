@@ -17,6 +17,7 @@ import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 import { NotificationsService } from '../../notifications/services/notifications.service';
 import { normalizeOrderIndexes } from './order-index.utils';
+import { appendSlugSuffix, slugifyCourseTitle } from './course-slug.utils';
 
 export interface AdminCourseSummary {
   totalCourses: number;
@@ -70,9 +71,15 @@ export class CourseService {
     currentUser: SafeUser,
   ): Promise<Course> {
     const { authorIds, ...courseData } = createCourseDto;
+    const [slugEn, slugFi] = await Promise.all([
+      this.generateUniqueCourseSlug('slugEn', createCourseDto.titleEn),
+      this.generateUniqueCourseSlug('slugFi', createCourseDto.titleFi),
+    ]);
 
     const course = this.courseRepository.create({
       ...courseData,
+      slugEn,
+      slugFi,
       ownerUserId: currentUser.id,
     });
 
@@ -180,7 +187,11 @@ export class CourseService {
 
   async findById(id: string): Promise<Course> {
     const course = await this.courseRepository.findOne({
-      where: { id, status: CourseStatus.PUBLISHED },
+      where: [
+        { id, status: CourseStatus.PUBLISHED },
+        { slugEn: id, status: CourseStatus.PUBLISHED },
+        { slugFi: id, status: CourseStatus.PUBLISHED },
+      ],
       relations: [
         'authors',
         'finalTests',
@@ -192,7 +203,7 @@ export class CourseService {
     });
 
     if (!course) {
-      throw new NotFoundException(`Course with ID ${id} not found`);
+      throw new NotFoundException(`Course ${id} not found`);
     }
 
     return this.sortCourseTree(course);
@@ -243,6 +254,29 @@ export class CourseService {
     const { authorIds, ...courseData } = updateCourseDto;
 
     Object.assign(course, courseData);
+
+    if (
+      updateCourseDto.titleEn !== undefined ||
+      updateCourseDto.titleFi !== undefined ||
+      !course.slugEn ||
+      !course.slugFi
+    ) {
+      const [slugEn, slugFi] = await Promise.all([
+        this.generateUniqueCourseSlug(
+          'slugEn',
+          updateCourseDto.titleEn ?? course.titleEn,
+          course.id,
+        ),
+        this.generateUniqueCourseSlug(
+          'slugFi',
+          updateCourseDto.titleFi ?? course.titleFi,
+          course.id,
+        ),
+      ]);
+
+      course.slugEn = slugEn;
+      course.slugFi = slugFi;
+    }
 
     if (authorIds !== undefined) {
       if (authorIds.length === 0) {
@@ -337,6 +371,32 @@ export class CourseService {
     }
 
     return course;
+  }
+
+  private async generateUniqueCourseSlug(
+    slugField: 'slugEn' | 'slugFi',
+    title: string,
+    excludeCourseId?: string,
+  ): Promise<string> {
+    const baseSlug = slugifyCourseTitle(title);
+    let candidate = baseSlug;
+    let suffix = 2;
+
+    while (
+      await this.courseRepository.findOne({
+        where: excludeCourseId
+          ? { [slugField]: candidate, id: Not(excludeCourseId) }
+          : { [slugField]: candidate },
+        select: {
+          id: true,
+        },
+      })
+    ) {
+      candidate = appendSlugSuffix(baseSlug, suffix);
+      suffix += 1;
+    }
+
+    return candidate;
   }
 
   private async resolveAuthorsForManagement(

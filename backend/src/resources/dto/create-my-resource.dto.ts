@@ -1,6 +1,14 @@
 import { Transform } from 'class-transformer';
-import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 import { ResourceType } from '../../entities/resource.entity';
+import { safeResourceUploadUrlPattern } from '../../security/upload-security.utils';
 
 const trimString = ({ value }: { value: unknown }): unknown =>
   typeof value === 'string' ? value.trim() : value;
@@ -24,6 +32,10 @@ export class CreateMyResourceDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(2048)
+  @Matches(safeResourceUploadUrlPattern, {
+    message: 'fileUrl must point to a trusted uploaded resource path',
+  })
   fileUrl?: string;
 
   @IsOptional()
@@ -35,6 +47,10 @@ export class CreateMyResourceDto {
   mimeType?: string;
 
   @IsOptional()
-  @IsString()
+  @IsUrl({
+    require_protocol: true,
+    protocols: ['http', 'https'],
+  })
+  @MaxLength(2048)
   linkUrl?: string;
 }

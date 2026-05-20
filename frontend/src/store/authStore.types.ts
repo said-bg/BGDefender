@@ -6,7 +6,6 @@ export interface AuthState {
   isInitialized: boolean;
   isLoading: boolean;
   postLogoutRedirectPath: string | null;
-  token: string | null;
   user: User | null;
 
   clearPostLogoutRedirectPath: () => void;
@@ -19,7 +18,6 @@ export interface AuthState {
   setError: (error: string | null) => void;
   setLoading: (loading: boolean) => void;
   setPostLogoutRedirectPath: (path: string | null) => void;
-  setToken: (token: string | null) => void;
   setUser: (user: User | null) => void;
   updateProfile: (
     profile: Partial<Pick<User, 'firstName' | 'lastName' | 'occupation'>>

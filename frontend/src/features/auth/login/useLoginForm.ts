@@ -3,6 +3,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/hooks';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 import { handleAuthError } from '@/utils/apiError';
 import { validateEmail } from '@/utils/validation';
 import { getSafeRedirectPath } from './loginRedirect';
@@ -31,6 +32,7 @@ export function useLoginForm() {
   const searchParams = useSearchParams();
   const requestedRedirectPath = searchParams.get('redirect');
   const { t, i18n } = useTranslation('auth');
+  const activeLocale = normalizeLocale(i18n.language);
   const { login, isLoading, error: authError, setError } = useAuth();
   const [form, setForm] = useState<LoginFormState>(initialForm);
   const [errors, dispatch] = useReducer(errorsReducer, {});
@@ -90,7 +92,12 @@ export function useLoginForm() {
 
     try {
       const authenticatedUser = await login(form.email, form.password);
-      router.replace(getSafeRedirectPath(requestedRedirectPath, authenticatedUser.role));
+      router.replace(
+        localizePathname(
+          getSafeRedirectPath(requestedRedirectPath, authenticatedUser.role),
+          activeLocale,
+        ),
+      );
     } catch (error) {
       const errorMessage = handleAuthError(error, 'login.failed', t);
       dispatch({ type: 'SET', payload: { form: errorMessage } });

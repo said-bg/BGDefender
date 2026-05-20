@@ -1,11 +1,16 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { formatSiteDate } from '@/lib/datetime';
+import { DEFAULT_LOCALE, getLocaleFromPathname } from '@/lib/locale';
 import { ResourceSource, ResourceType, UserRole } from '@/types/api';
 import useResourcesPage from './hooks/useResourcesPage';
 import styles from './ResourcesPage.module.css';
 
 function ResourcesPageContent() {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const {
     deletingId,
     error,
@@ -292,7 +297,11 @@ function ResourcesPageContent() {
                     <div className={styles.resourceMeta}>
                       <span>
                         {t('createdLabel')}:{' '}
-                        {new Date(resource.createdAt).toLocaleDateString()}
+                        {formatSiteDate(resource.createdAt, activeLocale, {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                        })}
                       </span>
                       {resource.filename ? <span>{resource.filename}</span> : null}
                     </div>

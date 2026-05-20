@@ -43,6 +43,7 @@ describe('RateLimitGuard', () => {
 
   afterEach(() => {
     jest.restoreAllMocks();
+    delete process.env.DISABLE_RATE_LIMIT;
   });
 
   it('allows requests while under the configured limit', () => {
@@ -166,6 +167,17 @@ describe('RateLimitGuard', () => {
   it('skips routes without rate limit metadata', () => {
     const reflector = {
       getAllAndOverride: jest.fn().mockReturnValue(undefined),
+    } as unknown as Reflector;
+    const guard = new RateLimitGuard(reflector);
+
+    expect(guard.canActivate(createContext().context)).toBe(true);
+  });
+
+  it('can be disabled explicitly for controlled test environments', () => {
+    process.env.DISABLE_RATE_LIMIT = 'true';
+
+    const reflector = {
+      getAllAndOverride: jest.fn().mockReturnValue(loginOptions),
     } as unknown as Reflector;
     const guard = new RateLimitGuard(reflector);
 

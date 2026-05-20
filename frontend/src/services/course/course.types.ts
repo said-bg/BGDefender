@@ -1,5 +1,7 @@
 export interface Course {
   id: string;
+  slugEn?: string | null;
+  slugFi?: string | null;
   titleEn: string;
   titleFi: string;
   descriptionEn: string;

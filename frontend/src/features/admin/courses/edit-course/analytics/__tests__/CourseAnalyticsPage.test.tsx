@@ -170,7 +170,7 @@ describe('CourseAnalyticsPage', () => {
     expect(screen.getByText('Overview metrics: 4')).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: 'Open final test editor' }),
-    ).toHaveAttribute('href', '/admin/courses/course-1/edit/final-test');
+    ).toHaveAttribute('href', '/en/admin/courses/course-1/edit/final-test');
     expect(screen.getByText('Final assessment')).toBeInTheDocument();
     expect(screen.getByText('Chapter 1')).toBeInTheDocument();
     expect(screen.getAllByText('Intro quiz')).toHaveLength(2);

@@ -1,21 +1,119 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Server } from 'http';
+import { DataSource } from 'typeorm';
 import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { EmailService } from './../src/email/email.service';
 import type { SafeUser } from './../src/auth/types/safe-user.type';
 
-type LoginResponse = { accessToken: string; user: SafeUser };
+type LoginResponse = { user: SafeUser };
 type ErrorResponse = { message: string };
 type SuccessResponse = { message: string };
+const TEST_EMAIL_PATTERN = '%@example.com';
+
+const getAuthCookieHeader = (setCookieHeader: string[] | undefined): string => {
+  const authCookie = setCookieHeader?.find((cookie) =>
+    cookie.startsWith('bg_defender_auth='),
+  );
+
+  if (!authCookie) {
+    throw new Error('Expected auth cookie to be set');
+  }
+
+  return authCookie.split(';')[0];
+};
 
 describe('Auth E2E Tests', () => {
   let app: INestApplication;
   let httpServer: Server;
+  let dataSource: DataSource;
   let mockEmailService: { sendPasswordResetEmail: jest.Mock };
 
+  const cleanupTestData = async () => {
+    await dataSource.query(
+      `
+        DELETE answer
+        FROM quiz_attempt_answers answer
+        INNER JOIN quiz_attempts attempt ON answer.attemptId = attempt.id
+        INNER JOIN users user ON attempt.userId = user.id
+        WHERE user.email LIKE ?
+      `,
+      [TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query(
+      `
+        DELETE attempt
+        FROM quiz_attempts attempt
+        INNER JOIN users user ON attempt.userId = user.id
+        WHERE user.email LIKE ?
+      `,
+      [TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query(
+      `
+        DELETE certificate
+        FROM certificates certificate
+        INNER JOIN users user ON certificate.userId = user.id
+        WHERE user.email LIKE ?
+      `,
+      [TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query(
+      `
+        DELETE progress_entry
+        FROM progress progress_entry
+        INNER JOIN users user ON progress_entry.userId = user.id
+        WHERE user.email LIKE ?
+      `,
+      [TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query(
+      `
+        DELETE favorite
+        FROM favorites favorite
+        INNER JOIN users user ON favorite.userId = user.id
+        WHERE user.email LIKE ?
+      `,
+      [TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query(
+      `
+        DELETE notification
+        FROM notifications notification
+        INNER JOIN users user ON notification.userId = user.id
+        WHERE user.email LIKE ?
+      `,
+      [TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query(
+      `
+        DELETE resource
+        FROM resources resource
+        LEFT JOIN users assigned_user ON resource.assignedUserId = assigned_user.id
+        LEFT JOIN users created_by_user ON resource.createdByUserId = created_by_user.id
+        WHERE assigned_user.email LIKE ? OR created_by_user.email LIKE ?
+      `,
+      [TEST_EMAIL_PATTERN, TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query(
+      'DELETE FROM password_reset_tokens WHERE email LIKE ?',
+      [TEST_EMAIL_PATTERN],
+    );
+
+    await dataSource.query('DELETE FROM users WHERE email LIKE ?', [TEST_EMAIL_PATTERN]);
+  };
+
   beforeAll(async () => {
+    process.env.DISABLE_RATE_LIMIT = 'true';
+
     mockEmailService = {
       sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
     };
@@ -40,10 +138,14 @@ describe('Auth E2E Tests', () => {
     );
     await app.init();
     httpServer = app.getHttpServer() as Server;
+    dataSource = app.get(DataSource);
+    await cleanupTestData();
   });
 
   afterAll(async () => {
+    await cleanupTestData();
     await app.close();
+    delete process.env.DISABLE_RATE_LIMIT;
   });
 
   describe('POST /auth/register', () => {
@@ -152,14 +254,16 @@ describe('Auth E2E Tests', () => {
         .expect(201);
     });
 
-    it('should login successfully and return JWT token', async () => {
+    it('should login successfully and set the auth cookie', async () => {
       const response = await request(httpServer)
         .post('/auth/login')
         .send({ email: testEmail, password: testPassword })
         .expect(200);
 
       const loginResponse = response.body as LoginResponse;
-      expect(loginResponse.accessToken).toBeTruthy();
+      expect(response.headers['set-cookie']).toEqual(
+        expect.arrayContaining([expect.stringContaining('bg_defender_auth=')]),
+      );
       expect(loginResponse.user).toBeDefined();
       expect(loginResponse.user).not.toHaveProperty('password');
     });
@@ -201,7 +305,7 @@ describe('Auth E2E Tests', () => {
   });
 
   describe('GET /auth/me', () => {
-    let validToken: string;
+    let authCookie: string;
 
     beforeAll(async () => {
       const email = `me-test-${Date.now()}@example.com`;
@@ -218,14 +322,13 @@ describe('Auth E2E Tests', () => {
         .send({ email, password: 'Password123' })
         .expect(200);
 
-      const login = loginResponse.body as LoginResponse;
-      validToken = login.accessToken;
+      authCookie = getAuthCookieHeader(loginResponse.headers['set-cookie']);
     });
 
-    it('should return current user with valid token', async () => {
+    it('should return current user with valid auth cookie', async () => {
       const response = await request(httpServer)
         .get('/auth/me')
-        .set('Authorization', `Bearer ${validToken}`)
+        .set('Cookie', authCookie)
         .expect(200);
 
       const user = response.body as SafeUser;
@@ -354,15 +457,21 @@ describe('Auth E2E Tests', () => {
         .expect(200);
 
       // 3. Capture the resetLink from the mock
+      const callsBeforeAssertion =
+        mockEmailService.sendPasswordResetEmail.mock.calls as unknown[][];
+      const matchingCall = callsBeforeAssertion.find(
+        (call) => call[0] === testEmail,
+      );
+
+      expect(matchingCall).toBeDefined();
       expect(mockEmailService.sendPasswordResetEmail).toHaveBeenCalledWith(
         testEmail,
         expect.stringContaining('token='),
+        'en',
       );
 
       // Get the calls from the mock - type assertion for safety
-      const calls = mockEmailService.sendPasswordResetEmail.mock
-        .calls as unknown[][];
-      const lastCall = calls[calls.length - 1] as [string, string];
+      const lastCall = matchingCall as [string, string, string];
       const resetLink = lastCall[1];
       expect(resetLink).toBeDefined();
 
@@ -396,8 +505,10 @@ describe('Auth E2E Tests', () => {
         .send({ email: testEmail, password: newPassword })
         .expect(200);
 
+      expect(loginResponse.headers['set-cookie']).toEqual(
+        expect.arrayContaining([expect.stringContaining('bg_defender_auth=')]),
+      );
       const loginBody = loginResponse.body as LoginResponse;
-      expect(loginBody.accessToken).toBeTruthy();
       expect(loginBody.user.email).toBe(testEmail);
     });
 
@@ -422,6 +533,7 @@ describe('Auth E2E Tests', () => {
       expect(mockEmailService.sendPasswordResetEmail).toHaveBeenCalledWith(
         testEmail,
         expect.any(String),
+        'en',
       );
     });
 

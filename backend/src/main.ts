@@ -33,6 +33,37 @@ async function bootstrap() {
   const isProduction = configService.get('NODE_ENV') === 'production';
   const corsOrigins = resolveCorsOrigins(configService, isProduction);
 
+  app.disable('x-powered-by');
+  if (isProduction) {
+    app.set('trust proxy', 1);
+  }
+
+  app.use((request: Request, response: Response, next: () => void) => {
+    response.setHeader('X-Content-Type-Options', 'nosniff');
+    response.setHeader('X-Frame-Options', 'DENY');
+    response.setHeader('Referrer-Policy', 'no-referrer');
+    response.setHeader(
+      'Permissions-Policy',
+      'camera=(), microphone=(), geolocation=()',
+    );
+    response.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    response.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+
+    if (request.path.startsWith('/api/')) {
+      response.setHeader(
+        'Content-Security-Policy',
+        "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self';",
+      );
+    }
+
+    if (request.path === '/api/auth' || request.path.startsWith('/api/auth/')) {
+      response.setHeader('Cache-Control', 'no-store');
+      response.setHeader('Pragma', 'no-cache');
+    }
+
+    next();
+  });
+
   // Set global API prefix
   app.setGlobalPrefix('api');
 
@@ -40,6 +71,9 @@ async function bootstrap() {
   app.enableCors({
     origin: corsOrigins.length > 0 ? corsOrigins : false,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept-Language'],
+    maxAge: 86400,
   });
 
   app.use('/uploads/resources', (_request: Request, response: Response) => {

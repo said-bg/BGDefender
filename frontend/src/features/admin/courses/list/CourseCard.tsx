@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
+import { localizePathname, type AppLocale } from '@/lib/locale';
 import { Course } from '@/services/course';
 import { LocalizedAdminCourse } from './courseAdmin.utils';
 import styles from './CourseCard.module.css';
@@ -17,6 +18,7 @@ type CourseCardProps = {
   showLearningSummary: boolean;
   showOwner: boolean;
   t: (key: string, options?: Record<string, unknown>) => string;
+  activeLocale: AppLocale;
 };
 
 export default function CourseCard({
@@ -30,6 +32,7 @@ export default function CourseCard({
   showLearningSummary,
   showOwner,
   t,
+  activeLocale,
 }: CourseCardProps) {
   const statusDotClass =
     course.status === 'published' ? styles.publishedDot : styles.draftDot;
@@ -143,12 +146,15 @@ export default function CourseCard({
       ) : null}
 
       <div className={styles.courseActions}>
-        <Link href={`/admin/courses/${course.id}/edit`} className={styles.editLink}>
+        <Link
+          href={localizePathname(`/admin/courses/${course.id}/edit`, activeLocale)}
+          className={styles.editLink}
+        >
           {t('editCourse')}
         </Link>
 
         <Link
-          href={`/admin/courses/${course.id}/analytics`}
+          href={localizePathname(`/admin/courses/${course.id}/analytics`, activeLocale)}
           className={styles.inlineActionLink}
         >
           {t('courseActions.analytics')}
@@ -156,7 +162,7 @@ export default function CourseCard({
 
         <Link
           href={buildCoursePreviewHref(course.id, {
-            returnTo: '/admin/courses',
+            returnTo: localizePathname('/admin/courses', activeLocale),
           })}
           className={styles.inlineActionLink}
         >

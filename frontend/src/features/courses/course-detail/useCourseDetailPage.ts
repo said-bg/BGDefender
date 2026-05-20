@@ -34,7 +34,7 @@ export function useCourseDetailPage() {
   const [selectedView, setSelectedView] = useState<ViewState>({ type: 'overview' });
   const [viewportMode, setViewportMode] = useState<'entry' | 'content'>('entry');
 
-  const courseId = Array.isArray(params?.courseId)
+  const courseIdentifier = Array.isArray(params?.courseId)
     ? params.courseId[0]
     : params?.courseId;
   const activeLanguage: ActiveLanguage = i18n.language === 'fi' ? 'fi' : 'en';
@@ -55,14 +55,14 @@ export function useCourseDetailPage() {
   );
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  }, [courseId]);
+  }, [courseIdentifier]);
 
   useEffect(() => {
     setViewportMode('entry');
-  }, [courseId]);
+  }, [courseIdentifier]);
 
   useEffect(() => {
-    if (!courseId) {
+    if (!courseIdentifier) {
       setErrorKey('courseNotFound');
       setLoading(false);
       return;
@@ -79,8 +79,8 @@ export function useCourseDetailPage() {
         setErrorKey(null);
 
         const result = isAdminPreview
-          ? await courseService.getAdminCourseById(courseId)
-          : await courseService.getCourseById(courseId);
+          ? await courseService.getAdminCourseById(courseIdentifier)
+          : await courseService.getCourseById(courseIdentifier);
 
         setCourse(result);
         setExpandedChapters(new Set());
@@ -94,7 +94,13 @@ export function useCourseDetailPage() {
     };
 
     void loadCourse();
-  }, [courseId, isAdminPreview, isInitialized, isPreviewModeRequested, shouldFocusCourseContent]);
+  }, [
+    courseIdentifier,
+    isAdminPreview,
+    isInitialized,
+    isPreviewModeRequested,
+    shouldFocusCourseContent,
+  ]);
 
   useEffect(() => {
     if (!course) {
@@ -254,7 +260,7 @@ export function useCourseDetailPage() {
   const { isCourseCompleted } = useCourseProgressSync({
     canReadContent,
     course,
-    courseId,
+    courseId: course?.id ?? courseIdentifier,
     disableSync: isAdminPreview,
     isAuthenticated,
     isInitialized,

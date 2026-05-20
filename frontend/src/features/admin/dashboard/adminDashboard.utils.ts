@@ -1,4 +1,5 @@
 import { Course } from '@/services/course';
+import { formatSiteDate } from '@/lib/datetime';
 import type { AdminDashboardT } from './adminDashboard.types';
 
 export function getCourseTitle(course: Course, language: string) {
@@ -21,16 +22,12 @@ export function formatCourseStatus(
   }
 }
 
-export function formatUpdatedAt(value: string) {
-  const date = new Date(value);
+export function formatUpdatedAt(value: string, language: string) {
+  const locale = language === 'fi' ? 'fi' : 'en';
 
-  if (Number.isNaN(date.getTime())) {
-    return 'Unknown update';
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
+  return formatSiteDate(value, locale, {
     month: 'short',
     day: 'numeric',
-  }).format(date);
+  });
 }
 

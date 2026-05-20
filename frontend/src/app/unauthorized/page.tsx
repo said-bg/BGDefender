@@ -1,11 +1,15 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from '@/lib/locale';
 import styles from './page.module.css';
 
 export default function UnauthorizedPage() {
   const { t } = useTranslation('unauthorized');
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
 
   return (
     <div className={styles.page}>
@@ -15,11 +19,14 @@ export default function UnauthorizedPage() {
         <p className={styles.description}>{t('description')}</p>
 
         <div className={styles.actions}>
-          <Link href="/" className={styles.primaryAction}>
+          <Link href={localizePathname('/', activeLocale)} className={styles.primaryAction}>
             {t('goToCourses')}
           </Link>
 
-          <Link href="/login" className={styles.secondaryAction}>
+          <Link
+            href={localizePathname('/login', activeLocale)}
+            className={styles.secondaryAction}
+          >
             {t('backToLogin')}
           </Link>
         </div>

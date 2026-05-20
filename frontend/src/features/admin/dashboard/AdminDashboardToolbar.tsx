@@ -1,4 +1,12 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import {
+  DEFAULT_LOCALE,
+  getLocaleFromPathname,
+  localizePathname,
+} from '@/lib/locale';
 import styles from './AdminDashboardToolbar.module.css';
 import type { AdminDashboardT } from './adminDashboard.types';
 
@@ -7,21 +15,39 @@ type AdminDashboardToolbarProps = {
 };
 
 export default function AdminDashboardToolbar({ t }: AdminDashboardToolbarProps) {
+  const pathname = usePathname();
+  const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
+
   return (
     <section className={styles.toolbar} aria-label={t('dashboard.toolbarLabel')}>
-      <Link href="/admin/courses" className={styles.secondaryAction}>
+      <Link
+        href={localizePathname('/admin/courses', activeLocale)}
+        className={styles.secondaryAction}
+      >
         {t('manageCourses')}
       </Link>
-      <Link href="/admin/authors" className={styles.secondaryAction}>
+      <Link
+        href={localizePathname('/admin/authors', activeLocale)}
+        className={styles.secondaryAction}
+      >
         {t('manageAuthors')}
       </Link>
-      <Link href="/admin/users" className={styles.secondaryAction}>
+      <Link
+        href={localizePathname('/admin/users', activeLocale)}
+        className={styles.secondaryAction}
+      >
         {t('manageUsers')}
       </Link>
-      <Link href="/admin/resources" className={styles.secondaryAction}>
+      <Link
+        href={localizePathname('/admin/resources', activeLocale)}
+        className={styles.secondaryAction}
+      >
         {t('manageResources')}
       </Link>
-      <Link href="/admin/collections" className={styles.secondaryAction}>
+      <Link
+        href={localizePathname('/admin/collections', activeLocale)}
+        className={styles.secondaryAction}
+      >
         {t('collections.title')}
       </Link>
     </section>

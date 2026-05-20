@@ -4,7 +4,7 @@
  */
 
 import { AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { getToken } from '../utils/tokenStorage';
+import { localizePathname, normalizeLocale } from '@/lib/locale';
 
 // Dynamic import for client-side only
 let modalStoreInstance: unknown = null;
@@ -12,6 +12,30 @@ const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Flag to prevent multiple simultaneous 401 handlers
 let isHandling401 = false;
+let isManualLogoutInProgress = false;
+let manualLogoutResetTimer: ReturnType<typeof setTimeout> | null = null;
+
+export const markManualLogoutInProgress = () => {
+  isManualLogoutInProgress = true;
+
+  if (manualLogoutResetTimer) {
+    clearTimeout(manualLogoutResetTimer);
+  }
+
+  manualLogoutResetTimer = setTimeout(() => {
+    isManualLogoutInProgress = false;
+    manualLogoutResetTimer = null;
+  }, 4000);
+};
+
+export const clearManualLogoutInProgress = () => {
+  isManualLogoutInProgress = false;
+
+  if (manualLogoutResetTimer) {
+    clearTimeout(manualLogoutResetTimer);
+    manualLogoutResetTimer = null;
+  }
+};
 
 /**
  * Initialize modal store (client-side only)
@@ -31,10 +55,9 @@ const initializeModalStore = async () => {
 
 /**
  * Request Interceptor
- * Adds JWT token to Authorization header
+ * Adds shared request headers
  */
 export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
-  const token = getToken();
   let language = 'en';
 
   if (typeof window !== 'undefined') {
@@ -42,11 +65,6 @@ export const requestInterceptor = (config: InternalAxiosRequestConfig) => {
     if (savedLanguage === 'fi' || savedLanguage === 'en') {
       language = savedLanguage;
     }
-  }
-
-  if (token) {
-    // Add token to Authorization header
-    config.headers.Authorization = `Bearer ${token}`;
   }
 
   config.headers['Accept-Language'] = language;
@@ -70,13 +88,14 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
     case 401: {
       // Unauthorized - Session expired or invalid token
       // Prevent multiple simultaneous 401 handlers
-      if (isHandling401) {
+      if (isHandling401 || isManualLogoutInProgress) {
         break;
       }
 
-      const hasToken = getToken();
+      const { useAuthStore } = await import('@/store/authStore');
+      const hasAuthenticatedSession = useAuthStore.getState().isAuthenticated;
       
-      if (hasToken) {
+      if (hasAuthenticatedSession) {
         // Mark as handling to prevent race conditions
         isHandling401 = true;
 
@@ -84,7 +103,6 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
         if (typeof window !== 'undefined') {
           // Reset auth state completely - INDEPENDENT of modal availability
           try {
-            const { useAuthStore } = await import('@/store/authStore');
             useAuthStore.getState().logout();
           } catch (e) {
             if (isDevelopment) {
@@ -124,6 +142,7 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
               };
               
               const t = translations[lang as keyof typeof translations] || translations.en;
+              const loginPath = localizePathname('/login', normalizeLocale(lang));
 
               storeWithShowModal.showModal?.({
                 type: 'warning',
@@ -132,18 +151,32 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
                 message: t.message,
                 confirmLabel: t.button,
                 onConfirm: () => {
-                  window.location.href = '/login';
+                  window.location.href = loginPath;
                 },
               });
             } catch (e) {
               if (isDevelopment) {
                 console.warn('Could not show modal, redirecting directly:', e);
               }
-              window.location.href = '/login';
+              let lang = 'en';
+              if (typeof window !== 'undefined') {
+                const savedLang = localStorage.getItem('i18nextLng');
+                if (savedLang && ['en', 'fi'].includes(savedLang)) {
+                  lang = savedLang;
+                }
+              }
+              window.location.href = localizePathname('/login', normalizeLocale(lang));
             }
           } else {
             // Fallback: redirect immediately
-            window.location.href = '/login';
+            let lang = 'en';
+            if (typeof window !== 'undefined') {
+              const savedLang = localStorage.getItem('i18nextLng');
+              if (savedLang && ['en', 'fi'].includes(savedLang)) {
+                lang = savedLang;
+              }
+            }
+            window.location.href = localizePathname('/login', normalizeLocale(lang));
           }
 
           // Reset flag after 3 seconds (in case redirect fails or takes time)
@@ -182,6 +215,8 @@ export const responseErrorInterceptor = async (error: AxiosError) => {
 };
 
 const jwtInterceptorExports = {
+  clearManualLogoutInProgress,
+  markManualLogoutInProgress,
   requestInterceptor,
   responseErrorInterceptor,
 };

@@ -1,4 +1,5 @@
 import { NotificationRecord, NotificationType } from '@/types/api';
+import { formatSiteDate } from '@/lib/datetime';
 
 type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
 
@@ -56,10 +57,10 @@ export const formatNotificationTimestamp = (
   value: string,
   language: string,
 ): string => {
-  return new Intl.DateTimeFormat(language.startsWith('fi') ? 'fi-FI' : 'en-GB', {
+  return formatSiteDate(value, language, {
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
-  }).format(new Date(value));
+  });
 };

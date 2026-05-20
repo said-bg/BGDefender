@@ -96,7 +96,7 @@ test.describe('My Courses - E2E tests', () => {
       });
     });
 
-    await page.goto('/my-courses', { waitUntil: 'domcontentloaded' });
+    await page.goto('/en/my-courses', { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByRole('heading', { name: 'My Courses' })).toBeVisible();
     await expect(page.getByText('2 Started courses')).toBeVisible();
