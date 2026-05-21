@@ -3,9 +3,12 @@ import type {
   AdminResourcesResponse,
   CreateAdminResourceRequest,
   CreateMyResourceRequest,
+  CreateResourceGroupRequest,
   Resource,
+  ResourceGroup,
   ResourceSource,
   ResourceType,
+  UpdateResourceGroupRequest,
   UploadResourceResponse,
 } from '@/types/api';
 
@@ -14,6 +17,7 @@ type GetAdminResourcesParams = {
   offset?: number;
   search?: string;
   assignedUserId?: number;
+  assignedGroupId?: string;
   type?: ResourceType;
   source?: ResourceSource;
 };
@@ -32,6 +36,33 @@ const resourceService = {
   async createAdminResource(payload: CreateAdminResourceRequest): Promise<Resource> {
     const response = await apiClient.post<Resource>('/resources/admin', payload);
     return response.data;
+  },
+
+  async getAdminResourceGroups(): Promise<ResourceGroup[]> {
+    const response = await apiClient.get<ResourceGroup[]>('/resources/admin/groups');
+    return response.data;
+  },
+
+  async createAdminResourceGroup(
+    payload: CreateResourceGroupRequest,
+  ): Promise<ResourceGroup> {
+    const response = await apiClient.post<ResourceGroup>('/resources/admin/groups', payload);
+    return response.data;
+  },
+
+  async updateAdminResourceGroup(
+    id: string,
+    payload: UpdateResourceGroupRequest,
+  ): Promise<ResourceGroup> {
+    const response = await apiClient.patch<ResourceGroup>(
+      `/resources/admin/groups/${id}`,
+      payload,
+    );
+    return response.data;
+  },
+
+  async deleteAdminResourceGroup(id: string): Promise<void> {
+    await apiClient.delete(`/resources/admin/groups/${id}`);
   },
 
   async getMyResources(): Promise<Resource[]> {

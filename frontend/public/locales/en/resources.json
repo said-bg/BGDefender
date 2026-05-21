@@ -33,6 +33,7 @@
   "emptyDescription": "When an admin shares a document or you upload one yourself, it will appear here.",
   "sourceAdmin": "Shared by admin",
   "sourceUser": "My upload",
+  "sharedWithGroupLabel": "Shared with group",
   "createdLabel": "Created",
   "openFile": "Open document",
   "openFailed": "Failed to open document.",

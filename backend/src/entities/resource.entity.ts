@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { ResourceGroup } from './resource-group.entity';
 
 export enum ResourceType {
   FILE = 'FILE',
@@ -48,12 +49,21 @@ export class Resource {
   @Column({ type: 'enum', enum: ResourceSource })
   source!: ResourceSource;
 
-  @Column({ type: 'int' })
-  assignedUserId!: number;
+  @Column({ type: 'int', nullable: true })
+  assignedUserId!: number | null;
 
-  @ManyToOne(() => User, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, { nullable: true, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'assignedUserId' })
-  assignedUser!: User;
+  assignedUser!: User | null;
+
+  @Column({ type: 'varchar', length: 36, nullable: true })
+  assignedGroupId!: string | null;
+
+  @ManyToOne(() => ResourceGroup, (group) => group.resources, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'assignedGroupId' })
+  assignedGroup!: ResourceGroup | null;
 
   @Column({ type: 'int', nullable: true })
   createdByUserId!: number | null;

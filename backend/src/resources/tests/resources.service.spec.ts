@@ -9,6 +9,8 @@ import { Brackets, Repository } from 'typeorm';
 import * as fs from 'fs';
 import { dirname, join } from 'path';
 import { NotificationsService } from '../../notifications/services/notifications.service';
+import { ResourceGroupMember } from '../../entities/resource-group-member.entity';
+import { ResourceGroup } from '../../entities/resource-group.entity';
 import {
   Resource,
   ResourceSource,
@@ -24,27 +26,56 @@ import { plainToInstance } from 'class-transformer';
 
 type MockResourceRepository = Pick<
   Repository<Resource>,
-  'createQueryBuilder' | 'create' | 'save' | 'findOne' | 'find' | 'remove'
+  | 'createQueryBuilder'
+  | 'count'
+  | 'create'
+  | 'save'
+  | 'findOne'
+  | 'remove'
 > & {
   createQueryBuilder: jest.Mock;
+  count: jest.Mock;
   create: jest.Mock;
   save: jest.Mock;
   findOne: jest.Mock;
-  find: jest.Mock;
   remove: jest.Mock;
 };
 
-type MockUserRepository = Pick<Repository<User>, 'findOne'> & {
+type MockUserRepository = Pick<Repository<User>, 'find' | 'findOne'> & {
+  find: jest.Mock;
   findOne: jest.Mock;
 };
 
+type MockResourceGroupRepository = Pick<
+  Repository<ResourceGroup>,
+  'find' | 'findOne' | 'create' | 'save' | 'remove'
+> & {
+  find: jest.Mock;
+  findOne: jest.Mock;
+  create: jest.Mock;
+  save: jest.Mock;
+  remove: jest.Mock;
+};
+
+type MockResourceGroupMemberRepository = Pick<
+  Repository<ResourceGroupMember>,
+  'create' | 'delete' | 'save'
+> & {
+  create: jest.Mock;
+  delete: jest.Mock;
+  save: jest.Mock;
+};
+
 type MockQueryBuilder = {
+  distinct: jest.Mock;
   leftJoinAndSelect: jest.Mock;
   orderBy: jest.Mock;
   andWhere: jest.Mock;
+  orWhere: jest.Mock;
   take: jest.Mock;
   skip: jest.Mock;
   getManyAndCount: jest.Mock;
+  getMany: jest.Mock;
 };
 
 const createMockUser = (overrides: Partial<User> = {}): User =>
@@ -78,6 +109,8 @@ const createMockResource = (
     linkUrl: null,
     source: ResourceSource.ADMIN,
     assignedUserId: assignedUser.id,
+    assignedGroupId: null,
+    assignedGroup: null,
     assignedUser,
     createdByUserId: 1,
     createdByUser: null,
@@ -85,6 +118,22 @@ const createMockResource = (
     updatedAt: new Date('2026-01-04T00:00:00.000Z'),
     ...overrides,
   }) as Resource;
+
+const createMockResourceGroup = (
+  overrides: Partial<ResourceGroup> = {},
+): ResourceGroup =>
+  ({
+    id: 'group-1',
+    title: 'Blue Team Cohort',
+    description: 'First responders',
+    createdByUserId: 1,
+    createdByUser: null,
+    members: [],
+    resources: [],
+    createdAt: new Date('2026-01-03T00:00:00.000Z'),
+    updatedAt: new Date('2026-01-04T00:00:00.000Z'),
+    ...overrides,
+  }) as ResourceGroup;
 
 const createResourceFixtureFile = (filename: string): (() => void) => {
   const filePath = join(process.cwd(), 'uploads', 'resources', filename);
@@ -97,17 +146,22 @@ const createResourceFixtureFile = (filename: string): (() => void) => {
 
 const createMockQueryBuilder = (): MockQueryBuilder => {
   const queryBuilder: MockQueryBuilder = {
+    distinct: jest.fn(),
     leftJoinAndSelect: jest.fn(),
     orderBy: jest.fn(),
     andWhere: jest.fn(),
+    orWhere: jest.fn(),
     take: jest.fn(),
     skip: jest.fn(),
     getManyAndCount: jest.fn(),
+    getMany: jest.fn(),
   };
 
+  queryBuilder.distinct.mockReturnValue(queryBuilder);
   queryBuilder.leftJoinAndSelect.mockReturnValue(queryBuilder);
   queryBuilder.orderBy.mockReturnValue(queryBuilder);
   queryBuilder.andWhere.mockReturnValue(queryBuilder);
+  queryBuilder.orWhere.mockReturnValue(queryBuilder);
   queryBuilder.take.mockReturnValue(queryBuilder);
   queryBuilder.skip.mockReturnValue(queryBuilder);
 
@@ -117,6 +171,8 @@ const createMockQueryBuilder = (): MockQueryBuilder => {
 describe('ResourcesService', () => {
   let service: ResourcesService;
   let resourceRepository: MockResourceRepository;
+  let resourceGroupRepository: MockResourceGroupRepository;
+  let resourceGroupMemberRepository: MockResourceGroupMemberRepository;
   let userRepository: MockUserRepository;
   let queryBuilder: MockQueryBuilder;
 
@@ -130,14 +186,29 @@ describe('ResourcesService', () => {
 
     resourceRepository = {
       createQueryBuilder: jest.fn().mockReturnValue(queryBuilder),
+      count: jest.fn(),
       create: jest.fn(),
       save: jest.fn(),
       findOne: jest.fn(),
-      find: jest.fn(),
       remove: jest.fn(),
     };
 
+    resourceGroupRepository = {
+      find: jest.fn(),
+      findOne: jest.fn(),
+      create: jest.fn(),
+      save: jest.fn(),
+      remove: jest.fn(),
+    };
+
+    resourceGroupMemberRepository = {
+      create: jest.fn(),
+      delete: jest.fn(),
+      save: jest.fn(),
+    };
+
     userRepository = {
+      find: jest.fn(),
       findOne: jest.fn(),
     };
 
@@ -151,6 +222,14 @@ describe('ResourcesService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: userRepository,
+        },
+        {
+          provide: getRepositoryToken(ResourceGroup),
+          useValue: resourceGroupRepository,
+        },
+        {
+          provide: getRepositoryToken(ResourceGroupMember),
+          useValue: resourceGroupMemberRepository,
         },
         {
           provide: NotificationsService,
@@ -214,9 +293,18 @@ describe('ResourcesService', () => {
       expect(resourceRepository.createQueryBuilder).toHaveBeenCalledWith(
         'resource',
       );
+      expect(queryBuilder.distinct).toHaveBeenCalledWith(true);
       expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
         'resource.assignedUser',
         'assignedUser',
+      );
+      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'resource.assignedGroup',
+        'assignedGroup',
+      );
+      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'assignedGroup.members',
+        'groupMembers',
       );
       expect(queryBuilder.orderBy).toHaveBeenCalledWith(
         'resource.createdAt',
@@ -310,6 +398,7 @@ describe('ResourcesService', () => {
         linkUrl: null,
         source: ResourceSource.ADMIN,
         assignedUserId: 7,
+        assignedGroupId: null,
         createdByUserId: 1,
       });
       expect(notificationsService.notifyResourceShared).toHaveBeenCalledWith(
@@ -362,6 +451,7 @@ describe('ResourcesService', () => {
         linkUrl: 'https://example.com/feed',
         source: ResourceSource.ADMIN,
         assignedUserId: 7,
+        assignedGroupId: null,
         createdByUserId: 1,
       });
     });
@@ -412,6 +502,105 @@ describe('ResourcesService', () => {
         ),
       ).rejects.toThrow('Linkkiresurssille tarvitaan URL-osoite');
     });
+
+    it('creates an admin resource for a manual group and notifies each member', async () => {
+      const firstMember = createMockUser({ id: 7, email: 'first@example.com' });
+      const secondMember = createMockUser({ id: 8, email: 'second@example.com' });
+      const group = createMockResourceGroup({
+        members: [
+          { id: 'member-1', groupId: 'group-1', userId: 7, user: firstMember, createdAt: new Date(), group: null as never },
+          { id: 'member-2', groupId: 'group-1', userId: 8, user: secondMember, createdAt: new Date(), group: null as never },
+        ] as ResourceGroupMember[],
+      });
+      const createdResource = createMockResource({
+        assignedUserId: null,
+        assignedUser: null,
+        assignedGroupId: group.id,
+        assignedGroup: group,
+      });
+
+      resourceGroupRepository.findOne.mockResolvedValue(group);
+      resourceRepository.create.mockReturnValue(createdResource);
+      resourceRepository.save.mockResolvedValue(createdResource);
+
+      const result = await service.createAdminResource(
+        {
+          title: 'Playbook',
+          type: ResourceType.LINK,
+          linkUrl: 'https://example.com/playbook',
+          assignedGroupId: group.id,
+        },
+        1,
+      );
+
+      expect(resourceRepository.create).toHaveBeenCalledWith({
+        title: 'Playbook',
+        description: null,
+        type: ResourceType.LINK,
+        fileUrl: null,
+        filename: null,
+        mimeType: null,
+        linkUrl: 'https://example.com/playbook',
+        source: ResourceSource.ADMIN,
+        assignedUserId: null,
+        assignedGroupId: group.id,
+        createdByUserId: 1,
+      });
+      expect(notificationsService.notifyResourceShared).toHaveBeenNthCalledWith(
+        1,
+        7,
+        createdResource.id,
+        createdResource.title,
+      );
+      expect(notificationsService.notifyResourceShared).toHaveBeenNthCalledWith(
+        2,
+        8,
+        createdResource.id,
+        createdResource.title,
+      );
+      expect(result.assignedGroup?.title).toBe(group.title);
+    });
+  });
+
+  describe('resource groups', () => {
+    it('creates a group and syncs its members', async () => {
+      const firstMember = createMockUser({ id: 7 });
+      const secondMember = createMockUser({ id: 8, email: 'creator@example.com' });
+      const persistedGroup = createMockResourceGroup();
+      const reloadedGroup = createMockResourceGroup({
+        members: [
+          { id: 'member-1', groupId: persistedGroup.id, userId: 7, user: firstMember, createdAt: new Date(), group: null as never },
+          { id: 'member-2', groupId: persistedGroup.id, userId: 8, user: secondMember, createdAt: new Date(), group: null as never },
+        ] as ResourceGroupMember[],
+      });
+
+      userRepository.find.mockResolvedValue([firstMember, secondMember]);
+      resourceGroupRepository.create.mockReturnValue(persistedGroup);
+      resourceGroupRepository.save.mockResolvedValue(persistedGroup);
+      resourceGroupRepository.findOne.mockResolvedValue(reloadedGroup);
+      resourceGroupMemberRepository.create.mockImplementation((value) => value);
+      resourceGroupMemberRepository.save.mockResolvedValue(undefined);
+
+      const result = await service.createAdminResourceGroup(
+        {
+          title: ' Blue Team Cohort ',
+          description: ' First responders ',
+          memberUserIds: [7, 8],
+        },
+        1,
+      );
+
+      expect(resourceGroupRepository.create).toHaveBeenCalledWith({
+        title: 'Blue Team Cohort',
+        description: 'First responders',
+        createdByUserId: 1,
+      });
+      expect(resourceGroupMemberRepository.delete).toHaveBeenCalledWith({
+        groupId: persistedGroup.id,
+      });
+      expect(resourceGroupMemberRepository.save).toHaveBeenCalled();
+      expect(result.memberCount).toBe(2);
+    });
   });
 
   describe('deleteAdminResource', () => {
@@ -441,7 +630,7 @@ describe('ResourcesService', () => {
   });
 
   describe('listMyResources', () => {
-    it('loads only the current user resources with relation data', async () => {
+    it('loads the current user resources, including group-shared entries', async () => {
       const resource = createMockResource(
         {
           source: ResourceSource.USER,
@@ -454,15 +643,33 @@ describe('ResourcesService', () => {
         },
         createMockUser(),
       );
-      resourceRepository.find.mockResolvedValue([resource]);
+      queryBuilder.getMany.mockResolvedValue([resource]);
 
       const result = await service.listMyResources(7);
 
-      expect(resourceRepository.find).toHaveBeenCalledWith({
-        where: { assignedUserId: 7 },
-        relations: ['assignedUser'],
-        order: { createdAt: 'DESC' },
-      });
+      expect(resourceRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'resource',
+      );
+      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'resource.assignedUser',
+        'assignedUser',
+      );
+      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'resource.assignedGroup',
+        'assignedGroup',
+      );
+      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'assignedGroup.members',
+        'groupMembers',
+      );
+      expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
+        'groupMembers.user',
+        'groupMemberUser',
+      );
+      expect(queryBuilder.orWhere).toHaveBeenCalledWith(
+        'groupMembers.userId = :userId',
+        { userId: 7 },
+      );
       expect(result).toEqual([
         expect.objectContaining({
           source: ResourceSource.USER,
@@ -635,6 +842,7 @@ describe('ResourcesService', () => {
 
       expect(resourceRepository.findOne).toHaveBeenCalledWith({
         where: { id: 'resource-1' },
+        relations: ['assignedGroup', 'assignedGroup.members'],
       });
       expect(result).toEqual(
         expect.objectContaining({

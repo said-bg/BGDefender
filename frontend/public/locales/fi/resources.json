@@ -33,6 +33,7 @@
   "emptyDescription": "Kun ylläpitäjä jakaa dokumentin tai lataat sellaisen itse, se näkyy täällä.",
   "sourceAdmin": "Ylläpitäjän jakama",
   "sourceUser": "Oma lataus",
+  "sharedWithGroupLabel": "Jaettu ryhmalle",
   "createdLabel": "Luotu",
   "openFile": "Avaa dokumentti",
   "openFailed": "Dokumentin avaaminen epäonnistui.",

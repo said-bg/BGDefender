@@ -24,6 +24,10 @@ describe('ResourcesController', () => {
 
   const resourcesService = {
     listAdminResources: jest.fn(),
+    listAdminResourceGroups: jest.fn(),
+    createAdminResourceGroup: jest.fn(),
+    updateAdminResourceGroup: jest.fn(),
+    deleteAdminResourceGroup: jest.fn(),
     createAdminResource: jest.fn(),
     deleteAdminResource: jest.fn(),
     listMyResources: jest.fn(),
@@ -64,6 +68,29 @@ describe('ResourcesController', () => {
     await controller.listAdminResources(query);
 
     expect(resourcesService.listAdminResources).toHaveBeenCalledWith(query);
+  });
+
+  it('delegates admin resource group listing', async () => {
+    resourcesService.listAdminResourceGroups.mockResolvedValue([]);
+
+    await controller.listAdminResourceGroups();
+
+    expect(resourcesService.listAdminResourceGroups).toHaveBeenCalled();
+  });
+
+  it('delegates admin resource group creation with the resolved language', async () => {
+    const dto = {
+      title: 'Blue Team',
+      memberUserIds: [7, 8],
+    };
+
+    await controller.createAdminResourceGroup(dto, currentUser, 'fi-FI,fi;q=0.9');
+
+    expect(resourcesService.createAdminResourceGroup).toHaveBeenCalledWith(
+      dto,
+      currentUser.id,
+      'fi',
+    );
   });
 
   it('delegates admin resource creation with the resolved language', async () => {

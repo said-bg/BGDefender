@@ -97,6 +97,30 @@ export class Course {
   })
   ownerUserId: number | null;
 
+  @Column({
+    type: 'int',
+    nullable: true,
+  })
+  createdByUserId: number | null;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+  })
+  lastEditedByUserId: number | null;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+  })
+  publishedByUserId: number | null;
+
+  @Column({
+    type: 'datetime',
+    nullable: true,
+  })
+  publishedAt: Date | null;
+
   @ManyToMany(() => Author)
   @JoinTable({
     name: 'course_authors',

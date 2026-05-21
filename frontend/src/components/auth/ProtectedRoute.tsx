@@ -16,7 +16,7 @@
 
 'use client';
 
-import { useEffect, ReactNode } from 'react';
+import { useEffect, ReactNode, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks';
 import {
@@ -51,12 +51,12 @@ export function ProtectedRoute({
     ? localizePathname(unauthorizedRedirect, activeLocale)
     : unauthorizedRedirect;
   const {
-    clearPostLogoutRedirectPath,
     isAuthenticated,
     isInitialized,
     postLogoutRedirectPath,
     user,
   } = useAuth();
+  const hasHandledPostLogoutRedirectRef = useRef(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -68,7 +68,11 @@ export function ProtectedRoute({
     // Initialized but not authenticated - redirect to login
     if (!isAuthenticated) {
       if (postLogoutRedirectPath) {
-        clearPostLogoutRedirectPath();
+        if (hasHandledPostLogoutRedirectRef.current) {
+          return;
+        }
+
+        hasHandledPostLogoutRedirectRef.current = true;
         router.replace(postLogoutRedirectPath);
         return;
       }
@@ -77,6 +81,8 @@ export function ProtectedRoute({
       return;
     }
 
+    hasHandledPostLogoutRedirectRef.current = false;
+
     // Check role if required
     if (requiredRole && user && !requiredRole.includes(user.role)) {
       router.replace(unauthorizedPath);
@@ -84,7 +90,6 @@ export function ProtectedRoute({
     }
   }, [
     activeLocale,
-    clearPostLogoutRedirectPath,
     loginPath,
     isAuthenticated,
     isInitialized,

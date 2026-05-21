@@ -34,6 +34,8 @@ export interface CourseOwnerSummary {
   lastName: string | null;
 }
 
+export type CourseActorSummary = CourseOwnerSummary;
+
 export interface CourseLearningSummary {
   startedLearners: number;
   completedLearners: number;
@@ -81,6 +83,12 @@ export class CourseService {
       slugEn,
       slugFi,
       ownerUserId: currentUser.id,
+      createdByUserId: currentUser.id,
+      lastEditedByUserId: currentUser.id,
+      publishedByUserId:
+        courseData.status === CourseStatus.PUBLISHED ? currentUser.id : null,
+      publishedAt:
+        courseData.status === CourseStatus.PUBLISHED ? new Date() : null,
     });
 
     if (authorIds && authorIds.length > 0) {
@@ -142,9 +150,9 @@ export class CourseService {
       order: { updatedAt: 'DESC' },
     });
     const sortedCourses = courses.map((course) => this.sortCourseTree(course));
-    const coursesWithOwners = await this.attachOwners(sortedCourses);
+    const coursesWithAuditActors = await this.attachCourseActors(sortedCourses);
 
-    return [await this.attachLearningSummaries(coursesWithOwners), count];
+    return [await this.attachLearningSummaries(coursesWithAuditActors), count];
   }
 
   async getAdminSummary(
@@ -221,7 +229,7 @@ export class CourseService {
 
     this.assertCanManageResolvedCourse(course, currentUser);
 
-    const [courseWithOwner] = await this.attachOwners([
+    const [courseWithOwner] = await this.attachCourseActors([
       this.sortCourseTree(course),
     ]);
     const [courseWithLearningSummary] = await this.attachLearningSummaries([
@@ -254,6 +262,7 @@ export class CourseService {
     const { authorIds, ...courseData } = updateCourseDto;
 
     Object.assign(course, courseData);
+    course.lastEditedByUserId = currentUser.id;
 
     if (
       updateCourseDto.titleEn !== undefined ||
@@ -288,6 +297,14 @@ export class CourseService {
           currentUser,
         );
       }
+    }
+
+    if (
+      previousStatus !== CourseStatus.PUBLISHED &&
+      course.status === CourseStatus.PUBLISHED
+    ) {
+      course.publishedByUserId = currentUser.id;
+      course.publishedAt = new Date();
     }
 
     const savedCourse = await this.courseRepository.save(course);
@@ -651,19 +668,33 @@ export class CourseService {
     };
   }
 
-  private async attachOwners(courses: Course[]): Promise<Course[]> {
-    const ownerIds = [...new Set(
-      courses
-        .map((course) => course.ownerUserId)
-        .filter((ownerUserId): ownerUserId is number => ownerUserId !== null),
-    )];
+  private async attachCourseActors(courses: Course[]): Promise<Course[]> {
+    const userIds = [
+      ...new Set(
+        courses
+          .flatMap((course) => [
+            course.ownerUserId,
+            course.createdByUserId,
+            course.lastEditedByUserId,
+            course.publishedByUserId,
+          ])
+          .filter((userId): userId is number => userId !== null),
+      ),
+    ];
 
-    if (ownerIds.length === 0) {
-      return courses.map((course) => Object.assign(course, { owner: null }));
+    if (userIds.length === 0) {
+      return courses.map((course) =>
+        Object.assign(course, {
+          owner: null,
+          createdBy: null,
+          lastEditedBy: null,
+          publishedBy: null,
+        }),
+      );
     }
 
     const owners = await this.userRepository.find({
-      where: { id: In(ownerIds) },
+      where: { id: In(userIds) },
       select: {
         id: true,
         email: true,
@@ -672,7 +703,7 @@ export class CourseService {
       },
     });
 
-    const ownerMap = new Map<number, CourseOwnerSummary>(
+    const ownerMap = new Map<number, CourseActorSummary>(
       owners.map((owner) => [
         owner.id,
         {
@@ -690,6 +721,18 @@ export class CourseService {
           course.ownerUserId === null
             ? null
             : ownerMap.get(course.ownerUserId) ?? null,
+        createdBy:
+          course.createdByUserId === null
+            ? null
+            : ownerMap.get(course.createdByUserId) ?? null,
+        lastEditedBy:
+          course.lastEditedByUserId === null
+            ? null
+            : ownerMap.get(course.lastEditedByUserId) ?? null,
+        publishedBy:
+          course.publishedByUserId === null
+            ? null
+            : ownerMap.get(course.publishedByUserId) ?? null,
       }),
     );
   }

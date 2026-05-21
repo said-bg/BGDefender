@@ -11,6 +11,8 @@ import { PedagogicalContent } from '../entities/pedagogical-content.entity';
 import { Progress } from '../entities/progress.entity';
 import { Favorite } from '../entities/favorite.entity';
 import { Resource } from '../entities/resource.entity';
+import { ResourceGroup } from '../entities/resource-group.entity';
+import { ResourceGroupMember } from '../entities/resource-group-member.entity';
 import { Certificate } from '../entities/certificate.entity';
 import { Quiz } from '../entities/quiz.entity';
 import { QuizQuestion } from '../entities/quiz-question.entity';
@@ -49,6 +51,8 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         Progress,
         Favorite,
         Resource,
+        ResourceGroup,
+        ResourceGroupMember,
         Certificate,
         Quiz,
         QuizQuestion,

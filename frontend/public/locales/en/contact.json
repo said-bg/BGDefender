@@ -38,12 +38,13 @@
   },
   "form": {
     "eyebrow": "Prepare your request",
-    "title": "Write one clear message and send it with context.",
-    "description": "Add the key details below and send your message directly to the BG Defender team.",
+    "title": "Send us a message",
+    "description": "Fill out the form below and we will get back to you as soon as possible.",
     "primaryAction": "Send message",
     "secondaryAction": "Email support directly",
     "sending": "Sending...",
     "note": "Your message will be sent directly to the BG Defender team.",
+    "privacyNote": "Your information is safe with us. We will never share your data.",
     "failed": "We could not send your message right now. Please try again."
   },
   "fields": {
@@ -84,6 +85,13 @@
     "emailRequired": "Email is required",
     "emailInvalid": "Invalid email format",
     "messageRequired": "Message is required"
+  },
+  "details": {
+    "emailTitle": "Email us",
+    "responseTitle": "Average response time",
+    "responseDescription": "We reply within 24 hours on business days.",
+    "supportTitle": "Expert support",
+    "supportDescription": "Get help from our cybersecurity and training specialists."
   },
   "sidebar": {
     "contact": {

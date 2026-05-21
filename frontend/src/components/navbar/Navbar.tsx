@@ -19,7 +19,13 @@ import styles from './Navbar.module.css';
 
 export const Navbar = () => {
   const { t, i18n } = useTranslation('navbar');
-  const { isAuthenticated, logout, user } = useAuth();
+  const {
+    clearPostLogoutRedirectPath,
+    isAuthenticated,
+    logout,
+    postLogoutRedirectPath,
+    user,
+  } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -98,6 +104,23 @@ export const Navbar = () => {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
+  useEffect(() => {
+    if (
+      isAuthenticated ||
+      !postLogoutRedirectPath ||
+      currentPathname !== postLogoutRedirectPath
+    ) {
+      return;
+    }
+
+    clearPostLogoutRedirectPath();
+  }, [
+    clearPostLogoutRedirectPath,
+    currentPathname,
+    isAuthenticated,
+    postLogoutRedirectPath,
+  ]);
+
   const mobileNavigationLinks = (() => {
     if (isAdmin) {
       return [{ href: localizePathname('/admin', activeLocale), label: t('admin') }];
@@ -156,9 +179,10 @@ export const Navbar = () => {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
   const handleLogout = () => {
     closeMobileMenu();
+    const logoutHomePath = localizedHref('/');
     markManualLogoutInProgress();
-    logout('/');
-    router.replace(localizedHref('/'));
+    logout(logoutHomePath);
+    router.replace(logoutHomePath);
   };
 
   return (

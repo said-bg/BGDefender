@@ -11,7 +11,10 @@ import {
   localizePathname,
 } from '@/lib/locale';
 import { ResourceSource, ResourceType, UserRole } from '@/types/api';
-import { getAdminResourceUserLabel } from './adminResources.utils';
+import {
+  getAdminResourceGroupLabel,
+  getAdminResourceUserLabel,
+} from './adminResources.utils';
 import styles from './AdminResourcesPage.module.css';
 import useAdminResources from './useAdminResources';
 
@@ -28,13 +31,23 @@ function AdminResourcesPageContent() {
   const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
   const formCardRef = useRef<HTMLElement | null>(null);
   const [matchedPanelHeight, setMatchedPanelHeight] = useState<number | null>(null);
+  const [isGroupManagerOpen, setIsGroupManagerOpen] = useState(false);
   const {
+    cancelEditingGroup,
+    deletingGroupId,
     deletingId,
     error,
     form,
+    groupError,
+    groupForm,
+    groupMessage,
+    groupSubmitting,
+    groups,
     handleDelete,
+    handleDeleteGroup,
     handleOpenFile,
     handleSubmit,
+    handleSubmitGroup,
     handleUpload,
     isUploading,
     loading,
@@ -44,11 +57,13 @@ function AdminResourcesPageContent() {
     search,
     setSearch,
     setTypeFilter,
+    startEditingGroup,
     submitting,
     summary,
     t,
     typeFilter,
     updateForm,
+    updateGroupForm,
     uploadError,
     users,
   } = useAdminResources();
@@ -95,6 +110,13 @@ function AdminResourcesPageContent() {
       ? ({ '--resource-panel-height': `${matchedPanelHeight}px` } as CSSProperties)
       : undefined;
 
+  const openGroupManager = () => setIsGroupManagerOpen(true);
+
+  const closeGroupManager = () => {
+    cancelEditingGroup();
+    setIsGroupManagerOpen(false);
+  };
+
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
@@ -105,54 +127,40 @@ function AdminResourcesPageContent() {
           >
             {t('backToOverview')}
           </Link>
-          <p className={styles.eyebrow}>
-            {t('resources.eyebrow')}
-          </p>
-          <h1 className={styles.title}>
-            {t('resources.title')}
-          </h1>
-          <p className={styles.subtitle}>
-            {t('resources.subtitle')}
-          </p>
+          <p className={styles.eyebrow}>{t('resources.eyebrow')}</p>
+          <h1 className={styles.title}>{t('resources.title')}</h1>
+          <p className={styles.subtitle}>{t('resources.subtitle')}</p>
         </div>
       </section>
 
       <section className={styles.summary}>
         <article className={styles.summaryCard}>
-          <span className={styles.summaryLabel}>
-            {t('resources.summaryTotal')}
-          </span>
+          <span className={styles.summaryLabel}>{t('resources.summaryTotal')}</span>
           <strong className={styles.summaryValue}>{summary.total}</strong>
         </article>
         <article className={styles.summaryCard}>
-          <span className={styles.summaryLabel}>
-            {t('resources.summaryFiles')}
-          </span>
+          <span className={styles.summaryLabel}>{t('resources.summaryFiles')}</span>
           <strong className={styles.summaryValue}>{summary.files}</strong>
         </article>
         <article className={styles.summaryCard}>
-          <span className={styles.summaryLabel}>
-            {t('resources.summaryLinks')}
-          </span>
+          <span className={styles.summaryLabel}>{t('resources.summaryLinks')}</span>
           <strong className={styles.summaryValue}>{summary.links}</strong>
         </article>
         <article className={styles.summaryCard}>
-          <span className={styles.summaryLabel}>
-            {t('resources.summaryAdminSent')}
-          </span>
+          <span className={styles.summaryLabel}>{t('resources.summaryAdminSent')}</span>
           <strong className={styles.summaryValue}>{summary.adminSent}</strong>
+        </article>
+        <article className={styles.summaryCard}>
+          <span className={styles.summaryLabel}>{t('resources.summaryGroupTargets')}</span>
+          <strong className={styles.summaryValue}>{summary.groupTargets}</strong>
         </article>
       </section>
 
       <section className={styles.layout}>
         <section ref={formCardRef} className={styles.formCard}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.sectionTitle}>
-              {t('resources.formTitle')}
-            </h2>
-            <p className={styles.sectionDescription}>
-              {t('resources.formDescription')}
-            </p>
+            <h2 className={styles.sectionTitle}>{t('resources.formTitle')}</h2>
+            <p className={styles.sectionDescription}>{t('resources.formDescription')}</p>
           </div>
 
           <div className={styles.formGrid}>
@@ -161,50 +169,96 @@ function AdminResourcesPageContent() {
             {uploadError ? <p className={styles.errorMessage}>{uploadError}</p> : null}
 
             <div className={styles.fieldGroup}>
-              <label className={styles.fieldLabel} htmlFor="resource-user">
-                {t('resources.targetUser')}
-              </label>
-              <select
-                id="resource-user"
-                className={styles.select}
-                value={form.assignedUserId}
-                onChange={(event) => updateForm('assignedUserId', event.target.value)}
-              >
-                <option value="">
-                  {t('resources.targetUserPlaceholder')}
-                </option>
-                {users.map((user) => (
-                  <option key={user.id} value={String(user.id)}>
-                    {getAdminResourceUserLabel(user)} - {user.email}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <span className={styles.fieldLabel}>
-                {t('resources.type')}
-              </span>
+              <span className={styles.fieldLabel}>{t('resources.targetType')}</span>
               <div className={styles.modeGroup}>
                 <button
                   type="button"
                   className={`${styles.modeButton} ${
-                    form.type === ResourceType.FILE ? styles.modeButtonActive : ''
+                    form.targetType === 'user' ? styles.modeButtonActive : ''
                   }`}
-                  onClick={() => updateForm('type', ResourceType.FILE)}
+                  onClick={() => {
+                    updateForm('targetType', 'user');
+                    updateForm('assignedGroupId', '');
+                  }}
                 >
-                  {t('resources.typeFile')}
+                  {t('resources.targetModeUser')}
                 </button>
                 <button
                   type="button"
                   className={`${styles.modeButton} ${
-                    form.type === ResourceType.LINK ? styles.modeButtonActive : ''
+                    form.targetType === 'group' ? styles.modeButtonActive : ''
                   }`}
-                  onClick={() => updateForm('type', ResourceType.LINK)}
+                  onClick={() => {
+                    updateForm('targetType', 'group');
+                    updateForm('assignedUserId', '');
+                  }}
                 >
-                  {t('resources.typeLink')}
+                  {t('resources.targetModeGroup')}
                 </button>
               </div>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              {form.targetType === 'user' ? (
+                <>
+                  <label className={styles.fieldLabel} htmlFor="resource-user">
+                    {t('resources.targetUser')}
+                  </label>
+                  <select
+                    id="resource-user"
+                    className={styles.select}
+                    value={form.assignedUserId}
+                    onChange={(event) => updateForm('assignedUserId', event.target.value)}
+                  >
+                    <option value="">{t('resources.targetUserPlaceholder')}</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={String(user.id)}>
+                        {getAdminResourceUserLabel(user)} - {user.email}
+                      </option>
+                    ))}
+                  </select>
+                </>
+              ) : (
+                <>
+                  <div className={styles.inlineFieldHeader}>
+                    <label className={styles.fieldLabel} htmlFor="resource-group">
+                      {t('resources.targetGroup')}
+                    </label>
+                    <button
+                      type="button"
+                      className={styles.inlineLink}
+                      onClick={openGroupManager}
+                    >
+                      {groups.length > 0
+                        ? t('resources.groups.manage')
+                        : t('resources.groups.create')}
+                    </button>
+                  </div>
+                  <select
+                    id="resource-group"
+                    className={styles.select}
+                    value={form.assignedGroupId}
+                    onChange={(event) => updateForm('assignedGroupId', event.target.value)}
+                    disabled={groups.length === 0}
+                  >
+                    <option value="">
+                      {groups.length > 0
+                        ? t('resources.targetGroupPlaceholder')
+                        : t('resources.groups.emptySelectPlaceholder')}
+                    </option>
+                    {groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {getAdminResourceGroupLabel(group)}
+                      </option>
+                    ))}
+                  </select>
+                  {groups.length === 0 ? (
+                    <p className={styles.helperText}>
+                      {t('resources.groups.emptyDescription')}
+                    </p>
+                  ) : null}
+                </>
+              )}
             </div>
 
             <div className={styles.fieldGroup}>
@@ -233,16 +287,36 @@ function AdminResourcesPageContent() {
               />
             </div>
 
+            <div className={styles.fieldGroup}>
+              <span className={styles.fieldLabel}>{t('resources.type')}</span>
+              <div className={styles.modeGroup}>
+                <button
+                  type="button"
+                  className={`${styles.modeButton} ${
+                    form.type === ResourceType.FILE ? styles.modeButtonActive : ''
+                  }`}
+                  onClick={() => updateForm('type', ResourceType.FILE)}
+                >
+                  {t('resources.typeFile')}
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.modeButton} ${
+                    form.type === ResourceType.LINK ? styles.modeButtonActive : ''
+                  }`}
+                  onClick={() => updateForm('type', ResourceType.LINK)}
+                >
+                  {t('resources.typeLink')}
+                </button>
+              </div>
+            </div>
+
             {form.type === ResourceType.FILE ? (
               <div className={styles.fieldGroup}>
-                <span className={styles.fieldLabel}>
-                  {t('resources.uploadLabel')}
-                </span>
+                <span className={styles.fieldLabel}>{t('resources.uploadLabel')}</span>
                 <div className={styles.uploadBox}>
                   <label className={styles.uploadLabel}>
-                    {isUploading
-                      ? t('resources.uploading')
-                      : t('resources.uploadCta')}
+                    {isUploading ? t('resources.uploading') : t('resources.uploadCta')}
                     <input
                       className={styles.uploadInput}
                       type="file"
@@ -252,9 +326,7 @@ function AdminResourcesPageContent() {
                   </label>
                   <p className={styles.uploadMeta}>
                     {form.filename
-                      ? t('resources.uploadedFile', {
-                          name: form.filename,
-                        })
+                      ? t('resources.uploadedFile', { name: form.filename })
                       : t('resources.uploadHelper')}
                   </p>
                 </div>
@@ -281,9 +353,7 @@ function AdminResourcesPageContent() {
                 onClick={() => void handleSubmit()}
                 disabled={submitting || isUploading}
               >
-                {submitting
-                  ? t('resources.sending')
-                  : t('resources.submit')}
+                {submitting ? t('resources.sending') : t('resources.submit')}
               </button>
             </div>
           </div>
@@ -291,12 +361,8 @@ function AdminResourcesPageContent() {
 
         <section className={styles.listCard} style={listCardStyle}>
           <div className={styles.cardHeader}>
-            <h2 className={styles.sectionTitle}>
-              {t('resources.listTitle')}
-            </h2>
-            <p className={styles.sectionDescription}>
-              {t('resources.listDescription')}
-            </p>
+            <h2 className={styles.sectionTitle}>{t('resources.listTitle')}</h2>
+            <p className={styles.sectionDescription}>{t('resources.listDescription')}</p>
           </div>
 
           <div className={styles.filters}>
@@ -313,30 +379,18 @@ function AdminResourcesPageContent() {
                 setTypeFilter(event.target.value as 'all' | ResourceType)
               }
             >
-              <option value="all">
-                {t('resources.filterAllTypes')}
-              </option>
-              <option value={ResourceType.FILE}>
-                {t('resources.typeFile')}
-              </option>
-              <option value={ResourceType.LINK}>
-                {t('resources.typeLink')}
-              </option>
+              <option value="all">{t('resources.filterAllTypes')}</option>
+              <option value={ResourceType.FILE}>{t('resources.typeFile')}</option>
+              <option value={ResourceType.LINK}>{t('resources.typeLink')}</option>
             </select>
           </div>
 
           {loading ? (
-            <p className={styles.helperMessage}>
-              {t('loading')}
-            </p>
+            <p className={styles.helperMessage}>{t('loading')}</p>
           ) : resources.length === 0 ? (
             <section className={styles.emptyState}>
-              <h3 className={styles.emptyTitle}>
-                {t('resources.emptyTitle')}
-              </h3>
-              <p className={styles.emptyDescription}>
-                {t('resources.emptyDescription')}
-              </p>
+              <h3 className={styles.emptyTitle}>{t('resources.emptyTitle')}</h3>
+              <p className={styles.emptyDescription}>{t('resources.emptyDescription')}</p>
             </section>
           ) : (
             <div className={styles.resourceList}>
@@ -377,10 +431,18 @@ function AdminResourcesPageContent() {
                   </div>
 
                   <div className={styles.resourceMeta}>
-                    <span>
-                      {t('resources.targetUserLabel')}:{' '}
-                      {getAdminResourceUserLabel(resource.assignedUser)}
-                    </span>
+                    {resource.assignedUser ? (
+                      <span>
+                        {t('resources.targetUserLabel')}:{' '}
+                        {getAdminResourceUserLabel(resource.assignedUser)}
+                      </span>
+                    ) : null}
+                    {resource.assignedGroup ? (
+                      <span>
+                        {t('resources.targetGroupLabel')}:{' '}
+                        {getAdminResourceGroupLabel(resource.assignedGroup)}
+                      </span>
+                    ) : null}
                     <span>
                       {t('resources.createdLabel')}:{' '}
                       {formatSiteDate(resource.createdAt, activeLocale, {
@@ -430,6 +492,201 @@ function AdminResourcesPageContent() {
           )}
         </section>
       </section>
+
+      {isGroupManagerOpen ? (
+        <div
+          className={styles.groupModalBackdrop}
+          role="presentation"
+          onClick={closeGroupManager}
+        >
+          <section
+            className={styles.groupModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resource-group-manager-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className={styles.groupModalHeader}>
+              <div className={styles.cardHeader}>
+                <h2 id="resource-group-manager-title" className={styles.sectionTitle}>
+                  {groupForm.id
+                    ? t('resources.groups.editTitle')
+                    : t('resources.groups.createTitle')}
+                </h2>
+                <p className={styles.sectionDescription}>
+                  {t('resources.groups.formDescription')}
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.modalCloseButton}
+                onClick={closeGroupManager}
+              >
+                {t('resources.groups.close')}
+              </button>
+            </div>
+
+            <div className={styles.groupModalLayout}>
+              <section className={styles.groupModalPanel}>
+                <div className={styles.formGrid}>
+                  {groupMessage ? <p className={styles.successMessage}>{groupMessage}</p> : null}
+                  {groupError ? <p className={styles.errorMessage}>{groupError}</p> : null}
+
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="resource-group-title">
+                      {t('resources.groups.title')}
+                    </label>
+                    <input
+                      id="resource-group-title"
+                      className={styles.input}
+                      value={groupForm.title}
+                      onChange={(event) => updateGroupForm('title', event.target.value)}
+                      placeholder={t('resources.groups.titlePlaceholder')}
+                    />
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.fieldLabel} htmlFor="resource-group-description">
+                      {t('resources.groups.description')}
+                    </label>
+                    <textarea
+                      id="resource-group-description"
+                      className={styles.textarea}
+                      value={groupForm.description}
+                      onChange={(event) => updateGroupForm('description', event.target.value)}
+                      placeholder={t('resources.groups.descriptionPlaceholder')}
+                    />
+                  </div>
+
+                  <div className={styles.fieldGroup}>
+                    <span className={styles.fieldLabel}>{t('resources.groups.members')}</span>
+                    <div className={styles.memberChecklist}>
+                      {users.map((user) => {
+                        const value = String(user.id);
+                        const checked = groupForm.memberUserIds.includes(value);
+
+                        return (
+                          <label key={user.id} className={styles.memberOption}>
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() =>
+                                updateGroupForm(
+                                  'memberUserIds',
+                                  checked
+                                    ? groupForm.memberUserIds.filter((entry) => entry !== value)
+                                    : [...groupForm.memberUserIds, value],
+                                )
+                              }
+                            />
+                            <span>
+                              {getAdminResourceUserLabel(user)} - {user.email}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                    <p className={styles.helperText}>{t('resources.groups.membersHint')}</p>
+                  </div>
+
+                  <div className={styles.actionsRow}>
+                    <button
+                      type="button"
+                      className={styles.primaryAction}
+                      onClick={() => void handleSubmitGroup()}
+                      disabled={groupSubmitting}
+                    >
+                      {groupSubmitting
+                        ? t('resources.groups.saving')
+                        : groupForm.id
+                          ? t('resources.groups.save')
+                          : t('resources.groups.create')}
+                    </button>
+                    {groupForm.id ? (
+                      <button
+                        type="button"
+                        className={styles.inlineLink}
+                        onClick={cancelEditingGroup}
+                      >
+                        {t('resources.groups.cancelEdit')}
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              </section>
+
+              <section className={styles.groupModalPanel}>
+                <div className={styles.cardHeader}>
+                  <h3 className={styles.sectionTitle}>{t('resources.groups.listTitle')}</h3>
+                  <p className={styles.sectionDescription}>
+                    {t('resources.groups.listDescription')}
+                  </p>
+                </div>
+
+                {groups.length === 0 ? (
+                  <section className={styles.emptyState}>
+                    <h4 className={styles.emptyTitle}>{t('resources.groups.emptyTitle')}</h4>
+                    <p className={styles.emptyDescription}>
+                      {t('resources.groups.emptyDescription')}
+                    </p>
+                  </section>
+                ) : (
+                  <div className={styles.resourceList}>
+                    {groups.map((group) => (
+                      <article key={group.id} className={styles.resourceCard}>
+                        <div className={styles.resourceTop}>
+                          <div className={styles.resourceCopy}>
+                            <h4 className={styles.resourceTitle}>{group.title}</h4>
+                            {group.description ? (
+                              <p className={styles.resourceDescription}>{group.description}</p>
+                            ) : null}
+                          </div>
+
+                          <div className={styles.badgeRow}>
+                            <span className={`${styles.badge} ${styles.badgeAdmin}`}>
+                              {t('resources.groups.memberCount', {
+                                count: group.memberCount,
+                              })}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className={styles.resourceMeta}>
+                          <span>
+                            {group.members
+                              .map((member) => getAdminResourceUserLabel(member))
+                              .join(', ') || t('resources.groups.noMembers')}
+                          </span>
+                        </div>
+
+                        <div className={styles.resourceActions}>
+                          <button
+                            type="button"
+                            className={styles.inlineLink}
+                            onClick={() => startEditingGroup(group)}
+                          >
+                            {t('resources.groups.edit')}
+                          </button>
+                          <button
+                            type="button"
+                            className={styles.inlineDanger}
+                            onClick={() => void handleDeleteGroup(group)}
+                            disabled={deletingGroupId === group.id}
+                          >
+                            {deletingGroupId === group.id
+                              ? t('resources.deleting')
+                              : t('resources.groups.delete')}
+                          </button>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }

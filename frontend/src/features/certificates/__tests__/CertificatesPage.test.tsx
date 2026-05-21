@@ -53,7 +53,7 @@ const translate = (key: string, options?: { date?: string }) => {
     certificateCodeLabel: 'Certificate ID',
     institutionName: 'BG Defender Academy',
     institutionLocation: 'Cybersecurity Training Platform',
-    issuerLabel: 'Issuer',
+    issuerLabel: 'Director',
     programLabel: 'Program director',
     brandNote: 'Issued by BG Defender Academy',
   };

@@ -13,6 +13,7 @@ type CoursesSectionProps = {
   courses: LocalizedAdminCourse[];
   emptyDescription: string;
   emptyTitle: string;
+  formatAuditDateTime: (value: string) => string;
   formatLevel: (level: Course['level']) => string;
   formatStatus: (status: Course['status']) => string;
   formatUpdatedAt: (updatedAt: string) => string;
@@ -35,6 +36,7 @@ export default function CoursesSection({
   courses,
   emptyDescription,
   emptyTitle,
+  formatAuditDateTime,
   formatLevel,
   formatStatus,
   formatUpdatedAt,
@@ -95,6 +97,7 @@ export default function CoursesSection({
               key={course.id}
               actingCourseId={actingCourseId}
               course={course}
+              formatAuditDateTime={formatAuditDateTime}
               formatLevel={formatLevel}
               formatStatus={formatStatus}
               formatUpdatedAt={formatUpdatedAt}

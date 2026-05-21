@@ -1,5 +1,13 @@
 import { Transform } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
+} from 'class-validator';
 import { ResourceSource, ResourceType } from '../../entities/resource.entity';
 
 const trimString = ({ value }: { value: unknown }): unknown =>
@@ -18,6 +26,10 @@ export class ListResourcesDto {
   @IsInt()
   @Min(1)
   assignedUserId?: number;
+
+  @IsOptional()
+  @IsUUID()
+  assignedGroupId?: string;
 
   @IsOptional()
   @IsEnum(ResourceType)

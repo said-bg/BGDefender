@@ -7,16 +7,21 @@ import { confirmWithModal } from '@/utils/modalFeedback';
 import { resourceService, userService } from '@/services';
 import type {
   CreateAdminResourceRequest,
+  CreateResourceGroupRequest,
   Resource,
+  ResourceGroup,
   ResourceType,
+  UpdateResourceGroupRequest,
   User,
 } from '@/types/api';
 import { ResourceSource, ResourceType as ResourceTypeEnum, UserRole } from '@/types/api';
 
 type ResourceForm = {
+  assignedGroupId: string;
   title: string;
   description: string;
   assignedUserId: string;
+  targetType: 'user' | 'group';
   type: ResourceType;
   linkUrl: string;
   fileUrl: string;
@@ -25,9 +30,11 @@ type ResourceForm = {
 };
 
 const INITIAL_FORM: ResourceForm = {
+  assignedGroupId: '',
   title: '',
   description: '',
   assignedUserId: '',
+  targetType: 'user',
   type: ResourceTypeEnum.FILE,
   linkUrl: '',
   fileUrl: '',
@@ -35,9 +42,24 @@ const INITIAL_FORM: ResourceForm = {
   mimeType: '',
 };
 
+type ResourceGroupForm = {
+  id: string | null;
+  title: string;
+  description: string;
+  memberUserIds: string[];
+};
+
+const INITIAL_GROUP_FORM: ResourceGroupForm = {
+  id: null,
+  title: '',
+  description: '',
+  memberUserIds: [],
+};
+
 export default function useAdminResources() {
   const { t } = useTranslation('admin');
   const [resources, setResources] = useState<Resource[]>([]);
+  const [groups, setGroups] = useState<ResourceGroup[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,11 +72,21 @@ export default function useAdminResources() {
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | ResourceType>('all');
   const [form, setForm] = useState<ResourceForm>(INITIAL_FORM);
+  const [groupForm, setGroupForm] = useState<ResourceGroupForm>(INITIAL_GROUP_FORM);
+  const [groupSubmitting, setGroupSubmitting] = useState(false);
+  const [deletingGroupId, setDeletingGroupId] = useState<string | null>(null);
+  const [groupMessage, setGroupMessage] = useState<string | null>(null);
+  const [groupError, setGroupError] = useState<string | null>(null);
 
   const clearFeedback = () => {
     setError(null);
     setMessage(null);
     setUploadError(null);
+  };
+
+  const clearGroupFeedback = () => {
+    setGroupError(null);
+    setGroupMessage(null);
   };
 
   useEffect(() => {
@@ -63,7 +95,7 @@ export default function useAdminResources() {
         setLoading(true);
         setError(null);
 
-        const [resourceResponse, userResponse] = await Promise.all([
+        const [resourceResponse, userResponse, groupResponse] = await Promise.all([
           resourceService.getAdminResources({
             limit: 100,
             search: search.trim() || undefined,
@@ -71,10 +103,12 @@ export default function useAdminResources() {
             type: typeFilter === 'all' ? undefined : typeFilter,
           }),
           userService.getAdminUsers({ limit: 100 }),
+          resourceService.getAdminResourceGroups(),
         ]);
 
         setResources(resourceResponse.data);
         setUsers(userResponse.data.filter((user) => user.role !== UserRole.ADMIN));
+        setGroups(groupResponse);
       } catch (loadError) {
         setError(
           getApiErrorMessage(
@@ -93,6 +127,14 @@ export default function useAdminResources() {
   const updateForm = <K extends keyof ResourceForm>(key: K, value: ResourceForm[K]) => {
     clearFeedback();
     setForm((previous) => ({ ...previous, [key]: value }));
+  };
+
+  const updateGroupForm = <K extends keyof ResourceGroupForm>(
+    key: K,
+    value: ResourceGroupForm[K],
+  ) => {
+    clearGroupFeedback();
+    setGroupForm((previous) => ({ ...previous, [key]: value }));
   };
 
   const updateSearch = (value: string) => {
@@ -139,10 +181,20 @@ export default function useAdminResources() {
   const handleSubmit = async () => {
     const assignedUserId = Number(form.assignedUserId);
 
-    if (!form.title.trim() || !assignedUserId) {
+    if (!form.title.trim()) {
+      setError(t('resources.validationTitle'));
+      return;
+    }
+
+    if (form.targetType === 'user' && !assignedUserId) {
       setError(
         t('resources.validationRequired'),
       );
+      return;
+    }
+
+    if (form.targetType === 'group' && !form.assignedGroupId) {
+      setError(t('resources.validationGroup'));
       return;
     }
 
@@ -163,13 +215,16 @@ export default function useAdminResources() {
     const payload: CreateAdminResourceRequest = {
       title: form.title.trim(),
       description: form.description.trim() || null,
-      assignedUserId,
       type: form.type,
       fileUrl: form.type === ResourceTypeEnum.FILE ? form.fileUrl : undefined,
       filename: form.type === ResourceTypeEnum.FILE ? form.filename : undefined,
       mimeType: form.type === ResourceTypeEnum.FILE ? form.mimeType : undefined,
       linkUrl:
         form.type === ResourceTypeEnum.LINK ? form.linkUrl.trim() : undefined,
+      assignedGroupId:
+        form.targetType === 'group' ? form.assignedGroupId : undefined,
+      assignedUserId:
+        form.targetType === 'user' ? assignedUserId : undefined,
     };
 
     try {
@@ -229,6 +284,105 @@ export default function useAdminResources() {
     }
   };
 
+  const startEditingGroup = (group: ResourceGroup) => {
+    clearGroupFeedback();
+    setGroupForm({
+      id: group.id,
+      title: group.title,
+      description: group.description ?? '',
+      memberUserIds: group.members.map((member) => String(member.id)),
+    });
+  };
+
+  const cancelEditingGroup = () => {
+    clearGroupFeedback();
+    setGroupForm(INITIAL_GROUP_FORM);
+  };
+
+  const handleSubmitGroup = async () => {
+    if (!groupForm.title.trim()) {
+      setGroupError(t('resources.groups.validationTitle'));
+      return;
+    }
+
+    const payload: CreateResourceGroupRequest | UpdateResourceGroupRequest = {
+      title: groupForm.title.trim(),
+      description: groupForm.description.trim() || null,
+      memberUserIds: groupForm.memberUserIds.map((value) => Number(value)),
+    };
+
+    try {
+      setGroupSubmitting(true);
+      clearGroupFeedback();
+
+      if (groupForm.id) {
+        const updated = await resourceService.updateAdminResourceGroup(groupForm.id, payload);
+        setGroups((previous) =>
+          previous.map((entry) => (entry.id === updated.id ? updated : entry)),
+        );
+        setResources((previous) =>
+          previous.map((resource) =>
+            resource.assignedGroupId === updated.id
+              ? {
+                  ...resource,
+                  assignedGroup: {
+                    id: updated.id,
+                    title: updated.title,
+                    description: updated.description,
+                    memberCount: updated.memberCount,
+                  },
+                }
+              : resource,
+          ),
+        );
+        setGroupMessage(t('resources.groups.updated'));
+      } else {
+        const created = await resourceService.createAdminResourceGroup(payload);
+        setGroups((previous) => [created, ...previous]);
+        setGroupMessage(t('resources.groups.created'));
+      }
+
+      setGroupForm(INITIAL_GROUP_FORM);
+    } catch (groupFailure) {
+      setGroupError(
+        getApiErrorMessage(groupFailure, t('resources.groups.saveFailed')),
+      );
+    } finally {
+      setGroupSubmitting(false);
+    }
+  };
+
+  const handleDeleteGroup = async (group: ResourceGroup) => {
+    const confirmed = await confirmWithModal({
+      title: t('resources.groups.delete'),
+      message: t('resources.groups.deleteConfirm'),
+      confirmLabel: t('resources.groups.delete'),
+      type: 'warning',
+      confirmVariant: 'danger',
+    });
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setDeletingGroupId(group.id);
+      clearGroupFeedback();
+      await resourceService.deleteAdminResourceGroup(group.id);
+      setGroups((previous) => previous.filter((entry) => entry.id !== group.id));
+      if (groupForm.id === group.id) {
+        setGroupForm(INITIAL_GROUP_FORM);
+      }
+      setGroupMessage(t('resources.groups.deleted'));
+    } catch (groupFailure) {
+      setGroupError(
+        getApiErrorMessage(groupFailure, t('resources.groups.deleteFailed')),
+      );
+    } finally {
+      setDeletingGroupId(null);
+    }
+  };
+
   const handleOpenFile = async (resource: Resource) => {
     try {
       setOpeningId(resource.id);
@@ -253,17 +407,27 @@ export default function useAdminResources() {
     const adminSent = resources.filter(
       (resource) => resource.source === ResourceSource.ADMIN,
     ).length;
+    const groupTargets = resources.filter((resource) => resource.assignedGroupId).length;
 
-    return { adminSent, files, links, total };
+    return { adminSent, files, groupTargets, links, total };
   }, [resources]);
 
   return {
+    cancelEditingGroup,
     deletingId,
+    deletingGroupId,
     error,
     form,
+    groupError,
+    groupForm,
+    groupMessage,
+    groupSubmitting,
+    groups,
     handleDelete,
+    handleDeleteGroup,
     handleOpenFile,
     handleSubmit,
+    handleSubmitGroup,
     handleUpload,
     isUploading,
     loading,
@@ -273,11 +437,13 @@ export default function useAdminResources() {
     search,
     setSearch: updateSearch,
     setTypeFilter: updateTypeFilter,
+    startEditingGroup,
     submitting,
     summary,
     t,
     typeFilter,
     updateForm,
+    updateGroupForm,
     uploadError,
     users,
   };

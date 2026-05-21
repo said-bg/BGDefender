@@ -11,7 +11,14 @@ export interface Course {
   estimatedDuration: number;
   coverImage: string;
   ownerUserId?: number | null;
+  createdByUserId?: number | null;
+  lastEditedByUserId?: number | null;
+  publishedByUserId?: number | null;
+  publishedAt?: string | null;
   owner?: CourseOwnerSummary | null;
+  createdBy?: CourseOwnerSummary | null;
+  lastEditedBy?: CourseOwnerSummary | null;
+  publishedBy?: CourseOwnerSummary | null;
   learningSummary?: CourseLearningSummary | null;
   authors: Author[];
   finalTests?: FinalTestSummary[];

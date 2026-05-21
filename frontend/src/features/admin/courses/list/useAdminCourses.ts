@@ -10,6 +10,7 @@ import courseService, {
 import { getApiErrorMessage } from '@/utils/apiError';
 import { confirmWithModal } from '@/utils/modalFeedback';
 import {
+  formatAdminAuditDateTime,
   formatAdminCourseLevel,
   formatAdminCourseStatus,
   formatAdminUpdatedAt,
@@ -75,6 +76,8 @@ export default function useAdminCourses(scope: CourseManagementScope) {
   const formatStatus = (status: Course['status']) => formatAdminCourseStatus(status, t);
 
   const formatUpdatedAt = (updatedAt: string) => formatAdminUpdatedAt(updatedAt, i18n.language);
+  const formatAuditDateTime = (value: string) =>
+    formatAdminAuditDateTime(value, i18n.language);
 
   const handleStatusChange = async (
     course: Course,
@@ -167,6 +170,7 @@ export default function useAdminCourses(scope: CourseManagementScope) {
     actionMessage,
     actingCourseId,
     error: state.error,
+    formatAuditDateTime,
     formatLevel,
     formatStatus,
     formatUpdatedAt,

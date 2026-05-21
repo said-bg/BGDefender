@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { buildCoursePreviewHref } from '@/features/admin/courses/edit-course/shared/coursePreview.utils';
+import { getActorName } from '@/features/admin/dashboard/adminDashboard.utils';
 import { localizePathname, type AppLocale } from '@/lib/locale';
 import { Course } from '@/services/course';
 import { LocalizedAdminCourse } from './courseAdmin.utils';
@@ -10,6 +11,7 @@ import styles from './CourseCard.module.css';
 type CourseCardProps = {
   actingCourseId: string | null;
   course: LocalizedAdminCourse;
+  formatAuditDateTime: (value: string) => string;
   formatLevel: (level: Course['level']) => string;
   formatStatus: (status: Course['status']) => string;
   formatUpdatedAt: (updatedAt: string) => string;
@@ -24,6 +26,7 @@ type CourseCardProps = {
 export default function CourseCard({
   actingCourseId,
   course,
+  formatAuditDateTime,
   formatLevel,
   formatStatus,
   formatUpdatedAt,
@@ -36,10 +39,15 @@ export default function CourseCard({
 }: CourseCardProps) {
   const statusDotClass =
     course.status === 'published' ? styles.publishedDot : styles.draftDot;
-  const ownerName = course.owner
-    ? `${course.owner.firstName || ''} ${course.owner.lastName || ''}`.trim() ||
-      course.owner.email
-    : t('reviewOwnerUnknown');
+  const ownerName = getActorName(course.owner, t('reviewOwnerUnknown'));
+  const createdByActor = course.createdBy ?? course.owner ?? null;
+  const lastEditedByActor =
+    course.lastEditedBy ?? course.publishedBy ?? course.createdBy ?? course.owner ?? null;
+  const publishedByActor =
+    course.publishedBy ?? course.lastEditedBy ?? course.createdBy ?? course.owner ?? null;
+  const createdByName = getActorName(createdByActor, t('auditUnknown'));
+  const lastEditedByName = getActorName(lastEditedByActor, t('auditUnknown'));
+  const publishedByName = getActorName(publishedByActor, t('auditUnknown'));
   const learningSummary = course.learningSummary;
   const hasLearningActivity =
     learningSummary &&
@@ -61,6 +69,23 @@ export default function CourseCard({
             {showOwner ? (
               <p className={styles.courseOwnerLine}>
                 {t('reviewOwnerLabel', { owner: ownerName })}
+              </p>
+            ) : null}
+            <p className={styles.courseOwnerLine}>
+              {t('auditCreatedByLabel', { actor: createdByName })}
+            </p>
+            <p className={styles.courseOwnerLine}>
+              {t('auditLastEditedByLabel', {
+                actor: lastEditedByName,
+                date: formatAuditDateTime(course.updatedAt),
+              })}
+            </p>
+            {course.publishedAt ? (
+              <p className={styles.courseOwnerLine}>
+                {t('auditPublishedByLabel', {
+                  actor: publishedByName,
+                  date: formatAuditDateTime(course.publishedAt),
+                })}
               </p>
             ) : null}
           </div>

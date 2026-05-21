@@ -6,6 +6,7 @@ import {
   Get,
   Headers,
   Param,
+  Patch,
   ParseUUIDPipe,
   Post,
   Query,
@@ -28,7 +29,9 @@ import type { SafeUser } from '../../auth/types/safe-user.type';
 import { resolveLanguage } from '../../config/request-language';
 import { CreateAdminResourceDto } from '../dto/create-admin-resource.dto';
 import { CreateMyResourceDto } from '../dto/create-my-resource.dto';
+import { CreateResourceGroupDto } from '../dto/create-resource-group.dto';
 import { ListResourcesDto } from '../dto/list-resources.dto';
+import { UpdateResourceGroupDto } from '../dto/update-resource-group.dto';
 import { ResourcesService } from '../services/resources.service';
 import {
   buildSafeUploadedFilename,
@@ -64,6 +67,52 @@ export class ResourcesController {
   @UseGuards(AdminRoleGuard)
   async listAdminResources(@Query() query: ListResourcesDto) {
     return this.resourcesService.listAdminResources(query);
+  }
+
+  @Get('admin/groups')
+  @UseGuards(AdminRoleGuard)
+  async listAdminResourceGroups() {
+    return this.resourcesService.listAdminResourceGroups();
+  }
+
+  @Post('admin/groups')
+  @UseGuards(AdminRoleGuard)
+  async createAdminResourceGroup(
+    @Body() dto: CreateResourceGroupDto,
+    @CurrentUser() currentUser: SafeUser,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    return this.resourcesService.createAdminResourceGroup(
+      dto,
+      currentUser.id,
+      resolveLanguage(acceptLanguage),
+    );
+  }
+
+  @Patch('admin/groups/:id')
+  @UseGuards(AdminRoleGuard)
+  async updateAdminResourceGroup(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() dto: UpdateResourceGroupDto,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    return this.resourcesService.updateAdminResourceGroup(
+      id,
+      dto,
+      resolveLanguage(acceptLanguage),
+    );
+  }
+
+  @Delete('admin/groups/:id')
+  @UseGuards(AdminRoleGuard)
+  async deleteAdminResourceGroup(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Headers('accept-language') acceptLanguage?: string,
+  ) {
+    await this.resourcesService.deleteAdminResourceGroup(
+      id,
+      resolveLanguage(acceptLanguage),
+    );
   }
 
   @Post('admin')

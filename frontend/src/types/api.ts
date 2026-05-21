@@ -165,9 +165,27 @@ export interface Resource {
   mimeType: string | null;
   linkUrl: string | null;
   source: ResourceSource;
-  assignedUserId: number;
-  assignedUser: Pick<User, 'id' | 'email' | 'firstName' | 'lastName'>;
+  assignedUserId: number | null;
+  assignedUser: Pick<User, 'id' | 'email' | 'firstName' | 'lastName'> | null;
+  assignedGroupId: string | null;
+  assignedGroup: {
+    id: string;
+    title: string;
+    description: string | null;
+    memberCount: number;
+  } | null;
   createdByUserId: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ResourceGroup {
+  id: string;
+  title: string;
+  description: string | null;
+  createdByUserId: number | null;
+  memberCount: number;
+  members: Array<Pick<User, 'id' | 'email' | 'firstName' | 'lastName'>>;
   createdAt: string;
   updatedAt: string;
 }
@@ -191,7 +209,20 @@ export interface CreateAdminResourceRequest {
   filename?: string;
   mimeType?: string;
   linkUrl?: string;
-  assignedUserId: number;
+  assignedUserId?: number;
+  assignedGroupId?: string;
+}
+
+export interface CreateResourceGroupRequest {
+  title: string;
+  description?: string | null;
+  memberUserIds?: number[];
+}
+
+export interface UpdateResourceGroupRequest {
+  title?: string;
+  description?: string | null;
+  memberUserIds?: number[];
 }
 
 export interface CreateMyResourceRequest {

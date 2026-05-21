@@ -42,6 +42,7 @@ function AdminCoursesPageContent() {
     actionMessage,
     actingCourseId,
     error,
+    formatAuditDateTime,
     formatLevel,
     formatStatus,
     formatUpdatedAt,
@@ -141,6 +142,7 @@ function AdminCoursesPageContent() {
           isReviewScope ? 'emptyReviewCoursesTitle' : 'emptyMyCoursesTitle',
         )}
         error={error}
+        formatAuditDateTime={formatAuditDateTime}
         formatLevel={formatLevel}
         formatStatus={formatStatus}
         formatUpdatedAt={formatUpdatedAt}

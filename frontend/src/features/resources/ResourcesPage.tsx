@@ -295,6 +295,12 @@ function ResourcesPageContent() {
                     </div>
 
                     <div className={styles.resourceMeta}>
+                      {resource.assignedGroup ? (
+                        <span>
+                          {t('sharedWithGroupLabel')}:{' '}
+                          {resource.assignedGroup.title}
+                        </span>
+                      ) : null}
                       <span>
                         {t('createdLabel')}:{' '}
                         {formatSiteDate(resource.createdAt, activeLocale, {

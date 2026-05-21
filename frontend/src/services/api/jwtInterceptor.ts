@@ -25,7 +25,7 @@ export const markManualLogoutInProgress = () => {
   manualLogoutResetTimer = setTimeout(() => {
     isManualLogoutInProgress = false;
     manualLogoutResetTimer = null;
-  }, 4000);
+  }, 10000);
 };
 
 export const clearManualLogoutInProgress = () => {

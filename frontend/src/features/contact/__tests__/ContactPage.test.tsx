@@ -11,26 +11,30 @@ const translations: Record<string, string> = {
   'hero.title': 'Contact us',
   'hero.description':
     'Reach out for support, access requests, creator onboarding, or premium questions. We will help you get to the right place quickly.',
-  'types.general.title': 'General information',
-  'types.general.description': 'Questions about the platform, courses, or availability.',
-  'types.support.title': 'Technical support',
-  'types.support.description': 'Something is not working as expected? We can help.',
-  'types.creator.title': 'Creator access',
-  'types.creator.description': 'Request access to create and manage learning content.',
-  'types.premium.title': 'Premium access',
-  'types.premium.description': 'Ask about premium access, tailored plans, or upgrades.',
-  'fields.requestType': 'Request type',
+  'form.title': 'Send us a message',
+  'form.description': 'Fill out the form below and we will get back to you as soon as possible.',
   'fields.name': 'Full name',
   'fields.namePlaceholder': 'Your name',
   'fields.email': 'Email address',
   'fields.emailPlaceholder': 'you@example.com',
+  'fields.subject': 'Subject',
   'fields.message': 'Message',
   'fields.messagePlaceholder': 'Share the details you want our team to review and respond to.',
+  'types.general.title': 'General information',
+  'types.support.title': 'Technical support',
+  'types.creator.title': 'Creator access',
+  'types.premium.title': 'Premium access',
   'form.primaryAction': 'Send message',
   'form.secondaryAction': 'Email support directly',
   'form.sending': 'Sending...',
   'form.note': 'Your message will be sent directly to the BG Defender team.',
+  'form.privacyNote': 'Your information is safe with us. We will never share your data.',
   'form.failed': 'We could not send your message right now. Please try again.',
+  'details.emailTitle': 'Email us',
+  'details.responseTitle': 'Average response time',
+  'details.responseDescription': 'We reply within 24 hours on business days.',
+  'details.supportTitle': 'Expert support',
+  'details.supportDescription': 'Get help from our cybersecurity and training specialists.',
   'validation.nameRequired': 'Name is required',
   'validation.emailRequired': 'Email is required',
   'validation.emailInvalid': 'Invalid email format',
@@ -67,7 +71,6 @@ describe('ContactPage', () => {
       }),
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /Creator access/ }));
     fireEvent.change(screen.getByLabelText('Full name'), {
       target: { value: 'Jane Doe' },
     });
@@ -82,7 +85,7 @@ describe('ContactPage', () => {
 
     await waitFor(() => {
       expect(mockedSendContactRequest).toHaveBeenCalledWith({
-        requestType: 'creator',
+        requestType: 'general',
         name: 'Jane Doe',
         email: 'jane@example.com',
         message: 'Please help me set up creator access.',

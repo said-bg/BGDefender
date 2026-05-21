@@ -83,6 +83,10 @@ const createCourse = (overrides: Partial<Course> = {}): Course =>
     estimatedDuration: 60,
     coverImage: '/cover.jpg',
     ownerUserId: null,
+    createdByUserId: null,
+    lastEditedByUserId: null,
+    publishedByUserId: null,
+    publishedAt: null,
     createdAt: new Date('2026-01-01T00:00:00.000Z'),
     updatedAt: new Date('2026-01-01T00:00:00.000Z'),
     authors: [],
@@ -310,6 +314,10 @@ describe('CourseService', () => {
         estimatedDuration: dto.estimatedDuration,
         coverImage: dto.coverImage,
         ownerUserId: adminUser.id,
+        createdByUserId: adminUser.id,
+        lastEditedByUserId: adminUser.id,
+        publishedByUserId: null,
+        publishedAt: null,
       });
       expect(authorRepository.find).not.toHaveBeenCalled();
       expect(notificationsService.notifyCoursePublished).not.toHaveBeenCalled();
@@ -393,6 +401,8 @@ describe('CourseService', () => {
       expect(courseRepository.create).toHaveBeenCalledWith(
         expect.objectContaining({
           ownerUserId: creatorUser.id,
+          createdByUserId: creatorUser.id,
+          lastEditedByUserId: creatorUser.id,
         }),
       );
     });
@@ -946,6 +956,9 @@ describe('CourseService', () => {
           slugFi: 'paivitetty-kurssi',
           titleEn: 'Updated Course EN',
           status: CourseStatus.PUBLISHED,
+          lastEditedByUserId: adminUser.id,
+          publishedByUserId: adminUser.id,
+          publishedAt: expect.any(Date),
         }),
       );
       expect(notificationsService.notifyCoursePublished).toHaveBeenCalledWith(

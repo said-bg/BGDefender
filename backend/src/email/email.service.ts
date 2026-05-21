@@ -35,6 +35,24 @@ export class EmailService {
     this.loadEmailTemplates();
   }
 
+  private getRequiredEnv(name: string): string {
+    const value = process.env[name]?.trim();
+
+    if (!value) {
+      throw new Error(`Missing required environment variable: ${name}`);
+    }
+
+    return value;
+  }
+
+  private getSenderEmail(): string {
+    return (
+      process.env.SMTP_FROM?.trim() ||
+      process.env.SMTP_USER?.trim() ||
+      this.getRequiredEnv('SMTP_FROM')
+    );
+  }
+
   /**
    * Load email templates from files
    */
@@ -86,10 +104,7 @@ export class EmailService {
     resetLink: string,
     language: string = 'en',
   ): Promise<void> {
-    const fromEmail =
-      process.env.SMTP_FROM ??
-      process.env.SMTP_USER ??
-      'noreply@bgdefender.com';
+    const fromEmail = this.getSenderEmail();
 
     // Get frontend URL for email links
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
@@ -158,12 +173,8 @@ export class EmailService {
     message: string;
     language?: string;
   }): Promise<void> {
-    const fromEmail =
-      process.env.SMTP_FROM ??
-      process.env.SMTP_USER ??
-      'noreply@bgdefender.com';
-    const recipientEmail =
-      process.env.CONTACT_EMAIL ?? 'support@bgdefender.com';
+    const fromEmail = this.getSenderEmail();
+    const recipientEmail = this.getRequiredEnv('CONTACT_EMAIL');
 
     const requestTypeLabels: Record<
       string,

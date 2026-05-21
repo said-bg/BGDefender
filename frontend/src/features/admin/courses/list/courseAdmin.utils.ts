@@ -87,3 +87,12 @@ export const formatAdminUpdatedAt = (updatedAt: string, language: string) =>
     year: 'numeric',
   });
 
+export const formatAdminAuditDateTime = (value: string, language: string) =>
+  formatSiteDate(value, language, {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+

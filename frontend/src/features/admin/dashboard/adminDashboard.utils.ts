@@ -31,3 +31,31 @@ export function formatUpdatedAt(value: string, language: string) {
   });
 }
 
+export function formatAuditDateTime(value: string, language: string) {
+  const locale = language === 'fi' ? 'fi' : 'en';
+
+  return formatSiteDate(value, locale, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+export function getActorName(
+  actor: Course['owner'] | Course['createdBy'] | Course['lastEditedBy'] | Course['publishedBy'],
+  fallback: string,
+) {
+  if (!actor) {
+    return fallback;
+  }
+
+  const fullName = `${actor.firstName || ''} ${actor.lastName || ''}`.trim();
+
+  if (/^admin user$/i.test(fullName) || /^admin@/i.test(actor.email)) {
+    return 'Admin';
+  }
+
+  return fullName || actor.email;
+}
+

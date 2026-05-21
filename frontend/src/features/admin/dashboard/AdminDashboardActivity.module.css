@@ -81,11 +81,16 @@
 }
 
 .itemMeta,
+.itemAudit,
 .itemCounts {
   margin: 0.2rem 0 0;
   color: var(--color-text-subtle);
   font-size: 0.84rem;
   line-height: 1.5;
+}
+
+.itemAudit {
+  margin-top: 0.08rem;
 }
 
 .itemCounts {

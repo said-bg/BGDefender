@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   Matches,
   MaxLength,
   Min,
@@ -58,8 +59,13 @@ export class CreateAdminResourceDto {
   @MaxLength(2048)
   linkUrl?: string;
 
+  @IsOptional()
   @Transform(toNumber)
   @IsInt()
   @Min(1)
-  assignedUserId!: number;
+  assignedUserId?: number;
+
+  @IsOptional()
+  @IsUUID()
+  assignedGroupId?: string;
 }

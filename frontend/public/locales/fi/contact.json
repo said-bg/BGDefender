@@ -38,12 +38,13 @@
   },
   "form": {
     "eyebrow": "Valmistele pyyntösi",
-    "title": "Kirjoita yksi selkeä viesti ja lähetä se kontekstin kanssa.",
-    "description": "Lisää tärkeimmät tiedot alle ja lähetä viestisi suoraan BG Defender -tiimille.",
+    "title": "Lähetä meille viesti",
+    "description": "Täytä alla oleva lomake, niin palaamme asiaan mahdollisimman pian.",
     "primaryAction": "Lähetä viesti",
     "secondaryAction": "Lähetä sähköpostia suoraan tukeen",
     "sending": "Lähetetään...",
     "note": "Viestisi lähetetään suoraan BG Defender -tiimille.",
+    "privacyNote": "Tietosi ovat turvassa meillä. Emme koskaan jaa niitä eteenpäin.",
     "failed": "Emme voineet lähettää viestiäsi juuri nyt. Yritä uudelleen."
   },
   "fields": {
@@ -84,6 +85,13 @@
     "emailRequired": "Sähköposti vaaditaan",
     "emailInvalid": "Virheellinen sähköpostin muoto",
     "messageRequired": "Viesti vaaditaan"
+  },
+  "details": {
+    "emailTitle": "Lähetä meille sähköpostia",
+    "responseTitle": "Keskimääräinen vastausaika",
+    "responseDescription": "Vastaamme arkipäivisin 24 tunnin sisällä.",
+    "supportTitle": "Asiantunteva tuki",
+    "supportDescription": "Saat apua kyberturvallisuuden ja koulutuksen asiantuntijoiltamme."
   },
   "sidebar": {
     "contact": {
