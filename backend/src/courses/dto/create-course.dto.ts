@@ -7,6 +7,7 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  ValidateIf,
   Matches,
   MaxLength,
 } from 'class-validator';
@@ -57,4 +58,9 @@ export class CreateCourseDto {
   @IsUUID('4', { each: true })
   @IsOptional()
   authorIds?: string[];
+
+  @ValidateIf((_object, value) => value !== null && value !== undefined)
+  @IsUUID('4')
+  @IsOptional()
+  programDirectorId?: string | null;
 }

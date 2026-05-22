@@ -8,6 +8,7 @@ export type EditCourseFormState = {
   estimatedDuration: string;
   coverImage: string;
   authorIds: string[];
+  programDirectorId: string;
 };
 
 export type CoverImageMode = 'url' | 'upload';
@@ -22,4 +23,5 @@ export const initialFormState: EditCourseFormState = {
   estimatedDuration: '',
   coverImage: '',
   authorIds: [],
+  programDirectorId: '',
 };

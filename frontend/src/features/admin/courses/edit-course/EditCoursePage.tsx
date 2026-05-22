@@ -67,6 +67,7 @@ function EditCourseDetailsContent() {
         isUploadingCover={details.isUploadingCover}
         language={i18n.language}
         manageAuthorsHref={manageAuthorsHref}
+        programDirectors={details.programDirectors}
         onCoverUpload={details.handleCoverUpload}
         onImageModeChange={details.setImageMode}
         onSubmit={details.handleSubmit}

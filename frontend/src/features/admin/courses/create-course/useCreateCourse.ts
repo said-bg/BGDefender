@@ -4,8 +4,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import authorService from '@/services/authors';
+import certificateSignerService from '@/services/certificate-signers';
 import { localizePathname, normalizeLocale } from '@/lib/locale';
 import courseService, { Author, CreateCourseRequest } from '@/services/course';
+import type { CertificateSignerRecord } from '@/types/api';
 import { getApiErrorMessage } from '@/utils/apiError';
 import { CreateCourseFormState, ImageMode, initialCreateCourseFormState } from './types';
 
@@ -16,6 +18,7 @@ export default function useCreateCourse() {
   const [form, setForm] = useState<CreateCourseFormState>(initialCreateCourseFormState);
   const [imageMode, setImageMode] = useState<ImageMode>('url');
   const [authors, setAuthors] = useState<Author[]>([]);
+  const [programDirectors, setProgramDirectors] = useState<CertificateSignerRecord[]>([]);
   const [loadingAuthors, setLoadingAuthors] = useState(true);
   const [authorsError, setAuthorsError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -30,8 +33,12 @@ export default function useCreateCourse() {
       try {
         setLoadingAuthors(true);
         setAuthorsError(null);
-        const response = await authorService.getAuthors(100, 0);
-        setAuthors(response.data);
+        const [authorResponse, signerOptions] = await Promise.all([
+          authorService.getAuthors(100, 0),
+          certificateSignerService.getOptions(),
+        ]);
+        setAuthors(authorResponse.data);
+        setProgramDirectors(signerOptions.programDirectors);
       } catch (error) {
         setAuthorsError(
           getApiErrorMessage(error, t('create.authorsFailed')),
@@ -112,6 +119,7 @@ export default function useCreateCourse() {
       estimatedDuration: durationValue ? Number(durationValue) : undefined,
       coverImage: form.coverImage.trim() || undefined,
       authorIds: form.authorIds.length ? form.authorIds : undefined,
+      programDirectorId: form.programDirectorId || null,
     };
 
     try {
@@ -140,6 +148,7 @@ export default function useCreateCourse() {
     isSubmitting,
     isUploadingCover,
     loadingAuthors,
+    programDirectors,
     selectedAuthors,
     submitError,
     submitMessage,

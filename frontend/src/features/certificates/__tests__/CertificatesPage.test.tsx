@@ -42,20 +42,15 @@ const translate = (key: string, options?: { date?: string }) => {
       'Issued certificates and passed courses waiting for a complete profile all appear here.',
     previewTitle: 'Certificate preview',
     previewDescription:
-      'A clean certificate template now, with room to swap in a custom branded design later.',
+      'Open the official certificate directly as a PDF whenever you are ready to save or share it.',
     issuedBadge: 'Issued',
     completeProfile: 'Complete profile',
     pendingTitle: 'Complete your profile to generate this certificate',
-    certificateHeading: 'Certificate of Completion',
-    certificateLead: 'This certifies that',
-    certificateSubLead: 'has successfully completed the course',
     issuedDateLabel: 'Issued on',
     certificateCodeLabel: 'Certificate ID',
-    institutionName: 'BG Defender Academy',
-    institutionLocation: 'Cybersecurity Training Platform',
-    issuerLabel: 'Director',
-    programLabel: 'Program director',
-    brandNote: 'Issued by BG Defender Academy',
+    downloadPdf: 'Download PDF',
+    downloadReadyLabel: 'Ready to download',
+    downloadFormatLabel: 'Format',
   };
 
   if (key === 'issuedOn' && options?.date) {
@@ -87,7 +82,7 @@ describe('CertificatesPage', () => {
     mockUseCertificatesPage.mockReset();
   });
 
-  it('renders the preview for an issued certificate', () => {
+  it('renders the download panel for an issued certificate', () => {
     mockUseCertificatesPage.mockReturnValue({
       certificates: [createCertificate()],
       error: null,
@@ -105,10 +100,11 @@ describe('CertificatesPage', () => {
     render(<CertificatesPage />);
 
     expect(screen.getByText('My certificates')).toBeInTheDocument();
-    expect(screen.getByText('Certificate of Completion')).toBeInTheDocument();
+    expect(screen.getByText('Ready to download')).toBeInTheDocument();
     expect(screen.getByText('Ait Baha')).toBeInTheDocument();
     expect(screen.getAllByText('Course Security Basics')).toHaveLength(2);
     expect(screen.getByText('BGD-2026-ABCD1234')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Download PDF' })).toBeInTheDocument();
   });
 
   it('renders the profile completion prompt for pending certificates', () => {

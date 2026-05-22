@@ -12,6 +12,7 @@ import { QuizScope } from '../../entities/quiz-scope.enum';
 import { User, UserPlan, UserRole } from '../../entities/user.entity';
 import { CertificatesService } from '../services/certificates.service';
 import { NotificationsService } from '../../notifications/services/notifications.service';
+import { CertificateSignersService } from '../../certificate-signers/services/certificate-signers.service';
 
 type MockRepository = {
   findOne: jest.Mock;
@@ -34,6 +35,9 @@ describe('CertificatesService', () => {
   let quizRepository: MockRepository;
   let quizAttemptRepository: MockRepository;
   let userRepository: MockRepository;
+  const certificateSignersService = {
+    getActiveDirectorSummary: jest.fn(),
+  };
   const notificationsService = {
     notifyCertificateAvailable: jest.fn(),
     notifyCompleteProfileForCertificate: jest.fn(),
@@ -94,6 +98,12 @@ describe('CertificatesService', () => {
       lastNameSnapshot: null,
       courseTitleEnSnapshot: 'Understanding Online Risks',
       courseTitleFiSnapshot: 'Understanding Online Risks',
+      directorSnapshotFullName: null,
+      directorSnapshotTitle: null,
+      directorSnapshotSignatureData: null,
+      programDirectorSnapshotFullName: null,
+      programDirectorSnapshotTitle: null,
+      programDirectorSnapshotSignatureData: null,
       issuedAt: null,
       createdAt: new Date('2026-04-09T10:00:00.000Z'),
       updatedAt: new Date('2026-04-09T10:00:00.000Z'),
@@ -139,10 +149,16 @@ describe('CertificatesService', () => {
           provide: NotificationsService,
           useValue: notificationsService,
         },
+        {
+          provide: CertificateSignersService,
+          useValue: certificateSignersService,
+        },
       ],
     }).compile();
 
     service = module.get<CertificatesService>(CertificatesService);
+    courseRepository.find.mockResolvedValue([]);
+    certificateSignersService.getActiveDirectorSummary.mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -288,6 +304,12 @@ describe('CertificatesService', () => {
       status: CertificateStatus.ISSUED,
       firstNameSnapshot: 'Said',
       lastNameSnapshot: 'Ait',
+      directorSnapshotFullName: 'Said Ait Baha',
+      directorSnapshotTitle: 'Director',
+      directorSnapshotSignatureData: 'data:image/png;base64,director-signature',
+      programDirectorSnapshotFullName: 'Lucia Garcia',
+      programDirectorSnapshotTitle: 'Program Director',
+      programDirectorSnapshotSignatureData: 'data:image/png;base64,program-signature',
       issuedAt: new Date('2026-04-09T12:00:00.000Z'),
     });
 

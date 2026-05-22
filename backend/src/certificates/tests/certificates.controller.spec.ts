@@ -22,6 +22,7 @@ describe('CertificatesController', () => {
   const certificatesService = {
     listMyCertificates: jest.fn(),
     getMyCertificate: jest.fn(),
+    getMyCertificatePdf: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -61,5 +62,35 @@ describe('CertificatesController', () => {
       currentUser.id,
       'certificate-1',
     );
+  });
+
+  it('streams the certificate pdf for the current user', async () => {
+    const response = {
+      setHeader: jest.fn(),
+      send: jest.fn(),
+    } as any;
+
+    certificatesService.getMyCertificatePdf.mockResolvedValue({
+      buffer: Buffer.from('pdf'),
+      filename: 'BGD-2026-TEST.pdf',
+    });
+
+    await controller.getMyCertificatePdf(
+      currentUser,
+      'certificate-1',
+      'en',
+      response,
+    );
+
+    expect(certificatesService.getMyCertificatePdf).toHaveBeenCalledWith(
+      currentUser.id,
+      'certificate-1',
+      'en',
+    );
+    expect(response.setHeader).toHaveBeenCalledWith(
+      'Content-Type',
+      'application/pdf',
+    );
+    expect(response.send).toHaveBeenCalled();
   });
 });

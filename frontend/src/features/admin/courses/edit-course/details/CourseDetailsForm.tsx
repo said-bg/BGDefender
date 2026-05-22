@@ -7,6 +7,7 @@ import AuthorsField from './fields/AuthorsField';
 import formStyles from '../shared/EditCourseForm.module.css';
 import { CoverImageMode, EditCourseFormState } from './lib/details.types';
 import { Author } from '@/services/course';
+import type { CertificateSignerRecord } from '@/types/api';
 
 type CourseDetailsFormProps = {
   authors: Author[];
@@ -19,6 +20,7 @@ type CourseDetailsFormProps = {
   isUploadingCover: boolean;
   language: string;
   manageAuthorsHref: string;
+  programDirectors: CertificateSignerRecord[];
   onCoverUpload: (file: File) => void | Promise<void>;
   onImageModeChange: (mode: CoverImageMode) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void | Promise<void>;
@@ -42,6 +44,7 @@ export default function CourseDetailsForm({
   isUploadingCover,
   language,
   manageAuthorsHref,
+  programDirectors,
   onCoverUpload,
   onImageModeChange,
   onSubmit,
@@ -74,6 +77,7 @@ export default function CourseDetailsForm({
           form={form}
           imageMode={imageMode}
           isUploadingCover={isUploadingCover}
+          programDirectors={programDirectors}
           onCoverUpload={onCoverUpload}
           onImageModeChange={onImageModeChange}
           setForm={setForm}

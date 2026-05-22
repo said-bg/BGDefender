@@ -10,6 +10,7 @@ import { Author } from '../entities/author.entity';
 import { User } from '../entities/user.entity';
 import { Quiz } from '../entities/quiz.entity';
 import { QuizAttempt } from '../entities/quiz-attempt.entity';
+import { CertificateSignersModule } from '../certificate-signers/certificate-signers.module';
 import { CourseService } from './services/course.service';
 import { CourseController } from './controllers/course.controller';
 import { ChapterService } from './services/chapters.service';
@@ -28,6 +29,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
+    CertificateSignersModule,
     NotificationsModule,
     TypeOrmModule.forFeature([
       Course,

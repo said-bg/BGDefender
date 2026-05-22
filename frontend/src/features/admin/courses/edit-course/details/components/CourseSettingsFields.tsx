@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import type { TranslationFn } from '@/types/i18n';
+import type { CertificateSignerRecord } from '@/types/api';
 import CoverImageField from '../fields/CoverImageField';
 import formStyles from '../../shared/EditCourseForm.module.css';
 import sharedStyles from '../../shared/EditCoursePage.module.css';
@@ -10,6 +11,7 @@ type CourseSettingsFieldsProps = {
   form: EditCourseFormState;
   imageMode: CoverImageMode;
   isUploadingCover: boolean;
+  programDirectors: CertificateSignerRecord[];
   onCoverUpload: (file: File) => void | Promise<void>;
   onImageModeChange: (mode: CoverImageMode) => void;
   setForm: Dispatch<SetStateAction<EditCourseFormState>>;
@@ -22,6 +24,7 @@ export default function CourseSettingsFields({
   form,
   imageMode,
   isUploadingCover,
+  programDirectors,
   onCoverUpload,
   onImageModeChange,
   setForm,
@@ -97,6 +100,31 @@ export default function CourseSettingsFields({
           t={t}
           uploadedFilename={uploadedFilename}
         />
+      </div>
+
+      <div className={formStyles.fieldGroup}>
+        <label className={formStyles.field}>
+          <span>{t('signers.programDirectorFieldLabel')}</span>
+          <p className={sharedStyles.helperText}>
+            {t('signers.programDirectorFieldHint')}
+          </p>
+          <select
+            value={form.programDirectorId}
+            onChange={(event) =>
+              setForm((previous) => ({
+                ...previous,
+                programDirectorId: event.target.value,
+              }))
+            }
+          >
+            <option value="">{t('signers.programDirectorFieldPlaceholder')}</option>
+            {programDirectors.map((programDirector) => (
+              <option key={programDirector.id} value={programDirector.id}>
+                {programDirector.fullName}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
     </>
   );

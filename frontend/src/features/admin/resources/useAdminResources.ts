@@ -305,17 +305,16 @@ export default function useAdminResources() {
       return;
     }
 
-    const payload: CreateResourceGroupRequest | UpdateResourceGroupRequest = {
-      title: groupForm.title.trim(),
-      description: groupForm.description.trim() || null,
-      memberUserIds: groupForm.memberUserIds.map((value) => Number(value)),
-    };
-
     try {
       setGroupSubmitting(true);
       clearGroupFeedback();
 
       if (groupForm.id) {
+        const payload: UpdateResourceGroupRequest = {
+          title: groupForm.title.trim(),
+          description: groupForm.description.trim() || null,
+          memberUserIds: groupForm.memberUserIds.map((value) => Number(value)),
+        };
         const updated = await resourceService.updateAdminResourceGroup(groupForm.id, payload);
         setGroups((previous) =>
           previous.map((entry) => (entry.id === updated.id ? updated : entry)),
@@ -337,6 +336,11 @@ export default function useAdminResources() {
         );
         setGroupMessage(t('resources.groups.updated'));
       } else {
+        const payload: CreateResourceGroupRequest = {
+          title: groupForm.title.trim(),
+          description: groupForm.description.trim() || null,
+          memberUserIds: groupForm.memberUserIds.map((value) => Number(value)),
+        };
         const created = await resourceService.createAdminResourceGroup(payload);
         setGroups((previous) => [created, ...previous]);
         setGroupMessage(t('resources.groups.created'));

@@ -1,11 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { formatSiteDate } from '@/lib/datetime';
+import { useState } from 'react';
 import { DEFAULT_LOCALE, getLocaleFromPathname, localizePathname } from '@/lib/locale';
+import certificateService from '@/services/certificates';
 import { CertificateStatus, type CertificateRecord } from '@/types/api';
+import { getApiErrorMessage } from '@/utils/apiError';
 import styles from './CertificatePreview.module.css';
 
 type CertificatePreviewProps = {
@@ -27,17 +28,43 @@ export default function CertificatePreview({
 }: CertificatePreviewProps) {
   const pathname = usePathname();
   const activeLocale = getLocaleFromPathname(pathname || '/') ?? DEFAULT_LOCALE;
-  const issuedDate = (() => {
-    if (!selectedCertificate?.issuedAt) {
-      return '-';
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState<string | null>(null);
+
+  const handleOpenPdf = async () => {
+    if (!selectedCertificate) {
+      return;
     }
 
-    return formatSiteDate(selectedCertificate.issuedAt, language, {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric',
-    });
-  })();
+    const previewWindow = window.open('', '_blank');
+
+    try {
+      setPdfLoading(true);
+      setPdfError(null);
+      const pdfBlob = await certificateService.getMyCertificatePdf(
+        selectedCertificate.id,
+        language,
+      );
+      const objectUrl = window.URL.createObjectURL(pdfBlob);
+
+      if (previewWindow) {
+        previewWindow.location.href = objectUrl;
+      } else {
+        window.open(objectUrl, '_blank');
+      }
+
+      window.setTimeout(() => {
+        window.URL.revokeObjectURL(objectUrl);
+      }, 60_000);
+    } catch (error) {
+      if (previewWindow) {
+        previewWindow.close();
+      }
+      setPdfError(getApiErrorMessage(error, t('pdfFailed')));
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   return (
     <section className={styles.previewCard}>
@@ -48,6 +75,17 @@ export default function CertificatePreview({
         <p className={styles.sectionDescription}>
           {t('previewDescription')}
         </p>
+        {selectedCertificate?.status === CertificateStatus.ISSUED ? (
+          <button
+            type="button"
+            className={styles.profileAction}
+            onClick={() => void handleOpenPdf()}
+            disabled={pdfLoading}
+          >
+            {pdfLoading ? t('pdfOpening') : t('downloadPdf')}
+          </button>
+        ) : null}
+        {pdfError ? <p className={styles.helperText}>{pdfError}</p> : null}
       </div>
 
       {selectedCertificate?.status === CertificateStatus.PENDING_PROFILE ? (
@@ -68,73 +106,31 @@ export default function CertificatePreview({
       ) : null}
 
       {selectedCertificate ? (
-        <div className={styles.certificateFrame}>
-          <div className={styles.certificateHeader}>
-            <div className={styles.certificateInstitution}>
-              <p className={styles.institutionName}>
-                {t('institutionName')}
-              </p>
-              <p className={styles.institutionLocation}>
-                {t('institutionLocation')}
-              </p>
-            </div>
-            <div className={styles.certificateLogoWrap}>
-              <Image
-                src="/assets/images/bgdefender.jpeg"
-                alt="BG Defender"
-                width={70}
-                height={70}
-                className={styles.certificateLogo}
-              />
-            </div>
+        <div className={styles.downloadCard}>
+          <div className={styles.downloadMeta}>
+            <span className={styles.downloadLabel}>{t('downloadReadyLabel')}</span>
+            <strong className={styles.downloadName}>
+              {selectedCertificateName || t('learnerFallback')}
+            </strong>
+            <p className={styles.downloadCourse}>{selectedCertificateTitle}</p>
           </div>
-          <h3 className={styles.certificateHeading}>
-            {t('certificateHeading')}
-          </h3>
-          <p className={styles.certificateLead}>
-            {t('certificateLead')}
-          </p>
-          <p className={styles.recipientName}>
-            {selectedCertificateName || t('learnerFallback')}
-          </p>
-          <p className={styles.certificateSubLead}>
-            {t('certificateSubLead')}
-          </p>
-          <p className={styles.courseName}>{selectedCertificateTitle}</p>
 
-          <div className={styles.certificateFooter}>
-            <div className={styles.footerCard}>
-              <span className={styles.footerLabel}>
-                {t('issuedDateLabel')}
-              </span>
-              <span className={styles.footerValue}>{issuedDate}</span>
-            </div>
-            <div className={styles.footerCard}>
-              <span className={styles.footerLabel}>
+          <div className={styles.downloadDetails}>
+            <div className={styles.downloadDetail}>
+              <span className={styles.downloadDetailLabel}>
                 {t('certificateCodeLabel')}
               </span>
-              <span className={styles.footerValue}>{selectedCertificate.certificateCode}</span>
+              <strong className={styles.downloadDetailValue}>
+                {selectedCertificate.certificateCode}
+              </strong>
+            </div>
+            <div className={styles.downloadDetail}>
+              <span className={styles.downloadDetailLabel}>
+                {t('downloadFormatLabel')}
+              </span>
+              <strong className={styles.downloadDetailValue}>PDF</strong>
             </div>
           </div>
-
-          <div className={styles.certificateSignatures}>
-            <div className={styles.signatureBlock}>
-              <span className={styles.signatureLine} />
-              <span className={styles.signatureLabel}>
-                {t('issuerLabel')}
-              </span>
-            </div>
-            <div className={styles.signatureBlock}>
-              <span className={styles.signatureLine} />
-              <span className={styles.signatureLabel}>
-                {t('programLabel')}
-              </span>
-            </div>
-          </div>
-
-          <p className={styles.brandNote}>
-            {t('brandNote')}
-          </p>
         </div>
       ) : (
         <p className={styles.helperText}>

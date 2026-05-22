@@ -1,5 +1,6 @@
 import CoverImageField from './CoverImageField';
 import styles from './CreateCoursePage.module.css';
+import type { CertificateSignerRecord } from '@/types/api';
 import type { CreateCourseFormState, ImageMode, SetCreateCourseField } from './types';
 
 interface CourseSettingsFieldsProps {
@@ -7,6 +8,7 @@ interface CourseSettingsFieldsProps {
   form: CreateCourseFormState;
   imageMode: ImageMode;
   isUploadingCover: boolean;
+  programDirectors: CertificateSignerRecord[];
   setField: SetCreateCourseField;
   setImageMode: (mode: ImageMode) => void;
   t: (key: string, options?: Record<string, unknown>) => string;
@@ -19,6 +21,7 @@ export default function CourseSettingsFields({
   form,
   imageMode,
   isUploadingCover,
+  programDirectors,
   setField,
   setImageMode,
   t,
@@ -79,6 +82,26 @@ export default function CourseSettingsFields({
           onImageModeChange={setImageMode}
           t={t}
         />
+      </div>
+
+      <div className={styles.fieldGroup}>
+        <label className={styles.field}>
+          <span>{t('signers.programDirectorFieldLabel')}</span>
+          <p className={styles.helperText}>
+            {t('signers.programDirectorFieldHint')}
+          </p>
+          <select
+            value={form.programDirectorId}
+            onChange={(event) => setField('programDirectorId', event.target.value)}
+          >
+            <option value="">{t('signers.programDirectorFieldPlaceholder')}</option>
+            {programDirectors.map((programDirector) => (
+              <option key={programDirector.id} value={programDirector.id}>
+                {programDirector.fullName}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
     </>
   );

@@ -158,6 +158,7 @@ describe('EmailService', () => {
   });
 
   it('uses the finnish template and subject when language is fi', async () => {
+    process.env.SMTP_FROM = 'support@bgdefender.com';
     const service = new EmailService();
 
     await service.sendPasswordResetEmail(
@@ -173,6 +174,7 @@ describe('EmailService', () => {
   });
 
   it('falls back to the english template and subject when the language is unsupported', async () => {
+    process.env.SMTP_FROM = 'support@bgdefender.com';
     const service = new EmailService();
 
     await service.sendPasswordResetEmail(
@@ -201,23 +203,20 @@ describe('EmailService', () => {
     expect(mail.from).toBe('mailer@example.com');
   });
 
-  it('falls back to the default sender and localhost frontend url when env vars are missing', async () => {
+  it('requires SMTP_FROM or SMTP_USER to send password reset emails', async () => {
     const service = new EmailService();
 
-    await service.sendPasswordResetEmail(
-      'learner@example.com',
-      'https://bgdefender.example/reset?token=abc',
-    );
-
-    const mail = getSentMail();
-
-    expect(mail.from).toBe('noreply@bgdefender.com');
-    expect(mail.html).toContain('http://localhost:3000');
-    expect(mail.text).toContain('Website: http://localhost:3000');
+    await expect(
+      service.sendPasswordResetEmail(
+        'learner@example.com',
+        'https://bgdefender.example/reset?token=abc',
+      ),
+    ).rejects.toThrow('Missing required environment variable: SMTP_FROM');
   });
 
   it('keeps an empty template when the template directory does not exist', async () => {
     mockedFs.existsSync.mockReturnValue(false);
+    process.env.SMTP_FROM = 'support@bgdefender.com';
     const service = new EmailService();
 
     await service.sendPasswordResetEmail(

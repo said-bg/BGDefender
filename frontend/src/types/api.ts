@@ -101,6 +101,59 @@ export interface ContactResponse {
   message: string;
 }
 
+export type CertificateSignerRole = 'director' | 'program_director';
+
+export interface CertificateSignerAssignedCourse {
+  id: string;
+  titleEn: string;
+  titleFi: string;
+  status: 'draft' | 'published';
+  level: 'free' | 'premium';
+}
+
+export interface CertificateSignerAssignableCourse
+  extends CertificateSignerAssignedCourse {
+  programDirectorId: string | null;
+}
+
+export interface CertificateSignerRecord {
+  id: string;
+  fullName: string;
+  role: CertificateSignerRole;
+  title: string;
+  signatureData: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  assignedCourses: CertificateSignerAssignedCourse[];
+}
+
+export interface CertificateSignerOptionsResponse {
+  director: CertificateSignerRecord | null;
+  programDirectors: CertificateSignerRecord[];
+}
+
+export interface CertificateSignerDisplayRecord {
+  role: CertificateSignerRole;
+  fullName: string | null;
+  title: string | null;
+  signatureData: string | null;
+}
+
+export interface CertificateSignerCourseAssignmentsResponse {
+  signerId: string;
+  courseIds: string[];
+  courses: CertificateSignerAssignableCourse[];
+}
+
+export interface UpsertCertificateSignerRequest {
+  fullName: string;
+  role: CertificateSignerRole;
+  title: string;
+  signatureData: string;
+  isActive?: boolean;
+}
+
 export interface ResetPasswordResponse {
   message: string;
 }
@@ -245,6 +298,8 @@ export interface CertificateRecord {
   courseTitleEn: string;
   courseTitleFi: string;
   issuedAt: string | null;
+  director?: CertificateSignerDisplayRecord | null;
+  programDirector?: CertificateSignerDisplayRecord | null;
   createdAt: string;
   updatedAt: string;
 }

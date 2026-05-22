@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useMemo, useState } from 'react';
+import type { CertificateSignerRecord } from '@/types/api';
 import courseService, { Author, Course } from '@/services/course';
 import type { TranslationFn } from '@/types/i18n';
 import { getApiErrorMessage } from '@/utils/apiError';
@@ -32,6 +33,7 @@ export function useEditCourseDetails({
   const [form, setForm] = useState<EditCourseFormState>(initialFormState);
   const [course, setCourse] = useState<Course | null>(null);
   const [authors, setAuthors] = useState<Author[]>([]);
+  const [programDirectors, setProgramDirectors] = useState<CertificateSignerRecord[]>([]);
   const [loadingPage, setLoadingPage] = useState(true);
   const [authorsError, setAuthorsError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -59,6 +61,7 @@ export function useEditCourseDetails({
         const pageData = await loadCourseDetailsPageData(courseId);
         setCourse(pageData.course);
         setAuthors(pageData.authors);
+        setProgramDirectors(pageData.programDirectors);
         setForm(mapCourseToForm(pageData.course));
       } catch (error) {
         const message = getApiErrorMessage(
@@ -160,6 +163,7 @@ export function useEditCourseDetails({
     loadError,
     loadingPage,
     localizedCourseTitle,
+    programDirectors,
     selectedAuthors,
     submitError,
     submitMessage,

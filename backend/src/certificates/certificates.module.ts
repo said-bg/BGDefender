@@ -5,12 +5,14 @@ import { Course } from '../entities/course.entity';
 import { QuizAttempt } from '../entities/quiz-attempt.entity';
 import { Quiz } from '../entities/quiz.entity';
 import { User } from '../entities/user.entity';
+import { CertificateSignersModule } from '../certificate-signers/certificate-signers.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { CertificatesController } from './controllers/certificates.controller';
 import { CertificatesService } from './services/certificates.service';
 
 @Module({
   imports: [
+    CertificateSignersModule,
     NotificationsModule,
     TypeOrmModule.forFeature([Certificate, Course, Quiz, QuizAttempt, User]),
   ],

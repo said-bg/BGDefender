@@ -13,6 +13,7 @@ import { QuizAttempt } from '../../entities/quiz-attempt.entity';
 import { Quiz } from '../../entities/quiz.entity';
 import { QuizScope } from '../../entities/quiz-scope.enum';
 import { User, UserRole } from '../../entities/user.entity';
+import { CertificateSignersService } from '../../certificate-signers/services/certificate-signers.service';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
 import { NotificationsService } from '../../notifications/services/notifications.service';
@@ -66,13 +67,14 @@ export class CourseService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly notificationsService: NotificationsService,
+    private readonly certificateSignersService: CertificateSignersService,
   ) {}
 
   async create(
     createCourseDto: CreateCourseDto,
     currentUser: SafeUser,
   ): Promise<Course> {
-    const { authorIds, ...courseData } = createCourseDto;
+    const { authorIds, programDirectorId, ...courseData } = createCourseDto;
     const [slugEn, slugFi] = await Promise.all([
       this.generateUniqueCourseSlug('slugEn', createCourseDto.titleEn),
       this.generateUniqueCourseSlug('slugFi', createCourseDto.titleFi),
@@ -99,6 +101,13 @@ export class CourseService {
       );
     }
 
+    if (programDirectorId) {
+      course.programDirector = await this.resolveProgramDirectorOrFail(
+        programDirectorId,
+      );
+      course.programDirectorId = course.programDirector.id;
+    }
+
     const savedCourse = await this.courseRepository.save(course);
 
     if (savedCourse.status === CourseStatus.PUBLISHED) {
@@ -116,6 +125,7 @@ export class CourseService {
       where: { status: CourseStatus.PUBLISHED },
       relations: [
         'authors',
+        'programDirector',
         'finalTests',
         'chapters',
         'chapters.trainingQuiz',
@@ -140,6 +150,7 @@ export class CourseService {
       where: scopeWhere,
       relations: [
         'authors',
+        'programDirector',
         'finalTests',
         'chapters',
         'chapters.trainingQuiz',
@@ -220,6 +231,7 @@ export class CourseService {
   async findByIdForAdmin(id: string, currentUser: SafeUser): Promise<Course> {
     const course = await this.findCourseOrFail(id, [
       'authors',
+      'programDirector',
       'finalTests',
       'chapters',
       'chapters.trainingQuiz',
@@ -259,7 +271,7 @@ export class CourseService {
   ): Promise<Course> {
     const course = await this.findByIdForAdmin(id, currentUser);
     const previousStatus = course.status;
-    const { authorIds, ...courseData } = updateCourseDto;
+    const { authorIds, programDirectorId, ...courseData } = updateCourseDto;
 
     Object.assign(course, courseData);
     course.lastEditedByUserId = currentUser.id;
@@ -296,6 +308,18 @@ export class CourseService {
           course.ownerUserId,
           currentUser,
         );
+      }
+    }
+
+    if (programDirectorId !== undefined) {
+      if (programDirectorId === null) {
+        course.programDirector = null;
+        course.programDirectorId = null;
+      } else {
+        course.programDirector = await this.resolveProgramDirectorOrFail(
+          programDirectorId,
+        );
+        course.programDirectorId = course.programDirector.id;
       }
     }
 
@@ -388,6 +412,19 @@ export class CourseService {
     }
 
     return course;
+  }
+
+  private async resolveProgramDirectorOrFail(programDirectorId: string) {
+    const programDirector =
+      await this.certificateSignersService.findProgramDirectorById(
+        programDirectorId,
+      );
+
+    if (!programDirector) {
+      throw new NotFoundException('Program director not found');
+    }
+
+    return programDirector;
   }
 
   private async generateUniqueCourseSlug(

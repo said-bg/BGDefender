@@ -55,175 +55,71 @@
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.certificateFrame {
-  position: relative;
-  overflow: hidden;
+.downloadCard {
+  display: grid;
+  gap: 1rem;
   border: 1px solid var(--color-border-strong);
   border-radius: 0.85rem;
   background: var(--color-surface-hover);
-  box-shadow:
-    var(--shadow-certificate-frame),
-    inset 0 0 0 1px var(--color-border-glass-strong);
-  padding: 1.6rem 1.8rem 1.5rem;
+  box-shadow: var(--shadow-certificate-frame);
+  padding: 1.2rem 1.25rem;
 }
 
-.certificateHeader {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.certificateInstitution {
+.downloadMeta {
   display: grid;
-  gap: 0.12rem;
+  gap: 0.35rem;
 }
 
-.institutionName {
-  margin: 0;
-  color: var(--color-text-heading);
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1.15;
-}
-
-.institutionLocation {
-  margin: 0;
+.downloadLabel {
   color: var(--color-text-secondary);
-  font-size: 0.92rem;
-  font-weight: 500;
-  line-height: 1.35;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
-.certificateLogoWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.certificateLogo {
-  width: 4.1rem;
-  height: 4.1rem;
-  object-fit: cover;
-}
-
-.certificateHeading {
-  position: relative;
-  z-index: 1;
-  margin: 1.8rem 0 0;
-  color: var(--color-text-label);
-  font-size: clamp(1.65rem, 2.8vw, 2.15rem);
-  line-height: 1.14;
+.downloadName {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: 1.1rem;
   font-weight: 700;
-  text-align: center;
 }
 
-.certificateLead,
-.certificateSubLead {
-  position: relative;
-  z-index: 1;
-  margin: 1rem 0 0;
-  color: var(--color-text-secondary);
-  font-size: 0.98rem;
+.downloadCourse {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.94rem;
   line-height: 1.55;
-  text-align: center;
 }
 
-.recipientName {
-  position: relative;
-  z-index: 1;
-  margin: 1.05rem 0 0;
-  color: var(--color-text-heading);
-  font-size: clamp(2rem, 3.5vw, 2.7rem);
-  font-weight: 700;
-  text-align: center;
-}
-
-.courseName {
-  position: relative;
-  z-index: 1;
-  margin: 1rem auto 0;
-  max-width: 720px;
-  color: var(--color-text-heading);
-  font-size: clamp(1.45rem, 2.8vw, 1.95rem);
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.35;
-}
-
-.certificateFooter {
-  position: relative;
-  z-index: 1;
+.downloadDetails {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.9rem;
-  margin-top: 2rem;
 }
 
-.footerCard {
-  padding: 0.95rem 1rem;
-  border-radius: 0.65rem;
-  background: var(--color-surface-glass);
+.downloadDetail {
+  display: grid;
+  gap: 0.28rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.75rem;
   border: 1px solid var(--color-border-control);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  background: var(--color-surface-glass);
 }
 
-.footerLabel {
-  display: block;
+.downloadDetailLabel {
   color: var(--color-text-secondary);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
 }
 
-.footerValue {
-  display: block;
-  margin-top: 0.35rem;
+.downloadDetailValue {
   color: var(--color-text-primary);
-  font-size: 0.96rem;
+  font-size: 0.98rem;
   font-weight: 700;
-}
-
-.certificateSignatures {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.2rem;
-  margin-top: 1.9rem;
-}
-
-.signatureBlock {
-  display: grid;
-  justify-items: center;
-  gap: 0.45rem;
-}
-
-.signatureLine {
-  display: block;
-  width: min(100%, 180px);
-  border-top: 1px solid var(--color-disabled);
-}
-
-.signatureLabel {
-  color: var(--color-text-secondary);
-  font-size: 0.82rem;
-  font-weight: 600;
-  text-align: center;
-}
-
-.brandNote {
-  position: relative;
-  z-index: 1;
-  margin: 1.25rem 0 0;
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-align: center;
 }
 
 @media (max-width: 720px) {
@@ -233,26 +129,5 @@
 
   .profileAction {
     width: 100%;
-  }
-
-  .certificateFrame {
-    padding: 1.4rem 1.1rem 1.2rem;
-  }
-
-  .certificateHeader {
-    align-items: center;
-    flex-direction: column;
-  }
-
-  .institutionName {
-    font-size: 0.92rem;
-  }
-
-  .institutionLocation {
-    font-size: 0.82rem;
-  }
-
-  .certificateSignatures {
-    grid-template-columns: 1fr;
   }
 }

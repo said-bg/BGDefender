@@ -49,6 +49,24 @@ export class Certificate {
   @Column({ type: 'varchar', length: 220 })
   courseTitleFiSnapshot!: string;
 
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  directorSnapshotFullName!: string | null;
+
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  directorSnapshotTitle!: string | null;
+
+  @Column({ type: 'longtext', nullable: true })
+  directorSnapshotSignatureData!: string | null;
+
+  @Column({ type: 'varchar', length: 160, nullable: true })
+  programDirectorSnapshotFullName!: string | null;
+
+  @Column({ type: 'varchar', length: 120, nullable: true })
+  programDirectorSnapshotTitle!: string | null;
+
+  @Column({ type: 'longtext', nullable: true })
+  programDirectorSnapshotSignatureData!: string | null;
+
   @Column({ type: 'timestamp', nullable: true })
   issuedAt!: Date | null;
 

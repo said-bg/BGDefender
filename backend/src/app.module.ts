@@ -11,6 +11,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { UsersModule } from './users/users.module';
 import { QuizzesModule } from './quizzes/quizzes.module';
 import { CertificatesModule } from './certificates/certificates.module';
+import { CertificateSignersModule } from './certificate-signers/certificate-signers.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { CollectionsModule } from './collections/collections.module';
 import { ContactModule } from './contact/contact.module';
@@ -40,6 +41,8 @@ import { ContactModule } from './contact/contact.module';
     QuizzesModule,
     // Certificates module: learner certificates after successful final tests
     CertificatesModule,
+    // Certificate signers module: official signatories and reusable signatures
+    CertificateSignersModule,
     // Notifications module: in-app learner notifications in the navbar dropdown
     NotificationsModule,
     // Collections module: admin-curated learner sections on the home page

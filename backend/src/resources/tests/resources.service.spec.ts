@@ -69,6 +69,7 @@ type MockResourceGroupMemberRepository = Pick<
 type MockQueryBuilder = {
   distinct: jest.Mock;
   leftJoinAndSelect: jest.Mock;
+  where: jest.Mock;
   orderBy: jest.Mock;
   andWhere: jest.Mock;
   orWhere: jest.Mock;
@@ -148,6 +149,7 @@ const createMockQueryBuilder = (): MockQueryBuilder => {
   const queryBuilder: MockQueryBuilder = {
     distinct: jest.fn(),
     leftJoinAndSelect: jest.fn(),
+    where: jest.fn(),
     orderBy: jest.fn(),
     andWhere: jest.fn(),
     orWhere: jest.fn(),
@@ -159,6 +161,7 @@ const createMockQueryBuilder = (): MockQueryBuilder => {
 
   queryBuilder.distinct.mockReturnValue(queryBuilder);
   queryBuilder.leftJoinAndSelect.mockReturnValue(queryBuilder);
+  queryBuilder.where.mockReturnValue(queryBuilder);
   queryBuilder.orderBy.mockReturnValue(queryBuilder);
   queryBuilder.andWhere.mockReturnValue(queryBuilder);
   queryBuilder.orWhere.mockReturnValue(queryBuilder);
@@ -612,6 +615,7 @@ describe('ResourcesService', () => {
       await service.deleteAdminResource('resource-1');
 
       expect(resourceRepository.findOne).toHaveBeenCalledWith({
+        relations: ['assignedGroup', 'assignedGroup.members'],
         where: { id: 'resource-1' },
       });
       expect(resourceRepository.remove).toHaveBeenCalledWith(resource);
@@ -665,6 +669,10 @@ describe('ResourcesService', () => {
       expect(queryBuilder.leftJoinAndSelect).toHaveBeenCalledWith(
         'groupMembers.user',
         'groupMemberUser',
+      );
+      expect(queryBuilder.where).toHaveBeenCalledWith(
+        'resource.assignedUserId = :userId',
+        { userId: 7 },
       );
       expect(queryBuilder.orWhere).toHaveBeenCalledWith(
         'groupMembers.userId = :userId',

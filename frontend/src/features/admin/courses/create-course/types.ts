@@ -8,6 +8,7 @@ export type CreateCourseFormState = {
   estimatedDuration: string;
   coverImage: string;
   authorIds: string[];
+  programDirectorId: string;
 };
 
 export const initialCreateCourseFormState: CreateCourseFormState = {
@@ -20,6 +21,7 @@ export const initialCreateCourseFormState: CreateCourseFormState = {
   estimatedDuration: '',
   coverImage: '',
   authorIds: [],
+  programDirectorId: '',
 };
 
 export type ImageMode = 'url' | 'upload';

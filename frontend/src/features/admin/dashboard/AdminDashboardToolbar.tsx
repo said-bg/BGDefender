@@ -45,6 +45,12 @@ export default function AdminDashboardToolbar({ t }: AdminDashboardToolbarProps)
         {t('manageResources')}
       </Link>
       <Link
+        href={localizePathname('/admin/certificate-signers', activeLocale)}
+        className={styles.secondaryAction}
+      >
+        {t('signers.title')}
+      </Link>
+      <Link
         href={localizePathname('/admin/collections', activeLocale)}
         className={styles.secondaryAction}
       >

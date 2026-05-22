@@ -52,6 +52,7 @@ const createForm = (
   estimatedDuration: ' 120 ',
   coverImage: ' /cover.jpg ',
   authorIds: ['author-1'],
+  programDirectorId: '',
   ...overrides,
 });
 
@@ -68,6 +69,7 @@ describe('details.helpers', () => {
       estimatedDuration: '90',
       coverImage: '/cover.jpg',
       authorIds: ['author-1'],
+      programDirectorId: '',
     });
   });
 
@@ -112,6 +114,7 @@ describe('details.helpers', () => {
       estimatedDuration: 120,
       coverImage: '/cover.jpg',
       authorIds: ['author-1'],
+      programDirectorId: null,
     });
   });
 

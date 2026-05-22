@@ -14,6 +14,7 @@ import { QuizAttempt } from '../../entities/quiz-attempt.entity';
 import { Quiz } from '../../entities/quiz.entity';
 import { QuizScope } from '../../entities/quiz-scope.enum';
 import { User, UserPlan, UserRole } from '../../entities/user.entity';
+import { CertificateSignersService } from '../../certificate-signers/services/certificate-signers.service';
 import { NotificationsService } from '../../notifications/services/notifications.service';
 import { CreateCourseDto } from '../dto/create-course.dto';
 import { UpdateCourseDto } from '../dto/update-course.dto';
@@ -214,6 +215,9 @@ describe('CourseService', () => {
     notifyCoursePublished: jest.fn(),
     deleteCourseNotifications: jest.fn(),
   };
+  const certificateSignersService = {
+    findProgramDirectorById: jest.fn(),
+  };
 
   beforeEach(async () => {
     courseRepository = {
@@ -280,6 +284,10 @@ describe('CourseService', () => {
         {
           provide: NotificationsService,
           useValue: notificationsService,
+        },
+        {
+          provide: CertificateSignersService,
+          useValue: certificateSignersService,
         },
       ],
     }).compile();
@@ -449,6 +457,7 @@ describe('CourseService', () => {
         where: { status: CourseStatus.PUBLISHED },
         relations: [
           'authors',
+          'programDirector',
           'finalTests',
           'chapters',
           'chapters.trainingQuiz',
@@ -469,6 +478,7 @@ describe('CourseService', () => {
         where: { status: CourseStatus.PUBLISHED },
         relations: [
           'authors',
+          'programDirector',
           'finalTests',
           'chapters',
           'chapters.trainingQuiz',
@@ -500,6 +510,7 @@ describe('CourseService', () => {
         where: expect.any(Array),
         relations: [
           'authors',
+          'programDirector',
           'finalTests',
           'chapters',
           'chapters.trainingQuiz',
@@ -559,6 +570,7 @@ describe('CourseService', () => {
         }),
         relations: [
           'authors',
+          'programDirector',
           'finalTests',
           'chapters',
           'chapters.trainingQuiz',
@@ -579,6 +591,7 @@ describe('CourseService', () => {
         where: { ownerUserId: creatorUser.id },
         relations: [
           'authors',
+          'programDirector',
           'finalTests',
           'chapters',
           'chapters.trainingQuiz',

@@ -14,6 +14,7 @@ import { Resource } from '../entities/resource.entity';
 import { ResourceGroup } from '../entities/resource-group.entity';
 import { ResourceGroupMember } from '../entities/resource-group-member.entity';
 import { Certificate } from '../entities/certificate.entity';
+import { CertificateSigner } from '../entities/certificate-signer.entity';
 import { Quiz } from '../entities/quiz.entity';
 import { QuizQuestion } from '../entities/quiz-question.entity';
 import { QuizOption } from '../entities/quiz-option.entity';
@@ -54,6 +55,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         ResourceGroup,
         ResourceGroupMember,
         Certificate,
+        CertificateSigner,
         Quiz,
         QuizQuestion,
         QuizOption,

@@ -6,6 +6,7 @@ export * from './auth';
 export { apiClient } from './api';
 export { default as authorService } from './authors';
 export { default as certificateService } from './certificates';
+export { default as certificateSignerService } from './certificate-signers';
 export { default as collectionService } from './collections';
 export { default as courseService } from './course';
 export { default as favoriteService } from './favorites';

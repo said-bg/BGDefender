@@ -12,6 +12,7 @@ export const mapCourseToForm = (course: Course): EditCourseFormState => ({
   estimatedDuration: course.estimatedDuration ? String(course.estimatedDuration) : '',
   coverImage: course.coverImage || '',
   authorIds: course.authors.map((author) => author.id),
+  programDirectorId: course.programDirectorId ?? '',
 });
 
 export const getLocalizedCourseTitle = (course: Course | null, language: string) => {
@@ -57,6 +58,7 @@ export const buildUpdateCoursePayload = (
     estimatedDuration: durationValue ? Number(durationValue) : undefined,
     coverImage: form.coverImage.trim(),
     authorIds: form.authorIds,
+    programDirectorId: form.programDirectorId || null,
   };
 };
 

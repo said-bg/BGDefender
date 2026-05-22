@@ -1,3 +1,5 @@
+import type { CertificateSignerRecord } from '@/types/api';
+
 export interface Course {
   id: string;
   slugEn?: string | null;
@@ -10,6 +12,8 @@ export interface Course {
   status: 'draft' | 'published';
   estimatedDuration: number;
   coverImage: string;
+  programDirectorId?: string | null;
+  programDirector?: CertificateSignerRecord | null;
   ownerUserId?: number | null;
   createdByUserId?: number | null;
   lastEditedByUserId?: number | null;
@@ -360,6 +364,7 @@ export interface CreateCourseRequest {
   estimatedDuration?: number;
   coverImage?: string;
   authorIds?: string[];
+  programDirectorId?: string | null;
 }
 
 export interface UpdateCourseRequest {
@@ -372,6 +377,7 @@ export interface UpdateCourseRequest {
   estimatedDuration?: number;
   coverImage?: string;
   authorIds?: string[];
+  programDirectorId?: string | null;
 }
 
 export interface CreateChapterRequest {

@@ -26,6 +26,7 @@ export default function CreateCourseForm() {
     isSubmitting,
     isUploadingCover,
     loadingAuthors,
+    programDirectors,
     selectedAuthors,
     submitError,
     submitMessage,
@@ -76,10 +77,11 @@ export default function CreateCourseForm() {
 
           <CourseSettingsFields
             coverUploadError={coverUploadError}
-            form={form}
-            imageMode={imageMode}
-            isUploadingCover={isUploadingCover}
-            setField={setField}
+          form={form}
+          imageMode={imageMode}
+          isUploadingCover={isUploadingCover}
+          programDirectors={programDirectors}
+          setField={setField}
             setImageMode={setImageMode}
             t={t}
             uploadedFilename={uploadedFilename}

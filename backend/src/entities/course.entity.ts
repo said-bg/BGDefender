@@ -2,13 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Author } from './author.entity';
+import { CertificateSigner } from './certificate-signer.entity';
 import { Chapter } from './chapter.entity';
 import { Quiz } from './quiz.entity';
 
@@ -92,6 +95,13 @@ export class Course {
   coverImage: string | null;
 
   @Column({
+    type: 'varchar',
+    length: 36,
+    nullable: true,
+  })
+  programDirectorId: string | null;
+
+  @Column({
     type: 'int',
     nullable: true,
   })
@@ -128,6 +138,17 @@ export class Course {
     inverseJoinColumn: { name: 'authorId', referencedColumnName: 'id' },
   })
   authors: Author[];
+
+  @ManyToOne(
+    () => CertificateSigner,
+    (certificateSigner) => certificateSigner.managedCourses,
+    {
+      nullable: true,
+      onDelete: 'SET NULL',
+    },
+  )
+  @JoinColumn({ name: 'programDirectorId' })
+  programDirector: CertificateSigner | null;
 
   @OneToMany(() => Chapter, (chapter) => chapter.course)
   chapters: Chapter[];

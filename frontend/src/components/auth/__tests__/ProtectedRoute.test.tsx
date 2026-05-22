@@ -2,8 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import ProtectedRoute from '../ProtectedRoute';
 
 const replaceMock = jest.fn();
-const clearPostLogoutRedirectPathMock = jest.fn();
-
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ replace: replaceMock }),
   usePathname: () => '/admin/users',
@@ -25,7 +23,6 @@ describe('ProtectedRoute', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     useAuth.mockReturnValue({
-      clearPostLogoutRedirectPath: clearPostLogoutRedirectPathMock,
       isAuthenticated: true,
       isInitialized: true,
       postLogoutRedirectPath: null,
@@ -35,7 +32,6 @@ describe('ProtectedRoute', () => {
 
   it('shows the auth loader while auth is initializing', () => {
     useAuth.mockReturnValue({
-      clearPostLogoutRedirectPath: clearPostLogoutRedirectPathMock,
       isAuthenticated: false,
       isInitialized: false,
       postLogoutRedirectPath: null,
@@ -54,7 +50,6 @@ describe('ProtectedRoute', () => {
 
   it('redirects unauthenticated users to login with a safe redirect param', async () => {
     useAuth.mockReturnValue({
-      clearPostLogoutRedirectPath: clearPostLogoutRedirectPathMock,
       isAuthenticated: false,
       isInitialized: true,
       postLogoutRedirectPath: null,
@@ -75,7 +70,6 @@ describe('ProtectedRoute', () => {
 
   it('redirects authenticated users without the required role to unauthorized', async () => {
     useAuth.mockReturnValue({
-      clearPostLogoutRedirectPath: clearPostLogoutRedirectPathMock,
       isAuthenticated: true,
       isInitialized: true,
       postLogoutRedirectPath: null,
@@ -107,7 +101,6 @@ describe('ProtectedRoute', () => {
 
   it('prefers the stored post-logout redirect path when available', async () => {
     useAuth.mockReturnValue({
-      clearPostLogoutRedirectPath: clearPostLogoutRedirectPathMock,
       isAuthenticated: false,
       isInitialized: true,
       postLogoutRedirectPath: '/login?reason=logout',
@@ -121,7 +114,6 @@ describe('ProtectedRoute', () => {
     );
 
     await waitFor(() => {
-      expect(clearPostLogoutRedirectPathMock).toHaveBeenCalled();
       expect(replaceMock).toHaveBeenCalledWith('/login?reason=logout');
     });
   });
